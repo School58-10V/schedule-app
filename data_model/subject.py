@@ -76,3 +76,4 @@ class Lesson:
 
     def __get_notes(self):
         return self.__notes
+# =)
