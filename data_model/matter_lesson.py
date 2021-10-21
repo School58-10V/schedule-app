@@ -1,7 +1,7 @@
 from random import randrange
 
 
-class Matter:
+class Subject:
     def __init__(self, name):
         self.__name = name
         self.__id = randrange(1, 350000)
