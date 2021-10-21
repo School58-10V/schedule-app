@@ -31,5 +31,5 @@ class SeriesOfLessons:
     def __get_num_of_studying_hours(self):
         return self.__num_of_studying_hours
 
-    def __get_id_for_group_of_lssons(self):
+    def __get_id_for_group_of_lessons(self):
         return self.__id_for_group_of_lessons
