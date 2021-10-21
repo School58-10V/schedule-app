@@ -1,4 +1,4 @@
-class a_series_of_lessons:
+class SeriesOfLessons:
     def __init__(self):
         self.__num_of_group =
         self.__teacher =
@@ -34,3 +34,5 @@ class a_series_of_lessons:
     def __get_id_for_group_of_lssons(self):
         return self.__id_for_group_of_lessons
 
+
+class Lesson:
