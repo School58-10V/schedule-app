@@ -14,8 +14,7 @@ class TimeTable:
 class Day:
     def __init__(self):
         self.__day_id = random.randrange(1, 345678987)
-        self.__lessons = {"Monday": ["yes"], "Tuesday": ["yes"], "Wednesday": ["yes"], "Thursday": ["yes"],
-                          "Friday": ["yes"], "Saturday": ["?"]}
+        self.__lessons = {"class_id": ["lessons_id"]}
 
     @property
     def getter(self):
