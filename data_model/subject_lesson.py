@@ -2,14 +2,14 @@ from random import randrange
 
 
 class Subject:
-    def __init__(self, name):
-        self.__name = name
-        self.__id = randrange(1, 350000)
+    def __init__(self, name, subjectid=None):
+        self.__subject_name = name
+        self.__subject_id = subjectid
 
     @property
-    def get_id(self):
-        return self.__id
+    def subject_id(self):
+        return self.__subject_id
 
     @property
-    def get_name(self):
-        return self.__name
+    def subject_name(self):
+        return self.__subject_name
