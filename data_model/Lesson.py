@@ -11,7 +11,7 @@ class Lesson:
         self.__state = True
         self.__notes = notes
 
-    def change_state(self):
+    def toggle_state(self):
         self.__state = not self.__state
 
     def get_time(self):
