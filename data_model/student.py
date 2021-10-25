@@ -1,4 +1,7 @@
 class Student:
+    """
+        Класс ученика. 
+    """
     def __init__(self, student_id: int, full_name: str, class_id: int):
         self.__id = student_id
         self.__full_name = full_name
