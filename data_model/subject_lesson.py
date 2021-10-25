@@ -1,6 +1,3 @@
-from random import randrange
-
-
 class Subject:
     def __init__(self, name, subjectid=None):
         self.__subject_name = name
