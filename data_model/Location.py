@@ -6,12 +6,30 @@
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
 
 
-class Location_Of_Lessons:
-    def __init__(self, ID, num_of_class=-1, profile="Everything", equipment=["Standart"], link="Offline",
-                 type_of_location="Class"):
-        self.__ID = ID
+class Location:
+    def __init__(self, type_of_location, loc_id=None, num_of_class=None, profile=None, equipment=None,
+                 link="Offline"):
+        self.__loc_id = loc_id
         self.__num_of_class = num_of_class
         self.__profile = profile
         self.__equipment = equipment
         self.__link = link
         self.__type_of_location = type_of_location
+
+    def get_ID(self):
+        return self.__loc_id
+
+    def get_num_of_class(self):
+        return self.__num_of_class
+
+    def get_profile(self):
+        return self.__profile
+
+    def get_equipment(self):
+        return self.__equipment
+
+    def get_link(self):
+        return self.__link
+
+    def get_type_of_location(self):
+        return self.__type_of_location
