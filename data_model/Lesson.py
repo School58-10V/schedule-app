@@ -1,3 +1,14 @@
+#start_time начало урока
+#end_time конец урока
+#day дата
+#teacher_id замена
+#lesson_id урок
+#group_id группа учеников
+#subject предмет
+#state состояние
+#notes примечания
+
+
 class Lesson:
     def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, lesson_id: int, group_id: int,
                  subject_id: int, notes: str):
