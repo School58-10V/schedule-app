@@ -1,4 +1,3 @@
-
 class Lesson:
     def __init__(self, ):
         self.__start_time =

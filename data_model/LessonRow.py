@@ -1,10 +1,10 @@
 class LessonRow:
-    def __init__(self, start_time: int, end_time: int, group_id: int, theme_of_lesson: str, room_id: int,
+    def __init__(self, start_time: int, end_time: int, group_id: int, subject_id: int, room_id: int,
                  timetable_id: int, lessonRow_id: id):
         self.__start_time = start_time  # start time of lessons (9:00)
         self.__end_time = end_time  # end time of lessons (10:00)
-        self.__group_id =  group_id  # класс, занимающийся в данный момент.(id группы/класса)
-        self.__theme_of_lesson = theme_of_lesson  # Math. Russian language(id)
+        self.__group_id = group_id  # класс, занимающийся в данный момент.(id группы/класса)
+        self.__subject_id = subject_id  # Math. Russian language(id)
         self.__room_id = room_id  # id
         self.__timetable_id = timetable_id  # id
         self.__lessonRow_id = lessonRow_id
