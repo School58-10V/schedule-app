@@ -26,7 +26,7 @@ class Lesson:
     def get_lesson_id(self):
         return self.__lesson_id
 
-    def get_group_for_lesson_id(self):
+    def get_group_id(self):
         return self.__group_id
 
     def get_subject(self):
