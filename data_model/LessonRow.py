@@ -1,3 +1,13 @@
+# start_time  начальное время
+# end_time конечное время
+# num_of_group номер группы
+# teacher Учитель закреплённый за рядом урока
+# group_right_now класс, занимающийся в данный момент.
+# subject_id айди предмета
+# room_id айди комнаты
+# timetable_id год в который происходят уроки
+# __lessonRow_id айди самого класса ряд уроков
+
 class LessonRow:
     def __init__(self, start_time: int, end_time: int, group_id: int, subject_id: int, room_id: int,
                  timetable_id: int, lessonRow_id: int, teacher: ID):
