@@ -37,5 +37,5 @@ class LessonRow:
     def get_num_of_studying_hours(self):
         return self.__num_of_studying_hours
 
-    def ret_lessonRow_id(self):
+    def get_lessonRow_id(self):
         return self.__lessonRow_id
