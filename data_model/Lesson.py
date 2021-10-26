@@ -10,8 +10,8 @@
 
 
 class Lesson:
-    def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, lesson_id: None, group_id: int,
-                 subject_id: int, notes: str):
+    def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
+                 subject_id: int, notes: str, lesson_id: int = None):
         self.__start_time = start_time
         self.__end_time = end_time
         self.__day = day
