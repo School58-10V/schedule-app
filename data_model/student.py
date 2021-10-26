@@ -1,25 +1,32 @@
+from datetime import date
+
+
 class Student:
     """
         Класс ученика.
     """
-    def __init__(self, student_id: int, full_name: str, class_id: int):
-        # Если student_id == -1, то он еще не установлен. Ставим None.
-        if student_id == -1:
-            self.__student_id = None
-        else:
-            self.__student_id = student_id
 
+    def __init__(
+            self, full_name: str, date_of_birth: date, student_id: int = None,
+            contacts: str = None, bio: str = None
+    ):
         self.__full_name = full_name
-        self.__class_id = class_id
-        # self.__phone_number = phone_number
-        # self.__parents_phone_number = parents_phone_number
-
-    def get_id(self):
-        return self.__student_id
+        self.__date_of_birth = date_of_birth
+        self.__student_id = student_id
+        self.__contacts = contacts
+        self.__bio = bio
 
     def get_full_name(self):
         return self.__full_name
 
-    def get_class_id(self):
-        return self.__class_id
+    def get_date_of_birth(self):
+        return self.__date_of_birth
 
+    def get_id(self):
+        return self.__student_id
+
+    def get_contacts(self):
+        return self.__contacts
+
+    def get_bio(self):
+        return self.__bio
