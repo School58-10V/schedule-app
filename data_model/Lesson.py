@@ -1,16 +1,16 @@
-#start_time начало урока
-#end_time конец урока
-#day дата
-#teacher_id замена
-#lesson_id урок
-#group_id группа учеников
-#subject предмет
-#state состояние
-#notes примечания
+# start_time начало урока
+# end_time конец урока
+# day дата
+# teacher_id замена
+# lesson_id урок
+# group_id группа учеников
+# subject предмет
+# state состояние
+# notes примечания
 
 
 class Lesson:
-    def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, lesson_id: int, group_id: int,
+    def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, lesson_id: None, group_id: int,
                  subject_id: int, notes: str):
         self.__start_time = start_time
         self.__end_time = end_time
@@ -25,8 +25,11 @@ class Lesson:
     def toggle_state(self):
         self.__state = not self.__state
 
-    def get_time(self):
-        return self.__start_time, self.__end_time
+    def get_start_time(self):
+        return self.__start_time
+
+    def get_end_time(self):
+        return self.__end_time
 
     def get_day(self):
         return self.__day
