@@ -10,14 +10,14 @@ class NoLearningPeriod:
         self.__stoptime = stop
         self.__timetable_id = timetableid
 
-    def get_no_learning_period_id(self):
+    def get_no_learning_period_id(self) -> (int, None):
         return self.__no_learning_period_id
 
-    def get_startime(self):
+    def get_startime(self) -> date:
         return self.__startime
 
-    def get_stoptime(self):
+    def get_stoptime(self) -> date:
         return self.__stoptime
 
-    def get_timetable_id(self):
+    def get_timetable_id(self) -> int:
         return self.__timetable_id
