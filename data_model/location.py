@@ -6,9 +6,9 @@
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
 
 
-class Location:
-    def __init__(self, type_of_location, location_id=None, num_of_class=None, profile=None, equipment=None,
-                 link="Offline"):
+class location:
+    def __init__(self, type_of_location: str, location_id: int = None, num_of_class: int = None, profile: str = None,
+                 equipment: list = None, link: str = "Offline"):
         self.__location_id = location_id
         self.__num_of_class = num_of_class
         self.__profile = profile
@@ -16,7 +16,7 @@ class Location:
         self.__link = link
         self.__type_of_location = type_of_location
 
-    def get_id(self):
+    def get__location_id(self):
         return self.__location_id
 
     def get_num_of_class(self):
