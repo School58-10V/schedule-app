@@ -1,12 +1,10 @@
 class Subject:
-    def __init__(self, name, subjectid=None):
+    def __init__(self, name: str, subject_id: int = None):
         self.__subject_name = name
-        self.__subject_id = subjectid
+        self.__subject_id = subject_id
 
-    @property
-    def subject_id(self):
+    def get_subject_id(self) -> int:
         return self.__subject_id
 
-    @property
-    def subject_name(self):
+    def get_subject_name(self) -> str:
         return self.__subject_name
