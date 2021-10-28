@@ -6,7 +6,6 @@
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
 import json
 
-
 class location:
     def __init__(self, type_of_location: str, location_id: int = None, num_of_class: int = None, profile: str = None,
                  equipment: list = None, link: str = "Offline"):
