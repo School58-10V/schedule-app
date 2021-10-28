@@ -7,7 +7,7 @@ from typing import Optional
 # office_id - закреплённый кабинет
 # lesson - сделайте m2m связь, т.к. не знаю, не умею
 
-class teacher:
+class Teacher:
     def __init__(self, fio: str, teacher_id: int, subject: str, office_id: int = None, bio: str = None,
                  contacts: str = None):
         self.__fio = fio
