@@ -4,7 +4,7 @@
 ##        Equipment - оборудование в классе
 ##             Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
-
+import json
 
 class location:
     def __init__(self, type_of_location: str, location_id: int = None, num_of_class: int = None, profile: str = None,
@@ -33,3 +33,7 @@ class location:
 
     def get_type_of_location(self):
         return self.__type_of_location
+
+    def save(self):
+        with open("./db/locations.json", mode="w") as data_file:
+            data_file_encode = json.read(data_file)
