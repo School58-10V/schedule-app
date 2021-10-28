@@ -36,4 +36,7 @@ class location:
 
     def save(self):
         with open("./db/locations.json", mode="w") as data_file:
-            data_file_encode = json.read(data_file)
+            json.dump({"location_id": self.__location_id,
+                       "num_of_class": self.__num_of_class,
+                       "profile": self.__profile,
+                       "equipment": self.__equipment})
