@@ -1,9 +1,9 @@
 class Subject:
-    def __init__(self, name: str, subjectid: int = None):
+    def __init__(self, name: str, subject_id: int = None):
         self.__subject_name = name
-        self.__subject_id = subjectid
+        self.__subject_id = subject_id
 
-    def get_subject_id(self) -> (int, None):
+    def get_subject_id(self) -> int:
         return self.__subject_id
 
     def get_subject_name(self) -> str:
