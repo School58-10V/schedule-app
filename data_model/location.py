@@ -6,7 +6,7 @@
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
 
 
-class location:
+class Location:
     def __init__(self, type_of_location: str, location_id: int = None, num_of_class: int = None, profile: str = None,
                  equipment: list = None, link: str = "Offline"):
         self.__location_id = location_id
@@ -33,3 +33,21 @@ class location:
 
     def get_type_of_location(self):
         return self.__type_of_location
+
+    @staticmethod
+    def parse(file_location):
+        f = open(file_location, encoding='utf-8')
+        lines = f.read().split('\n')[1:]
+        res = []
+
+        for i in lines:
+            i = i.split(';')
+            location_type = i[0]
+            name = i[1]
+            link = i[2]
+            # Некуда класть comment (и name, если это не номер кабинета)
+            comment = i[3]
+            res.append(Location(location_type, link=link, num_of_class=name if name.isdigit() else None))
+
+        return res
+
