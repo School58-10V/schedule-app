@@ -39,4 +39,6 @@ class location:
             json.dump({"location_id": self.__location_id,
                        "num_of_class": self.__num_of_class,
                        "profile": self.__profile,
-                       "equipment": self.__equipment})
+                       "equipment": self.__equipment,
+                       "link": self.__link,
+                       "type_of_location": self.__type_of_location}, data_file)
