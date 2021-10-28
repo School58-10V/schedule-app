@@ -7,7 +7,7 @@ class StudentInGroup:
         Group и Student
     """
 
-    def __init__(self, student_id: int, group_id: int, student_group_id: int = None):
+    def __init__(self, student_id: int, group_id: int, student_group_id: Optional[int] = None):
         self.__student_id = student_id
         self.__group_id = group_id
         self.__student_group_id = student_group_id
