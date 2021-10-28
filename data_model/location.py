@@ -35,14 +35,14 @@ class Location:
     def get_type_of_location(self):
         return self.__type_of_location
 
-    def _serialize_to_json(self):
-        with open("./db/locations.json", mode="w", encoding='utf-8') as data_file:
-            json.dump({"location_id": self.__location_id,
+    def __serialize_to_json(self):
+        return json.dumps({"location_id": self.__location_id,
                        "num_of_class": self.__num_of_class,
                        "profile": self.__profile,
                        "equipment": self.__equipment,
                        "link": self.__link,
-                       "type_of_location": self.__type_of_location}, data_file, ensure_ascii=False)
+                       "type_of_location": self.__type_of_location}, ensure_ascii=False)
 
     def save(self):
-        self._serialize_to_json()
+        with open("./db/locations.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json())
