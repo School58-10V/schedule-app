@@ -6,13 +6,13 @@
 # lesson - сделайте m2m связь, т.к. не знаю, не умею
 
 class Teacher:
-    def __init__(self, fio, teacher_id, bio, contacts, lesson, office_id=None):
+    def __init__(self, fio, teacher_id, subject, office_id=None, bio=None, contacts=None):
         self.__fio = fio
         self.__teacher_id = teacher_id
         self.__bio = bio
         self.__contacts = contacts
         self.__office_id = office_id
-        self.__lesson = lesson
+        self.__subject = subject
 
     def get_fio(self):
         return self.__fio
@@ -26,8 +26,8 @@ class Teacher:
     def get_contacts(self):
         return self.__contacts
 
-    def get_lesson(self):
-        return self.__lesson
+    def get_subject(self):
+        return self.__subject
 
     def get_office_id(self):
         return self.__office_id
