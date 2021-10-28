@@ -7,7 +7,7 @@ class Group:
     """
     def __init__(
             self, teacher_id: int, class_letter: str, grade: int,
-            profile_name: str, group_id: int = None
+            profile_name: str, group_id: Optional[int] = None
     ):
         self.__teacher_id = teacher_id
         self.__class_letter = class_letter
