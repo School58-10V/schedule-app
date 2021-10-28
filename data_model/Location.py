@@ -7,9 +7,9 @@
 
 
 class Location:
-    def __init__(self, type_of_location, loc_id=None, num_of_class=None, profile=None, equipment=None,
+    def __init__(self, type_of_location, location_id=None, num_of_class=None, profile=None, equipment=None,
                  link="Offline"):
-        self.__loc_id = loc_id
+        self.__location_id = location_id
         self.__num_of_class = num_of_class
         self.__profile = profile
         self.__equipment = equipment
@@ -17,7 +17,7 @@ class Location:
         self.__type_of_location = type_of_location
 
     def get_ID(self):
-        return self.__loc_id
+        return self.__location_id
 
     def get_num_of_class(self):
         return self.__num_of_class
