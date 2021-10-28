@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Optional
 
 
 class Student:
@@ -16,17 +17,17 @@ class Student:
         self.__contacts = contacts
         self.__bio = bio
 
-    def get_full_name(self):
+    def get_full_name(self) -> str:
         return self.__full_name
 
-    def get_date_of_birth(self):
+    def get_date_of_birth(self) -> date:
         return self.__date_of_birth
 
-    def get_id(self):
+    def get_id(self) -> Optional[int]:
         return self.__student_id
 
-    def get_contacts(self):
+    def get_contacts(self) -> Optional[str]:
         return self.__contacts
 
-    def get_bio(self):
+    def get_bio(self) -> Optional[str]:
         return self.__bio

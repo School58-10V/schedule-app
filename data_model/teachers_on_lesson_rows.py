@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class TeachersOnLessonRows:
     """
         Класс учителя в LessonRow. Используется для m2m отношения между
@@ -9,11 +12,11 @@ class TeachersOnLessonRows:
         self.__lesson_row_id = lesson_row_id
         self.__teacher_on_lesson_row_id = teacher_on_lesson_row_id
 
-    def get_teacher_id(self):
+    def get_teacher_id(self) -> int:
         return self.__teacher_id
 
-    def get_lesson_row_id(self):
+    def get_lesson_row_id(self) -> int:
         return self.__lesson_row_id
 
-    def get_teacher_on_lesson_row_id(self):
+    def get_teacher_on_lesson_row_id(self) -> Optional[int]:
         return self.__teacher_on_lesson_row_id
