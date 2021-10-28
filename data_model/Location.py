@@ -7,8 +7,8 @@
 
 
 class Location:
-    def __init__(self, type_of_location, location_id=None, num_of_class=None, profile=None, equipment=None,
-                 link="Offline"):
+    def __init__(self, type_of_location: str, location_id: int = None, num_of_class: int = None, profile: str = None,
+                 equipment: list = None, link: str = "Offline"):
         self.__location_id = location_id
         self.__num_of_class = num_of_class
         self.__profile = profile
