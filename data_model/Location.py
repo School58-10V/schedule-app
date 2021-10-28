@@ -16,7 +16,7 @@ class Location:
         self.__link = link
         self.__type_of_location = type_of_location
 
-    def get_ID(self):
+    def get_id(self):
         return self.__location_id
 
     def get_num_of_class(self):
