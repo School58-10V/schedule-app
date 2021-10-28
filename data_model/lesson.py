@@ -25,29 +25,29 @@ class Lesson:
     def toggle_state(self):
         self.__state = not self.__state
 
-    def get_start_time(self):
+    def get_start_time(self) -> int:
         return self.__start_time
 
-    def get_end_time(self):
+    def get_end_time(self) -> int:
         return self.__end_time
 
-    def get_day(self):
+    def get_day(self) -> int:
         return self.__day
 
-    def get_teacher_id(self):
+    def get_teacher_id(self) -> int:
         return self.__teacher_id
 
-    def get_lesson_id(self):
+    def get_lesson_id(self) -> int:
         return self.__lesson_id
 
-    def get_group_id(self):
+    def get_group_id(self) -> int:
         return self.__group_id
 
-    def get_subject(self):
+    def get_subject(self) -> int:
         return self.__subject_id
 
-    def get_state(self):
+    def get_state(self) -> bool:
         return self.__state
 
-    def get_notes(self):
+    def get_notes(self) -> str:
         return self.__notes
