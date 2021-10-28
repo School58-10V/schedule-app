@@ -1,13 +1,17 @@
-##               ID - Идентификационный номер места проведения урока
-##     num_of_class - номер класса, в котором проходит занятие
-##          Profile - профиль класса(например "хим.", если кабинет оборудован для уроков химии)
-##        Equipment - оборудование в классе
-##             Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
-## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
-from typing import Union, Optional, List
+from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+
+from typing import Optional, List
 
 
 class Location:
+    """
+                      ID - Идентификационный номер места проведения урока
+            num_of_class - номер класса, в котором проходит занятие
+                 Profile - профиль класса(например "хим.", если кабинет оборудован для уроков химии)
+               Equipment - оборудование в классе
+                    Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
+        type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
+    """
     def __init__(self, type_of_location: str, location_id: int = None, location_desc: str = None, profile: str = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
         self.__location_id = location_id
@@ -40,7 +44,7 @@ class Location:
         return self.__comment
 
     @staticmethod
-    def parse(file_location):
+    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
