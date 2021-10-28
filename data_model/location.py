@@ -4,23 +4,25 @@
 ##        Equipment - оборудование в классе
 ##             Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
+from typing import Union, Optional, List
 
 
 class Location:
-    def __init__(self, type_of_location: str, location_id: int = None, num_of_class: int = None, profile: str = None,
-                 equipment: list = None, link: str = "Offline"):
+    def __init__(self, type_of_location: str, location_id: int = None, location_desc: str = None, profile: str = None,
+                 equipment: list = None, link: str = 'Offline', comment: str = ''):
         self.__location_id = location_id
-        self.__num_of_class = num_of_class
+        self.__location_desc = location_desc
         self.__profile = profile
         self.__equipment = equipment
         self.__link = link
         self.__type_of_location = type_of_location
+        self.__comment = comment
 
-    def get__location_id(self):
+    def get_location_id(self):
         return self.__location_id
 
-    def get_num_of_class(self):
-        return self.__num_of_class
+    def get_location_desc(self):
+        return self.__location_desc
 
     def get_profile(self):
         return self.__profile
@@ -34,20 +36,36 @@ class Location:
     def get_type_of_location(self):
         return self.__type_of_location
 
+    def get_comment(self):
+        return self.__comment
+
     @staticmethod
     def parse(file_location):
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
+        lines = [i.split(';') for i in lines]
         res = []
 
         for i in lines:
-            i = i.split(';')
-            location_type = i[0]
-            name = i[1]
-            link = i[2]
-            # Некуда класть comment (и name, если это не номер кабинета)
-            comment = i[3]
-            res.append(Location(location_type, link=link, num_of_class=name if name.isdigit() else None))
+            try:
+                location_type = i[0]
+                name = i[1]
+                link = i[2]
+                comment = i[3]
+                res.append((None, Location(location_type, link=link,
+                                           location_desc=name if name.isdigit() else None, comment=comment)))
+            except IndexError as e:
+                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                print(exception_text)
+                print(e)
+                res.append((exception_text, None))
+            except Exception as e:
+                exception_text = f"Неизвестная ошибка в Location.parse():\n{e}"
+                print(exception_text)
+                res.append((exception_text, None))
 
         return res
 
+    def __str__(self):
+        return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
+               f'link={self.__link}, comment={self.__comment})'
