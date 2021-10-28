@@ -20,23 +20,23 @@ class LessonRow:
     def count_studying_hours(self):
         pass
 
-    def get_group_id(self):
+    def get_group_id(self) -> int:
         return self.__group_id
 
-    def get_subject_id(self):
+    def get_subject_id(self) -> int:
         return self.__subject_id
 
-    def get_room_id(self):
+    def get_room_id(self) -> int:
         return self.__room_id
 
-    def get_start_time(self):
+    def get_start_time(self) -> int:
         return self.__start_time
 
-    def get_end_time(self):
+    def get_end_time(self) -> int:
         return self.__end_time
 
-    def get_timetable_id(self):
+    def get_timetable_id(self) -> int:
         return self.__timetable_id
 
-    def get_lesson_row_id(self):
+    def get_lesson_row_id(self) -> int:
         return self.__lesson_row_id

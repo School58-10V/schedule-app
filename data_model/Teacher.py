@@ -6,7 +6,8 @@
 # lesson - сделайте m2m связь, т.к. не знаю, не умею
 
 class Teacher:
-    def __init__(self, fio, teacher_id, subject, office_id=None, bio=None, contacts=None):
+    def __init__(self, fio: str, teacher_id: int, subject: str, office_id: str = None, bio: str = None,
+                 contacts: str = None):
         self.__fio = fio
         self.__teacher_id = teacher_id
         self.__bio = bio
