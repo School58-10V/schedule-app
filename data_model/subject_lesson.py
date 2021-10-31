@@ -41,7 +41,7 @@ class Subject:
                 print(exception_text, f'Ошибка {error}\n', sep='\n')
                 res.append((exception_text, None))
             except Exception as error:
-                exception_text = f"Неизвестная ошибка в Location.parse():\n{error}"
+                exception_text = f"Неизвестная ошибка в Subject.parse():\n{error}"
                 print(exception_text + '\n')
                 res.append((exception_text, None))
         return res
