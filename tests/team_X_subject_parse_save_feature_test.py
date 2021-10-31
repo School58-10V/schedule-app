@@ -15,9 +15,9 @@ subject3 = subjects[0][1]
 print(subject3)
 subject3.save()
 
-timetable1 = TimeTable()
+timetable1 = TimeTable(2021, 1897)
 timetable = timetable1.parse("../data_examples/timetable_test.csv")
-print(timetable1)
+print(timetable1, "\n")
 print(timetable)
 timetable1.save()
 
