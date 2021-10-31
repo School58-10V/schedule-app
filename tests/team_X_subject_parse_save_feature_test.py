@@ -1,5 +1,6 @@
 from data_model.subject_lesson import Subject
 from data_model.timetable import TimeTable
+from data_model.teachers_on_lesson_rows import TeachersOnLessonRows
 
 
 subject1 = Subject('Art', 1)
@@ -19,3 +20,9 @@ timetable = timetable1.parse("../data_examples/timetable_test.csv")
 print(timetable1)
 print(timetable)
 timetable1.save()
+
+teacher = TeachersOnLessonRows(1, 2)
+teacher.save()
+teachers = teacher.parse('../data_examples/teachers_on_lesson_rows_test.csv')
+print(teacher)
+print(teachers)
