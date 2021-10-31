@@ -1,4 +1,5 @@
 from data_model.subject_lesson import Subject
+from data_model.timetable import TimeTable
 
 
 subject1 = Subject('Art', 1)
@@ -12,3 +13,9 @@ subject2.save()
 subject3 = subjects[0][1]
 print(subject3)
 subject3.save()
+
+timetable1 = TimeTable()
+timetable = timetable1.parse("../data_examples/timetable_test.csv")
+print(timetable1)
+print(timetable)
+timetable1.save()
