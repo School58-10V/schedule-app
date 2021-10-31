@@ -1,11 +1,10 @@
 from __future__ import annotations
-from datetime import timedelta
 import json
 from typing import Optional, List
 
 
 class TimeTable:
-    def __init__(self, year: timedelta = None, timetable_id: int = None):
+    def __init__(self, year: int = None, timetable_id: int = None):
         # Год - период времени
         self.__table_id = timetable_id
         self.__year = year
@@ -13,7 +12,7 @@ class TimeTable:
     def get_table_id(self) -> int:
         return self.__table_id
 
-    def get_year(self) -> timedelta:
+    def get_year(self) -> int:
         return self.__year
 
     def __str__(self):
@@ -36,9 +35,9 @@ class TimeTable:
 
         for elem in lines:
             try:
-                year = elem[0]
-                tableid = int(elem[1])
-                res.append((None, TimeTable(year=year, timetable_id=tableid)))
+                year = int(elem[0])
+                table_id = int(elem[1])
+                res.append((None, TimeTable(year=year, timetable_id=table_id)))
             except IndexError as error:
                 exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]"
                 print(exception_text, f'Ошибка {error}\n', sep='\n')
