@@ -4,8 +4,11 @@ from typing import Optional, List
 
 
 class TimeTable:
+    """
+        Table_id - ID данного расписания
+        Year - учебный год данного расписания
+    """
     def __init__(self, year: int = None, timetable_id: int = None):
-        # Год - период времени
         self.__table_id = timetable_id
         self.__year = year
 
