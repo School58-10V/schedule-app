@@ -18,3 +18,39 @@ class StudentInGroup:
 
     def get_student_group_id(self):
         return self.__student_group_id
+
+        @staticmethod
+    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
+        f = open(file_location, encoding='utf-8')
+        lines = f.read().split('\n')[1:]
+        lines = [i.split(';') for i in lines]
+        res = []
+
+        for i in lines:
+            try:
+                ----------
+                res.append((None, StudentInGroup(---------)))
+            except IndexError as e:
+                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                print(exception_text)
+                print(e)
+                res.append((exception_text, None))
+            except Exception as e:
+                exception_text = f"Неизвестная ошибка в Student_in_group.parse():\n{e}"
+                print(exception_text)
+                res.append((exception_text, None))
+
+        return res
+
+    def __str__(self):
+        return f''
+
+    def __serialize_to_json(self):
+        return json.dumps({---------}, ensure_ascii=False)
+
+    def save(self, file_way="./db/locations.json"):
+        with open(file_way, mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json())
+
+
+#  Илья
