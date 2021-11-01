@@ -1,6 +1,7 @@
 import json
 from datetime import date
 from typing import List, Optional
+from __future__ import annotations
 
 
 class NoLearningPeriod:
