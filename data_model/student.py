@@ -1,14 +1,8 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
+from datetime import date
 
 from typing import Optional, List
-
-
-# full name - полное имя студента
-# date_of_birth - дата рождения ученика
-# student_id - id студента
-# contacts - контакты родителей ученика
-# bio - биография студента
 
 
 class Student:
@@ -22,7 +16,7 @@ class Student:
     """
 
     def __init__(
-            self, full_name: str, date_of_birth: str, student_id: int = None,
+            self, full_name: str, date_of_birth: date, student_id: int = None,
             contacts: str = None, bio: str = None
     ):
         self.__full_name = full_name
@@ -31,19 +25,19 @@ class Student:
         self.__contacts = contacts
         self.__bio = bio
 
-    def get_full_name(self):
+    def get_full_name(self) -> str:
         return self.__full_name
 
-    def get_date_of_birth(self):
+    def get_date_of_birth(self) -> date:
         return self.__date_of_birth
 
-    def get_id(self):
+    def get_id(self) -> Optional[int]:
         return self.__student_id
 
-    def get_contacts(self):
+    def get_contacts(self) -> Optional[str]:
         return self.__contacts
 
-    def get_bio(self):
+    def get_bio(self) -> Optional[str]:
         return self.__bio
 
     @staticmethod
@@ -55,14 +49,14 @@ class Student:
             for i in lines:
                 try:
                     full_name = i[0]
-                    date_of_birth = i[1]
-                    contacts = i[2]
+                    date_of_birth = date(i[1])
+                    contacts = str(i[2])
                     bio = i[3]
 
                     res.append(
-                        (None, Lesson(full_name, date_of_birth, contacts, bio)))
+                        (None, Student(full_name, date_of_birth, contacts, bio)))
                 except IndexError as e:
-                    exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                    exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
                     print(e)
                     res.append((exception_text, None))

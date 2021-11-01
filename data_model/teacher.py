@@ -1,10 +1,3 @@
-# fio - ФИО, что впринципе логично
-# teacher_id - ид учителя
-# bio - инфа о учителе
-# contacts - Контакты учителя
-# office_id - закреплённый кабинет
-# lesson - сделайте m2m связь, т.к. не знаю, не умею
-
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
 
@@ -12,6 +5,15 @@ from typing import Optional, List
 
 
 class Teacher:
+    """
+        Класс учителя.
+        fio - ФИО
+        teacher_id - ид учителя
+        bio - инфа о учителе
+        contacts - Контакты учителя
+        office_id - закреплённый кабинет
+        subject - его предмет.
+    """
     def __init__(self, fio, teacher_id, subject, office_id=None, bio=None, contacts=None):
         self.__fio = fio
         self.__teacher_id = teacher_id
@@ -20,26 +22,26 @@ class Teacher:
         self.__office_id = office_id
         self.__subject = subject
 
-    def get_fio(self):
+    def get_fio(self) -> str:
         return self.__fio
 
-    def get_teacher_id(self):
+    def get_teacher_id(self) -> int:
         return self.__teacher_id
 
-    def get_bio(self):
+    def get_bio(self) -> Optional[str]:
         return self.__bio
 
-    def get_contacts(self):
+    def get_contacts(self) -> Optional[str]:
         return self.__contacts
 
-    def get_subject(self):
+    def get_subject(self) -> str:
         return self.__subject
 
-    def get_office_id(self):
+    def get_office_id(self) -> Optional[int]:
         return self.__office_id
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
+    def parse(file_location) -> List[(Optional[str], Optional[Teacher])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -57,7 +59,7 @@ class Teacher:
                 res.append(
                     (None, Teacher(fio, teacher_id, subject, office_id, bio, contacts)))
             except IndexError as e:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)
                 print(e)
                 res.append((exception_text, None))

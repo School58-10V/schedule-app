@@ -1,6 +1,4 @@
-# student_id - айди учиника
-# group_id - айди группы
-# student_group_id - айди группы учиников
+
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
 
@@ -11,6 +9,9 @@ class StudentInGroup:
     """
         Класс ученика в группе. Используется для m2m отношения между
         Group и Student
+        student_id - айди учиника
+        group_id - айди группы
+        student_group_id - айди группы учeников
     """
 
     def __init__(self, student_id: int, group_id: int, student_group_id: int = None):
@@ -36,12 +37,12 @@ class StudentInGroup:
 
         for i in lines:
             try:
-                student_id = i[0]
-                group_id = i[1]
-                student_group_id = i[2]
+                student_id = int(i[0])
+                group_id = int(i[1])
+                student_group_id = int(i[2])
                 res.append((None, StudentInGroup(student_id, group_id, student_group_id)))
             except IndexError as e:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)
                 print(e)
                 res.append((exception_text, None))
