@@ -39,7 +39,7 @@ class Teacher:
         return self.__office_id
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
+    def parse(file_location) -> List[(Optional[str], Optional[Teacher])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
