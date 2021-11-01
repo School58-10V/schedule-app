@@ -58,9 +58,9 @@ class TimeTable:
                 exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]"
                 print(exception_text, f'Ошибка {error}\n', sep='\n')
                 res.append((exception_text, None))
-            except TypeError as error:
-                exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]"
-                print(exception_text, f'Ошибка {error}\n', sep='\n')
+            except ValueError as error:
+                exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]:"
+                print(exception_text, f'ValueError: {error}\n', sep='\n')
                 res.append((exception_text, None))
             except Exception as error:
                 exception_text = f"Неизвестная ошибка в TimeTable.parse():\n{error}"
