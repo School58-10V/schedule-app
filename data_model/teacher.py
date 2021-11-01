@@ -53,8 +53,8 @@ class Teacher:
             data_file.write(self.__serialize_to_json())
 
     def __str__(self):
-        return f'Teacher(fio={self.__fio}, teacher_id={self.__teacher_id}, ' \
-               f'bio={self.__bio}, contacts={self.__contacts}), subject={self.__subject}), office_id={self.__office_id})'
+        return f'Teacher(fio={self.__fio}, teacher_id={self.__teacher_id}, bio={self.__bio} ' \
+               f'contacts={self.__contacts}), subject={self.__subject}), office_id={self.__office_id})'
 
     @staticmethod
     def parse(file_location) -> List[(Optional[str], Optional[Teacher])]:
