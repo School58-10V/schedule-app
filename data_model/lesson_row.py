@@ -49,34 +49,23 @@ class LessonRow:
     def get_lesson_row_id(self) -> int:
         return self.__lesson_row_id
 
-    def __serialize_to_json(self, records: list) -> str:
-        # Добавляем новый объект в список
-        records.append({"count_studying_hours": self.__count_studying_hours,
+    def __serialize_to_json(self):
+        return json.dumps({"count_studying_hours": self.__count_studying_hours,
                            "group_id": self.__group_id,
                            "subject_id": self.__subject_id,
                            "room_id": self.__room_id,
                            "start_time": self.__start_time,
                            "end_time": self.__end_time,
                            "timetable_id": self.__timetable_id,
-                           "lesson_row_id": self.__lesson_row_id})
-        return json.dumps(records, ensure_ascii=False, indent=4)
+                           "lesson_row_id": self.__lesson_row_id}, ensure_ascii=False)
 
-    def save(self, path: str = "db"):
-        try:
-            with open(f"./{path}/lesson_row.json", mode="r", encoding='utf-8') as data_file:
-                not_updated_data = json.loads(data_file.read())
-        except FileNotFoundError:
-            with open(f"./{path}/lesson_row.json", mode="r", encoding='utf-8'):
-                not_updated_data = []
-        except json.decoder.JSONDecodeError:
-            with open(f"./{path}/lesson_row.json", mode="r", encoding='utf-8'):
-                not_updated_data = []
-        with open(f"./{path}/lesson_row.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(self.__serialize_to_json(not_updated_data))
+    def save(self, path="./db/lesson_row.json"):
+        with open(path, mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json())
 
     def __str__(self):
         return f'LessonRow(count_studying_hours={self.__count_studying_hours}, group_id={self.__group_id}, subject_id={self.__subject_id} ' \
-               f'room_id={self.__room_id}), start_time={self.__start_time}), end_time={self.__end_time}), timetable_id={self.__timetable_id}), ' \
+               f'room_id={self.__room_id}), start_timee={self.__start_time}), end_time={self.__end_time}), timetable_id={self.__timetable_id}), ' \
                f'lesson_row_id={self.__lesson_row_id}) '
 
     @staticmethod
