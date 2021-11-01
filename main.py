@@ -1,5 +1,6 @@
 from data_model.Teacher import Teacher
 from data_model.Student import Student
+from data_model.Student_in_group import StudentInGroup
 
 # учитель:
 res = Teacher.parse("test_file.csv")
@@ -13,3 +14,7 @@ print(*res)
 student1 = Student('Name Surname', '01.02.12', 3, None, None)
 student1.save()
 
+res = StudentInGroup.parse('test_file3.csv')
+print(*res)
+student_in_group1 = StudentInGroup(1, 101, 3)
+student_in_group1.save()
