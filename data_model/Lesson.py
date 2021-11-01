@@ -51,3 +51,52 @@ class Lesson:
 
     def get_notes(self):
         return self.__notes
+
+    @staticmethod
+    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
+        f = open(file_location, encoding='utf-8')
+        lines = f.read().split('\n')[1:]
+        lines = [i.split(';') for i in lines]
+        res = []
+
+        for i in lines:
+            try:
+                start_time = i[0]
+                end_time = i[1]
+                day = i[2]
+                teacher_id = i[3]
+                lesson_id = i[4]
+                group_id = i[5]
+                subject_id = i[6]
+                notes = i[7]
+                res.append((None, Lesson(start_time, end_time, day, teacher_id, group_id,
+                                         subject_id, notes, lesson_id)))
+            except IndexError as e:
+                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                print(exception_text)
+                print(e)
+                res.append((exception_text, None))
+            except Exception as e:
+                exception_text = f"Неизвестная ошибка в Lesson.parse():\n{e}"
+                print(exception_text)
+                res.append((exception_text, None))
+
+        return res
+
+    def __str__(self):
+        return f'Lesson(day = {self.__day}, start_time = {self.__start_time}, end_time = {self.__end_time}, notes =  {self.__notes}) '
+
+    def __serialize_to_json(self):
+        return json.dumps({"start_time": self.__start_time,
+                           "end_time": self.__end_time,
+                           "day": self.__day,
+                           "teacher_id": self.__teacher_id,
+                           "lesson_id": self.__lesson_id,
+                           "group_id": self.__group_id,
+                           "subject_id": self.__subject_id,
+                           "state": self.__state,
+                           "notes": self.__notes}, ensure_ascii=False)
+
+    def save(self, file_way="./db/locations.json"):
+        with open(file_way, mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json())
