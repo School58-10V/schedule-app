@@ -42,31 +42,29 @@ class Teacher:
 
     @staticmethod
     def parse(file_location) -> List[(Optional[str], Optional[Teacher])]:
-        f = open(file_location, encoding='utf-8')
-        lines = f.read().split('\n')[1:]
-        lines = [i.split(';') for i in lines]
-        res = []
+        with open(file_location, encoding='utf-8') as f:
+            lines = [i.split(';') for i in f.read().split('\n')[1:]]
+            res = []
 
-        for i in lines:
-            try:
-                fio = i[0]
-                teacher_id = i[1]
-                subject = i[2]
-                office_id = i[3]
-                bio = i[4]
-                contacts = i[5]
+            for i in lines:
+                try:
+                    fio = i[0]
+                    subject = i[1]
+                    office_id = i[2]
+                    bio = i[3]
+                    contacts = i[4]
 
-                res.append(
-                    (None, Teacher(fio, teacher_id, subject, office_id, bio, contacts)))
-            except IndexError as e:
-                exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
-                print(exception_text)
-                print(e)
-                res.append((exception_text, None))
-            except Exception as e:
-                exception_text = f"Неизвестная ошибка в Teacher.parse():\n{e}"
-                print(exception_text)
-                res.append((exception_text, None))
+                    res.append(
+                        (None, Teacher(fio, teacher_id, subject, office_id, bio, contacts)))
+                except IndexError as e:
+                    exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
+                    print(exception_text)
+                    print(e)
+                    res.append((exception_text, None))
+                except Exception as e:
+                    exception_text = f"Неизвестная ошибка в Teacher.parse():\n{e}"
+                    print(exception_text)
+                    res.append((exception_text, None))
 
         return res
 
@@ -81,6 +79,6 @@ class Teacher:
                            "office_id": self.__office_id,
                            "subject": self.__subject}, ensure_ascii=False)
 
-    def save(self, file_way="./db/teacher.json"):
-        with open(file_way, mode="w", encoding='utf-8') as data_file:
+    def save(self, output_path="./db"):
+        with open(output_path + "/teacher.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(self.__serialize_to_json())
