@@ -52,25 +52,24 @@ class Student:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
 
-        for i in lines:
-            try:
-                full_name = i[0]
-                date_of_birth = i[1]
-                contacts = i[2]
-                bio = i[3]
+            for i in lines:
+                try:
+                    full_name = i[0]
+                    date_of_birth = i[1]
+                    contacts = i[2]
+                    bio = i[3]
 
-                res.append(
-                    (None, Lesson(full_name, date_of_birth, contacts, bio)))
-            except IndexError as e:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
-                print(exception_text)
-                print(e)
-                res.append((exception_text, None))
-            except Exception as e:
-                exception_text = f"Неизвестная ошибка в Student.parse():\n{e}"
-                print(exception_text)
-                res.append((exception_text, None))
-
+                    res.append(
+                        (None, Lesson(full_name, date_of_birth, contacts, bio)))
+                except IndexError as e:
+                    exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                    print(exception_text)
+                    print(e)
+                    res.append((exception_text, None))
+                except Exception as e:
+                    exception_text = f"Неизвестная ошибка в Student.parse():\n{e}"
+                    print(exception_text)
+                    res.append((exception_text, None))
 
         return res
 
