@@ -1,4 +1,9 @@
-from typing import Optional
+from __future__ import annotations
+
+import json
+
+from typing import Optional, List
+
 
 # fio - ФИО, что впринципе логично
 # teacher_id - ид учителя
@@ -23,14 +28,57 @@ class Teacher:
     def get_teacher_id(self) -> int:
         return self.__teacher_id
 
+    def get_subject(self) -> str:
+        return self.__subject
+
+    def get_office_id(self) -> Optional[int]:
+        return self.__office_id
+
     def get_bio(self) -> Optional[str]:
         return self.__bio
 
     def get_contacts(self) -> Optional[str]:
         return self.__contacts
 
-    def get_subject(self) -> str:
-        return self.__subject
+    def __serialize_to_json(self):
+        return json.dumps({"fio": self.__fio,
+                           "teacher_id": self.__teacher_id,
+                           "bio": self.__bio,
+                           "contacts": self.__contacts,
+                           "subject": self.__subject,
+                           "office_id": self.__office_id}, ensure_ascii=False)
 
-    def get_office_id(self) -> Optional[int]:
-        return self.__office_id
+    def save(self, path="./db/teacher.json"):
+        with open(path, mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json())
+
+    def __str__(self):
+        return f'Teacher(fio={self.__fio}, teacher_id={self.__teacher_id}, ' \
+               f'bio={self.__bio}, contacts={self.__contacts}), subject={self.__subject}), office_id={self.__office_id})'
+
+    @staticmethod
+    def parse(file_location) -> List[(Optional[str], Optional[Teacher])]:
+        f = open(file_location, encoding='utf-8')
+        lines = f.read().split('\n')[1:]
+        lines = [i.split(';') for i in lines]
+        res = []
+        for i in lines:
+            try:
+                fio = i[0]
+                teacher_id = i[1]
+                bio = i[2]
+                contacts = i[3]
+                subject = i[4]
+                office_id = i[5]
+
+                res.append((None, Teacher(fio, int(teacher_id), bio, int(contacts), subject, office_id)))
+            except IndexError as e:
+                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                print(exception_text)
+                print(e)
+                res.append((exception_text, None))
+            except Exception as e:
+                exception_text = f"Неизвестная ошибка в Teacher.parse():\n{e}"
+                print(exception_text)
+                res.append((exception_text, None))
+        return res

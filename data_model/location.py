@@ -4,8 +4,11 @@
 ##        Equipment - оборудование в классе
 ##             Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
-import json
 from __future__ import annotations
+
+import json
+
+from typing import Optional, List
 
 
 class Location:
@@ -40,11 +43,11 @@ class Location:
 
     def __serialize_to_json(self):
         return json.dumps({"location_id": self.__location_id,
-                       "num_of_class": self.__num_of_class,
-                       "profile": self.__profile,
-                       "equipment": self.__equipment,
-                       "link": self.__link,
-                       "type_of_location": self.__type_of_location}, ensure_ascii=False)
+                           "num_of_class": self.__num_of_class,
+                           "profile": self.__profile,
+                           "equipment": self.__equipment,
+                           "link": self.__link,
+                           "type_of_location": self.__type_of_location}, ensure_ascii=False)
 
     def save(self, path="./db/locations.json"):
         with open(path, mode="w", encoding='utf-8') as data_file:
