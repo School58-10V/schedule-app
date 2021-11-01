@@ -1,3 +1,6 @@
+# student_id - айди учиника
+# group_id - айди группы
+# student_group_id - айди группы учиников
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
 
