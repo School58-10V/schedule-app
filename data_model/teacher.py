@@ -66,12 +66,12 @@ class Teacher:
             try:
                 fio = i[0]
                 teacher_id = i[1]
-                bio = i[2]
-                contacts = i[3]
-                subject = i[4]
-                office_id = i[5]
+                subject = i[2]
+                office_id = i[3]
+                bio = i[4]
+                contacts = i[5]
 
-                res.append((None, Teacher(fio, int(teacher_id), bio, int(contacts), subject, office_id)))
+                res.append((None, Teacher(fio, int(teacher_id), subject, int(office_id), bio, contacts)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
