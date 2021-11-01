@@ -14,6 +14,11 @@ from typing import Optional, List
 class Student:
     """
         Класс ученика.
+        full name - полное имя студента
+        date_of_birth - дата рождения ученика
+        student_id - id студента
+        contacts - контакты родителей ученика
+        bio - биография студента
     """
 
     def __init__(
@@ -42,22 +47,20 @@ class Student:
         return self.__bio
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
-        f = open(file_location, encoding='utf-8')
-        lines = f.read().split('\n')[1:]
-        lines = [i.split(';') for i in lines]
-        res = []
+    def parse(file_location) -> List[(Optional[str], Optional[Student])]:
+        with open(file_location, encoding='utf-8') as f:
+            lines = [i.split(';') for i in f.read().split('\n')[1:]]
+            res = []
 
         for i in lines:
             try:
                 full_name = i[0]
                 date_of_birth = i[1]
-                student_id = i[2]
-                contacts = i[3]
-                bio = i[4]
+                contacts = i[2]
+                bio = i[3]
 
                 res.append(
-                    (None, Lesson(full_name, date_of_birth, student_id, contacts, bio)))
+                    (None, Lesson(full_name, date_of_birth, contacts, bio)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
@@ -67,6 +70,7 @@ class Student:
                 exception_text = f"Неизвестная ошибка в Student.parse():\n{e}"
                 print(exception_text)
                 res.append((exception_text, None))
+
 
         return res
 
@@ -80,6 +84,6 @@ class Student:
                            "contacts": self.__contacts,
                            "bio": self.__bio}, ensure_ascii=False)
 
-    def save(self, file_way="./db/student.json"):
-        with open(file_way, mode="w", encoding='utf-8') as data_file:
+    def save(self, output_path="./db"):
+        with open(output_path + '/student.json', mode="w", encoding='utf-8') as data_file:
             data_file.write(self.__serialize_to_json())
