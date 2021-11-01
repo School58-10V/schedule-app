@@ -1,6 +1,6 @@
-from data_model.Teacher import Teacher
-from data_model.Student import Student
-from data_model.Student_in_group import StudentInGroup
+from data_model.teacher import Teacher
+from data_model.student import Student
+from data_model.student_in_group import StudentInGroup
 
 # учитель:
 res = Teacher.parse("test_file.csv")
