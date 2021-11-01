@@ -42,7 +42,7 @@ class Student:
         return self.__bio
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
+    def parse(file_location) -> List[(Optional[str], Optional[Student])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -57,7 +57,7 @@ class Student:
                 bio = i[4]
 
                 res.append(
-                    (None, Lesson(full_name, date_of_birth, student_id, contacts, bio)))
+                    (None, Student(full_name, date_of_birth, student_id, contacts, bio)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
