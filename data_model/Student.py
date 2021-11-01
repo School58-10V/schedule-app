@@ -27,3 +27,5 @@ class Student:
 
     def get_bio(self):
         return self.__bio
+
+# Марина

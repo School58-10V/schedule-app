@@ -18,3 +18,5 @@ class StudentInGroup:
 
     def get_student_group_id(self):
         return self.__student_group_id
+
+#  Илья
