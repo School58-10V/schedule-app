@@ -83,6 +83,6 @@ class LessonRow:
                            "timetable_id": self.__timetable_id,
                            "lesson_row_id": self.__lesson_row_id}, ensure_ascii=False)
 
-    def save(self, file_way="./db/locations.json"):
+    def save(self, file_way="./db/lessonRows.json"):
         with open(file_way, mode="w", encoding='utf-8') as data_file:
             data_file.write(self.__serialize_to_json())
