@@ -66,12 +66,12 @@ class Teacher:
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, contacts =  {self.__contacts}) '
 
     def __serialize_to_json(self):
-        return json.dumps({"start_time": self.__fio,
-                           "end_time": self.__teacher_id,
-                           "group_id": self.__bio,
-                           "subject_id": self.__contacts,
-                           "room_id": self.__office_id,
-                           "timetable_id": self.__subject}, ensure_ascii=False)
+        return json.dumps({"fio": self.__fio,
+                           "teacher_id": self.__teacher_id,
+                           "bio": self.__bio,
+                           "contacts": self.__contacts,
+                           "office_id": self.__office_id,
+                           "subject": self.__subject}, ensure_ascii=False)
 
     def save(self, file_way="./db/teacher.json"):
         with open(file_way, mode="w", encoding='utf-8') as data_file:
