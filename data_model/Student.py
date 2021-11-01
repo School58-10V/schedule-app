@@ -4,6 +4,13 @@ import json
 from typing import Optional, List
 
 
+# full name - полное имя студента
+# date_of_birth - дата рождения ученика
+# student_id - id студента
+# contacts - контакты родителей ученика
+# bio - биография студента
+
+
 class Student:
     """
         Класс ученика.
