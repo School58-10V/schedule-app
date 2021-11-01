@@ -56,10 +56,10 @@ class TimeTable:
                 res.append((None, TimeTable(year=year, timetable_id=table_id)))
             except IndexError as error:
                 exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]"
-                print(exception_text, f'Ошибка {error}\n', sep='\n')
+                print(exception_text, f'IndexError: {error}\n', sep='\n')
                 res.append((exception_text, None))
             except ValueError as error:
-                exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]:"
+                exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]"
                 print(exception_text, f'ValueError: {error}\n', sep='\n')
                 res.append((exception_text, None))
             except Exception as error:
