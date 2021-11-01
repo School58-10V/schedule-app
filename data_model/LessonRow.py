@@ -6,6 +6,12 @@
 # timetable_id год в который происходят уроки
 # lesson_row_id айди самого класса ряд уроков
 
+from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+import json
+
+from typing import Optional, List
+
+
 class LessonRow:
     def __init__(self, start_time: int, end_time: int, group_id: int, subject_id: int, room_id: int,
                  timetable_id: int, lesson_row_id: int = None):

@@ -1,3 +1,9 @@
+from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+import json
+
+from typing import Optional, List
+
+
 class Student:
     """
         Класс ученика.

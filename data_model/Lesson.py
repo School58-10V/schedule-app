@@ -8,6 +8,11 @@
 # state состояние
 # notes примечания
 
+from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+import json
+
+from typing import Optional, List
+
 
 class Lesson:
     def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,

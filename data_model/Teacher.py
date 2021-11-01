@@ -5,6 +5,12 @@
 # office_id - закреплённый кабинет
 # lesson - сделайте m2m связь, т.к. не знаю, не умею
 
+from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+import json
+
+from typing import Optional, List
+
+
 class Teacher:
     def __init__(self, fio, teacher_id, subject, office_id=None, bio=None, contacts=None):
         self.__fio = fio
