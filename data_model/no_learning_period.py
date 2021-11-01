@@ -6,7 +6,7 @@ from typing import List, Optional
 
 
 class NoLearningPeriod:
-    def __init__(self, timetable_id: int, start: date, stop: date,
+    def __init__(self, timetable_id: int, start: str, stop: str,
                  no_learning_period_id: int = None):
         # Для начала и конца каникул можно использовать только дату
         self.__no_learning_period_id = no_learning_period_id
@@ -17,10 +17,10 @@ class NoLearningPeriod:
     def get_no_learning_period_id(self) -> int:
         return self.__no_learning_period_id
 
-    def get_star_time(self) -> date:
+    def get_start_time(self) -> str:
         return self.__start_time
 
-    def get_stop_time(self) -> date:
+    def get_stop_time(self) -> str:
         return self.__stop_time
 
     def get_timetable_id(self) -> int:
@@ -28,8 +28,8 @@ class NoLearningPeriod:
 
     def __serialize_to_json(self):
         return json.dumps({"timetable_id": self.__timetable_id,
-                           "start": self.__start_time,
-                           "stop": self.__stop_time,
+                           "start_time": self.__start_time,
+                           "stop_time": self.__stop_time,
                            "no_learning_period_id": self.__no_learning_period_id}, ensure_ascii=False)
 
     def save(self, path="./db/no_learning_periods.json"):
@@ -37,8 +37,8 @@ class NoLearningPeriod:
             data_file.write(self.__serialize_to_json())
 
     def __str__(self):
-        return f'NoLearningPeriod(timetable_id={self.__timetable_id}, start={self.__start_time}, ' \
-               f'stop={self.__stop_time}, no_learning_period_id={self.__no_learning_period_id})'
+        return f'NoLearningPeriod(timetable_id={self.__timetable_id}, start_time={self.__start_time}, ' \
+               f'stop_time={self.__stop_time}, no_learning_period_id={self.__no_learning_period_id})'
 
     @staticmethod
     def parse(file_no_learning_period) -> List[(Optional[str], Optional[NoLearningPeriod])]:
@@ -49,10 +49,9 @@ class NoLearningPeriod:
         for i in lines:
             try:
                 timetable_id = i[0]
-                start = i[1]
-                stop = i[2]
-                no_learning_period_id = i[3]
-                res.append((None, NoLearningPeriod(timetable_id, start, stop, no_learning_period_id)))
+                start_time = i[1]
+                stop_time = i[2]
+                res.append((None, NoLearningPeriod(int(timetable_id), start_time, stop_time,)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
