@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import json
 from datetime import date
 from typing import List, Optional
-from __future__ import annotations
 
 
 class NoLearningPeriod:
@@ -27,9 +28,9 @@ class NoLearningPeriod:
 
     def __serialize_to_json(self):
         return json.dumps({"timetable_id": self.__timetable_id,
-                       "start": self.__start_time,
-                       "stop": self.__stop_time,
-                       "no_learning_period_id": self.__no_learning_period_id}, ensure_ascii=False)
+                           "start": self.__start_time,
+                           "stop": self.__stop_time,
+                           "no_learning_period_id": self.__no_learning_period_id}, ensure_ascii=False)
 
     def save(self, path="./db/no_learning_periods.json"):
         with open(path, mode="w", encoding='utf-8') as data_file:

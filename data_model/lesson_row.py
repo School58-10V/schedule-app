@@ -56,7 +56,8 @@ class LessonRow:
                            "room_id": self.__room_id,
                            "start_time": self.__start_time,
                            "end_time": self.__end_time,
-                           "timetable_id": self.__timetable_id}, ensure_ascii=False)
+                           "timetable_id": self.__timetable_id,
+                           "lesson_row_id": self.__lesson_row_id}, ensure_ascii=False)
 
     def save(self, path="./db/lesson_row.json"):
         with open(path, mode="w", encoding='utf-8') as data_file:
