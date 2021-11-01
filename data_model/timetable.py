@@ -22,25 +22,24 @@ class TimeTable:
         return f"Timetable(table_id={self.__table_id}, year={self.__year})"
 
     def __serialize_to_json(self, records: list) -> str:
-        # Добавляем новый объект в список
-        records.append({"subject_id": self.__table_id,
-                        "subject_name": self.__year})
-
+        records.append({"time_table_id": self.__table_id,
+                        "time_table_year": self.__year})
         return json.dumps(records, ensure_ascii=False, indent=4)
 
-    def save(self, folder: str = 'db'):
-        record = []
+    @classmethod
+    def __read_json_db(cls, db_path) -> list:
         try:
-            data_file = open(f"../{folder}/TimeTable.json", mode="r", encoding='utf-8')
-            record = json.loads(data_file.read())
-            data_file.close()
-            data_file = open(f"../{folder}/TimeTable.json", mode="w", encoding='utf-8')
-        except FileNotFoundError:
-            data_file = open(f"../{folder}/TimeTable.json", mode="w", encoding='utf-8')
-        except json.decoder.JSONDecodeError:
-            data_file = open(f"../{folder}/TimeTable.json", mode="w", encoding='utf-8')
-            record = []
-        data_file.write(self.__serialize_to_json(record))
+            with open(f"{db_path}/{cls.__name__}.json", mode="r", encoding='utf-8') as data_file:
+                record = json.loads(data_file.read())
+                return record
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            return []
+
+    def save(self, output_path: str = './db'):
+        current_records = self.__read_json_db(output_path)
+        target_json = self.__serialize_to_json(current_records)
+        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(target_json)
 
     @staticmethod
     def parse(file_timetable) -> List[(Optional[str], Optional[TimeTable])]:
@@ -55,12 +54,12 @@ class TimeTable:
                 table_id = int(elem[1])
                 res.append((None, TimeTable(year=year, timetable_id=table_id)))
             except IndexError as error:
-                exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]"
-                print(exception_text, f'IndexError: {error}\n', sep='\n')
+                exception_text = f'IndexError: {error}\n'
+                print(f"Строка {lines.index(elem) + 2} не добавилась в [res]", exception_text, sep="\n")
                 res.append((exception_text, None))
             except ValueError as error:
-                exception_text = f"Строка {lines.index(elem) + 2} не добавилась в [res]"
-                print(exception_text, f'ValueError: {error}\n', sep='\n')
+                exception_text = f'ValueError: {error}\n'
+                print(f"Строка {lines.index(elem) + 2} не добавилась в [res]", exception_text, sep="\n")
                 res.append((exception_text, None))
             except Exception as error:
                 exception_text = f"Неизвестная ошибка в TimeTable.parse():\n{error}"
