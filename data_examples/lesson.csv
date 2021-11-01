@@ -1,0 +1,4 @@
+start_time;end_time;day;teacher_id;group_id;subject_id;notes;lesson_id;state
+750;805;2;10;10;2;Урок может быть перенесен в другой класс;False
+690;745;2;10;9;2;Учитель может опоздать на урок;False
+

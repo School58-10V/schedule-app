@@ -93,9 +93,9 @@ class Lesson:
                     subject_id = i[5]
                     notes = i[6]
                     lesson_id = i[7]
-                    state = i[8]
-                    res.append((None, Lesson(start_time, end_time, day, teacher_id,
-                                             group_id, subject_id, notes, lesson_id, state)))
+                    state = i[8] == 'True'
+                    res.append((None, Lesson(int(start_time), int(end_time), int(day), int(teacher_id),
+                                             int(group_id), int(subject_id), notes, int(lesson_id), state)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"

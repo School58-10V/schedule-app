@@ -73,7 +73,7 @@ class Group:
             return res
 
     def save(self, output_path: str = "db"):
-        with open(f'{output_path}/group.json', mode="a", encoding='utf-8') as data_file:
+        with open(f'{output_path}/group.json', mode="a+", encoding='utf-8') as data_file:
             if data_file.read() != '':
                 data_file.write('\n')
             data_file.write(self.__serialize_to_json())
