@@ -47,30 +47,30 @@ class Group:
                           ensure_ascii=False)
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Group])]:
-        f = open(file_location, encoding='utf-8')
-        lines = f.read().split('\n')[1:]
-        lines = [i.split(';') for i in lines]
-        res = []
-        for i in lines:
-            try:
-                teacher_id = i[0]
-                class_letter = i[1]
-                grade = i[2]
-                profile_name = i[3]
-                group_id = i[4]
-                res.append((None, Group(teacher_id, class_letter, grade, profile_name, group_id)))
+    def parse(file_location: str) -> List[(Optional[str], Optional[Group])]:
+        with open(file_location, encoding='utf-8') as file:
+            lines = file.read().split('\n')[1:]
+            lines = [i.split(';') for i in lines]
+            res = []
+            for i in lines:
+                try:
+                    teacher_id = i[0]
+                    class_letter = i[1]
+                    grade = i[2]
+                    profile_name = i[3]
+                    group_id = i[4]
+                    res.append((None, Group(teacher_id, class_letter, grade, profile_name, group_id)))
 
-            except IndexError as e:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
-                print(exception_text)
-                print(e)
-                res.append((exception_text, None))
-            except Exception as e:
-                exception_text = f"Неизвестная ошибка в Group.parse():\n{e}"
-                print(exception_text)
-                res.append((exception_text, None))
-        return res
+                except IndexError as e:
+                    exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                    print(exception_text)
+                    print(e)
+                    res.append((exception_text, None))
+                except Exception as e:
+                    exception_text = f"Неизвестная ошибка в Group.parse():\n{e}"
+                    print(exception_text)
+                    res.append((exception_text, None))
+            return res
 
     def save(self, output_path: str = "db"):
         with open(f'{output_path}/group.json', mode="a", encoding='utf-8') as data_file:
