@@ -63,7 +63,7 @@ class Teacher:
         return res
 
     def __str__(self):
-        return f'Lesson(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, contacts =  {self.__contacts}) '
+        return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, contacts =  {self.__contacts}) '
 
     def __serialize_to_json(self):
         return json.dumps({"start_time": self.__fio,
