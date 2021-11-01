@@ -1,7 +1,7 @@
+from __future__ import annotations
 import json
 from datetime import date
 from typing import List, Optional
-from __future__ import annotations
 
 
 class NoLearningPeriod:
@@ -25,15 +25,26 @@ class NoLearningPeriod:
     def get_timetable_id(self) -> int:
         return self.__timetable_id
 
-    def __serialize_to_json(self):
-        return json.dumps({"timetable_id": self.__timetable_id,
+    def __serialize_to_json(self, records: list) -> str:
+        # Добавляем новый объект в список
+        records.append({"timetable_id": self.__timetable_id,
                        "start": self.__start_time,
                        "stop": self.__stop_time,
-                       "no_learning_period_id": self.__no_learning_period_id}, ensure_ascii=False)
+                       "no_learning_period_id": self.__no_learning_period_id})
+        return json.dumps(records, ensure_ascii=False, indent=4)
 
-    def save(self, path="./db/no_learning_periods.json"):
-        with open(path, mode="w", encoding='utf-8') as data_file:
-            data_file.write(self.__serialize_to_json())
+    def save(self, path: str = "db"):
+        try:
+            with open(f"./{path}/no_learning_periods.json", mode="r", encoding='utf-8') as data_file:
+                not_updated_data = json.loads(data_file.read())
+        except FileNotFoundError:
+            with open(f"./{path}/no_learning_periods.json", mode="r", encoding='utf-8'):
+                not_updated_data = []
+        except json.decoder.JSONDecodeError:
+            with open(f"./{path}/lesson_row.json", mode="r", encoding='utf-8'):
+                not_updated_data = []
+        with open(f"./{path}/no_learning_periods.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json(not_updated_data))
 
     def __str__(self):
         return f'NoLearningPeriod(timetable_id={self.__timetable_id}, start={self.__start_time}, ' \

@@ -1,14 +1,12 @@
+from __future__ import annotations
+import json
+from typing import Optional, List
 ##               ID - Идентификационный номер места проведения урока
 ##     num_of_class - номер класса, в котором проходит занятие
 ##          Profile - профиль класса(например "хим.", если кабинет оборудован для уроков химии)
 ##        Equipment - оборудование в классе
 ##             Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
 ## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
-from __future__ import annotations
-
-import json
-
-from typing import Optional, List
 
 
 class Location:
@@ -41,17 +39,28 @@ class Location:
     def get_type_of_location(self):
         return self.__type_of_location
 
-    def __serialize_to_json(self):
-        return json.dumps({"location_id": self.__location_id,
+    def __serialize_to_json(self, records: list) -> str:
+        # Добавляем новый объект в список
+        records.append({"location_id": self.__location_id,
                            "num_of_class": self.__num_of_class,
                            "profile": self.__profile,
                            "equipment": self.__equipment,
                            "link": self.__link,
-                           "type_of_location": self.__type_of_location}, ensure_ascii=False)
+                           "type_of_location": self.__type_of_location})
+        return json.dumps(records, ensure_ascii=False, indent=4)
 
-    def save(self, path="./db/locations.json"):
-        with open(path, mode="w", encoding='utf-8') as data_file:
-            data_file.write(self.__serialize_to_json())
+    def save(self, path: str = "db"):
+        try:
+            with open(f"./{path}/locations.json", mode="r", encoding='utf-8') as data_file:
+                not_updated_data = json.loads(data_file.read())
+        except FileNotFoundError:
+            with open(f"./{path}/locations.json", mode="w", encoding='utf-8'):
+                not_updated_data = []
+        except json.decoder.JSONDecodeError:
+            with open(f"./{path}/lesson_row.json", mode="w", encoding='utf-8'):
+                not_updated_data = []
+        with open(f"./{path}/locations.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json(not_updated_data))
 
     def __str__(self):
         return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
