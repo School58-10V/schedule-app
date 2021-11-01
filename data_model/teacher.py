@@ -55,7 +55,7 @@ class Teacher:
                     contacts = i[4]
 
                     res.append(
-                        (None, Teacher(fio, teacher_id, subject, office_id, bio, contacts)))
+                        (None, Teacher(fio, subject, office_id, bio, contacts)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
