@@ -17,10 +17,10 @@ class Teacher:
                  contacts: str = None):
         self.__fio = fio
         self.__teacher_id = teacher_id
+        self.__subject = subject
+        self.__office_id = office_id
         self.__bio = bio
         self.__contacts = contacts
-        self.__office_id = office_id
-        self.__subject = subject
 
     def get_fio(self) -> str:
         return self.__fio
