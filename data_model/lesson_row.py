@@ -65,7 +65,7 @@ class LessonRow:
 
     def __str__(self):
         return f'LessonRow(count_studying_hours={self.__count_studying_hours}, group_id={self.__group_id}, subject_id={self.__subject_id} ' \
-               f'room_id={self.__room_id}), start_time={self.__start_time}, end_time={self.__end_time}), timetable_id={self.__timetable_id}), '
+               f'room_id={self.__room_id}), start_time={self.__start_time}, end_time={self.__end_time}), timetable_id={self.__timetable_id}), lesson_row_id={self.__lesson_row_id}) '
 
     @staticmethod
     def parse(file_location) -> List[(Optional[str], Optional[LessonRow])]:
