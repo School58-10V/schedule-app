@@ -54,6 +54,7 @@ class LessonRow:
                            "group_id": self.__group_id,
                            "subject_id": self.__subject_id,
                            "room_id": self.__room_id,
+                           "start_time": self.__start_time,
                            "end_time": self.__end_time,
                            "timetable_id": self.__timetable_id,
                            "lesson_row_id": self.__lesson_row_id}, ensure_ascii=False)
@@ -64,7 +65,7 @@ class LessonRow:
 
     def __str__(self):
         return f'LessonRow(count_studying_hours={self.__count_studying_hours}, group_id={self.__group_id}, subject_id={self.__subject_id} ' \
-               f'room_id={self.__room_id}), end_time={self.__end_time}), timetable_id={self.__timetable_id}), ' \
+               f'room_id={self.__room_id}), start_timee={self.__start_time}), end_time={self.__end_time}), timetable_id={self.__timetable_id}), ' \
                f'lesson_row_id={self.__lesson_row_id}) '
 
     @staticmethod
@@ -79,11 +80,12 @@ class LessonRow:
                 group_id = i[1]
                 subject_id = i[2]
                 room_id = i[3]
-                end_time = i[4]
-                timetable_id = i[5]
-                lesson_row_id = i[6]
+                start_time = i[4]
+                end_time = i[5]
+                timetable_id = i[6]
+                lesson_row_id = i[7]
 
-                res.append((None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id), int(room_id), int(end_time), int(timetable_id),
+                res.append((None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id), int(room_id), int(start_time), int(end_time), int(timetable_id),
                                             int(lesson_row_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
