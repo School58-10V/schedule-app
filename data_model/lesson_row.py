@@ -91,7 +91,7 @@ class LessonRow:
                 print(e)
                 res.append((exception_text, None))
             except Exception as e:
-                exception_text = f"Неизвестная ошибка в Teacher.parse():\n{e}"
+                exception_text = f"Неизвестная ошибка в LessonRow.parse():\n{e}"
                 print(exception_text)
                 res.append((exception_text, None))
         return res
