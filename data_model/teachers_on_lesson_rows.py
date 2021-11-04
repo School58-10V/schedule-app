@@ -41,7 +41,7 @@ class TeachersOnLessonRows:
     @classmethod
     def __read_json_db(cls, db_path) -> list:
         try:
-            with open(f"{db_path}/teachers_on_lesson_rows.json",
+            with open(f"{db_path}/{cls.__name__}.json",
                       mode="r", encoding='utf-8') as data_file:
                 record = json.loads(data_file.read())
                 return record

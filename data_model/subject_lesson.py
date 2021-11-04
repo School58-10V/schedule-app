@@ -56,7 +56,7 @@ class Subject:
     @classmethod
     def __read_json_db(cls, db_path) -> list:
         try:
-            with open(f"{db_path}/{type(cls).__name__}.json",
+            with open(f"{db_path}/{cls.__name__}.json",
                       mode="r", encoding='utf-8') as data_file:
                 record = json.loads(data_file.read())
                 return record
