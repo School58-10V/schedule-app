@@ -21,10 +21,10 @@ class TimeTable:
     def __str__(self):
         return f"Timetable(table_id={self.__table_id}, year={self.__year})"
 
-    def __serialize_to_json(self, records: list) -> str:
+    def __serialize_to_json(self, records: list, indent: int = None) -> str:
         records.append({"time_table_id": self.__table_id,
                         "time_table_year": self.__year})
-        return json.dumps(records, ensure_ascii=False, indent=4)
+        return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @classmethod
     def __read_json_db(cls, db_path) -> list:
@@ -51,15 +51,11 @@ class TimeTable:
         for elem in lines:
             try:
                 year = int(elem[0])
-                table_id = int(elem[1])
-                res.append((None, TimeTable(year=year, timetable_id=table_id)))
-            except IndexError as error:
-                exception_text = f'IndexError: {error}\n'
-                print(f"Строка {lines.index(elem) + 2} не добавилась в [res]", exception_text, sep="\n")
-                res.append((exception_text, None))
-            except ValueError as error:
-                exception_text = f'ValueError: {error}\n'
-                print(f"Строка {lines.index(elem) + 2} не добавилась в [res]", exception_text, sep="\n")
+                res.append((None, TimeTable(year=year)))
+            except (IndexError, ValueError) as error:
+                exception_text = f"Запись {lines.index(elem) + 1} строка {lines.index(elem) + 2} " \
+                                 f"не добавилась в [res].\nОшибка: {error}"
+                print(exception_text)
                 res.append((exception_text, None))
             except Exception as error:
                 exception_text = f"Неизвестная ошибка в TimeTable.parse():\n{error}"

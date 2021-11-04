@@ -30,31 +30,28 @@ class TeachersOnLessonRows:
                f' lesson_row_id: {self.__lesson_row_id},' \
                f' teacher_on_lesson_row_id: {self.__teacher_on_lesson_row_id})'
 
-    def __serialize_to_json(self, records: list) -> str:
-        # Добавляем новый объект в список
+    def __serialize_to_json(self, records: list, indent: int = None) -> str:
         records.append({"teacher_id": self.__teacher_id,
                         "lesson_row_id": self.__lesson_row_id,
                         "teacher_on_lesson_row_id": self.__teacher_on_lesson_row_id})
 
-        return json.dumps(records, ensure_ascii=False, indent=4)
+        return json.dumps(records, ensure_ascii=False, indent=indent)
 
-    def save(self, folder: str = 'db'):
-        record = []
+    @classmethod
+    def __read_json_db(cls, db_path) -> list:
         try:
-            # Проверка, существует ли файл и есть ли в нем запись
-            data_file = open(f"../{folder}/teachers_on_lesson_rows.json", mode="r", encoding='utf-8')
-            # Если да, то запоминаем и открываем файл на запись
-            record = json.loads(data_file.read())
-            data_file.close()
-            data_file = open(f"../{folder}/teachers_on_lesson_rows.json", mode="w", encoding='utf-8')
-        except FileNotFoundError:
-            data_file = open(f"../{folder}/teachers_on_lesson_rows.json", mode="w", encoding='utf-8')
-        except json.decoder.JSONDecodeError:
-            data_file = open(f"../{folder}/teachers_on_lesson_rows.json", mode="w", encoding='utf-8')
-            record = []
-        # Записываем в файл новый список с добавленым объектом
-        data_file.write(self.__serialize_to_json(record))
-        data_file.close()
+            with open(f"{db_path}/teachers_on_lesson_rows.json",
+                      mode="r", encoding='utf-8') as data_file:
+                record = json.loads(data_file.read())
+                return record
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            return []
+
+    def save(self, output_path: str = './db'):
+        current_records = self.__read_json_db(output_path)
+        target_json = self.__serialize_to_json(current_records)
+        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(target_json)
 
     @staticmethod
     def parse(file_location: str):
@@ -67,17 +64,12 @@ class TeachersOnLessonRows:
             try:
                 teacher_id = int(j[0])
                 lesson_row_id = int(j[1])
-                teacher_on_lesson_row_id = int(j[2])
+                # teacher_on_lesson_row_id = int(j[2])
 
-                res.append((None, TeachersOnLessonRows(teacher_id=teacher_id, lesson_row_id=lesson_row_id,
-                                                       teacher_on_lesson_row_id=teacher_on_lesson_row_id)))
-            except IndexError as error:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
-                print(exception_text, f'Ошибка {error}\n', sep='\n')
-                res.append((exception_text, None))
-            except TypeError as error:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
-                print(exception_text, f'Ошибка {error}\n', sep='\n')
+                res.append((None, TeachersOnLessonRows(teacher_id=teacher_id, lesson_row_id=lesson_row_id)))
+            except (IndexError, ValueError) as error:
+                exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
+                                 f"не добавилась в [res].\nОшибка: {error}"
                 res.append((exception_text, None))
             except Exception as error:
                 exception_text = f"Неизвестная ошибка в TeachersOnLessonRows.parse():\n{error}"

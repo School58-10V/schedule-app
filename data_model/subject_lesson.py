@@ -29,16 +29,11 @@ class Subject:
             j = i.split(';')
             try:
                 name_subject = j[0]
-                # Будет ли в файле csv id предмета?
-                subject_id = int(j[1])
-                res.append((None, Subject(name=name_subject, subject_id=subject_id)))
+                res.append((None, Subject(name=name_subject)))
             except IndexError as error:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
-                print(exception_text, f'Ошибка {error}\n', sep='\n')
-                res.append((exception_text, None))
-            except TypeError as error:
-                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
-                print(exception_text, f'Ошибка {error}\n', sep='\n')
+                exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
+                                 f"не добавилась в [res].\nОшибка: {error}"
+                print(exception_text)
                 res.append((exception_text, None))
             except Exception as error:
                 exception_text = f"Неизвестная ошибка в Subject.parse():\n{error}"
@@ -47,29 +42,27 @@ class Subject:
         return res
 
     def __str__(self):
-        return f'Subject(subject_name={self.__subject_name})'
+        return f'Subject(subject_name: {self.__subject_name})'
 
-    def __serialize_to_json(self, records: list) -> str:
+    def __serialize_to_json(self, records: list, indent: int = None) -> str:
         # Добавляем новый объект в список
         records.append({"subject_id": self.__subject_id,
                         "subject_name": self.__subject_name})
 
-        return json.dumps(records, ensure_ascii=False, indent=4)
+        return json.dumps(records, ensure_ascii=False, indent=indent)
 
-    def save(self, folder: str = 'db'):
-        record = []
+    @classmethod
+    def __read_json_db(cls, db_path) -> list:
         try:
-            # Проверка, существует ли файл и есть ли в нем запись
-            data_file = open(f"../{folder}/subject.json", mode="r", encoding='utf-8')
-            # Если да, то запоминаем и открываем файл на запись
-            record = json.loads(data_file.read())
-            data_file.close()
-            data_file = open(f"../{folder}/subject.json", mode="w", encoding='utf-8')
-        except FileNotFoundError:
-            data_file = open(f"../{folder}/subject.json", mode="w", encoding='utf-8')
-        except json.decoder.JSONDecodeError:
-            data_file = open(f"../{folder}/subject.json", mode="w", encoding='utf-8')
-            record = []
-        # Записываем в файл новый список с добавленым объектом
-        data_file.write(self.__serialize_to_json(record))
-        data_file.close()
+            with open(f"{db_path}/{type(cls).__name__}.json",
+                      mode="r", encoding='utf-8') as data_file:
+                record = json.loads(data_file.read())
+                return record
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            return []
+
+    def save(self, output_path: str = './db'):
+        current_records = self.__read_json_db(output_path)
+        target_json = self.__serialize_to_json(current_records)
+        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(target_json)
