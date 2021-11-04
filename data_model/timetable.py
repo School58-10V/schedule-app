@@ -42,7 +42,7 @@ class TimeTable:
             data_file.write(target_json)
 
     @staticmethod
-    def parse(file_timetable) -> List[(Optional[str], Optional[TimeTable])]:
+    def parse(file_timetable: str) -> List[(Optional[str], Optional[TimeTable])]:
         f = open(file_timetable, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
