@@ -1,5 +1,6 @@
+from __future__ import annotations
 import json
-from typing import Optional
+from typing import Optional, List
 
 
 class TeachersOnLessonRows:
@@ -54,7 +55,7 @@ class TeachersOnLessonRows:
             data_file.write(target_json)
 
     @staticmethod
-    def parse(file_location: str):
+    def parse(file_location: str) -> List[(Optional[str], Optional[TeachersOnLessonRows])]:
         file = open(file_location, 'r', encoding='utf-8')
         lines = file.read().split('\n')[1:]
         file.close()
