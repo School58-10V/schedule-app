@@ -1,4 +1,6 @@
+from __future__ import annotations
 import json
+from typing import Optional, List
 
 
 class Subject:
@@ -18,7 +20,7 @@ class Subject:
         return self.__subject_name
 
     @staticmethod
-    def parse(file_location: str):
+    def parse(file_location: str) -> List[(Optional[str], Optional[Subject])]:
         file = open(file_location, 'r', encoding='utf-8')
         lines = file.read().split('\n')[1:]
         file.close()
@@ -54,7 +56,7 @@ class Subject:
     @classmethod
     def __read_json_db(cls, db_path) -> list:
         try:
-            with open(f"{db_path}/{type(cls).__name__}.json",
+            with open(f"{db_path}/{cls.__name__}.json",
                       mode="r", encoding='utf-8') as data_file:
                 record = json.loads(data_file.read())
                 return record
