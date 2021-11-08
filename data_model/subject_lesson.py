@@ -9,6 +9,7 @@ class Subject:
         subject_id - Идентификационный номер предмета
 
     """
+
     def __init__(self, name: str = None, subject_id: int = None):
         self.__subject_name = name
         self.__subject_id = subject_id
@@ -46,22 +47,18 @@ class Subject:
     def __str__(self):
         return f'Subject(subject_name: {self.__subject_name})'
 
-
     def __dict__(self) -> dict:
         return {
             "subject_id": self.__subject_id,
             "subject_name": self.__subject_name
-        }
-
+            }
 
     def serialize_to_json(self, indent: int = None) -> str:
         return json.dumps(self.__dict__(self), ensure_ascii=False, indent=indent)
 
-
     @staticmethod
     def serialize_records_to_json(records: list, indent: int = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
-
 
     @classmethod
     def __read_json_db(cls, db_path) -> list:
@@ -75,7 +72,7 @@ class Subject:
 
     def save(self, output_path: str = './db'):
         current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__(self))
+        current_records.append(self.__dict__())
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)

@@ -31,11 +31,16 @@ class TeachersOnLessonRows:
                f' lesson_row_id: {self.__lesson_row_id},' \
                f' teacher_on_lesson_row_id: {self.__teacher_on_lesson_row_id})'
 
-    def __serialize_to_json(self, records: list, indent: int = None) -> str:
-        records.append({"teacher_id": self.__teacher_id,
-                        "lesson_row_id": self.__lesson_row_id,
-                        "teacher_on_lesson_row_id": self.__teacher_on_lesson_row_id})
+    def __serialize_to_json(self, indent: int = None) -> str:
+        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
+    def __dict__(self) -> dict:
+        return {"teacher_id": self.__teacher_id,
+                "lesson_row_id": self.__lesson_row_id,
+                "teacher_on_lesson_row_id": self.__teacher_on_lesson_row_id}
+
+    @staticmethod
+    def serialize_records_to_json(records: list, indent: int = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @classmethod
@@ -50,7 +55,8 @@ class TeachersOnLessonRows:
 
     def save(self, output_path: str = './db'):
         current_records = self.__read_json_db(output_path)
-        target_json = self.__serialize_to_json(current_records)
+        current_records.append(self.__dict__())
+        target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
 
