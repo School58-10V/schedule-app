@@ -54,7 +54,7 @@ class Subject:
             }
 
     def serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(self), ensure_ascii=False, indent=indent)
+        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @staticmethod
     def serialize_records_to_json(records: list, indent: int = None) -> str:
