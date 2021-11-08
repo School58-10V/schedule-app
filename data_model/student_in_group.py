@@ -9,7 +9,7 @@ class StudentInGroup:
     """
         Класс ученика в группе. Используется для m2m отношения между
         Group и Student
-        student_id - айди учиника
+        student_id - айди ученика
         group_id - айди группы
         student_group_id - айди группы учeников
     """
