@@ -65,17 +65,26 @@ class Lesson:
     def __str__(self):
         return f"Урок с id={self.__lesson_id}"
 
-    def __serialize_to_json(self) -> str:
-        return json.dumps({"start_time": self.__start_time,
-                           "end_time": self.__end_time,
-                           "day": self.__day,
-                           "teacher_id": self.__teacher_id,
-                           "group_id": self.__group_id,
-                           "subject_id": self.__subject_id,
-                           "notes": self.__notes,
-                           "lesson_id": self.__lesson_id,
-                           "state": self.__state},
-                          ensure_ascii=False)
+    @classmethod
+    def __read_json_db(cls, db_path) -> list:
+        try:
+            with open(f"{db_path}/{cls.__name__}.json", mode="r", encoding='utf-8') as data_file:
+                record = json.loads(data_file.read())
+                return record
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            return []
+
+    def __serialize_to_json(self, records: list, indent: Optional[int] = None) -> str:
+        records.append({"start_time": self.__start_time,
+                        "end_time": self.__end_time,
+                        "day": self.__day,
+                        "teacher_id": self.__teacher_id,
+                        "group_id": self.__group_id,
+                        "subject_id": self.__subject_id,
+                        "notes": self.__notes,
+                        "lesson_id": self.__lesson_id,
+                        "state": self.__state})
+        return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[Lesson])]:
@@ -108,8 +117,8 @@ class Lesson:
                     res.append((exception_text, None))
             return res
 
-    def save(self, output_path: str = "db") -> None:
-        with open(f'{output_path}/lesson.json', mode="a+", encoding='utf-8') as data_file:
-            if data_file.read() != '':
-                data_file.write('\n')
-            data_file.write(self.__serialize_to_json())
+    def save(self, output_path: str = './db'):
+        current_records = self.__read_json_db(output_path)
+        target_json = self.__serialize_to_json(current_records)
+        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(target_json)
