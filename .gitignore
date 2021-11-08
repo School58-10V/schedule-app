@@ -130,5 +130,6 @@ dmypy.json
 
 
 # own
-*.csv
+
 db
+.idea
