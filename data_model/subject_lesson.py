@@ -55,7 +55,7 @@ class Subject:
 
 
     def serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(self), ensure_ascii=False, indent=indent)
+        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
 
     @staticmethod
@@ -75,7 +75,7 @@ class Subject:
 
     def save(self, output_path: str = './db'):
         current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__(self))
+        current_records.append(self.__dict__())
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
