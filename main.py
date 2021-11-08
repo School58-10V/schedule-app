@@ -8,7 +8,7 @@ res = Teacher.parse("./data_examples/test_file.csv")
 print(*res)
 # не выдает ошибки, хотя поле с номером пропущено (на след раз почему-то выдал надо проверить 0_0)
 teacher1 = Teacher('Иван Петрович', 3, 227, None, None)
-# teacher1.save()
+teacher1.save()
 
 res = Student.parse('./data_examples/test_file2.csv')
 print(*res)
