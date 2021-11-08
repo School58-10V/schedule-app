@@ -1,3 +1,9 @@
+##          timetable_id - id расписания
+##                 start - начало каникул
+##                  stop - конец каникул
+## no_learning_period_id - id каникул
+
+
 import json
 from datetime import date
 from typing import List, Optional
@@ -69,10 +75,8 @@ class NoLearningPeriod:
         res = []
         for i in lines:
             try:
-                timetable_id = i[0]
                 start = i[1]
                 stop = i[2]
-                no_learning_period_id = i[3]
                 res.append((None, NoLearningPeriod(timetable_id, start, stop, no_learning_period_id)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
