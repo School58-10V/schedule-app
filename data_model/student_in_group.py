@@ -60,8 +60,8 @@ class StudentInGroup:
                 'group_id': self.__group_id,
                 'student_group_id': self.__student_group_id}
 
-    def __serialize_to_json(self):
-        return json.dumps(self.__dict__, ensure_ascii=False)
+    def serialize_to_json(self):
+        return json.dumps(self.__dict__(), ensure_ascii=False)
 
     @staticmethod
     def serialize_records_to_json(records: list, indent: int = None) -> str:
