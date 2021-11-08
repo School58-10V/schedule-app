@@ -70,14 +70,12 @@ class Teacher:
         return res
 
     def __dict__(self) -> dict:
-        return {
-            {"fio": self.__fio,
-             "teacher_id": self.__teacher_id,
-             "bio": self.__bio,
-             "contacts": self.__contacts,
-             "office_id": self.__office_id,
-             "subject": self.__subject}
-        }
+        return {"fio": self.__fio,
+                "teacher_id": self.__teacher_id,
+                "bio": self.__bio,
+                "contacts": self.__contacts,
+                "office_id": self.__office_id,
+                "subject": self.__subject}
 
     def __str__(self):
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, contacts =  {self.__contacts}) '
