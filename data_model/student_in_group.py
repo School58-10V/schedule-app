@@ -1,4 +1,3 @@
-
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
 
@@ -14,18 +13,18 @@ class StudentInGroup:
         student_group_id - айди группы учeников
     """
 
-    def __init__(self, student_id: int, group_id: int, student_group_id: int = None):
+    def __init__(self, student_id: int, group_id: int, student_group_id: Optional[int] = None):
         self.__student_id = student_id
         self.__group_id = group_id
         self.__student_group_id = student_group_id
 
-    def get_student_id(self):
+    def get_student_id(self) -> int:
         return self.__student_id
 
-    def get_group_id(self):
+    def get_group_id(self) -> int:
         return self.__group_id
 
-    def get_student_group_id(self):
+    def get_student_group_id(self) -> Optional[int]:
         return self.__student_group_id
 
     @staticmethod
@@ -64,11 +63,9 @@ class StudentInGroup:
     def __serialize_to_json(self):
         return json.dumps(self.__dict__, ensure_ascii=False)
 
-
     @staticmethod
     def serialize_records_to_json(records: list, indent: int = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
-
 
     @classmethod
     def __read_json_db(cls, db_path) -> list:
@@ -85,4 +82,4 @@ class StudentInGroup:
         current_records.append(self.__dict__(self))
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-        data_file.write(target_json)
+            data_file.write(target_json)
