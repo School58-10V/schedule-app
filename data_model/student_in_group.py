@@ -61,6 +61,6 @@ class StudentInGroup:
                            'group_id': self.__group_id,
                            'student_group_id': self.__student_group_id}, ensure_ascii=False)
 
-    def save(self, file_way="./db/student_in_group.json"):
-        with open(file_way, mode="w", encoding='utf-8') as data_file:
+    def save(self, file_way="./db"):
+        with open(file_way + "/student_in_group.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(self.__serialize_to_json())
