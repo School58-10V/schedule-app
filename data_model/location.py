@@ -1,31 +1,34 @@
-from __future__ import annotations
+from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
+
 from typing import Optional, List
-##               ID - Идентификационный номер места проведения урока
-##     num_of_class - номер класса, в котором проходит занятие
-##          Profile - профиль класса(например "хим.", если кабинет оборудован для уроков химии)
-##        Equipment - оборудование в классе
-##             Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
-## type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
 
 
 class Location:
-    def __init__(self, type_of_location: str, location_id: int = None, num_of_class: int = None, profile: str = None,
-                 equipment: list = None, comment: str = None, location_desc: str = None, link: str = "Offline"):
+    """
+                      ID - Идентификационный номер места проведения урока
+            num_of_class - номер класса, в котором проходит занятие
+                 Profile - профиль класса(например "хим.", если кабинет оборудован для уроков химии)
+               Equipment - оборудование в классе
+                    Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
+        type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
+    """
+
+    def __init__(self, type_of_location: str, location_id: int = None, location_desc: str = None, profile: str = None,
+                 equipment: list = None, link: str = 'Offline', comment: str = ''):
         self.__location_id = location_id
-        self.__num_of_class = num_of_class
+        self.__location_desc = location_desc
         self.__profile = profile
         self.__equipment = equipment
         self.__link = link
-        self.__comment = comment
-        self.__location_desc = location_desc
         self.__type_of_location = type_of_location
+        self.__comment = comment
 
-    def get__location_id(self):
+    def get_location_id(self):
         return self.__location_id
 
-    def get_num_of_class(self):
-        return self.__num_of_class
+    def get_location_desc(self):
+        return self.__location_desc
 
     def get_profile(self):
         return self.__profile
@@ -39,43 +42,8 @@ class Location:
     def get_type_of_location(self):
         return self.__type_of_location
 
-    def __dict__(self) -> dict:
-        return {
-            "location_id": self.__location_id,
-            "num_of_class": self.__num_of_class,
-            "profile": self.__profile,
-            "equipment": self.__equipment,
-            "link": self.__link,
-            "type_of_location": self.__type_of_location
-        }
-
-    def serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
-
-    def __str__(self):
-        return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
-               f'link={self.__link}, comment={self.__comment})'
+    def get_comment(self):
+        return self.__comment
 
     @staticmethod
     def parse(file_location) -> List[(Optional[str], Optional[Location])]:
@@ -83,6 +51,7 @@ class Location:
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
         res = []
+
         for i in lines:
             try:
                 location_type = i[0]
@@ -100,4 +69,21 @@ class Location:
                 exception_text = f"Неизвестная ошибка в Location.parse():\n{e}"
                 print(exception_text)
                 res.append((exception_text, None))
+
         return res
+
+    def __str__(self):
+        return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
+               f'link={self.__link}, comment={self.__comment})'
+
+    def __serialize_to_json(self):
+        return json.dumps({"location_id": self.__location_id,
+                           "num_of_class": self.__location_desc,
+                           "profile": self.__profile,
+                           "equipment": self.__equipment,
+                           "link": self.__link,
+                           "type_of_location": self.__type_of_location}, ensure_ascii=False)
+
+    def save(self):
+        with open("./db/locations.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(self.__serialize_to_json())
