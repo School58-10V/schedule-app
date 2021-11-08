@@ -39,29 +39,38 @@ class Location:
     def get_type_of_location(self):
         return self.__type_of_location
 
-    def __serialize_to_json(self, records: list) -> str:
-        # Добавляем новый объект в список
-        records.append({"location_id": self.__location_id,
-                           "num_of_class": self.__num_of_class,
-                           "profile": self.__profile,
-                           "equipment": self.__equipment,
-                           "link": self.__link,
-                           "type_of_location": self.__type_of_location})
-        return json.dumps(records, ensure_ascii=False, indent=4)
+    def __dict__(self) -> dict:
+        return {
+            "location_id": self.__location_id,
+            "num_of_class": self.__num_of_class,
+            "profile": self.__profile,
+            "equipment": self.__equipment,
+            "link": self.__link,
+            "type_of_location": self.__type_of_location
+        }
+
+    def serialize_to_json(self, indent: int = None) -> str:
+        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
+
+    @staticmethod
+    def serialize_records_to_json(records: list, indent: int = None) -> str:
+        return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @classmethod
-    def read_json_db(cls, db_path) -> list:
+    def __read_json_db(cls, db_path) -> list:
         try:
-            with open(f"{db_path}/{cls.name}.json", mode="r", encoding='utf-8') as data_file:
+            with open(f"{db_path}/{cls.__name__}.json",
+                      mode="r", encoding='utf-8') as data_file:
                 record = json.loads(data_file.read())
                 return record
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
 
     def save(self, output_path: str = './db'):
-        current_records = self.read_json_db(output_path)
-        target_json = self.serialize_to_json(current_records)
-        with open(f"{output_path}/{type(self).name}.json", mode="w", encoding='utf-8') as data_file:
+        current_records = self.__read_json_db(output_path)
+        current_records.append(self.__dict__())
+        target_json = self.__class__.serialize_records_to_json(current_records)
+        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
 
     def __str__(self):
