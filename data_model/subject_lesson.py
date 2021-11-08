@@ -46,12 +46,22 @@ class Subject:
     def __str__(self):
         return f'Subject(subject_name: {self.__subject_name})'
 
-    def __serialize_to_json(self, records: list, indent: int = None) -> str:
-        # Добавляем новый объект в список
-        records.append({"subject_id": self.__subject_id,
-                        "subject_name": self.__subject_name})
 
+    def __dict__(self) -> dict:
+        return {
+            "subject_id": self.__subject_id,
+            "subject_name": self.__subject_name
+        }
+
+
+    def serialize_to_json(self, indent: int = None) -> str:
+        return json.dumps(dict(self), ensure_ascii=False, indent=indent)
+
+
+    @staticmethod
+    def serialize_records_to_json(records: list, indent: int = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
+
 
     @classmethod
     def __read_json_db(cls, db_path) -> list:
@@ -65,6 +75,7 @@ class Subject:
 
     def save(self, output_path: str = './db'):
         current_records = self.__read_json_db(output_path)
-        target_json = self.__serialize_to_json(current_records)
+        current_records.append(dict(self))
+        target_json = Subject.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
