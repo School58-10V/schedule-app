@@ -80,7 +80,8 @@ class Teacher:
         }
 
     def __str__(self):
-        return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, contacts =  {self.__contacts}) '
+        return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
+               f'contacts =  {self.__contacts}) '
 
     def __serialize_to_json(self):
         return json.dumps(self.__dict__, ensure_ascii=False, indent=indent)
