@@ -49,18 +49,20 @@ class Location:
                            "type_of_location": self.__type_of_location})
         return json.dumps(records, ensure_ascii=False, indent=4)
 
-    def save(self, path: str = "db"):
+    @classmethod
+    def read_json_db(cls, db_path) -> list:
         try:
-            with open(f"./{path}/locations.json", mode="r", encoding='utf-8') as data_file:
-                not_updated_data = json.loads(data_file.read())
-        except FileNotFoundError:
-            with open(f"./{path}/locations.json", mode="w", encoding='utf-8'):
-                not_updated_data = []
-        except json.decoder.JSONDecodeError:
-            with open(f"./{path}/lesson_row.json", mode="w", encoding='utf-8'):
-                not_updated_data = []
-        with open(f"./{path}/locations.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(self.__serialize_to_json(not_updated_data))
+            with open(f"{db_path}/{cls.name}.json", mode="r", encoding='utf-8') as data_file:
+                record = json.loads(data_file.read())
+                return record
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            return []
+
+    def save(self, output_path: str = './db'):
+        current_records = self.read_json_db(output_path)
+        target_json = self.serialize_to_json(current_records)
+        with open(f"{output_path}/{type(self).name}.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(target_json)
 
     def __str__(self):
         return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
