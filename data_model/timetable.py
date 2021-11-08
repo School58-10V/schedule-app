@@ -10,8 +10,8 @@ class TimeTable:
     """
 
     def __init__(self, year: int = None, timetable_id: int = None):
-        self.__table_id = timetable_id
         self.__year = year
+        self.__table_id = timetable_id
 
     def get_table_id(self) -> int:
         return self.__table_id
