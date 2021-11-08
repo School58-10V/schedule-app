@@ -8,6 +8,7 @@ class TimeTable:
         Table_id - ID данного расписания
         Year - учебный год данного расписания
     """
+
     def __init__(self, year: int = None, timetable_id: int = None):
         self.__table_id = timetable_id
         self.__year = year
@@ -21,9 +22,15 @@ class TimeTable:
     def __str__(self):
         return f"Timetable(table_id={self.__table_id}, year={self.__year})"
 
-    def __serialize_to_json(self, records: list, indent: int = None) -> str:
-        records.append({"time_table_id": self.__table_id,
-                        "time_table_year": self.__year})
+    def __dict__(self) -> dict:
+        return {"time_table_id": self.__table_id,
+                "time_table_year": self.__year}
+
+    def serialize_to_json(self, indent: int = None) -> str:
+        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
+
+    @staticmethod
+    def __serialize_records_to_json(records: list, indent: int = None):
         return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @classmethod
@@ -37,7 +44,8 @@ class TimeTable:
 
     def save(self, output_path: str = './db'):
         current_records = self.__read_json_db(output_path)
-        target_json = self.__serialize_to_json(current_records)
+        current_records.append(self.__dict__())
+        target_json = self.__serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
 
