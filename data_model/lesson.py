@@ -62,8 +62,15 @@ class Lesson:
     def get_state(self) -> bool:
         return self.__state
 
-    def __str__(self):
-        return f"Урок с id={self.__lesson_id}"
+    def save(self, output_path: str = './db'):
+        current_records = self.__read_json_db(output_path)
+        current_records.append(self.__dict__())
+        target_json = self.__serialize_records_to_json(current_records)
+        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
+            data_file.write(target_json)
+
+    def serialize_to_json(self, indent: Optional[int] = None) -> str:
+        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @classmethod
     def __read_json_db(cls, db_path) -> list:
@@ -74,16 +81,8 @@ class Lesson:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
 
-    def __serialize_to_json(self, records: list, indent: Optional[int] = None) -> str:
-        records.append({"start_time": self.__start_time,
-                        "end_time": self.__end_time,
-                        "day": self.__day,
-                        "teacher_id": self.__teacher_id,
-                        "group_id": self.__group_id,
-                        "subject_id": self.__subject_id,
-                        "notes": self.__notes,
-                        "lesson_id": self.__lesson_id,
-                        "state": self.__state})
+    @staticmethod
+    def __serialize_records_to_json(records: list, indent: int = None):
         return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @staticmethod
@@ -117,8 +116,16 @@ class Lesson:
                     res.append((exception_text, None))
             return res
 
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        target_json = self.__serialize_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
+    def __str__(self):
+        return f"Урок с id={self.__lesson_id}"
+
+    def __dict__(self) -> dict:
+        return {"start_time": self.__start_time,
+                "end_time": self.__end_time,
+                "day": self.__day,
+                "teacher_id": self.__teacher_id,
+                "group_id": self.__group_id,
+                "subject_id": self.__subject_id,
+                "notes": self.__notes,
+                "lesson_id": self.__lesson_id,
+                "state": self.__state}
