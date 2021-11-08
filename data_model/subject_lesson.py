@@ -46,22 +46,18 @@ class Subject:
     def __str__(self):
         return f'Subject(subject_name: {self.__subject_name})'
 
-
     def __dict__(self) -> dict:
         return {
             "subject_id": self.__subject_id,
             "subject_name": self.__subject_name
         }
 
-
     def serialize_to_json(self, indent: int = None) -> str:
         return json.dumps(dict(self), ensure_ascii=False, indent=indent)
-
 
     @staticmethod
     def serialize_records_to_json(records: list, indent: int = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
-
 
     @classmethod
     def __read_json_db(cls, db_path) -> list:
