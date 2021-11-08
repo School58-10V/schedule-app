@@ -16,8 +16,8 @@ class Student:
     """
 
     def __init__(
-            self, full_name: str, date_of_birth: date, student_id: int = None,
-            contacts: str = None, bio: str = None
+            self, full_name: str, date_of_birth: date, student_id: Optional[int] = None,
+            contacts: Optional[str] = None, bio: Optional[str] = None
     ):
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
