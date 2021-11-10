@@ -107,9 +107,28 @@ class Teacher:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[Teacher]:
-
-        pass
+        current_records = self.__read_json_db(db_path)
+        lis_obdg = []
+        lines = [i.split(';') for i in current_records.read().split('\n')[1:]]
+        for i in lines:
+            fio = i[0]
+            subject = i[1]
+            office_id = i[2]
+            bio = i[3]
+            contacts = i[4]
+            lis_obdg.append(Teacher(fio, subject, office_id, bio, contacts))
+        return lis_obdg
 
     @classmethod
     def get_by_id(cls, id: int, db_path: str = "./db") -> Teacher:
-        pass
+        current_records = self.__read_json_db(db_path)
+        lis_obdg = []
+        lines = [i.split(';') for i in current_records.read().split('\n')[1:]]
+        for i in lines:
+            fio = i[0]
+            subject = i[1]
+            office_id = i[2]
+            bio = i[3]
+            contacts = i[4]
+            lis_obdg.append(Teacher(fio, subject, office_id, bio, contacts))
+        return lis_obdg
