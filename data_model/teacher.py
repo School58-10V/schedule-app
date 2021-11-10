@@ -104,3 +104,12 @@ class Teacher:
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> list[Teacher]:
+
+        pass
+
+    @classmethod
+    def get_by_id(cls, id: int, db_path: str = "./db") -> Teacher:
+        pass
