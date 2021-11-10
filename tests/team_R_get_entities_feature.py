@@ -1,10 +1,9 @@
 from data_model.teacher import Teacher
 
 
-# учитель:
-res = Teacher.get_all("./data_examples/test_file.csv")
-res = Teacher.get_by_id("./data_examples/test_file.csv", 123)
-print(*res)
-# не выдает ошибки, хотя поле с номером пропущено (на след раз почему-то выдал надо проверить 0_0)
-teacher1 = Teacher('Иван Петрович', 3, 227, None, None)
-teacher1.save()
+res = Teacher.get_all("../data_examples/teacher.json")
+print(res)
+for i in res:
+    print(i)
+res_id = Teacher.get_by_id(123, "../data_examples/teacher.json")
+print(res_id)

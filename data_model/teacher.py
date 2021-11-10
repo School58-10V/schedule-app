@@ -107,29 +107,31 @@ class Teacher:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[Teacher]:
-        current_records = self.__read_json_db(db_path)
-        lis_obdg = []
-        for i in current_records:
-            fio = i["fio"]
-            teacher_id = i["teacher_id"]
-            subject = i["subject"]
-            office_id = i["office_id"]
-            bio = i["bio"]
-            contacts = i["contacts"]
-            lis_obdg.append(Teacher(fio, teacher_id, subject, office_id, bio, contacts))
-        return lis_obdg
+        with open(db_path, "r", encoding='utf-8') as write_file:
+            current_records = json.load(write_file)
+            lis_obdg = []
+            for i in current_records:
+                print(i["fio"])
+                fio = i["fio"]
+                teacher_id = i["teacher_id"]
+                subject = i["subject"]
+                office_id = i["office_id"]
+                bio = i["bio"]
+                contacts = i["contacts"]
+                lis_obdg.append(Teacher(fio, teacher_id, subject, office_id, bio, contacts))
+            return lis_obdg
 
     @classmethod
     def get_by_id(cls, id: int, db_path: str = "./db") -> Teacher:
-        current_records = self.__read_json_db(db_path)
-        lis_obdg = []
-        for i in current_records:
-            fio = i["fio"]
-            teacher_id = i["teacher_id"]
-            subject = i["subject"]
-            office_id = i["office_id"]
-            bio = i["bio"]
-            contacts = i["contacts"]
-            if teacher_id == id:
-                return Teacher(fio, teacher_id, subject, office_id, bio, contacts)
-        return ValueError(f"Объект с id {id} не найден")
+        with open(db_path, "r", encoding='utf-8') as write_file:
+            current_records = json.load(write_file)
+            for i in current_records:
+                fio = i["fio"]
+                teacher_id = i["teacher_id"]
+                subject = i["subject"]
+                office_id = i["office_id"]
+                bio = i["bio"]
+                contacts = i["contacts"]
+                if int(teacher_id) == id:
+                    return Teacher(fio, teacher_id, subject, office_id, bio, contacts)
+            return ValueError(f"Объект с id {id} не найден")
