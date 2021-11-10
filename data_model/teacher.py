@@ -109,26 +109,27 @@ class Teacher:
     def get_all(cls, db_path: str = "./db") -> list[Teacher]:
         current_records = self.__read_json_db(db_path)
         lis_obdg = []
-        lines = [i.split(';') for i in current_records.read().split('\n')[1:]]
-        for i in lines:
-            fio = i[0]
-            subject = i[1]
-            office_id = i[2]
-            bio = i[3]
-            contacts = i[4]
-            lis_obdg.append(Teacher(fio, subject, office_id, bio, contacts))
+        for i in current_records:
+            fio = i["fio"]
+            teacher_id = i["teacher_id"]
+            subject = i["subject"]
+            office_id = i["office_id"]
+            bio = i["bio"]
+            contacts = i["contacts"]
+            lis_obdg.append(Teacher(fio, teacher_id, subject, office_id, bio, contacts))
         return lis_obdg
 
     @classmethod
     def get_by_id(cls, id: int, db_path: str = "./db") -> Teacher:
         current_records = self.__read_json_db(db_path)
         lis_obdg = []
-        lines = [i.split(';') for i in current_records.read().split('\n')[1:]]
-        for i in lines:
-            fio = i[0]
-            subject = i[1]
-            office_id = i[2]
-            bio = i[3]
-            contacts = i[4]
-            lis_obdg.append(Teacher(fio, subject, office_id, bio, contacts))
-        return lis_obdg
+        for i in current_records:
+            fio = i["fio"]
+            teacher_id = i["teacher_id"]
+            subject = i["subject"]
+            office_id = i["office_id"]
+            bio = i["bio"]
+            contacts = i["contacts"]
+            if teacher_id == id:
+                return Teacher(fio, teacher_id, subject, office_id, bio, contacts)
+        return ValueError(f"Объект с id {id} не найден")
