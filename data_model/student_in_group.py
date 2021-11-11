@@ -86,17 +86,17 @@ class StudentInGroup:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[StudentInGroup]:
-        with open(db_path, "r", encoding='utf-8') as write_file:
-            current_records = json.load(write_file)
-            lis_obj = []  # lis_obdg
-            for i in current_records:
-                student_id = i["student_id"]
-                group_id = i["group_id"]
-                student_group_id = i["student_group_id"]
-
-                lis_obj.append(StudentInGroup(student_id, group_id, student_group_id))
-            return lis_obj
-        pass
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
+        # with open(db_path, "r", encoding='utf-8') as write_file:
+        #     current_records = json.load(write_file)
+        #     lis_obj = []  # lis_obdg
+        #     for i in current_records:
+        #         student_id = i["student_id"]
+        #         group_id = i["group_id"]
+        #         student_group_id = i["student_group_id"]
+        #
+        #         lis_obj.append(StudentInGroup(student_id, group_id, student_group_id))
+        #     return lis_obj
 
     @classmethod
     def get_by_id(cls, id: int, db_path: str = "./db") -> StudentInGroup:

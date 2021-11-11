@@ -107,18 +107,19 @@ class Teacher:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[Teacher]:
-        with open(db_path, "r", encoding='utf-8') as write_file:
-            current_records = json.load(write_file)
-            lis_obj = []  # lis_obdg
-            for i in current_records:
-                fio = i["fio"]
-                teacher_id = i["teacher_id"]
-                subject = i["subject"]
-                office_id = i["office_id"]
-                bio = i["bio"]
-                contacts = i["contacts"]
-                lis_obj.append(Teacher(fio, teacher_id, subject, office_id, bio, contacts))
-            return lis_obj
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
+        # with open(db_path, "r", encoding='utf-8') as write_file:
+        #     current_records = json.load(write_file)
+        #     lis_obj = []  # lis_obdg
+        #     for i in current_records:
+        #         fio = i["fio"]
+        #         teacher_id = i["teacher_id"]
+        #         subject = i["subject"]
+        #         office_id = i["office_id"]
+        #         bio = i["bio"]
+        #         contacts = i["contacts"]
+        #         lis_obj.append(Teacher(fio, teacher_id, subject, office_id, bio, contacts))
+        #     return lis_obj
 
     @classmethod
     def get_by_id(cls, id: int, db_path: str = "./db") -> Teacher:
