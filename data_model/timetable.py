@@ -9,9 +9,9 @@ class TimeTable:
         Year - учебный год данного расписания
     """
 
-    def __init__(self, year: int = None, timetable_id: int = None):
-        self.__year = year
-        self.__table_id = timetable_id
+    def __init__(self, time_table_year: int = None, time_table_id: int = None):
+        self.__year = time_table_year
+        self.__table_id = time_table_id
 
     def get_table_id(self) -> int:
         return self.__table_id
@@ -31,7 +31,7 @@ class TimeTable:
         data = cls.__read_json_db(db_path)
         output = []
         for elem in data:
-            output.append(cls(elem["time_table_year"], elem["time_table_id"]))
+            output.append(cls(**elem))
         return output
 
     @classmethod
@@ -39,7 +39,7 @@ class TimeTable:
         data = cls.__read_json_db(db_path)
         for elem in data:
             if elem["time_table_id"] == elem_id:
-                return cls(elem["time_table_year"], elem["time_table_id"])
+                return cls(**elem)
         raise ValueError(f"Объект с id {elem_id} не найден")
 
     def serialize_to_json(self, indent: int = None) -> str:
@@ -75,7 +75,7 @@ class TimeTable:
         for elem in lines:
             try:
                 year = int(elem[0])
-                res.append((None, TimeTable(year=year)))
+                res.append((None, TimeTable(time_table_year=year)))
             except (IndexError, ValueError) as error:
                 exception_text = f"Запись {lines.index(elem) + 1} строка {lines.index(elem) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
