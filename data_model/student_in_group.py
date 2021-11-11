@@ -86,28 +86,13 @@ class StudentInGroup:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[StudentInGroup]:
-        with open(db_path, "r", encoding='utf-8') as write_file:
-            current_records = json.load(write_file)
-            lis_obj = []  # lis_obdg
-            for i in current_records:
-                student_id = i["student_id"]
-                group_id = i["group_id"]
-                student_group_id = i["student_group_id"]
-
-                lis_obj.append(StudentInGroup(student_id, group_id, student_group_id))
-            return lis_obj
-        pass
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, id: int, db_path: str = "./db") -> StudentInGroup:
-        with open(db_path, "r", encoding='utf-8') as write_file:
-            current_records = json.load(write_file)
-            for i in current_records:
-                student_id = i["student_id"]
-                group_id = i["group_id"]
-                student_group_id = i["student_group_id"]
-                if int(student_id) == id:
-                    return StudentInGroup(student_id, group_id, student_group_id)
-            return ValueError(f"Объект с id {id} не найден")
+    def get_by_id(cls, studentInGroupId: int, db_path: str = "./db") -> StudentInGroup:
+        for i in cls.__read_json_db(db_path):
+            if int(student_id) == studentInGroupId:
+                return StudentInGroup(**i)
+        return ValueError(f"Объект с id {studentInGroupId} не найден")
 
 

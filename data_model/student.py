@@ -105,30 +105,13 @@ class Student:
 
     @classmethod
     def get_all(cls, db_path: str = "../db") -> list[Student]:
-        with open(db_path, "r", encoding='utf-8') as write_file:
-            current_records = json.load(write_file)
-            lis_obj = []  # lis_obdg
-            for i in current_records:
-                full_name = i["full_name"]
-                date_of_birth = i["date_of_birth"]
-                student_id = i["student_id"]
-                contacts = i["contacts"]
-                bio = i["bio"]
-                lis_obj.append(Student(full_name, date_of_birth, student_id, contacts, bio))
-            return lis_obj
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, id: int, db_path: str = "../db") -> Student:
-        with open(db_path, "r", encoding='utf-8') as write_file:
-            current_records = json.load(write_file)
-            for i in current_records:
-                full_name = i["full_name"]
-                date_of_birth = i["date_of_birth"]
-                student_id = i["student_id"]
-                contacts = i["contacts"]
-                bio = i["bio"]
-                if student_id == id:
-                    return Student(full_name, date_of_birth, student_id, contacts, bio)
-            return ValueError(f"Объект с id {id} не найден")
+    def get_by_id(cls, studentId: int, db_path: str = "../db") -> Student:
+        for i in cls.__read_json_db(db_path):
+            if student_id == studentIid:
+                return Student(full_name, date_of_birth, student_id, contacts, bio)
+        return ValueError(f"Объект с id {studentId} не найден")
 
 
