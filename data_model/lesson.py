@@ -78,7 +78,6 @@ class Lesson:
                 record = json.loads(data_file.read())
                 return record
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            print('error')
             return []
 
     @classmethod
