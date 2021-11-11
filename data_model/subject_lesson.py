@@ -10,8 +10,8 @@ class Subject:
 
     """
 
-    def __init__(self, name: str = None, subject_id: int = None):
-        self.__subject_name = name
+    def __init__(self, subject_name: str = None, subject_id: int = None):
+        self.__subject_name = subject_name
         self.__subject_id = subject_id
 
     def get_subject_id(self) -> int:
@@ -80,12 +80,12 @@ class Subject:
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[Subject]:
         data = cls.__read_json_db(db_path)
-        return [cls(subject_id=i["subject_id"], name=i["subject_name"]) for i in data]
+        return [cls(**i) for i in data]
 
     @classmethod
     def get_by_id(cls, subject_id: int, db_path: str = "./db") -> Subject:
         data = cls.__read_json_db(db_path)
         for i in data:
             if i["subject_id"] == subject_id:
-                return cls(subject_id=i["subject_id"], name=i["subject_name"])
+                return cls(**i)
         raise ValueError(f"Объект с id {subject_id} не найден")

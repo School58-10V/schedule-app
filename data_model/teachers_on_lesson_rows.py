@@ -71,7 +71,6 @@ class TeachersOnLessonRows:
             try:
                 teacher_id = int(j[0])
                 lesson_row_id = int(j[1])
-                # teacher_on_lesson_row_id = int(j[2])
 
                 res.append((None, TeachersOnLessonRows(teacher_id=teacher_id, lesson_row_id=lesson_row_id)))
             except (IndexError, ValueError) as error:
@@ -87,14 +86,12 @@ class TeachersOnLessonRows:
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[TeachersOnLessonRows]:
         data = cls.__read_json_db(db_path)
-        return [cls(teacher_id=i["teacher_id"], lesson_row_id=i["lesson_row_id"],
-                    teacher_on_lesson_row_id=i["teacher_on_lesson_row_id"]) for i in data]
+        return [cls(**i) for i in data]
 
     @classmethod
     def get_by_id(cls, teacher_on_lesson_row_id: int, db_path: str = "./db") -> TeachersOnLessonRows:
         data = cls.__read_json_db(db_path)
         for i in data:
             if i["teacher_on_lesson_row_id"] == teacher_on_lesson_row_id:
-                return cls(teacher_id=i["teacher_id"], lesson_row_id=i["lesson_row_id"],
-                           teacher_on_lesson_row_id=i["teacher_on_lesson_row_id"])
+                return cls(**i)
         raise ValueError(f"Объект с id {teacher_on_lesson_row_id} не найден")
