@@ -106,7 +106,7 @@ class Teacher:
             data_file.write(target_json)
 
     @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[Teacher]:
+    def get_all(cls, db_path: str = "../db") -> list[Teacher]:
         with open(db_path, "r", encoding='utf-8') as write_file:
             current_records = json.load(write_file)
             lis_obj = []  # lis_obdg
@@ -121,7 +121,7 @@ class Teacher:
             return lis_obj
 
     @classmethod
-    def get_by_id(cls, id: int, db_path: str = "./db") -> Teacher:
+    def get_by_id(cls, id: int, db_path: str = "../db") -> Teacher:
         with open(db_path, "r", encoding='utf-8') as write_file:
             current_records = json.load(write_file)
             for i in current_records:
