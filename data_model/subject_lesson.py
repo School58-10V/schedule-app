@@ -79,13 +79,13 @@ class Subject:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[Subject]:
-        data = Subject.__read_json_db(db_path)
-        return [Subject(subject_id=i["subject_id"], name=i["subject_name"]) for i in data]
+        data = cls.__read_json_db(db_path)
+        return [cls(subject_id=i["subject_id"], name=i["subject_name"]) for i in data]
 
     @classmethod
     def get_by_id(cls, subject_id: int, db_path: str = "./db") -> Subject:
-        data = Subject.__read_json_db(db_path)
+        data = cls.__read_json_db(db_path)
         for i in data:
             if i["subject_id"] == subject_id:
-                return Subject(subject_id=i["subject_id"], name=i["subject_name"])
+                return cls(subject_id=i["subject_id"], name=i["subject_name"])
         raise ValueError(f"Объект с id {subject_id} не найден")
