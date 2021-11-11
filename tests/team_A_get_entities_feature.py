@@ -8,8 +8,8 @@ print(f'Методы Lesson.get_all() и Lesson.get_by_id(): {get_all}, {get_by_
 
 try:
     Lesson.get_by_id(1234567890, '../data_examples')
-except ValueError:
-    print(f"Урок с id 1234567890 не существует!")
+except ValueError as e:
+    print(e)
 
 print()
 
@@ -20,5 +20,5 @@ print(f'Методы Group.get_all() и Group.get_by_id(): {get_all}, {get_by_id
 
 try:
     Lesson.get_by_id(1234567890, '../data_examples')
-except ValueError:
-    print(f"Группы с id 1234567890 не существует!")
+except ValueError as e:
+    print(e)

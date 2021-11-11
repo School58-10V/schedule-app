@@ -85,11 +85,11 @@ class Lesson:
         return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, lesson_id: int, db_path: str = "./db") -> Lesson:
+    def get_by_id(cls, element_id: int, db_path: str = "./db") -> Lesson:
         for i in cls.__read_json_db(db_path):
-            if i['lesson_id'] == lesson_id:
-                return Lesson(**i)
-        raise ValueError(f"Объект с id {lesson_id} не найден")
+            if i['lesson_id'] == element_id:
+                return cls(**i)
+        raise ValueError(f"Объект с id {element_id} не найден")
 
     @staticmethod
     def __serialize_records_to_json(records: list, indent: int = None):
