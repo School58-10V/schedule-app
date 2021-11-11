@@ -106,7 +106,7 @@ class StudentInGroup:
                 student_id = i["student_id"]
                 group_id = i["group_id"]
                 student_group_id = i["student_group_id"]
-                if int(student_id) == id:
+                if student_id == id:
                     return StudentInGroup(student_id, group_id, student_group_id)
             return ValueError(f"Объект с id {id} не найден")
 

@@ -131,6 +131,6 @@ class Teacher:
                 office_id = i["office_id"]
                 bio = i["bio"]
                 contacts = i["contacts"]
-                if int(teacher_id) == id:
+                if teacher_id == id:
                     return Teacher(fio, teacher_id, subject, office_id, bio, contacts)
             return ValueError(f"Объект с id {id} не найден")

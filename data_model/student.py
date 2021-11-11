@@ -127,7 +127,7 @@ class Student:
                 student_id = i["student_id"]
                 contacts = i["contacts"]
                 bio = i["bio"]
-                if int(student_id) == id:
+                if student_id == id:
                     return Student(full_name, date_of_birth, student_id, contacts, bio)
             return ValueError(f"Объект с id {id} не найден")
 

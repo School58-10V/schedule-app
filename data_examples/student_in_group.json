@@ -1,9 +1,9 @@
 [
   {"student_id": "124",
     "group_id": "678",
-    "student_group_id": "345"
+    "student_group_id": 345
   },
   {"student_id": "123",
-    "group_id": "679",
-    "student_group_id": "346"
+    "group_id": 679,
+    "student_group_id": 346
   },
