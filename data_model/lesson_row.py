@@ -119,3 +119,12 @@ class LessonRow:
                 print(exception_text)
                 res.append((exception_text, None))
         return res
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> list[LessonRow]:
+        return json.load(f"{db_path}/LessonRow.json")
+
+    @classmethod
+    def get_by_id(cls, id: int, db_path: str = "./db") -> LessonRow:
+        # тут реализация
+        pass

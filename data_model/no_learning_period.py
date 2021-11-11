@@ -77,7 +77,7 @@ class NoLearningPeriod:
             try:
                 start = i[1]
                 stop = i[2]
-                res.append((None, NoLearningPeriod(timetable_id, start, stop, no_learning_period_id)))
+                res.append((None, NoLearningPeriod(int(timetable_id), start, stop, no_learning_period_id)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
@@ -88,3 +88,12 @@ class NoLearningPeriod:
                 print(exception_text)
                 res.append((exception_text, None))
         return res
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> list[NoLearningPeriod]:
+        return json.load(f"{db_path}/NoLearningPeriod.json")
+
+    @classmethod
+    def get_by_id(cls, id: int, db_path: str = "./db") -> NoLearningPeriod:
+        # тут реализация
+        pass
