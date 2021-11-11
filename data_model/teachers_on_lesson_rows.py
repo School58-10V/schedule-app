@@ -83,3 +83,18 @@ class TeachersOnLessonRows:
                 print(exception_text + '\n')
                 res.append((exception_text, None))
         return res
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> list[TeachersOnLessonRows]:
+        data = TeachersOnLessonRows.__read_json_db(db_path)
+        return [TeachersOnLessonRows(i["teacher_id"], i["lesson_row_id"],
+                                     i["teacher_on_lesson_row_id"]) for i in data]
+
+    @classmethod
+    def get_by_id(cls, teacher_on_lesson_row_id: int, db_path: str = "./db") -> TeachersOnLessonRows:
+        data = TeachersOnLessonRows.__read_json_db(db_path)
+        for i in data:
+            if i["teacher_on_lesson_row_id"] == teacher_on_lesson_row_id:
+                return TeachersOnLessonRows(i["teacher_id"], i["lesson_row_id"],
+                                            i["teacher_on_lesson_row_id"])
+        raise ValueError(f"Объект с id {teacher_on_lesson_row_id} не найден")

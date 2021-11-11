@@ -9,6 +9,7 @@ class Subject:
         subject_id - Идентификационный номер предмета
 
     """
+
     def __init__(self, name: str = None, subject_id: int = None):
         self.__subject_name = name
         self.__subject_id = subject_id
@@ -50,7 +51,7 @@ class Subject:
         return {
             "subject_id": self.__subject_id,
             "subject_name": self.__subject_name
-        }
+            }
 
     def serialize_to_json(self, indent: int = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
@@ -75,3 +76,16 @@ class Subject:
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> list[Subject]:
+        data = Subject.__read_json_db(db_path)
+        return [Subject(subject_id=i["subject_id"], name=i["subject_name"]) for i in data]
+
+    @classmethod
+    def get_by_id(cls, subject_id: int, db_path: str = "./db") -> Subject:
+        data = Subject.__read_json_db(db_path)
+        for i in data:
+            if i["subject_id"] == subject_id:
+                return Subject(subject_id=i["subject_id"], name=i["subject_name"])
+        raise ValueError(f"Объект с id {subject_id} не найден")
