@@ -82,7 +82,8 @@ class Location:
                 "profile": self.__profile,
                 "equipment": self.__equipment,
                 "link": self.__link,
-                "type_of_location": self.__type_of_location}
+                "type_of_location": self.__type_of_location,
+                "comment": self.__comment}
 
     @classmethod
     def __read_json_db(cls, db_path) -> list:
@@ -101,7 +102,7 @@ class Location:
     def serialize_records_to_json(records: list, indent: int = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
 
-    def save(self, output_path: str = './db'):
+    def save(self, output_path: str = '../db'):
         current_records = self.__read_json_db(output_path)
         current_records.append(self.__dict__())
         target_json = self.__class__.serialize_records_to_json(current_records)
@@ -109,11 +110,15 @@ class Location:
             data_file.write(target_json)
 
     @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[Location]:
-        return json.load(f"{db_path}/Location.json")
-
+    def get_all(cls, db_path: str = "../db") -> list[Location]:
+        list_of_objects = cls.__read_json_db(db_path)
+        return [cls(location_id=cnt['location_id'], location_desc=cnt["location_desc"],
+                    profile=cnt["profile"], equipment=cnt["equipment"], link=cnt["link"],
+                    type_of_location=cnt["type_of_location"], comment=cnt["comment"]) for cnt in list_of_objects]
 
     @classmethod
-    def get_by_id(cls, id: int, db_path: str = "./db") -> Location:
-        # тут реализация
-        pass
+    def get_by_id(cls, element_id: int, db_path: str = "../db") -> Location:
+        for i in cls.__read_json_db(db_path):
+            if i['location_id'] == element_id:
+                return cls(**i)
+        raise ValueError(f"Объект с id {element_id} не найден")

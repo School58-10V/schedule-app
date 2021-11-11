@@ -22,7 +22,7 @@ class LessonRow:
         self.__group_id = group_id
         self.__subject_id = subject_id
         self.__room_id = room_id
-        self.__timetable_id = timetable_id  
+        self.__timetable_id = timetable_id
         self.__lesson_row_id = lesson_row_id
 
     def count_studying_hours(self):
@@ -52,13 +52,13 @@ class LessonRow:
     def __dict__(self) -> dict:
         return {
             "count_studying_hours": self.__count_studying_hours,
-                           "group_id": self.__group_id,
-                           "subject_id": self.__subject_id,
-                           "room_id": self.__room_id,
-                           "start_time": self.__start_time,
-                           "end_time": self.__end_time,
-                           "timetable_id": self.__timetable_id,
-                           "lesson_row_id": self.__lesson_row_id
+            "group_id": self.__group_id,
+            "subject_id": self.__subject_id,
+            "room_id": self.__room_id,
+            "start_time": self.__start_time,
+            "end_time": self.__end_time,
+            "timetable_id": self.__timetable_id,
+            "lesson_row_id": self.__lesson_row_id
         }
 
     def serialize_to_json(self, indent: int = None) -> str:
@@ -78,7 +78,7 @@ class LessonRow:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
 
-    def save(self, output_path: str = './db'):
+    def save(self, output_path: str = '../db'):
         current_records = self.__read_json_db(output_path)
         current_records.append(self.__dict__())
         target_json = self.__class__.serialize_records_to_json(current_records)
@@ -86,8 +86,10 @@ class LessonRow:
             data_file.write(target_json)
 
     def __str__(self):
-        return f'LessonRow(count_studying_hours={self.__count_studying_hours}, group_id={self.__group_id}, subject_id={self.__subject_id} ' \
-               f'room_id={self.__room_id}), start_timee={self.__start_time}), end_time={self.__end_time}), timetable_id={self.__timetable_id}), ' \
+        return f'LessonRow(count_studying_hours={self.__count_studying_hours}, group_id={self.__group_id}, ' \
+               f'subject_id={self.__subject_id} ' \
+               f'room_id={self.__room_id}), start_time={self.__start_time}), end_time={self.__end_time}), ' \
+               f'timetable_id={self.__timetable_id}), ' \
                f'lesson_row_id={self.__lesson_row_id}) '
 
     @staticmethod
@@ -107,7 +109,8 @@ class LessonRow:
                 timetable_id = i[6]
                 lesson_row_id = i[7]
 
-                res.append((None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id), int(room_id), int(start_time), int(end_time), int(timetable_id),
+                res.append((None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id), int(room_id),
+                                            int(start_time), int(end_time), int(timetable_id),
                                             int(lesson_row_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
@@ -121,10 +124,16 @@ class LessonRow:
         return res
 
     @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[LessonRow]:
-        return json.load(f"{db_path}/LessonRow.json")
+    def get_all(cls, db_path: str = "../db") -> list[LessonRow]:
+        list_of_objects = cls.__read_json_db(db_path)
+        return [cls(count_studying_hours=cnt['count_studying_hours'], group_id=cnt["group_id"],
+                    subject_id=cnt["subject_id"], room_id=cnt["room_id"], start_time=cnt["start_time"],
+                    end_time=cnt["end_time"], lesson_row_id=cnt["lesson_row_id"], timetable_id=cnt["timetable_id"])
+                for cnt in list_of_objects]
 
     @classmethod
-    def get_by_id(cls, id: int, db_path: str = "./db") -> LessonRow:
-        # тут реализация
-        pass
+    def get_by_id(cls, element_id: int, db_path: str = "../db") -> LessonRow:
+        for i in cls.__read_json_db(db_path):
+            if i['lesson_row_id'] == element_id:
+                return cls(**i)
+        raise ValueError(f"Объект с id {element_id} не найден")
