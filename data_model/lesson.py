@@ -5,21 +5,20 @@ from typing import List, Optional
 
 
 class Lesson:
-    """
-        Класс урока
-        start_time начало урока
-        end_time конец урока
-        day дата
-        teacher_id замена
-        group_id группа учеников
-        subject_id предмет
-        notes примечания
-        lesson_id урок
-        state состояние
-    """
 
     def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
                  subject_id: int, notes: str, lesson_id: int = None, state: bool = True):
+        """
+            :param start_time: начало урока
+            :param end_time: конец урока
+            :param day: дата
+            :param teacher_id: замена
+            :param group_id: группа учеников
+            :param subject_id: предмет
+            :param notes: примечания
+            :param lesson_id: урок
+            :param state: состояние
+        """
         self.__start_time = start_time
         self.__end_time = end_time
         self.__day = day
@@ -79,7 +78,19 @@ class Lesson:
                 record = json.loads(data_file.read())
                 return record
         except (FileNotFoundError, json.decoder.JSONDecodeError):
+            print('error')
             return []
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> List[Lesson]:
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
+
+    @classmethod
+    def get_by_id(cls, lesson_id: int, db_path: str = "./db") -> Lesson:
+        for i in cls.__read_json_db(db_path):
+            if i['lesson_id'] == lesson_id:
+                return Lesson(**i)
+        raise ValueError(f"Объект с id {lesson_id} не найден")
 
     @staticmethod
     def __serialize_records_to_json(records: list, indent: int = None):
