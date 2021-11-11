@@ -28,19 +28,19 @@ class TimeTable:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[TimeTable]:
-        data = TimeTable.__read_json_db(db_path)
+        data = cls.__read_json_db(db_path)
         output = []
         for elem in data:
-            output.append(TimeTable(elem["time_table_year"], elem["time_table_id"]))
+            output.append(cls(elem["time_table_year"], elem["time_table_id"]))
         return output
 
     @classmethod
-    def get_by_id(cls, elem_id, db_path: str = "./db"):
-        data = TimeTable.__read_json_db(db_path)
+    def get_by_id(cls, elem_id: int, db_path: str = "./db") -> TimeTable:
+        data = cls.__read_json_db(db_path)
         for elem in data:
             if elem["time_table_id"] == elem_id:
-                return TimeTable(elem["time_table_year"], elem["time_table_id"])
-        return ""
+                return cls(elem["time_table_year"], elem["time_table_id"])
+        raise ValueError(f"Объект с id {elem_id} не найден")
 
     def serialize_to_json(self, indent: int = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
