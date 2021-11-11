@@ -85,7 +85,7 @@ class StudentInGroup:
             data_file.write(target_json)
 
     @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[StudentInGroup]:
+    def get_all(cls, db_path: str = "../db") -> list[StudentInGroup]:
         with open(db_path, "r", encoding='utf-8') as write_file:
             current_records = json.load(write_file)
             lis_obj = []  # lis_obdg
