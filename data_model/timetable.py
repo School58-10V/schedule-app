@@ -40,6 +40,7 @@ class TimeTable:
         for elem in data:
             if elem["time_table_id"] == elem_id:
                 return TimeTable(elem["time_table_year"], elem["time_table_id"])
+        return ""
 
     def serialize_to_json(self, indent: int = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
