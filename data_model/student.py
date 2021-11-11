@@ -104,11 +104,11 @@ class Student:
             data_file.write(target_json)
 
     @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[Teacher]:
+    def get_all(cls, db_path: str = "./db") -> list[Student]:
 
         pass
 
     @classmethod
-    def get_by_id(cls, id: int, db_path: str = "./db") -> Teacher:
+    def get_by_id(cls, id: int, db_path: str = "./db") -> Student:
         pass
 
