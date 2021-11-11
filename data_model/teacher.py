@@ -110,8 +110,8 @@ class Teacher:
         return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, teacherId: int, db_path: str = "./db") -> Teacher:
+    def get_by_id(cls, teacher_id: int, db_path: str = "./db") -> Teacher:
         for i in cls.__read_json_db(db_path):
-            if int(teacher_id) == teacherId:
+            if i["teacher_id"] == teacher_id:
                 return Teacher(**i)
-        return ValueError(f"Объект с id {teacherId} не найден")
+        return ValueError(f"Объект с id {teacher_id} не найден")

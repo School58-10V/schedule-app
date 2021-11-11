@@ -108,10 +108,10 @@ class Student:
         return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, studentId: int, db_path: str = "../db") -> Student:
+    def get_by_id(cls, student_id: int, db_path: str = "../db") -> Student:
         for i in cls.__read_json_db(db_path):
-            if student_id == studentIid:
+            if i["student_id"] == student_id:
                 return Student(full_name, date_of_birth, student_id, contacts, bio)
-        return ValueError(f"Объект с id {studentId} не найден")
+        return ValueError(f"Объект с id {student_id} не найден")
 
 
