@@ -130,5 +130,5 @@ dmypy.json
 
 
 # own
-data_model/db
+db
 *.idea
