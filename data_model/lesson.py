@@ -7,7 +7,7 @@ from typing import List, Optional
 class Lesson:
 
     def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
-                 subject_id: int, notes: str, lesson_id: int = None, state: bool = True):
+                 subject_id: int, notes: str, lesson_id: Optional[int] = None, state: Optional[bool] = True):
         """
             :param start_time: начало урока
             :param end_time: конец урока
@@ -55,10 +55,10 @@ class Lesson:
     def get_notes(self) -> str:
         return self.__notes
 
-    def get_lesson_id(self) -> int:
+    def get_lesson_id(self) -> Optional[int]:
         return self.__lesson_id
 
-    def get_state(self) -> bool:
+    def get_state(self) -> Optional[bool]:
         return self.__state
 
     def save(self, output_path: str = './db'):
