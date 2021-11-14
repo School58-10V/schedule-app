@@ -9,14 +9,15 @@ class TimeTable:
         Year - учебный год данного расписания
     """
 
-    def __init__(self, time_table_year: int = None, time_table_id: int = None):
+    def __init__(self, time_table_year: Optional[int] = None,
+                 time_table_id: Optional[int] = None):
         self.__year = time_table_year
         self.__table_id = time_table_id
 
-    def get_table_id(self) -> int:
+    def get_table_id(self) -> Optional[int]:
         return self.__table_id
 
-    def get_year(self) -> int:
+    def get_year(self) -> Optional[int]:
         return self.__year
 
     def __str__(self):
@@ -42,11 +43,11 @@ class TimeTable:
                 return cls(**elem)
         raise ValueError(f"Объект с id {elem_id} не найден")
 
-    def serialize_to_json(self, indent: int = None) -> str:
+    def serialize_to_json(self, indent: Optional[int] = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @staticmethod
-    def __serialize_records_to_json(records: list, indent: int = None):
+    def __serialize_records_to_json(records: list, indent: Optional[int] = None):
         return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @classmethod
