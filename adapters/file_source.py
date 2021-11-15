@@ -15,7 +15,7 @@ class FileSource:
     @classmethod
     def get_all(cls, collection_name: str) -> list[dict]:
         # Возвращаем сформированный список, прочитанный методом __read_json_db.
-        return [cls(**i) for i in cls.__read_json_db(cls.__dp_path(), collection_name)]
+        return cls.__read_json_db(cls.__dp_path(), collection_name)
 
     # Метод get_by_id принимает имя коллекции и ID конкретного экземпляра класса, после чего возвращает dict всех
     # переменных данного экземпляра класса.
@@ -25,7 +25,7 @@ class FileSource:
         # возвращаем dict всех переменных данного экземпляра класса. При отсутствии совпадений возвращает None
         for i in cls.__read_json_db(cls.__dp_path(), collection_name):
             if i['group_id'] == element_id:
-                return cls(**i)
+                return i
         return None
 
     def get_by_query(self, collection_name: str, query: dict[str, Any]) -> list[dict]:
