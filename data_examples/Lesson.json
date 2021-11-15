@@ -1,0 +1,24 @@
+[
+  {
+    "start_time": 9,
+    "end_time": 16,
+    "day": 3,
+    "teacher_id": 67,
+    "group_id": 8,
+    "subject_id": 5,
+    "notes": "",
+    "lesson_id": null,
+    "state": true
+  },
+  {
+    "start_time": 750,
+    "end_time": 805,
+    "day": 2,
+    "teacher_id": 10,
+    "group_id": 10,
+    "subject_id": 2,
+    "notes": "Урок может быть перенесен в другой класс",
+    "lesson_id": 2,
+    "state": false
+  }
+]

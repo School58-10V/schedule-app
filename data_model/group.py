@@ -53,6 +53,17 @@ class Group:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
 
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> List[Group]:
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
+
+    @classmethod
+    def get_by_id(cls, element_id: int, db_path: str = "./db") -> Group:
+        for i in cls.__read_json_db(db_path):
+            if i['group_id'] == element_id:
+                return cls(**i)
+        raise ValueError(f"Объект с id {element_id} не найден")
+
     @staticmethod
     def __serialize_records_to_json(records: list, indent: int = None):
         return json.dumps(records, ensure_ascii=False, indent=indent)
