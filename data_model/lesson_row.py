@@ -107,11 +107,10 @@ class LessonRow:
                 start_time = i[4]
                 end_time = i[5]
                 timetable_id = i[6]
-                lesson_row_id = i[7]
 
                 res.append((None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id), int(room_id),
-                                            int(start_time), int(end_time), int(timetable_id),
-                                            int(lesson_row_id))))
+                                            int(start_time), int(end_time), int(timetable_id))))
+
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
