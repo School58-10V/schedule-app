@@ -91,12 +91,21 @@ class FileSource:
         return {None: None}  # заглушка, потом решим, что с этим делать
 
     def update(self, collection_name: str, _object_id: int, document: dict) -> dict:
-        pass
+        with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+            current_records = self.__read_json_db(collection_name)
+            for i in current_records:
+                if i["_object_id"] == _object_id:
+                    current_records.index(i)
+            target_json = self.__class__.serialize_records_to_json(current_records)
+            data_file.write(target_json)
+
 
     def delete(self, collection_name: str, _object_id: int) -> dict:
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
-
+            for i in current_records:
+                if i["_object_id"] == _object_id:
+                    current_records.index(i)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
 
