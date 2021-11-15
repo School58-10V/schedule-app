@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abstract_model import AbstractModel
+from data_model.abstract_model import AbstractModel
 from datetime import date
 from typing import List, Optional
 

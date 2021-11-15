@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, List
-from abstract_model import AbstractModel
+from data_model.abstract_model import AbstractModel
 
 
 class TimeTable(AbstractModel):
