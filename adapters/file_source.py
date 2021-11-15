@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 
 class FileSource:
@@ -6,6 +7,20 @@ class FileSource:
     # переменную(по умолчанию "./db").
     def __init__(self, dp_path: str = './db'):
         self.__dp_path = dp_path
+        self.dictionary = {"group": 101,
+                           "lesson": 102,
+                           "lesson_row": 103,
+                           "location": 104,
+                           "no_learning_period": 105,
+                           "student": 106,
+                           "student_in_group": 107,
+                           "subject_lesson": 108,
+                           "teacher": 109,
+                           "teachers_on_lesson_rows": 110,
+                           "timetable": 111}
+
+    def generate_id(self):
+        return datetime.microsecond
 
     def __dp_path(self):
         return self.__dp_path
@@ -52,19 +67,24 @@ class FileSource:
     def insert(self, collection_name: str, document: dict) -> dict:
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
-            document["_object_id"] = int(id_class + len(f"{self.__dp_path}/{collection_name}.json"))
+            document["_object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
             current_records.append(document)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
+        return {None: None}  # заглушка, потом решим, что с этим делать
 
-    def update(self, collection_name: str, elem_id: int, document: dict) -> dict:
+    def update(self, collection_name: str, _object_id: int, document: dict) -> dict:
         pass
 
-    def delete(self, collection_name: str, elem_id: int) -> dict:
-        pass
+    def delete(self, collection_name: str, _object_id: int) -> dict:
+        with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+            current_records = self.__read_json_db(collection_name)
+
+            target_json = self.__class__.serialize_records_to_json(current_records)
+            data_file.write(target_json)
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
-    # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса.
+    # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
     @classmethod
     def __read_json_db(cls, db_path, collection_name) -> list:
         try:
