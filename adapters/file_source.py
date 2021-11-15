@@ -19,7 +19,8 @@ class FileSource:
                            "teachers_on_lesson_rows": 110,
                            "timetable": 111}
 
-    def generate_id(self):
+    @staticmethod
+    def generate_id():
         return datetime.microsecond
 
     @classmethod
@@ -48,19 +49,23 @@ class FileSource:
     def get_by_id(cls, collection_name: str, element_id: int) -> dict:
         # Перебираем все объекты коллекции и сравниваем их с необходимым ID экземпляра класса. При совпадении
         # возвращаем dict всех переменных данного экземпляра класса. При отсутствии совпадений возвращает None
-        for i in cls.__read_json_db(cls.__dp_path(), collection_name):
-            if i['group_id'] == element_id:
-                return i
+        for cnt in cls.__read_json_db(cls.__dp_path(), collection_name):
+            if cnt['group_id'] == element_id:
+                return cnt
         return None
 
+    # Метод get_by_query на вход принимает имя коллекции и словарь
     @classmethod
     def get_by_query(cls, collection_name, query) -> list[dict]:
         dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+        # это коллекция словарей
         matching_keys = {}
-        for i in dict_list:
-            for j in i:
-                if j in query:
-                    matching_keys.update(j)
+        for cnt in dict_list:
+            for cnt_2 in cnt:
+                if cnt_2 in query:
+                    # перебираем ключи
+                    # и если они совпадают добовляем
+                    matching_keys.update(cnt_2)
         return matching_keys
 
     # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять время в микросекудах. Таким
@@ -95,10 +100,7 @@ class FileSource:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
                 if i["_object_id"] == _object_id:
-                    new_dict = i
-                    new_dict.update(document)
-                    current_records.remove(current_records.index(i))
-                    current_records.append(new_dict)
+                    current_records.index(i)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
         return {None: None}  # заглушка, потом решим, что с этим делать
