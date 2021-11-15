@@ -104,14 +104,14 @@ class Student:
             data_file.write(target_json)
 
     @classmethod
-    def get_all(cls, db_path: str = "../db") -> list[Student]:
+    def get_all(cls, db_path: str = "./db") -> list[Student]:
         return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, student_id: int, db_path: str = "../db") -> Student:
+    def get_by_id(cls, student_id: int, db_path: str = "./db") -> Student:
         for i in cls.__read_json_db(db_path):
             if i["student_id"] == student_id:
-                return Student(full_name, date_of_birth, student_id, contacts, bio)
+                return cls(**i)
         return ValueError(f"Объект с id {student_id} не найден")
 
 
