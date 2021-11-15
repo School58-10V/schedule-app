@@ -72,3 +72,16 @@ class NoLearningPeriod(AbstractModel):
 
     def _set_main_id(self, elem_id: Optional[int] = None):
         self.__no_learning_period_id = elem_id
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db"):
+        data = cls._read_json_db(db_path)
+        return [cls(**i) for i in data]
+
+    @classmethod
+    def get_by_id(cls, elem_id: int, db_path: str = './db'):
+        data = cls._read_json_db(db_path)
+        for i in data:
+            if i["no_learning_period_id"] == elem_id:
+                return cls(**i)
+        raise ValueError(f"Объект с id {elem_id} не найден")
