@@ -31,6 +31,21 @@ class FileSource:
     def get_by_query(self, collection_name: str, query: dict[str, Any]) -> list[dict]:
         pass
 
+    # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять порядковый номер экземпляра. Таким
+    # образом мы получим айдишник, который можно будет понимать и без словаря обозначений. Например 4 экземпляр класса
+    # location будет записан по ID, как 044, а 18 экземпляр класса teacher, как 0918, так каждый ID будет
+    # уникальным(Ваня).
+    # group - 01
+    # lesson - 02
+    # lesson_row - 03
+    # location - 04
+    # no_learning_period - 05
+    # student - 06
+    # student_in_group - 07
+    # subject_lesson - 08
+    # teacher - 09
+    # teachers_on_lesson_rows - 10
+    # timetable - 11
     def insert(self, collection_name: str, document: dict) -> dict:
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
