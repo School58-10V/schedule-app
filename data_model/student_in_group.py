@@ -25,9 +25,6 @@ class StudentInGroup(AbstractModel):
     def get_group_id(self) -> int:
         return self.__group_id
 
-    def get_student_group_id(self) -> Optional[int]:
-        return self.__object_id
-
     @staticmethod
     def parse(file_location) -> List[(Optional[str], Optional[StudentInGroup])]:
         f = open(file_location, encoding='utf-8')

@@ -74,3 +74,12 @@ class Location(AbstractModel):
     def __str__(self):
         return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
                f'link={self.__link}, comment={self.__comment})'
+
+    def __dict__(self):
+        return {'object_id': self.__object_id,
+                'location_desc': self.__location_desc,
+                'profile': self.__profile,
+                'equipment': self.__equipment,
+                'link': self.__link,
+                'type_of_location': self.__type_of_location,
+                'comment': self.__comment}

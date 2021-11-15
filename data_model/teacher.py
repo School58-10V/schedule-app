@@ -25,9 +25,6 @@ class Teacher(AbstractModel):
     def get_fio(self) -> str:
         return self.__fio
 
-    def get_teacher_id(self) -> int:
-        return self.__object_id
-
     def get_bio(self) -> Optional[str]:
         return self.__bio
 

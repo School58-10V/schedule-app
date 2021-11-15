@@ -14,9 +14,6 @@ class TimeTable(AbstractModel):
         self.__year = time_table_year
         self.__object_id = object_id
 
-    def get_table_id(self) -> Optional[int]:
-        return self.__object_id
-
     def get_year(self) -> Optional[int]:
         return self.__year
 

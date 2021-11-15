@@ -20,9 +20,6 @@ class NoLearningPeriod(AbstractModel):
         object_id - id каникул
     """
 
-    def get_no_learning_period_id(self) -> int:
-        return self.__object_id
-
     def get_start_time(self) -> str:
         return self.__start_time
 

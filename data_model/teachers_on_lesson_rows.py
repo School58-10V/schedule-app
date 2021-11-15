@@ -23,9 +23,6 @@ class TeachersOnLessonRows(AbstractModel):
     def get_lesson_row_id(self) -> int:
         return self.__lesson_row_id
 
-    def get_teacher_on_lesson_row_id(self) -> Optional[int]:
-        return self.__object_id
-
     def __str__(self) -> str:
         return f'TeachersOnLessonRows(teacher_id: {self.__teacher_id},' \
                f' lesson_row_id: {self.__lesson_row_id},' \

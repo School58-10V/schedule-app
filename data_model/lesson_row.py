@@ -43,9 +43,6 @@ class LessonRow(AbstractModel):
     def get_timetable_id(self) -> int:
         return self.__timetable_id
 
-    def get_lesson_row_id(self) -> int:
-        return self.__object_id
-
     def __dict__(self) -> dict:
         return {
             "count_studying_hours": self.__count_studying_hours,
