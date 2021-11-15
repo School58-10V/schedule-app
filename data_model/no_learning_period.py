@@ -91,9 +91,7 @@ class NoLearningPeriod:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[NoLearningPeriod]:
-        list_of_objects = cls.__read_json_db(db_path)
-        return [cls(timetable_id=cnt['timetable_id'], start=cnt["start"],
-                    stop=cnt["stop"], no_learning_period_id=cnt["no_learning_period_id"]) for cnt in list_of_objects]
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
     def get_by_id(cls, element_id: int, db_path: str = "./db") -> NoLearningPeriod:
