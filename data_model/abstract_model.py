@@ -57,7 +57,6 @@ class AbstractModel(ABC):
 
     @staticmethod
     def _serialize_records_to_json(records: List[dict], indent: Optional[int] = None) -> str:
-        print(records)
         return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @abstractmethod
