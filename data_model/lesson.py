@@ -1,6 +1,6 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
-from abstract_model import AbstractModel
+from data_model.abstract_model import AbstractModel
 from typing import List, Optional
 
 

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from abstract_model import AbstractModel
+from data_model.abstract_model import AbstractModel
 from typing import Optional, List
 
 
