@@ -1,9 +1,9 @@
 from __future__ import annotations
-import json
 from typing import Optional, List
+from data_model.abstract_model import AbstractModel
 
 
-class TeachersOnLessonRows:
+class TeachersOnLessonRows(AbstractModel):
     """
         Класс учителя в LessonRow. Используется для m2m отношения между
         Teacher и LessonRow
@@ -31,34 +31,10 @@ class TeachersOnLessonRows:
                f' lesson_row_id: {self.__lesson_row_id},' \
                f' teacher_on_lesson_row_id: {self.__teacher_on_lesson_row_id})'
 
-    def __serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
     def __dict__(self) -> dict:
         return {"teacher_id": self.__teacher_id,
                 "lesson_row_id": self.__lesson_row_id,
                 "teacher_on_lesson_row_id": self.__teacher_on_lesson_row_id}
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
 
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[TeachersOnLessonRows])]:
@@ -85,13 +61,19 @@ class TeachersOnLessonRows:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[TeachersOnLessonRows]:
-        data = cls.__read_json_db(db_path)
+        data = cls._read_json_db(db_path)
         return [cls(**i) for i in data]
 
     @classmethod
     def get_by_id(cls, teacher_on_lesson_row_id: int, db_path: str = "./db") -> TeachersOnLessonRows:
-        data = cls.__read_json_db(db_path)
+        data = cls._read_json_db(db_path)
         for i in data:
             if i["teacher_on_lesson_row_id"] == teacher_on_lesson_row_id:
                 return cls(**i)
         raise ValueError(f"Объект с id {teacher_on_lesson_row_id} не найден")
+
+    def get_main_id(self):
+        return self.__teacher_on_lesson_row_id
+
+    def _set_main_id(self, elem_id: Optional[int] = None):
+        self.__teacher_on_lesson_row_id = elem_id
