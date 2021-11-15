@@ -6,10 +6,8 @@ class FileSource:
     # переменную(по умолчанию "./db").
     def __init__(self, dp_path: str = './db'):
         self.__dp_path = dp_path
-        
-        def __init__(self, dp_path):
-        self.__dp_path = dp_path
 
+    @classmethod
     def get_by_query(cls, collection_name, query) -> list[dict]:
         dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
         matching_keys = {}
@@ -18,7 +16,6 @@ class FileSource:
                 if j in query:
                     matching_keys.update(j)
         return matching_keys
-
 
     def __dp_path(self):
         return self.__dp_path
@@ -41,8 +38,15 @@ class FileSource:
                 return i
         return None
 
-    def get_by_query(self, collection_name: str, query: dict[str, Any]) -> list[dict]:
-        pass
+    @classmethod
+    def get_by_query(cls, collection_name, query) -> list[dict]:
+        dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+        matching_keys = {}
+        for i in dict_list:
+            for j in i:
+                if j in query:
+                    matching_keys.update(j)
+        return matching_keys
 
     # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять время в микросекудах. Таким
     # образом мы получим айдишник, который можно будет понимать и без словаря обозначений. Например экземпляр класса
