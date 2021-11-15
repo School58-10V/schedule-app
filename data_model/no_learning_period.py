@@ -38,7 +38,7 @@ class NoLearningPeriod(AbstractModel):
             "start": self.__start_time,
             "stop": self.__stop_time,
             "object_id": self.__object_id
-        }
+            }
 
     def __str__(self):
         return f'NoLearningPeriod(timetable_id={self.__timetable_id}, start={self.__start_time}, ' \

@@ -1,5 +1,4 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-import json
 from datetime import date
 
 from typing import Optional, List
@@ -20,7 +19,7 @@ class Student(AbstractModel):
     def __init__(
             self, full_name: str, date_of_birth: date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
-    ):
+            ):
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
         self.__object_id = object_id
@@ -76,21 +75,5 @@ class Student(AbstractModel):
             "object_id": self.__object_id,
             "contacts": self.__contacts,
             "bio": self.__bio
-        }
+            }
 
-    def serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
