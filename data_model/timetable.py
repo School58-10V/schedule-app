@@ -10,9 +10,9 @@ class TimeTable(AbstractModel):
     """
 
     def __init__(self, time_table_year: Optional[int] = None,
-                 time_table_id: Optional[int] = None):
+                 object_id: Optional[int] = None):
         self.__year = time_table_year
-        self.__object_id = time_table_id
+        self.__object_id = object_id
 
     def get_table_id(self) -> Optional[int]:
         return self.__object_id
@@ -26,22 +26,6 @@ class TimeTable(AbstractModel):
     def __dict__(self) -> dict:
         return {"time_object_id": self.__object_id,
                 "time_table_year": self.__year}
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[TimeTable]:
-        data = cls._read_json_db(db_path)
-        output = []
-        for elem in data:
-            output.append(cls(**elem))
-        return output
-
-    @classmethod
-    def get_by_id(cls, elem_id: int, db_path: str = "./db") -> TimeTable:
-        data = cls._read_json_db(db_path)
-        for elem in data:
-            if elem["time_object_id"] == elem_id:
-                return cls(**elem)
-        raise ValueError(f"Объект с id {elem_id} не найден")
 
     @staticmethod
     def parse(file_timetable: str) -> List[(Optional[str], Optional[TimeTable])]:
@@ -64,9 +48,3 @@ class TimeTable(AbstractModel):
                 print(exception_text + '\n')
                 res.append((exception_text, None))
         return res
-
-    def get_main_id(self):
-        return self.__object_id
-
-    def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id

@@ -5,7 +5,7 @@ from typing import Optional, List
 
 class LessonRow(AbstractModel):
     def __init__(self, count_studying_hours: int, group_id: int, subject_id: int, room_id: int, start_time: int,
-                 end_time: int, timetable_id: int, lesson_row_id: int = None):
+                 end_time: int, timetable_id: int, object_id: Optional[int] = None):
         self.__count_studying_hours = count_studying_hours
         self.__start_time = start_time
         self.__end_time = end_time
@@ -93,9 +93,3 @@ class LessonRow(AbstractModel):
                 print(exception_text)
                 res.append((exception_text, None))
         return res
-
-    def get_main_id(self):
-        return self.__object_id
-
-    def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id

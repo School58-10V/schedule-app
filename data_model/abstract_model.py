@@ -9,6 +9,11 @@ class AbstractModel(ABC):
     """
         Абстрактный класс модели,
     """
+
+    @abstractmethod
+    def __init__(self):
+        self.__object_id = None
+
     def save(self, output_path: str = './db'):
         current_records = self._read_json_db(output_path)
         current_records.append(self.__dict__())
@@ -68,12 +73,9 @@ class AbstractModel(ABC):
 
     @abstractmethod
     def get_main_id(self):
-        # вместо этого, везде нужно заменить
-        # lesson_id или group_id на object_id
-        pass
+        return self.__object_id
 
     @abstractmethod
     def _set_main_id(self, elem_id: Optional[int] = None):
-        # вместо этого, везде нужно заменить
-        # lesson_id или group_id на object_id
-        pass
+        self.__id = elem_id
+        return self.__id
