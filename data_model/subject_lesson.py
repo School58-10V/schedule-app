@@ -9,8 +9,10 @@ class Subject:
         subject_id - Идентификационный номер предмета
 
     """
-    def __init__(self, name: str = None, subject_id: int = None):
-        self.__subject_name = name
+
+    def __init__(self, subject_name: Optional[str] = None,
+                 subject_id: Optional[int] = None):
+        self.__subject_name = subject_name
         self.__subject_id = subject_id
 
     def get_subject_id(self) -> int:
@@ -24,14 +26,12 @@ class Subject:
         file = open(file_location, 'r', encoding='utf-8')
         lines = file.read().split('\n')[1:]
         file.close()
-        # lines = [i.split(';') for i in lines] Зачем отдельно проходить циклом для split,
-        # если можно сделать все в одном цикле?
         res = []
         for i in lines:
             j = i.split(';')
             try:
                 name_subject = j[0]
-                res.append((None, Subject(name=name_subject)))
+                res.append((None, Subject(subject_name=name_subject)))
             except IndexError as error:
                 exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
@@ -47,16 +47,14 @@ class Subject:
         return f'Subject(subject_name: {self.__subject_name})'
 
     def __dict__(self) -> dict:
-        return {
-            "subject_id": self.__subject_id,
-            "subject_name": self.__subject_name
-        }
+        return {"subject_id": self.__subject_id,
+                "subject_name": self.__subject_name}
 
-    def serialize_to_json(self, indent: int = None) -> str:
+    def serialize_to_json(self, indent: Optional[int] = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
+    def serialize_records_to_json(records: list, indent: Optional[int] = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
 
     @classmethod
@@ -75,3 +73,16 @@ class Subject:
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
+
+    @classmethod
+    def get_all(cls, db_path: str = "./db") -> list[Subject]:
+        data = cls.__read_json_db(db_path)
+        return [cls(**i) for i in data]
+
+    @classmethod
+    def get_by_id(cls, subject_id: int, db_path: str = "./db") -> Subject:
+        data = cls.__read_json_db(db_path)
+        for i in data:
+            if i["subject_id"] == subject_id:
+                return cls(**i)
+        raise ValueError(f"Объект с id {subject_id} не найден")
