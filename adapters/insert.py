@@ -18,7 +18,8 @@ def serialize_records_to_json(records: list, indent: int = None) -> str:
 
 
 def insert(self, collection_name: str, document: dict) -> dict:
-    # читает файл, изменяет айди, записывает новый файл с доп объектом
+    # collection_name название класса, document объект
+    # читает файл, добавляет новый объект с айди, записывает новый файл с доп объектом
     with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
         current_records = self.__read_json_db(collection_name)
         document["_object_id"] = int(id_class + len(f"./db/{collection_name}.json"))
