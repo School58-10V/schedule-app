@@ -14,6 +14,8 @@ class FileSource:
     def get_all(cls, collection_name: str) -> list[dict]:
         return [cls(**i) for i in cls.__read_json_db(cls.__dp_path(), collection_name)]
 
+# Метод get_by_id принимает имя коллекции и ID конкретного экземпляра класса, после чего возвращает dict всех
+# переменных
     @classmethod
     def get_by_id(cls, collection_name: str, element_id: int) -> dict:
         for i in cls.__read_json_db(cls.__dp_path(), collection_name):
