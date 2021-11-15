@@ -1,9 +1,9 @@
 from __future__ import annotations
-import json
 from typing import Optional, List
+from abstract_model import AbstractModel
 
 
-class TimeTable:
+class TimeTable(AbstractModel):
     """
         Table_id - ID данного расписания
         Year - учебный год данного расписания
@@ -29,7 +29,7 @@ class TimeTable:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[TimeTable]:
-        data = cls.__read_json_db(db_path)
+        data = cls._read_json_db(db_path)
         output = []
         for elem in data:
             output.append(cls(**elem))
@@ -37,34 +37,11 @@ class TimeTable:
 
     @classmethod
     def get_by_id(cls, elem_id: int, db_path: str = "./db") -> TimeTable:
-        data = cls.__read_json_db(db_path)
+        data = cls._read_json_db(db_path)
         for elem in data:
             if elem["time_table_id"] == elem_id:
                 return cls(**elem)
         raise ValueError(f"Объект с id {elem_id} не найден")
-
-    def serialize_to_json(self, indent: Optional[int] = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def __serialize_records_to_json(records: list, indent: Optional[int] = None):
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json", mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
 
     @staticmethod
     def parse(file_timetable: str) -> List[(Optional[str], Optional[TimeTable])]:
@@ -87,3 +64,9 @@ class TimeTable:
                 print(exception_text + '\n')
                 res.append((exception_text, None))
         return res
+
+    def get_main_id(self):
+        return self.__table_id
+
+    def _set_main_id(self, elem_id: Optional[int] = None):
+        self.__table_id = elem_id

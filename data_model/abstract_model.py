@@ -21,9 +21,10 @@ class AbstractModel(ABC):
             with open(f"{db_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
                 data_file.write(data)
         except ValueError:
-            print('Объект не найден в бд')
+            print('Объект не найден')
         finally:
             self._set_main_id(None)
+        # Разве delete() не должен возвращать то что он удалил?
 
     def serialize_to_json(self, indent: Optional[int] = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
