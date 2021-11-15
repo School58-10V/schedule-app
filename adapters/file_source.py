@@ -100,6 +100,10 @@ class FileSource:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
                 if i["_object_id"] == _object_id:
+                    new_dict = i
+                    new_dict.update(document)
+                    current_records.remove(current_records.index(i))
+                    current_records.append(new_dict)
                     current_records.index(i)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
