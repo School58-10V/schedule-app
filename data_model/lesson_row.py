@@ -123,7 +123,7 @@ class LessonRow:
         return res
 
     @classmethod
-    def get_all(cls, db_path: str = "../db") -> list[LessonRow]:
+    def get_all(cls, db_path: str = "./db") -> list[LessonRow]:
         list_of_objects = cls.__read_json_db(db_path)
         return [cls(count_studying_hours=cnt['count_studying_hours'], group_id=cnt["group_id"],
                     subject_id=cnt["subject_id"], room_id=cnt["room_id"], start_time=cnt["start_time"],
@@ -131,7 +131,7 @@ class LessonRow:
                 for cnt in list_of_objects]
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_path: str = "../db") -> LessonRow:
+    def get_by_id(cls, element_id: int, db_path: str = "./db") -> LessonRow:
         for i in cls.__read_json_db(db_path):
             if i['lesson_row_id'] == element_id:
                 return cls(**i)
