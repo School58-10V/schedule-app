@@ -22,6 +22,16 @@ class FileSource:
     def generate_id(self):
         return datetime.microsecond
 
+    @classmethod
+    def get_by_query(cls, collection_name, query) -> list[dict]:
+        dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+        matching_keys = {}
+        for i in dict_list:
+            for j in i:
+                if j in query:
+                    matching_keys.update(j)
+        return matching_keys
+
     def __dp_path(self):
         return self.__dp_path
 
@@ -43,12 +53,19 @@ class FileSource:
                 return i
         return None
 
-    def get_by_query(self, collection_name: str, query: dict[str, Any]) -> list[dict]:
-        pass
+    @classmethod
+    def get_by_query(cls, collection_name, query) -> list[dict]:
+        dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+        matching_keys = {}
+        for i in dict_list:
+            for j in i:
+                if j in query:
+                    matching_keys.update(j)
+        return matching_keys
 
-    # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять порядковый номер экземпляра. Таким
-    # образом мы получим айдишник, который можно будет понимать и без словаря обозначений. Например 4 экземпляр класса
-    # location будет записан по ID, как 044, а 18 экземпляр класса teacher, как 0918, так каждый ID будет
+    # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять время в микросекудах. Таким
+    # образом мы получим айдишник, который можно будет понимать и без словаря обозначений. Например экземпляр класса
+    # location может быть записан по ID, как 04412494(где 04- код класса, а 412494- микросекунды в момент записи ID).
     # уникальным(Ваня).
     # group - 01
     # lesson - 02
