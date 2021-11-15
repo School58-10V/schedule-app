@@ -24,7 +24,7 @@ class TimeTable(AbstractModel):
         return f"Timetable(object_id={self.__object_id}, year={self.__year})"
 
     def __dict__(self) -> dict:
-        return {"time_object_id": self.__object_id,
+        return {"object_id": self.__object_id,
                 "time_table_year": self.__year}
 
     @staticmethod

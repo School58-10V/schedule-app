@@ -10,10 +10,6 @@ class AbstractModel(ABC):
         Абстрактный класс модели,
     """
 
-    @abstractmethod
-    def __init__(self):
-        self.__object_id = None
-
     def save(self, output_path: str = './db'):
         current_records = self._read_json_db(output_path)
         current_records.append(self.__dict__())
@@ -45,7 +41,7 @@ class AbstractModel(ABC):
     @classmethod
     def get_by_id(cls, element_id: int, db_path: str = "./db") -> AbstractModel:
         for i in cls._read_json_db(db_path):
-            if i['lesson_id'] == element_id:
+            if i['object_id'] == element_id:
                 return cls(**i)
         raise ValueError(f"Объект с id {element_id} не найден")
 
@@ -71,11 +67,9 @@ class AbstractModel(ABC):
     def __dict__(self):
         pass
 
-    @abstractmethod
     def get_main_id(self):
         return self.__object_id
 
-    @abstractmethod
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__id = elem_id
-        return self.__id
+        self.__object_id = elem_id
+        return self.__object_id

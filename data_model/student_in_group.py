@@ -3,8 +3,10 @@ import json
 
 from typing import Optional, List
 
+from data_model.abstract_model import AbstractModel
 
-class StudentInGroup:
+
+class StudentInGroup(AbstractModel):
     """
         Класс ученика в группе. Используется для m2m отношения между
         Group и Student

@@ -55,19 +55,8 @@ class Lesson(AbstractModel):
     def get_notes(self) -> str:
         return self.__notes
 
-    def get_lesson_id(self) -> Optional[int]:
-        return self.__object_id
-
     def get_state(self) -> Optional[bool]:
         return self.__state
-
-    def get_main_id(self):
-        return self.__object_id
-
-    # set functions
-
-    def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id
 
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[Lesson])]:
@@ -111,5 +100,5 @@ class Lesson(AbstractModel):
                 "group_id": self.__group_id,
                 "subject_id": self.__subject_id,
                 "notes": self.__notes,
-                "lesson_id": self.__object_id,
+                "object_id": self.__object_id,
                 "state": self.__state}

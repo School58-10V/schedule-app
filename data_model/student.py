@@ -4,8 +4,10 @@ from datetime import date
 
 from typing import Optional, List
 
+from data_model.abstract_model import AbstractModel
 
-class Student:
+
+class Student(AbstractModel):
     """
         Класс ученика.
         full name - полное имя студента
@@ -30,9 +32,6 @@ class Student:
 
     def get_date_of_birth(self) -> date:
         return self.__date_of_birth
-
-    def get_id(self) -> Optional[int]:
-        return self.__object_id
 
     def get_contacts(self) -> Optional[str]:
         return self.__contacts

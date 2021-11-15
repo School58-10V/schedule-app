@@ -3,8 +3,10 @@ import json
 
 from typing import Optional, List
 
+from data_model.abstract_model import AbstractModel
 
-class Location:
+
+class Location(AbstractModel):
     """
                       ID - Идентификационный номер места проведения урока
             num_of_class - номер класса, в котором проходит занятие
@@ -23,9 +25,6 @@ class Location:
         self.__link = link
         self.__type_of_location = type_of_location
         self.__comment = comment
-
-    def get_location_id(self):
-        return self.__object_id
 
     def get_location_desc(self):
         return self.__location_desc
@@ -75,11 +74,3 @@ class Location:
     def __str__(self):
         return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
                f'link={self.__link}, comment={self.__comment})'
-
-    def __serialize_to_json(self):
-        return json.dumps({"object_id": self.__object_id,
-                           "num_of_class": self.__location_desc,
-                           "profile": self.__profile,
-                           "equipment": self.__equipment,
-                           "link": self.__link,
-                           "type_of_location": self.__type_of_location}, ensure_ascii=False)

@@ -31,9 +31,6 @@ class Group(AbstractModel):
     def get_profile_name(self) -> str:
         return self.__profile_name
 
-    def get_id(self) -> Optional[int]:
-        return self.__object_id
-
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[Group])]:
         with open(file_location, encoding='utf-8') as file:
