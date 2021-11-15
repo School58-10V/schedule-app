@@ -34,17 +34,6 @@ class Group(AbstractModel):
     def get_id(self) -> Optional[int]:
         return self.__object_id
 
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> List[Group]:
-        return [cls(**i) for i in cls._read_json_db(db_path)]
-
-    @classmethod
-    def get_by_id(cls, element_id: int, db_path: str = "./db") -> Group:
-        for i in cls._read_json_db(db_path):
-            if i['object_id'] == element_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {element_id} не найден")
-
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[Group])]:
         with open(file_location, encoding='utf-8') as file:
@@ -81,9 +70,3 @@ class Group(AbstractModel):
                 "grade": self.__grade,
                 "profile_name": self.__profile_name,
                 "object_id": self.__object_id}
-
-    def get_main_id(self):
-        return self.__object_id
-
-    def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id

@@ -48,9 +48,3 @@ class TimeTable(AbstractModel):
                 print(exception_text + '\n')
                 res.append((exception_text, None))
         return res
-
-    def get_main_id(self):
-        return self.__object_id
-
-    def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id

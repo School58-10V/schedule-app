@@ -58,22 +58,3 @@ class TeachersOnLessonRows(AbstractModel):
                 print(exception_text + '\n')
                 res.append((exception_text, None))
         return res
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> List[TeachersOnLessonRows]:
-        data = cls._read_json_db(db_path)
-        return [cls(**i) for i in data]
-
-    @classmethod
-    def get_by_id(cls, object_id: int, db_path: str = "./db") -> TeachersOnLessonRows:
-        data = cls._read_json_db(db_path)
-        for i in data:
-            if i["object_id"] == object_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {object_id} не найден")
-
-    def get_main_id(self):
-        return self.__object_id
-
-    def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id

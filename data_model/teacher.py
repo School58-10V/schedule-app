@@ -104,14 +104,3 @@ class Teacher:
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[Teacher]:
-        return [cls(**i) for i in cls.__read_json_db(db_path)]
-
-    @classmethod
-    def get_by_id(cls, object_id: int, db_path: str = "./db") -> Teacher:
-        for i in cls.__read_json_db(db_path):
-            if i["object_id"] == object_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {object_id} не найден")

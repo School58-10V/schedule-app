@@ -95,23 +95,3 @@ class Student:
                 return record
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
-
-    def save(self, output_path: str = './db'):
-        current_records = list(self.__read_json_db(output_path))
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[Student]:
-        return [cls(**i) for i in cls.__read_json_db(db_path)]
-
-    @classmethod
-    def get_by_id(cls, object_id: int, db_path: str = "./db") -> Student:
-        for i in cls.__read_json_db(db_path):
-            if i["object_id"] == object_id:
-                return cls(**i)
-        return ValueError(f"Объект с id {object_id} не найден")
-
-

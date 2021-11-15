@@ -66,22 +66,3 @@ class NoLearningPeriod(AbstractModel):
                 print(exception_text)
                 res.append((exception_text, None))
         return res
-
-    def get_main_id(self):
-        return self.__object_id
-
-    def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db"):
-        data = cls._read_json_db(db_path)
-        return [cls(**i) for i in data]
-
-    @classmethod
-    def get_by_id(cls, elem_id: int, db_path: str = './db'):
-        data = cls._read_json_db(db_path)
-        for i in data:
-            if i["object_id"] == elem_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {elem_id} не найден")
