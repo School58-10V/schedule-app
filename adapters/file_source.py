@@ -32,7 +32,12 @@ class FileSource:
         pass
 
     def insert(self, collection_name: str, document: dict) -> dict:
-        pass
+        with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+            current_records = self.__read_json_db(collection_name)
+            document["_object_id"] = int(id_class + len(f"./db/{collection_name}.json"))
+            current_records.append(document)
+            target_json = self.__class__.serialize_records_to_json(current_records)
+            data_file.write(target_json)
 
     def update(self, collection_name: str, elem_id: int, document: dict) -> dict:
         pass
@@ -51,3 +56,7 @@ class FileSource:
                 return record
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
+
+    @staticmethod
+    def serialize_records_to_json(records: list, indent: int = None) -> str:
+        return json.dumps(records, ensure_ascii=False, indent=indent)
