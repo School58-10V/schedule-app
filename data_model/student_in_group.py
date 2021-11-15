@@ -1,5 +1,4 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-import json
 
 from typing import Optional, List
 
@@ -62,19 +61,3 @@ class StudentInGroup(AbstractModel):
                 'group_id': self.__group_id,
                 'object_id': self.__object_id}
 
-    def serialize_to_json(self):
-        return json.dumps(self.__dict__(), ensure_ascii=False)
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
