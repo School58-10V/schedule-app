@@ -1,22 +1,22 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
-from abstract_model import AbstractModel
+from data_model.abstract_model import AbstractModel
 from typing import List, Optional
 
 
 class Lesson(AbstractModel):
 
     def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
-                 subject_id: int, notes: str, lesson_id: Optional[int] = None, state: Optional[bool] = True):
+                 subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
         """
             :param start_time: начало урока
             :param end_time: конец урока
             :param day: дата
             :param teacher_id: замена
-            :param group_id: группа учеников
+            :param object_id: группа учеников
             :param subject_id: предмет
             :param notes: примечания
-            :param lesson_id: урок
+            :param group_id: урок
             :param state: состояние
         """
         self.__start_time = start_time
@@ -26,7 +26,7 @@ class Lesson(AbstractModel):
         self.__group_id = group_id
         self.__subject_id = subject_id
         self.__notes = notes
-        self.__lesson_id = lesson_id
+        self.__object_id = object_id
         self.__state = state
 
     def toggle_state(self):
@@ -56,29 +56,18 @@ class Lesson(AbstractModel):
         return self.__notes
 
     def get_lesson_id(self) -> Optional[int]:
-        return self.__lesson_id
+        return self.__object_id
 
     def get_state(self) -> Optional[bool]:
         return self.__state
 
     def get_main_id(self):
-        return self.__lesson_id
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> List[Lesson]:
-        return [cls(**i) for i in cls._read_json_db(db_path)]
-
-    @classmethod
-    def get_by_id(cls, element_id: int, db_path: str = "./db") -> Lesson:
-        for i in cls._read_json_db(db_path):
-            if i['lesson_id'] == element_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {element_id} не найден")
+        return self.__object_id
 
     # set functions
 
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__lesson_id = elem_id
+        self.__object_id = elem_id
 
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[Lesson])]:
@@ -112,7 +101,7 @@ class Lesson(AbstractModel):
             return res
 
     def __str__(self):
-        return f"Урок с id={self.__lesson_id}"
+        return f"Урок с id={self.__object_id}"
 
     def __dict__(self) -> dict:
         return {"start_time": self.__start_time,
@@ -122,5 +111,5 @@ class Lesson(AbstractModel):
                 "group_id": self.__group_id,
                 "subject_id": self.__subject_id,
                 "notes": self.__notes,
-                "lesson_id": self.__lesson_id,
+                "lesson_id": self.__object_id,
                 "state": self.__state}

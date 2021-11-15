@@ -83,7 +83,3 @@ class Location:
                            "equipment": self.__equipment,
                            "link": self.__link,
                            "type_of_location": self.__type_of_location}, ensure_ascii=False)
-
-    def save(self):
-        with open("./db/locations.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(self.__serialize_to_json())

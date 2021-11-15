@@ -1,5 +1,5 @@
 from __future__ import annotations
-from abstract_model import AbstractModel
+from data_model.abstract_model import AbstractModel
 from typing import Optional, List
 
 
@@ -100,16 +100,3 @@ class LessonRow(AbstractModel):
 
     def _set_main_id(self, elem_id: Optional[int] = None):
         self.__lesson_row_id = elem_id
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db"):
-        data = cls._read_json_db(db_path)
-        return [cls(**i) for i in data]
-
-    @classmethod
-    def get_by_id(cls, elem_id: int, db_path: str = './db'):
-        data = cls._read_json_db(db_path)
-        for i in data:
-            if i["lesson_row_id"] == elem_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {elem_id} не найден")

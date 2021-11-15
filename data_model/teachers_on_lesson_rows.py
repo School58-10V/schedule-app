@@ -60,7 +60,7 @@ class TeachersOnLessonRows(AbstractModel):
         return res
 
     @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[TeachersOnLessonRows]:
+    def get_all(cls, db_path: str = "./db") -> List[TeachersOnLessonRows]:
         data = cls._read_json_db(db_path)
         return [cls(**i) for i in data]
 
