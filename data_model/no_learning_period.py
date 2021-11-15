@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from data_model.abstract_model import AbstractModel
-from datetime import date
 from typing import List, Optional
 
 
 class NoLearningPeriod(AbstractModel):
-    def __init__(self, start: date, stop: date, timetable_id: Optional[int] = None,
+    def __init__(self, start: str, stop: str, timetable_id: Optional[int] = None,
                  object_id: Optional[int] = None):
         # Для начала и конца каникул можно использовать только дату
         self.__object_id = object_id
@@ -24,10 +23,10 @@ class NoLearningPeriod(AbstractModel):
     def get_no_learning_period_id(self) -> int:
         return self.__object_id
 
-    def get_star_time(self) -> date:
+    def get_start_time(self) -> str:
         return self.__start_time
 
-    def get_stop_time(self) -> date:
+    def get_stop_time(self) -> str:
         return self.__stop_time
 
     def get_timetable_id(self) -> int:
