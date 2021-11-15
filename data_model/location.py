@@ -111,10 +111,7 @@ class Location:
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> list[Location]:
-        list_of_objects = cls.__read_json_db(db_path)
-        return [cls(location_id=cnt['location_id'], location_desc=cnt["location_desc"],
-                    profile=cnt["profile"], equipment=cnt["equipment"], link=cnt["link"],
-                    type_of_location=cnt["type_of_location"], comment=cnt["comment"]) for cnt in list_of_objects]
+        return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
     def get_by_id(cls, element_id: int, db_path: str = "./db") -> Location:
