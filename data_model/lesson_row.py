@@ -78,7 +78,7 @@ class LessonRow:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
 
-    def save(self, output_path: str = '../db'):
+    def save(self, output_path: str = './db'):
         current_records = self.__read_json_db(output_path)
         current_records.append(self.__dict__())
         target_json = self.__class__.serialize_records_to_json(current_records)
