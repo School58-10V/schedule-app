@@ -7,7 +7,7 @@
     "group_id": 8,
     "subject_id": 5,
     "notes": "",
-    "lesson_id": null,
+    "object_id": null,
     "state": true
   },
   {
@@ -18,7 +18,7 @@
     "group_id": 10,
     "subject_id": 2,
     "notes": "Урок может быть перенесен в другой класс",
-    "lesson_id": 2,
+    "object_id": 2,
     "state": false
   }
 ]

@@ -10,10 +10,6 @@ class AbstractModel(ABC):
         Абстрактный класс модели,
     """
 
-    @abstractmethod
-    def __init__(self):
-        self.__object_id = None
-
     def save(self, output_path: str = './db'):
         current_records = self._read_json_db(output_path)
         current_records.append(self.__dict__())
@@ -76,5 +72,5 @@ class AbstractModel(ABC):
         return self.__object_id
 
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__id = elem_id
-        return self.__id
+        self.__object_id = elem_id
+        return self.__object_id
