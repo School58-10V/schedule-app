@@ -3,7 +3,7 @@ from data_model.abstract_model import AbstractModel
 from typing import Optional, List
 
 
-class Teacher:
+class Teacher(AbstractModel):
     """
         Класс учителя.
         fio - ФИО

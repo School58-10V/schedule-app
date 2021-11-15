@@ -71,11 +71,9 @@ class AbstractModel(ABC):
     def __dict__(self):
         pass
 
-    @abstractmethod
     def get_main_id(self):
         return self.__object_id
 
-    @abstractmethod
     def _set_main_id(self, elem_id: Optional[int] = None):
         self.__id = elem_id
         return self.__id
