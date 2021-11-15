@@ -10,13 +10,13 @@ class StudentInGroup:
         Group и Student
         student_id - айди ученика
         group_id - айди группы
-        student_group_id - айди группы учeников
+        object_id - айди группы учeников
     """
 
-    def __init__(self, student_id: int, group_id: int, student_group_id: Optional[int] = None):
+    def __init__(self, student_id: int, group_id: int, object_id: Optional[int] = None):
         self.__student_id = student_id
         self.__group_id = group_id
-        self.__student_group_id = student_group_id
+        self.__object_id = object_id
 
     def get_student_id(self) -> int:
         return self.__student_id
@@ -25,7 +25,7 @@ class StudentInGroup:
         return self.__group_id
 
     def get_student_group_id(self) -> Optional[int]:
-        return self.__student_group_id
+        return self.__object_id
 
     @staticmethod
     def parse(file_location) -> List[(Optional[str], Optional[StudentInGroup])]:
@@ -38,8 +38,8 @@ class StudentInGroup:
             try:
                 student_id = int(i[0])
                 group_id = int(i[1])
-                student_group_id = int(i[2])
-                res.append((None, StudentInGroup(student_id, group_id, student_group_id)))
+                object_id = int(i[2])
+                res.append((None, StudentInGroup(student_id, group_id, object_id)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)
@@ -58,7 +58,7 @@ class StudentInGroup:
     def __dict__(self) -> dict:
         return {'student_id': self.__student_id,
                 'group_id': self.__group_id,
-                'student_group_id': self.__student_group_id}
+                'object_id': self.__object_id}
 
     def serialize_to_json(self):
         return json.dumps(self.__dict__(), ensure_ascii=False)
@@ -89,10 +89,10 @@ class StudentInGroup:
         return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, student_group_id: int, db_path: str = "./db") -> StudentInGroup:
+    def get_by_id(cls, object_id: int, db_path: str = "./db") -> StudentInGroup:
         for i in cls.__read_json_db(db_path):
-            if i["student_group_id"] == student_group_id:
+            if i["object_id"] == object_id:
                 return cls(**i)
-        return ValueError(f"Объект с id {student_group_id} не найден")
+        return ValueError(f"Объект с id {object_id} не найден")
 
 

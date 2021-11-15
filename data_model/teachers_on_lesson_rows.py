@@ -9,13 +9,13 @@ class TeachersOnLessonRows(AbstractModel):
         Teacher и LessonRow
                       teacher_id - Идентификационный номер учителя
                    lesson_row_id - Идентификационный номер ряда уроков
-        teacher_on_lesson_row_id - Идентификационный номер учителя на ряд уроков
+        object_id - Идентификационный номер учителя на ряд уроков
     """
 
-    def __init__(self, teacher_id: int, lesson_row_id: int, teacher_on_lesson_row_id: Optional[int] = None):
+    def __init__(self, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
         self.__teacher_id = teacher_id
         self.__lesson_row_id = lesson_row_id
-        self.__teacher_on_lesson_row_id = teacher_on_lesson_row_id
+        self.__object_id = object_id
 
     def get_teacher_id(self) -> int:
         return self.__teacher_id
@@ -24,17 +24,17 @@ class TeachersOnLessonRows(AbstractModel):
         return self.__lesson_row_id
 
     def get_teacher_on_lesson_row_id(self) -> Optional[int]:
-        return self.__teacher_on_lesson_row_id
+        return self.__object_id
 
     def __str__(self) -> str:
         return f'TeachersOnLessonRows(teacher_id: {self.__teacher_id},' \
                f' lesson_row_id: {self.__lesson_row_id},' \
-               f' teacher_on_lesson_row_id: {self.__teacher_on_lesson_row_id})'
+               f' object_id: {self.__object_id})'
 
     def __dict__(self) -> dict:
         return {"teacher_id": self.__teacher_id,
                 "lesson_row_id": self.__lesson_row_id,
-                "teacher_on_lesson_row_id": self.__teacher_on_lesson_row_id}
+                "object_id": self.__object_id}
 
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[TeachersOnLessonRows])]:
@@ -65,15 +65,15 @@ class TeachersOnLessonRows(AbstractModel):
         return [cls(**i) for i in data]
 
     @classmethod
-    def get_by_id(cls, teacher_on_lesson_row_id: int, db_path: str = "./db") -> TeachersOnLessonRows:
+    def get_by_id(cls, object_id: int, db_path: str = "./db") -> TeachersOnLessonRows:
         data = cls._read_json_db(db_path)
         for i in data:
-            if i["teacher_on_lesson_row_id"] == teacher_on_lesson_row_id:
+            if i["object_id"] == object_id:
                 return cls(**i)
-        raise ValueError(f"Объект с id {teacher_on_lesson_row_id} не найден")
+        raise ValueError(f"Объект с id {object_id} не найден")
 
     def get_main_id(self):
-        return self.__teacher_on_lesson_row_id
+        return self.__object_id
 
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__teacher_on_lesson_row_id = elem_id
+        self.__object_id = elem_id

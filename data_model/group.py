@@ -11,13 +11,13 @@ class Group(AbstractModel):
 
     def __init__(
             self, teacher_id: int, class_letter: str, grade: int,
-            profile_name: str, group_id: Optional[int] = None
+            profile_name: str, object_id: Optional[int] = None
             ):
         self.__teacher_id = teacher_id
         self.__class_letter = class_letter
         self.__grade = grade
         self.__profile_name = profile_name  # should be empty if no profile exists
-        self.__group_id = group_id
+        self.__object_id = object_id
 
     def get_teacher_id(self) -> int:
         return self.__teacher_id
@@ -32,7 +32,7 @@ class Group(AbstractModel):
         return self.__profile_name
 
     def get_id(self) -> Optional[int]:
-        return self.__group_id
+        return self.__object_id
 
     @classmethod
     def get_all(cls, db_path: str = "./db") -> List[Group]:
@@ -41,7 +41,7 @@ class Group(AbstractModel):
     @classmethod
     def get_by_id(cls, element_id: int, db_path: str = "./db") -> Group:
         for i in cls._read_json_db(db_path):
-            if i['group_id'] == element_id:
+            if i['object_id'] == element_id:
                 return cls(**i)
         raise ValueError(f"Объект с id {element_id} не найден")
 
@@ -57,8 +57,8 @@ class Group(AbstractModel):
                     class_letter = i[1]
                     grade = i[2]
                     profile_name = i[3]
-                    group_id = i[4]
-                    res.append((None, Group(int(teacher_id), class_letter, int(grade), profile_name, int(group_id))))
+                    object_id = i[4]
+                    res.append((None, Group(int(teacher_id), class_letter, int(grade), profile_name, int(object_id))))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
@@ -73,17 +73,17 @@ class Group(AbstractModel):
 
     def __str__(self) -> str:
         return f'Group(teacher_id={self.__teacher_id}, class_letter={self.__class_letter}, ' \
-               f'grade={self.__grade}, profile_name={self.__profile_name}, group_id={self.__group_id})'
+               f'grade={self.__grade}, profile_name={self.__profile_name}, object_id={self.__object_id})'
 
     def __dict__(self) -> dict:
         return {"teacher_id": self.__teacher_id,
                 "class_letter": self.__class_letter,
                 "grade": self.__grade,
                 "profile_name": self.__profile_name,
-                "group_id": self.__group_id}
+                "object_id": self.__object_id}
 
     def get_main_id(self):
-        return self.__group_id
+        return self.__object_id
 
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__group_id = elem_id
+        self.__object_id = elem_id

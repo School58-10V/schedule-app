@@ -10,18 +10,18 @@ class Student:
         Класс ученика.
         full name - полное имя студента
         date_of_birth - дата рождения ученика
-        student_id - id студента
+        object_id - id студента
         contacts - контакты родителей ученика
         bio - биография студента
     """
 
     def __init__(
-            self, full_name: str, date_of_birth: date, student_id: Optional[int] = None,
+            self, full_name: str, date_of_birth: date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
     ):
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
-        self.__student_id = student_id
+        self.__object_id = object_id
         self.__contacts = contacts
         self.__bio = bio
 
@@ -32,7 +32,7 @@ class Student:
         return self.__date_of_birth
 
     def get_id(self) -> Optional[int]:
-        return self.__student_id
+        return self.__object_id
 
     def get_contacts(self) -> Optional[str]:
         return self.__contacts
@@ -74,7 +74,7 @@ class Student:
         return {
             "full_name": self.__full_name,
             "date_of_birth": self.__date_of_birth,
-            "student_id": self.__student_id,
+            "object_id": self.__object_id,
             "contacts": self.__contacts,
             "bio": self.__bio
         }
@@ -108,10 +108,10 @@ class Student:
         return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, student_id: int, db_path: str = "./db") -> Student:
+    def get_by_id(cls, object_id: int, db_path: str = "./db") -> Student:
         for i in cls.__read_json_db(db_path):
-            if i["student_id"] == student_id:
+            if i["object_id"] == object_id:
                 return cls(**i)
-        return ValueError(f"Объект с id {student_id} не найден")
+        return ValueError(f"Объект с id {object_id} не найден")
 
 

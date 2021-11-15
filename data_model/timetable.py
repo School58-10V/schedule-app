@@ -5,26 +5,26 @@ from data_model.abstract_model import AbstractModel
 
 class TimeTable(AbstractModel):
     """
-        Table_id - ID данного расписания
+        object_id - ID данного расписания
         Year - учебный год данного расписания
     """
 
     def __init__(self, time_table_year: Optional[int] = None,
                  time_table_id: Optional[int] = None):
         self.__year = time_table_year
-        self.__table_id = time_table_id
+        self.__object_id = time_table_id
 
     def get_table_id(self) -> Optional[int]:
-        return self.__table_id
+        return self.__object_id
 
     def get_year(self) -> Optional[int]:
         return self.__year
 
     def __str__(self):
-        return f"Timetable(table_id={self.__table_id}, year={self.__year})"
+        return f"Timetable(object_id={self.__object_id}, year={self.__year})"
 
     def __dict__(self) -> dict:
-        return {"time_table_id": self.__table_id,
+        return {"time_object_id": self.__object_id,
                 "time_table_year": self.__year}
 
     @classmethod
@@ -39,7 +39,7 @@ class TimeTable(AbstractModel):
     def get_by_id(cls, elem_id: int, db_path: str = "./db") -> TimeTable:
         data = cls._read_json_db(db_path)
         for elem in data:
-            if elem["time_table_id"] == elem_id:
+            if elem["time_object_id"] == elem_id:
                 return cls(**elem)
         raise ValueError(f"Объект с id {elem_id} не найден")
 
@@ -66,7 +66,7 @@ class TimeTable(AbstractModel):
         return res
 
     def get_main_id(self):
-        return self.__table_id
+        return self.__object_id
 
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__table_id = elem_id
+        self.__object_id = elem_id

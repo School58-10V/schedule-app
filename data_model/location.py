@@ -14,9 +14,9 @@ class Location:
         type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
     """
 
-    def __init__(self, type_of_location: str, location_id: int = None, location_desc: str = None, profile: str = None,
+    def __init__(self, type_of_location: str, object_id: int = None, location_desc: str = None, profile: str = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
-        self.__location_id = location_id
+        self.__object_id = object_id
         self.__location_desc = location_desc
         self.__profile = profile
         self.__equipment = equipment
@@ -25,7 +25,7 @@ class Location:
         self.__comment = comment
 
     def get_location_id(self):
-        return self.__location_id
+        return self.__object_id
 
     def get_location_desc(self):
         return self.__location_desc
@@ -77,7 +77,7 @@ class Location:
                f'link={self.__link}, comment={self.__comment})'
 
     def __serialize_to_json(self):
-        return json.dumps({"location_id": self.__location_id,
+        return json.dumps({"object_id": self.__object_id,
                            "num_of_class": self.__location_desc,
                            "profile": self.__profile,
                            "equipment": self.__equipment,

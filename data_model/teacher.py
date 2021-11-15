@@ -8,16 +8,16 @@ class Teacher:
     """
         Класс учителя.
         fio - ФИО
-        teacher_id - ид учителя
+        object_id - ид учителя
         bio - инфа о учителе
         contacts - Контакты учителя
         office_id - закреплённый кабинет
         subject - его предмет.
     """
-    def __init__(self, fio: str, teacher_id: int, subject: str, office_id: int = None, bio: str = None,
+    def __init__(self, fio: str, object_id: int, subject: str, office_id: int = None, bio: str = None,
                  contacts: str = None):
         self.__fio = fio
-        self.__teacher_id = teacher_id
+        self.__object_id = object_id
         self.__bio = bio
         self.__contacts = contacts
         self.__office_id = office_id
@@ -27,7 +27,7 @@ class Teacher:
         return self.__fio
 
     def get_teacher_id(self) -> int:
-        return self.__teacher_id
+        return self.__object_id
 
     def get_bio(self) -> Optional[str]:
         return self.__bio
@@ -71,7 +71,7 @@ class Teacher:
 
     def __dict__(self) -> dict:
         return {"fio": self.__fio,
-                "teacher_id": self.__teacher_id,
+                "object_id": self.__object_id,
                 "bio": self.__bio,
                 "contacts": self.__contacts,
                 "office_id": self.__office_id,
@@ -81,7 +81,7 @@ class Teacher:
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts =  {self.__contacts}) '
 
-    def serialize_to_json(self):
+    def serialize_to_json(self, indent: Optional[int] = None):
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @staticmethod
@@ -110,8 +110,8 @@ class Teacher:
         return [cls(**i) for i in cls.__read_json_db(db_path)]
 
     @classmethod
-    def get_by_id(cls, teacher_id: int, db_path: str = "./db") -> Teacher:
+    def get_by_id(cls, object_id: int, db_path: str = "./db") -> Teacher:
         for i in cls.__read_json_db(db_path):
-            if i["teacher_id"] == teacher_id:
+            if i["object_id"] == object_id:
                 return cls(**i)
-        return ValueError(f"Объект с id {teacher_id} не найден")
+        raise ValueError(f"Объект с id {object_id} не найден")
