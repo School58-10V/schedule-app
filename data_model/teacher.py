@@ -81,7 +81,7 @@ class Teacher:
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts =  {self.__contacts}) '
 
-    def serialize_to_json(self):
+    def serialize_to_json(self, indent: Optional[int] = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @staticmethod

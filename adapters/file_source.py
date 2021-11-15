@@ -46,10 +46,13 @@ class FileSource:
     # teacher - 09
     # teachers_on_lesson_rows - 10
     # timetable - 11
+    # принимает на вход имя коллекции и dict объект для сохранения. Метод Insert сохраняет новый(!) объект и ничего не
+    # возвращает. id_class - первая часть ID, которая отвечает за определитель класса. Не определена, так как не приняты
+    # нормативы составления ID.
     def insert(self, collection_name: str, document: dict) -> dict:
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
-            document["_object_id"] = int(id_class + len(f"./db/{collection_name}.json"))
+            document["_object_id"] = int(id_class + len(f"{self.__dp_path}/{collection_name}.json"))
             current_records.append(document)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
