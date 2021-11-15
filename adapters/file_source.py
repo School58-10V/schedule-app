@@ -95,19 +95,23 @@ class FileSource:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
                 if i["_object_id"] == _object_id:
-                    current_records.index(i)
+                    new_dict = i
+                    new_dict.update(document)
+                    current_records.remove(current_records.index(i))
+                    current_records.append(new_dict)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
-
+        return {None: None}  # заглушка, потом решим, что с этим делать
 
     def delete(self, collection_name: str, _object_id: int) -> dict:
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
                 if i["_object_id"] == _object_id:
-                    current_records.index(i)
+                    current_records.remove(current_records.index(i))
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
+        return {None: None}  # заглушка, потом решим, что с этим делать
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
