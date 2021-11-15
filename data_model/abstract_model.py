@@ -28,7 +28,7 @@ class AbstractModel(ABC):
             print('Объект не найден')
         finally:
             self._set_main_id(None)
-        # Разве delete() не должен возвращать то что он удалил?
+            return self.__dict__()
 
     def serialize_to_json(self, indent: Optional[int] = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
