@@ -16,19 +16,17 @@ class AbstractModel(ABC):
         target_json = self.__class__._serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
+        return self
 
     def delete(self, db_path: str = './db'):
         data = self._read_json_db(db_path)
-        try:
+        if self.__dict__() in data:
             data.remove(self.__dict__())
             data = self._serialize_records_to_json(data)
             with open(f"{db_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
                 data_file.write(data)
-        except ValueError:
-            print('Объект не найден')
-        finally:
-            self._set_main_id(None)
-            return self.__dict__()
+        self._set_main_id(None)
+        return self
 
     def serialize_to_json(self, indent: Optional[int] = None) -> str:
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
@@ -72,4 +70,4 @@ class AbstractModel(ABC):
 
     def _set_main_id(self, elem_id: Optional[int] = None):
         self.__object_id = elem_id
-        return self.__object_id
+        return self
