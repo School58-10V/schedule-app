@@ -19,50 +19,41 @@ class FileSource:
                            "teachers_on_lesson_rows": 110,
                            "timetable": 111}
 
-    @staticmethod
-    def generate_id():
-        return datetime.microsecond
-
     @classmethod
     def get_by_query(cls, collection_name, query) -> list[dict]:
         dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
-        #это коллекция словарей
+        # это коллекция словарей
         matching_keys = {}
         list_of_dicts = []
         for i in dict_list:
             for j in i:
                 if j in query:
-                    #перебираем ключи
-                    #и если они совпадают добовляем
+                    # перебираем ключи
+                    # и если они совпадают добовляем
                     matching_keys.update(j)
             list_of_dicts.append(matching_keys)
-            #собираем словари в список и реторним
+            # собираем словари в список и реторним
         return list_of_dicts
-
-    def __dp_path(self):
-        return self.__dp_path
 
     # Метод get_all принимает имя коллекции и возвращает все объекты коллекции в представлении Python(напр. все объеты
     # класса Location можно получить, если использовать get_all("Location"))
-    @classmethod
-    def get_all(cls, collection_name: str) -> list[dict]:
+    def get_all(self, collection_name: str) -> list[dict]:
         # Возвращаем сформированный список, прочитанный методом __read_json_db.
         return cls.__read_json_db(cls.__dp_path(), collection_name)
 
     # Метод get_by_id принимает имя коллекции и ID конкретного экземпляра класса, после чего возвращает dict всех
     # переменных данного экземпляра класса.
-    @classmethod
-    def get_by_id(cls, collection_name: str, element_id: int) -> dict:
+    def get_by_id(cls, collection_name: str, object_id: int) -> dict:
         # Перебираем все объекты коллекции и сравниваем их с необходимым ID экземпляра класса. При совпадении
         # возвращаем dict всех переменных данного экземпляра класса. При отсутствии совпадений возвращает None
         for cnt in cls.__read_json_db(cls.__dp_path(), collection_name):
-            if cnt['group_id'] == element_id:
+            if cnt['object_id'] == object_id:
                 return cnt
         return None
 
     # Метод get_by_query на вход принимает имя коллекции и словарь
     @classmethod
-    def get_by_query(cls, collection_name, query) -> list[dict]:
+    def get_by_query(cls, collection_name, query) -> list[dict]: # new везде надо указывать с чем лист
         dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
         # это коллекция словарей
         matching_keys = {}
@@ -94,40 +85,42 @@ class FileSource:
     # нормативы составления ID.
     def insert(self, collection_name: str, document: dict) -> dict:
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+            # new cтроку 96-99 перенести выше виз опена; папка дб берется из файл сорса как файл паз ВЕЗДЕ!!!!
             current_records = self.__read_json_db(collection_name)
-            document["_object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
+            document["object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
             current_records.append(document)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
-        return {None: None}  # заглушка, потом решим, что с этим делать
+        return document  # new возвращаем получаемый файл
 
-    def update(self, collection_name: str, _object_id: int, document: dict) -> dict:
+    def update(self, collection_name: str, object_id: int, document: dict) -> dict:
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
-                if i["_object_id"] == _object_id:
+                if i["object_id"] == object_id:
+                    # new проверять, есть ли обжект айди в документе
                     new_dict = i
                     new_dict.update(document)
                     current_records.remove(current_records.index(i))
                     current_records.append(new_dict)
-                    current_records.index(i)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
-        return {None: None}  # заглушка, потом решим, что с этим делать
+        return new_dict  # new возвращаем новый объект
 
-    def delete(self, collection_name: str, _object_id: int) -> dict:
+    def delete(self, collection_name: str, object_id: int) -> dict:
+        # new все перенести из виз опена сюда и начальную папку брать из данных выше
         with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
-                if i["_object_id"] == _object_id:
+                if i["object_id"] == object_id:
                     current_records.remove(current_records.index(i))
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
-        return {None: None}  # заглушка, потом решим, что с этим делать
+        return {None: None}  # new удаленный объект без обжект айди
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
-    @classmethod
+    @classmethod  # NEW убрать класс методы
     def __read_json_db(cls, db_path, collection_name) -> list:
         try:
             with open(f"{db_path}/{collection_name}.json",
@@ -140,3 +133,7 @@ class FileSource:
     @staticmethod
     def serialize_records_to_json(records: list, indent: int = None) -> str:
         return json.dumps(records, ensure_ascii=False, indent=indent)
+
+    @staticmethod
+    def generate_id():
+        return datetime.microsecond
