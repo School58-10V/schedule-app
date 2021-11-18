@@ -17,7 +17,7 @@ class Group(AbstractModel):
         self.__class_letter = class_letter
         self.__grade = grade
         self.__profile_name = profile_name  # should be empty if no profile exists
-        self.__object_id = object_id
+        self._object_id = object_id
 
     def get_teacher_id(self) -> int:
         return self.__teacher_id
@@ -59,11 +59,11 @@ class Group(AbstractModel):
 
     def __str__(self) -> str:
         return f'Group(teacher_id={self.__teacher_id}, class_letter={self.__class_letter}, ' \
-               f'grade={self.__grade}, profile_name={self.__profile_name}, object_id={self.__object_id})'
+               f'grade={self.__grade}, profile_name={self.__profile_name}, object_id={self._object_id})'
 
     def __dict__(self) -> dict:
         return {"teacher_id": self.__teacher_id,
                 "class_letter": self.__class_letter,
                 "grade": self.__grade,
                 "profile_name": self.__profile_name,
-                "object_id": self.__object_id}
+                "object_id": self._object_id}

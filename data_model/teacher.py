@@ -16,7 +16,7 @@ class Teacher(AbstractModel):
     def __init__(self, fio: str, object_id: int, subject: str, office_id: int = None, bio: str = None,
                  contacts: str = None):
         self.__fio = fio
-        self.__object_id = object_id
+        self._object_id = object_id
         self.__bio = bio
         self.__contacts = contacts
         self.__office_id = office_id
@@ -65,7 +65,7 @@ class Teacher(AbstractModel):
 
     def __dict__(self) -> dict:
         return {"fio": self.__fio,
-                "object_id": self.__object_id,
+                "object_id": self._object_id,
                 "bio": self.__bio,
                 "contacts": self.__contacts,
                 "office_id": self.__office_id,

@@ -26,7 +26,7 @@ class Lesson(AbstractModel):
         self.__group_id = group_id
         self.__subject_id = subject_id
         self.__notes = notes
-        self.__object_id = object_id
+        self._object_id = object_id
         self.__state = state
 
     def toggle_state(self):
@@ -90,7 +90,7 @@ class Lesson(AbstractModel):
             return res
 
     def __str__(self):
-        return f"Урок с id={self.__object_id}"
+        return f"Урок с id={self._object_id}"
 
     def __dict__(self) -> dict:
         return {"start_time": self.__start_time,
@@ -100,5 +100,5 @@ class Lesson(AbstractModel):
                 "group_id": self.__group_id,
                 "subject_id": self.__subject_id,
                 "notes": self.__notes,
-                "object_id": self.__object_id,
+                "object_id": self._object_id,
                 "state": self.__state}

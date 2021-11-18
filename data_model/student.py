@@ -22,7 +22,7 @@ class Student(AbstractModel):
             ):
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
-        self.__object_id = object_id
+        self._object_id = object_id
         self.__contacts = contacts
         self.__bio = bio
 
@@ -72,7 +72,7 @@ class Student(AbstractModel):
         return {
             "full_name": self.__full_name,
             "date_of_birth": self.__date_of_birth,
-            "object_id": self.__object_id,
+            "object_id": self._object_id,
             "contacts": self.__contacts,
             "bio": self.__bio
             }

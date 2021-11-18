@@ -12,16 +12,16 @@ class TimeTable(AbstractModel):
     def __init__(self, time_table_year: Optional[int] = None,
                  object_id: Optional[int] = None):
         self.__year = time_table_year
-        self.__object_id = object_id
+        self._object_id = object_id
 
     def get_year(self) -> Optional[int]:
         return self.__year
 
     def __str__(self):
-        return f"Timetable(object_id={self.__object_id}, year={self.__year})"
+        return f"Timetable(object_id={self._object_id}, year={self.__year})"
 
     def __dict__(self) -> dict:
-        return {"object_id": self.__object_id,
+        return {"object_id": self._object_id,
                 "time_table_year": self.__year}
 
     @staticmethod

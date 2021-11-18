@@ -18,7 +18,7 @@ class Location(AbstractModel):
 
     def __init__(self, type_of_location: str, object_id: int = None, location_desc: str = None, profile: str = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
-        self.__object_id = object_id
+        self._object_id = object_id
         self.__location_desc = location_desc
         self.__profile = profile
         self.__equipment = equipment
@@ -76,7 +76,7 @@ class Location(AbstractModel):
                f'link={self.__link}, comment={self.__comment})'
 
     def __dict__(self):
-        return {'object_id': self.__object_id,
+        return {'object_id': self._object_id,
                 'location_desc': self.__location_desc,
                 'profile': self.__profile,
                 'equipment': self.__equipment,
