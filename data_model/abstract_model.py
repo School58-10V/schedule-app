@@ -7,13 +7,13 @@ from typing import Optional, List
 
 class AbstractModel(ABC):
     """
-        Абстрактный класс модели,
+        Абстрактный класс модели
     """
 
     def save(self, output_path: str = './db'):
         current_records = self._read_json_db(output_path)
         current_records.append(self.__dict__())
-        target_json = self.__class__._serialize_records_to_json(current_records)
+        target_json = AbstractModel._serialize_records_to_json(current_records)
         with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         return self
