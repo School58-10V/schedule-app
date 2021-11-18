@@ -19,9 +19,8 @@ class FileSource:
                            "teachers_on_lesson_rows": 110,
                            "timetable": 111}
 
-    @classmethod
-    def get_by_query(cls, collection_name, query) -> list[dict]:
-        dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+    def get_by_query(self, collection_name, query) -> list[dict]:
+        dict_list = self.__read_json_db(self.__dp_path, collection_name)
         # это коллекция словарей
         matching_keys = {}
         list_of_dicts = []
@@ -39,22 +38,21 @@ class FileSource:
     # класса Location можно получить, если использовать get_all("Location"))
     def get_all(self, collection_name: str) -> list[dict]:
         # Возвращаем сформированный список, прочитанный методом __read_json_db.
-        return cls.__read_json_db(cls.__dp_path(), collection_name)
+        return self.__read_json_db(self.__dp_path, collection_name)
 
     # Метод get_by_id принимает имя коллекции и ID конкретного экземпляра класса, после чего возвращает dict всех
     # переменных данного экземпляра класса.
-    def get_by_id(cls, collection_name: str, object_id: int) -> dict:
+    def get_by_id(self, collection_name: str, object_id: int) -> dict:
         # Перебираем все объекты коллекции и сравниваем их с необходимым ID экземпляра класса. При совпадении
         # возвращаем dict всех переменных данного экземпляра класса. При отсутствии совпадений возвращает None
-        for cnt in cls.__read_json_db(cls.__dp_path(), collection_name):
+        for cnt in self.__read_json_db(self.__dp_path, collection_name):
             if cnt['object_id'] == object_id:
                 return cnt
         return None
 
     # Метод get_by_query на вход принимает имя коллекции и словарь
-    @classmethod
-    def get_by_query(cls, collection_name, query) -> list[dict]: # new везде надо указывать с чем лист
-        dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+    def get_by_query(self, collection_name, query) -> list[dict]: # new везде надо указывать с чем лист
+        dict_list = self.__read_json_db(self.__dp_path, collection_name)
         # это коллекция словарей
         matching_keys = {}
         for cnt in dict_list:
@@ -120,10 +118,9 @@ class FileSource:
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
-    @classmethod  # NEW убрать класс методы
-    def __read_json_db(cls, db_path, collection_name) -> list:
+    def __read_json_db(self, collection_name) -> list:
         try:
-            with open(f"{db_path}/{collection_name}.json",
+            with open(f"{self.__dp_path}/{collection_name}.json",
                       mode="r", encoding='utf-8') as data_file:
                 record = json.loads(data_file.read())
                 return record
