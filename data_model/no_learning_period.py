@@ -8,7 +8,7 @@ class NoLearningPeriod(AbstractModel):
     def __init__(self, start: str, stop: str, timetable_id: Optional[int] = None,
                  object_id: Optional[int] = None):
         # Для начала и конца каникул можно использовать только дату
-        self.__object_id = object_id
+        self._object_id = object_id
         self.__start_time = start
         self.__stop_time = stop
         self.__timetable_id = timetable_id
@@ -34,12 +34,12 @@ class NoLearningPeriod(AbstractModel):
             "timetable_id": self.__timetable_id,
             "start": self.__start_time,
             "stop": self.__stop_time,
-            "object_id": self.__object_id
+            "object_id": self._object_id
             }
 
     def __str__(self):
         return f'NoLearningPeriod(timetable_id={self.__timetable_id}, start={self.__start_time}, ' \
-               f'stop={self.__stop_time}, object_id={self.__object_id})'
+               f'stop={self.__stop_time}, object_id={self._object_id})'
 
     @staticmethod
     def parse(file_no_learning_period) -> List[(Optional[str], Optional[NoLearningPeriod])]:

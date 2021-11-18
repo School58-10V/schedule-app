@@ -17,7 +17,7 @@ class StudentInGroup(AbstractModel):
     def __init__(self, student_id: int, group_id: int, object_id: Optional[int] = None):
         self.__student_id = student_id
         self.__group_id = group_id
-        self.__object_id = object_id
+        self._object_id = object_id
 
     def get_student_id(self) -> int:
         return self.__student_id
@@ -56,5 +56,5 @@ class StudentInGroup(AbstractModel):
     def __dict__(self) -> dict:
         return {'student_id': self.__student_id,
                 'group_id': self.__group_id,
-                'object_id': self.__object_id}
+                'object_id': self._object_id}
 

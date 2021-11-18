@@ -66,8 +66,8 @@ class AbstractModel(ABC):
         pass
 
     def get_main_id(self):
-        return self.__object_id
+        return self._object_id
 
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id
+        self._object_id = elem_id
         return self

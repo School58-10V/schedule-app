@@ -12,7 +12,7 @@ class Subject(AbstractModel):
     def __init__(self, subject_name: Optional[str] = None,
                  object_id: Optional[int] = None):
         self.__subject_name = subject_name
-        self.__object_id = object_id
+        self._object_id = object_id
 
     def get_subject_name(self) -> str:
         return self.__subject_name
@@ -43,5 +43,5 @@ class Subject(AbstractModel):
         return f'Subject(subject_name: {self.__subject_name})'
 
     def __dict__(self) -> dict:
-        return {"object_id": self.__object_id,
+        return {"object_id": self._object_id,
                 "subject_name": self.__subject_name}
