@@ -24,7 +24,7 @@ class FileSource:
         return datetime.microsecond
 
     @classmethod
-        def get_by_query(cls, collection_name, query) -> list[dict]:
+    def get_by_query(cls, collection_name, query) -> list[dict]:
         dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
         #это коллекция словарей
         matching_keys = {}
