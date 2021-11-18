@@ -8,7 +8,7 @@ from data_model.no_learning_period import NoLearningPeriod
 
 teacher = TeachersOnLessonRows(2, 3, object_id=5)
 teacher.save('../db')
-teacher1 = TeachersOnLessonRows.get_by_id(5, '../db')
+teacher1 = TeachersOnLessonRows(4, 6, object_id=5)
 teachers = TeachersOnLessonRows.get_all('../db')
 print(teacher1)
 print(teachers)
