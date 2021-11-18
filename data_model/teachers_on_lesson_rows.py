@@ -15,7 +15,7 @@ class TeachersOnLessonRows(AbstractModel):
     def __init__(self, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
         self.__teacher_id = teacher_id
         self.__lesson_row_id = lesson_row_id
-        self.__object_id = object_id
+        self._object_id = object_id
 
     def get_teacher_id(self) -> int:
         return self.__teacher_id
@@ -26,12 +26,12 @@ class TeachersOnLessonRows(AbstractModel):
     def __str__(self) -> str:
         return f'TeachersOnLessonRows(teacher_id: {self.__teacher_id},' \
                f' lesson_row_id: {self.__lesson_row_id},' \
-               f' object_id: {self.__object_id})'
+               f' object_id: {self._object_id})'
 
     def __dict__(self) -> dict:
         return {"teacher_id": self.__teacher_id,
                 "lesson_row_id": self.__lesson_row_id,
-                "object_id": self.__object_id}
+                "object_id": self._object_id}
 
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[TeachersOnLessonRows])]:

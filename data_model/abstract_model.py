@@ -19,12 +19,16 @@ class AbstractModel(ABC):
         return self
 
     def delete(self, db_path: str = './db'):
+        if self._object_id is None:
+            return self
         data = self._read_json_db(db_path)
-        if self.__dict__() in data:
-            data.remove(self.__dict__())
-            data = self._serialize_records_to_json(data)
-            with open(f"{db_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-                data_file.write(data)
+        for i, j in enumerate(data):
+            if j['object_id'] == self._object_id:
+                del data[i]
+                new_data = self._serialize_records_to_json(data)
+                with open(f"{db_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
+                    data_file.write(new_data)
+                break
         self._set_main_id(None)
         return self
 
@@ -66,8 +70,8 @@ class AbstractModel(ABC):
         pass
 
     def get_main_id(self):
-        return self.__object_id
+        return self._object_id
 
     def _set_main_id(self, elem_id: Optional[int] = None):
-        self.__object_id = elem_id
+        self._object_id = elem_id
         return self
