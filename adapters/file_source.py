@@ -20,7 +20,7 @@ class FileSource:
                            "timetable": 111}
 
     def get_by_query(self, collection_name, query) -> list[dict]:
-        dict_list = self.__read_json_db(self.__dp_path, collection_name)
+        dict_list = self.__read_json_db(collection_name)
         # это коллекция словарей
         matching_keys = {}
         list_of_dicts = []
@@ -38,21 +38,21 @@ class FileSource:
     # класса Location можно получить, если использовать get_all("Location"))
     def get_all(self, collection_name: str) -> list[dict]:
         # Возвращаем сформированный список, прочитанный методом __read_json_db.
-        return self.__read_json_db(self.__dp_path, collection_name)
+        return self.__read_json_db(collection_name)
 
     # Метод get_by_id принимает имя коллекции и ID конкретного экземпляра класса, после чего возвращает dict всех
     # переменных данного экземпляра класса.
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
         # Перебираем все объекты коллекции и сравниваем их с необходимым ID экземпляра класса. При совпадении
         # возвращаем dict всех переменных данного экземпляра класса. При отсутствии совпадений возвращает None
-        for cnt in self.__read_json_db(self.__dp_path, collection_name):
+        for cnt in self.__read_json_db(collection_name):
             if cnt['object_id'] == object_id:
                 return cnt
         return None
 
     # Метод get_by_query на вход принимает имя коллекции и словарь
     def get_by_query(self, collection_name, query) -> list[dict]: # new везде надо указывать с чем лист
-        dict_list = self.__read_json_db(self.__dp_path, collection_name)
+        dict_list = self.__read_json_db(collection_name)
         # это коллекция словарей
         matching_keys = {}
         for cnt in dict_list:
