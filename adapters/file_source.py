@@ -24,14 +24,20 @@ class FileSource:
         return datetime.microsecond
 
     @classmethod
-    def get_by_query(cls, collection_name, query) -> list[dict]:
+        def get_by_query(cls, collection_name, query) -> list[dict]:
         dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+        #это коллекция словарей
         matching_keys = {}
+        list_of_dicts = []
         for i in dict_list:
             for j in i:
                 if j in query:
+                    #перебираем ключи
+                    #и если они совпадают добовляем
                     matching_keys.update(j)
-        return matching_keys
+            list_of_dicts.append(matching_keys)
+            #собираем словари в список и реторним
+        return list_of_dicts
 
     def __dp_path(self):
         return self.__dp_path
