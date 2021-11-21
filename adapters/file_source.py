@@ -19,20 +19,23 @@ class FileSource:
                            "teachers_on_lesson_rows": 110,
                            "timetable": 111}
 
-    def get_by_query(self, collection_name, query) -> list[dict]:
-        dict_list = self.__read_json_db(collection_name)
-        # это коллекция словарей
-        matching_keys = {}
+    def get_by_query(cls, collection_name, query):
+        dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+        #это коллекция словарей
         list_of_dicts = []
         for i in dict_list:
-            for j in i:
-                if j in query:
-                    # перебираем ключи
-                    # и если они совпадают добовляем
-                    matching_keys.update(j)
-            list_of_dicts.append(matching_keys)
-            # собираем словари в список и реторним
+            #тут мы берём по 1 словарю из коллекции
+            matching_keys = 0
+            #это счётчик совпадений в словарях
+            for j in query:
+                if j in i and i[j] == query[j]:
+                    matching_keys += 1
+                    #если один ключ в querty и словаре равен одному значению + 1 к совпадению
+            if matching_keys == len(query):
+                list_of_dicts.append(i)
+                #если кол-во совпадений = кол-во ключей в query то словарь подходит
         return list_of_dicts
+        #возвращаем список из подходяших словарей
 
     # Метод get_all принимает имя коллекции и возвращает все объекты коллекции в представлении Python(напр. все объеты
     # класса Location можно получить, если использовать get_all("Location"))
