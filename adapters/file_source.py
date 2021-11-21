@@ -80,8 +80,7 @@ class FileSource:
     # timetable - 111
 
     # принимает на вход имя коллекции и dict объект для сохранения. Метод Insert сохраняет новый(!) объект и ничего не
-    # возвращает. id_class - первая часть ID, которая отвечает за определитель класса. Не определена, так как не приняты
-    # нормативы составления ID.
+    # возвращает.
     def insert(self, collection_name: str, document: dict) -> dict:
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
