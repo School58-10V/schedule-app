@@ -79,17 +79,21 @@ class FileSource:
     # teachers_on_lesson_rows - 110
     # timetable - 111
 
-    # принимает на вход имя коллекции и dict объект для сохранения. Метод Insert сохраняет новый(!) объект и ничего не
-    # возвращает.
+    # принимает на вход имя коллекции и dict объект для сохранения
+    # добавляем словарь в список
+    # записываем обратно в фаил
     def insert(self, collection_name: str, document: dict) -> dict:
+        current_records = self.__read_json_db(collection_name)
+        document["object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
+        current_records.append(document)
+        target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
-            current_records = self.__read_json_db(collection_name)
-            document["object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
-            current_records.append(document)
-            target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
         return document
 
+    # Метод update принимает на вход имя коллекции и dict объект для изменения имеюшегося и его айди.
+    # Мы ишим подходяший обьект, добавляем изменённые данные, чистим список
+    # добавляем изменёный и записываем обратно в фаил
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
         current_records = self.__read_json_db(collection_name)
         current_records_copy = self.__read_json_db(collection_name)
@@ -106,15 +110,18 @@ class FileSource:
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         if founded_id is True:
-            return new_dict  # возвращаем новый объект
+            return new_dict
         return {None: None}
 
+    # Метод delete принимает на вход имя коллекции и айди обьекта которого надо удалить.
+    # Мы ишим подходяший обьект, удаляем его
+    # добавляем изменёный список и записываем обратно в фаил
     def delete(self, collection_name: str, object_id: int) -> dict:
-        # new все перенести из виз опена сюда и начальную папку брать из данных выше
         current_records = self.__read_json_db(collection_name)
         for i in current_records:
             if i["object_id"] == object_id:
-                current_records.remove(current_records.index(i))
+                current_records.remove(i)
+                break
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
