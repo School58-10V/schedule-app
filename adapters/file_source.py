@@ -94,7 +94,7 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         for i in current_records:
             if i["object_id"] == object_id:
-                # new проверять, есть ли обжект айди в документе
+                # проверять, есть ли обжект айди в документе
                 new_dict = i
                 new_dict.update(document)
                 current_records.remove(current_records.index(i))
@@ -102,7 +102,7 @@ class FileSource:
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
-        return new_dict  # new возвращаем новый объект
+        return new_dict  # возвращаем новый объект
 
     def delete(self, collection_name: str, object_id: int) -> dict:
         # new все перенести из виз опена сюда и начальную папку брать из данных выше
