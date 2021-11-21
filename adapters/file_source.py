@@ -94,7 +94,7 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         for i in current_records:
             if i["object_id"] == object_id:
-                # проверять, есть ли обжект айди в документе
+                # проверяем, есть ли обжект айди в документе
                 new_dict = i
                 new_dict.update(document)
                 current_records.remove(current_records.index(i))
