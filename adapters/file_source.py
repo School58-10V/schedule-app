@@ -88,7 +88,7 @@ class FileSource:
             current_records.append(document)
             target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
-        return document  # new возвращаем получаемый файл
+        return document
 
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
         current_records = self.__read_json_db(collection_name)
