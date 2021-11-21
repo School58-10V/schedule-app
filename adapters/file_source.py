@@ -51,7 +51,7 @@ class FileSource:
         return None
 
     # Метод get_by_query на вход принимает имя коллекции и словарь
-    def get_by_query(self, collection_name, query) -> list[dict]: # new везде надо указывать с чем лист
+    def get_by_query(self, collection_name, query) -> list[dict]: #new везде надо указывать с чем лист
         dict_list = self.__read_json_db(collection_name)
         # это коллекция словарей
         matching_keys = {}
@@ -82,8 +82,8 @@ class FileSource:
     # возвращает. id_class - первая часть ID, которая отвечает за определитель класса. Не определена, так как не приняты
     # нормативы составления ID.
     def insert(self, collection_name: str, document: dict) -> dict:
-        with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
-            # new cтроку 96-99 перенести выше виз опена; папка дб берется из файл сорса как файл паз ВЕЗДЕ!!!!
+        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+            # new cтроку 96-99 перенести выше виз опена; папка дб берется из файл сорса как файл паз ВЕЗДЕ!!!! COMPL_2!
             current_records = self.__read_json_db(collection_name)
             document["object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
             current_records.append(document)
@@ -92,7 +92,7 @@ class FileSource:
         return document  # new возвращаем получаемый файл
 
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
-        with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
                 if i["object_id"] == object_id:
@@ -107,7 +107,7 @@ class FileSource:
 
     def delete(self, collection_name: str, object_id: int) -> dict:
         # new все перенести из виз опена сюда и начальную папку брать из данных выше
-        with open(f"./db/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             current_records = self.__read_json_db(collection_name)
             for i in current_records:
                 if i["object_id"] == object_id:
@@ -118,7 +118,7 @@ class FileSource:
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
-    def __read_json_db(self, collection_name) -> list:
+    def __read_json_db(self, collection_name) -> list[dict]:
         try:
             with open(f"{self.__dp_path}/{collection_name}.json",
                       mode="r", encoding='utf-8') as data_file:
