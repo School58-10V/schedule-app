@@ -21,21 +21,21 @@ class FileSource:
 
     def get_by_query(cls, collection_name, query):
         dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
-        #это коллекция словарей
+        # это коллекция словарей
         list_of_dicts = []
         for i in dict_list:
-            #тут мы берём по 1 словарю из коллекции
+            # тут мы берём по 1 словарю из коллекции
             matching_keys = 0
-            #это счётчик совпадений в словарях
+            # это счётчик совпадений в словарях
             for j in query:
                 if j in i and i[j] == query[j]:
                     matching_keys += 1
-                    #если один ключ в querty и словаре равен одному значению + 1 к совпадению
+                    # если один ключ в querty и словаре равен одному значению + 1 к совпадению
             if matching_keys == len(query):
                 list_of_dicts.append(i)
-                #если кол-во совпадений = кол-во ключей в query то словарь подходит
+                # если кол-во совпадений = кол-во ключей в query то словарь подходит
         return list_of_dicts
-        #возвращаем список из подходяших словарей
+        # возвращаем список из подходяших словарей
 
     # Метод get_all принимает имя коллекции и возвращает все объекты коллекции в представлении Python(напр. все объеты
     # класса Location можно получить, если использовать get_all("Location"))
@@ -52,19 +52,6 @@ class FileSource:
             if cnt['object_id'] == object_id:
                 return cnt
         return {None: None}
-
-    # Метод get_by_query на вход принимает имя коллекции и словарь
-    def get_by_query(self, collection_name, query) -> list[dict]: #new везде надо указывать с чем лист
-        dict_list = self.__read_json_db(collection_name)
-        # это коллекция словарей
-        matching_keys = {}
-        for cnt in dict_list:
-            for cnt_2 in cnt:
-                if cnt_2 in query:
-                    # перебираем ключи
-                    # и если они совпадают добавляем
-                    matching_keys.update(cnt_2)
-        return matching_keys
 
     # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять время в микросекудах. Таким
     # образом мы получим айдишник, который можно будет понимать и без словаря обозначений. Например экземпляр класса
