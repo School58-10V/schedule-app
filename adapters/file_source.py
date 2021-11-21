@@ -92,6 +92,7 @@ class FileSource:
 
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
         current_records = self.__read_json_db(collection_name)
+        current_records_copy = self.__read_json_db(collection_name)
         founded_id = False
         for i in current_records:
             if i["object_id"] == object_id:
@@ -99,9 +100,9 @@ class FileSource:
                 founded_id = True
                 new_dict = i
                 new_dict.update(document)
-                current_records.remove(current_records.index(i))
-                current_records.append(new_dict)
-        target_json = self.__class__.serialize_records_to_json(current_records)
+                current_records_copy.remove(i)
+                current_records_copy.append(new_dict)
+        target_json = self.__class__.serialize_records_to_json(current_records_copy)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         if founded_id is True:
