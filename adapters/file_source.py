@@ -59,7 +59,7 @@ class FileSource:
             for cnt_2 in cnt:
                 if cnt_2 in query:
                     # перебираем ключи
-                    # и если они совпадают добовляем
+                    # и если они совпадают добавляем
                     matching_keys.update(cnt_2)
         return matching_keys
 
