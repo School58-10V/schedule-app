@@ -48,7 +48,7 @@ class FileSource:
         for cnt in self.__read_json_db(collection_name):
             if cnt['object_id'] == object_id:
                 return cnt
-        return None
+        return {None: None}
 
     # Метод get_by_query на вход принимает имя коллекции и словарь
     def get_by_query(self, collection_name, query) -> list[dict]: #new везде надо указывать с чем лист
