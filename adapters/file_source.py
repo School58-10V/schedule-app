@@ -106,12 +106,12 @@ class FileSource:
 
     def delete(self, collection_name: str, object_id: int) -> dict:
         # new все перенести из виз опена сюда и начальную папку брать из данных выше
+        current_records = self.__read_json_db(collection_name)
+        for i in current_records:
+            if i["object_id"] == object_id:
+                current_records.remove(current_records.index(i))
+        target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
-            current_records = self.__read_json_db(collection_name)
-            for i in current_records:
-                if i["object_id"] == object_id:
-                    current_records.remove(current_records.index(i))
-            target_json = self.__class__.serialize_records_to_json(current_records)
             data_file.write(target_json)
         return {None: None}  # new удаленный объект без обжект айди
 
