@@ -1,4 +1,7 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+
+import json
+
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List
 
@@ -13,6 +16,7 @@ class Teacher(AbstractModel):
         office_id - закреплённый кабинет
         subject - его предмет.
     """
+
     def __init__(self, fio: str, object_id: int, subject: str, office_id: int = None, bio: str = None,
                  contacts: str = None):
         self.__fio = fio
@@ -74,3 +78,19 @@ class Teacher(AbstractModel):
     def __str__(self):
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts =  {self.__contacts}) '
+
+    def get_all_lesson_row(self, db_path: str = './db') -> list[int]:
+        lst_lessons = []
+        file_lesson = []
+        try:
+            with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:
+                file_lesson = json.loads(file.read())
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            raise FileNotFoundError('Файл не найден')
+
+        # lst_lesson = [i['lesson_row_id'] for i in file_lesson if i['teacher_id'] == self._object_id]
+
+        for i in file_lesson:
+            if i['teacher_id'] == self._object_id:
+                lst_lessons.append(i['lesson_row_id'])
+        return lst_lessons
