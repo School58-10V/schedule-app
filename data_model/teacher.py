@@ -96,8 +96,8 @@ class Teacher(AbstractModel):
             with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:
                 file_lesson = json.loads(file.read())
         except (FileNotFoundError, json.decoder.JSONDecodeError):
-            # Если файла нет или он пустой, то выдаем ошибку
-            raise FileNotFoundError('Файл не найден')
+            # Если файла нет или он пустой, то возвращаем пустой список
+            return []
 
         # lst_lesson = [i['lesson_row_id'] for i in file_lesson if i['teacher_id'] == self._object_id]
         for i in file_lesson:
