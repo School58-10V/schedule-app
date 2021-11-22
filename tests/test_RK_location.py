@@ -12,3 +12,5 @@ print(a.get_by_id('Location', 1041637588222989)) # у меня работает
 
 # та же ситуация, что и с прошлым инсертом
 print(a.get_all('Location'))
+a.update('Location', 1041637588222989, {"comment": "Математика и Физика"})
+print(a.get_all('Location'))
