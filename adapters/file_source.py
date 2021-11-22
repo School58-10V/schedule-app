@@ -73,8 +73,19 @@ class FileSource:
     # принимает на вход имя коллекции и dict объект для сохранения
     # добавляем словарь в список
     # записываем обратно в фаил
+
+    def check_unique_id(self, collection_name: str, object_id: int) -> bool:
+        # проверяет уникальность айди у объекта
+        current_records = self.__read_json_db(collection_name)
+        for i in current_records:
+            if i["object_id"] == object_id:
+                return True
+            else:
+                return False
+
     def insert(self, collection_name: str, document: dict) -> dict:
         current_records = self.__read_json_db(collection_name)
+
         document["object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
         current_records.append(document)
         target_json = self.__class__.serialize_records_to_json(current_records)
@@ -86,18 +97,17 @@ class FileSource:
     # Мы ишим подходяший обьект, добавляем изменённые данные, чистим список
     # добавляем изменёный и записываем обратно в фаил
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
+        founded_id = FileSource.check_unique_id(collection_name, object_id)
         current_records = self.__read_json_db(collection_name)
         current_records_copy = current_records
-        founded_id = False
         new_dict = {None, None}
+        if "object_id" in document:
+            del document[object_id]
         for i in current_records:
-            if i["object_id"] == object_id:
-                # проверяем, есть ли обжект айди в документе
-                founded_id = True
-                new_dict = i
-                new_dict.update(document)
-                del current_records_copy[current_records_copy.index(i)]
-                current_records_copy.append(new_dict)
+            new_dict = i
+            new_dict.update(document)
+            del current_records_copy[current_records_copy.index(i)]
+            current_records_copy.append(new_dict)
         target_json = self.__class__.serialize_records_to_json(current_records_copy)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
@@ -112,15 +122,18 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         current_records_copy = current_records
         del_dct = {}
+        founded_id = FileSource.check_unique_id(collection_name, object_id)
         for dct in current_records:
             if dct["object_id"] == object_id:
                 del current_records_copy[current_records_copy.index(dct)]
                 del_dct = dct
                 break
         target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
-        return del_dct.pop("object_id")  # new удаленный объект без обжект айди
+        if founded_id:
+            with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+                data_file.write(target_json)
+                return del_dct.pop("object_id")  # new удаленный объект без обжект айди
+        return {None: None}
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
