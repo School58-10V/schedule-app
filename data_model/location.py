@@ -77,7 +77,7 @@ class Location:
                f'link={self.__link}, comment={self.__comment})'
 
     def __dict__(self) -> dict:
-        return {"location_id": self.__location_id,
+        return {"object_id": self.__location_id,
                 "location_desc": self.__location_desc,
                 "profile": self.__profile,
                 "equipment": self.__equipment,
