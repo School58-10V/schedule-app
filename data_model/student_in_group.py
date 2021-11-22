@@ -36,8 +36,7 @@ class StudentInGroup(AbstractModel):
             try:
                 student_id = int(i[0])
                 group_id = int(i[1])
-                object_id = int(i[2])
-                res.append((None, StudentInGroup(student_id, group_id, object_id)))
+                res.append((None, StudentInGroup(student_id, group_id)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)

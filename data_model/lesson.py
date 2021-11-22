@@ -73,10 +73,9 @@ class Lesson(AbstractModel):
                     group_id = i[4]
                     subject_id = i[5]
                     notes = i[6]
-                    lesson_id = i[7]
                     state = i[8] == 'True'
                     res.append((None, Lesson(int(start_time), int(end_time), int(day), int(teacher_id),
-                                             int(group_id), int(subject_id), notes, int(lesson_id), state)))
+                                             int(group_id), int(subject_id), notes, state=state)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"

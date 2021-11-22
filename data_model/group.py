@@ -43,8 +43,7 @@ class Group(AbstractModel):
                     class_letter = i[1]
                     grade = i[2]
                     profile_name = i[3]
-                    object_id = i[4]
-                    res.append((None, Group(int(teacher_id), class_letter, int(grade), profile_name, int(object_id))))
+                    res.append((None, Group(int(teacher_id), class_letter, int(grade), profile_name)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
