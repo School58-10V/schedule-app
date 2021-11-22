@@ -17,7 +17,8 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, fio: str, object_id: int, subject: str, office_id: int = None, bio: str = None,
+    def __init__(self, fio: str, subject: str, object_id: Optional[int] = None, 
+                 office_id: int = None, bio: str = None,
                  contacts: str = None):
         self.__fio = fio
         self._object_id = object_id
@@ -51,11 +52,13 @@ class Teacher(AbstractModel):
                 try:
                     fio = i[0]
                     subject = i[1]
-                    office_id = i[2]
+                    office_id = int(i[2])
                     bio = i[3]
                     contacts = i[4]
 
-                    res.append((None, Teacher(fio, subject, office_id, bio, contacts)))
+                    res.append((None, Teacher(fio=fio, subject=subject, 
+                                              office_id=office_id, bio=bio, 
+                                              contacts=contacts, object_id=None)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
@@ -80,17 +83,29 @@ class Teacher(AbstractModel):
                f'contacts =  {self.__contacts}) '
 
     def get_all_lesson_row(self, db_path: str = './db') -> list[int]:
+        """
+            Читает файл сохранения TeachersOnLessonRows и достает от
+            туда id всех урокой учителя с данным object_id
+            :rtype: object
+            :param db_path: путь до папки с .json файлами
+            :return: список с id уроков
+        """
         lst_lessons = []
         file_lesson = []
         try:
+            # Открываем и читаем файл TeachersOnLessonRows
             with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:
                 file_lesson = json.loads(file.read())
         except (FileNotFoundError, json.decoder.JSONDecodeError):
+            # Если файла нет или он пустой, то выдаем ошибку
             raise FileNotFoundError('Файл не найден')
 
         # lst_lesson = [i['lesson_row_id'] for i in file_lesson if i['teacher_id'] == self._object_id]
-
         for i in file_lesson:
+            # Пробегаемся циклом по списку  и находим
+            # там данные об объектах, где есть учитель на ряд
+            # уроков с таким же id, как и у нашего объекта
             if i['teacher_id'] == self._object_id:
+                # Если он есть, добавляем id его урока в список, который будем возвращать
                 lst_lessons.append(i['lesson_row_id'])
         return lst_lessons
