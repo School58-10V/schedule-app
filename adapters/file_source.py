@@ -87,13 +87,13 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         object_id = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
         # назначаем айди отдельно
-        founded_id = FileSource.check_unique_id(collection_name, object_id)
+        founded_id = self.check_unique_id(collection_name, object_id)
         if founded_id:
             while founded_id:
                 # проверяем его на уникальность
                 object_id = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
                 # назначаем айди каждый раз когда мы его проверяем
-                founded_id = FileSource.check_unique_id(collection_name, object_id)
+                founded_id = self.check_unique_id(collection_name, object_id)
         document["object_id"] = object_id
         current_records.append(document)
         target_json = self.__class__.serialize_records_to_json(current_records)
@@ -105,7 +105,7 @@ class FileSource:
     # Мы ишим подходяший обьект, добавляем изменённые данные, чистим список
     # добавляем изменёный и записываем обратно в фаил
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
-        founded_id = FileSource.check_unique_id(collection_name, object_id)
+        founded_id = self.check_unique_id(collection_name, object_id)
         current_records = self.__read_json_db(collection_name)
         current_records_copy = current_records
         new_dict = {None, None}
@@ -122,7 +122,7 @@ class FileSource:
             data_file.write(target_json)
         if founded_id is True:
             return new_dict
-        return {None: None}
+        return {None: None} # ?? new возвращать рандомный элемент с таким же айди возможно (?)
 
     # Метод delete принимает на вход имя коллекции и айди обьекта которого надо удалить.
     # Мы ишим подходяший обьект, удаляем его
@@ -131,7 +131,7 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         current_records_copy = current_records
         del_dct = {}
-        founded_id = FileSource.check_unique_id(collection_name, object_id)
+        founded_id = self.check_unique_id(collection_name, object_id)
         for dct in current_records:
             if dct["object_id"] == object_id:
                 del current_records_copy[current_records_copy.index(dct)]
