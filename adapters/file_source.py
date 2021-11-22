@@ -109,14 +109,16 @@ class FileSource:
     # добавляем изменёный список и записываем обратно в фаил
     def delete(self, collection_name: str, object_id: int) -> dict:
         current_records = self.__read_json_db(collection_name)
-        for i in current_records:
-            if i["object_id"] == object_id:
-                current_records.remove(i)
+        del_dct = {}
+        for dct in current_records:
+            if dct["object_id"] == object_id:
+                current_records.remove(dct)
+                del_dct = dct
                 break
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
-        return {None: None}  # new удаленный объект без обжект айди
+        return del_dct.pop("object_id")  # new удаленный объект без обжект айди
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
