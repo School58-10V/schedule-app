@@ -86,7 +86,6 @@ class Teacher(AbstractModel):
         """
             Читает файл сохранения TeachersOnLessonRows и достает от
             туда id всех урокой учителя с данным object_id
-            :rtype: object
             :param db_path: путь до папки с .json файлами
             :return: список с id уроков
         """
