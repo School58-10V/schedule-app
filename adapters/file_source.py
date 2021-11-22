@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from typing import List
 
 
 class FileSource:
@@ -19,8 +20,8 @@ class FileSource:
                            "teachers_on_lesson_rows": 110,
                            "timetable": 111}
 
-    def get_by_query(cls, collection_name, query):
-        dict_list = cls.__read_json_db(cls.__dp_path(), collection_name)
+    def get_by_query(self, collection_name: str, query: dict):
+        dict_list = self.__read_json_db(collection_name)
         # это коллекция словарей
         list_of_dicts = []
         for i in dict_list:
@@ -30,16 +31,16 @@ class FileSource:
             for j in query:
                 if j in i and i[j] == query[j]:
                     matching_keys += 1
-                    # если один ключ в querty и словаре равен одному значению + 1 к совпадению
+                    # если один ключ в query и словаре равен одному значению + 1 к совпадению
             if matching_keys == len(query):
                 list_of_dicts.append(i)
                 # если кол-во совпадений = кол-во ключей в query то словарь подходит
         return list_of_dicts
         # возвращаем список из подходяших словарей
 
-    # Метод get_all принимает имя коллекции и возвращает все объекты коллекции в представлении Python(напр. все объеты
+    # Метод get_all принимает имя коллекции и возвращает все объекты коллекции в представлении Python(напр. все объекты
     # класса Location можно получить, если использовать get_all("Location"))
-    def get_all(self, collection_name: str) -> list[dict]:
+    def get_all(self, collection_name: str) -> List[dict]:
         # Возвращаем сформированный список, прочитанный методом __read_json_db.
         return self.__read_json_db(collection_name)
 
@@ -119,7 +120,7 @@ class FileSource:
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
-    def __read_json_db(self, collection_name) -> list[dict]:
+    def __read_json_db(self, collection_name: str) -> List[dict]:
         try:
             with open(f"{self.__dp_path}/{collection_name}.json",
                       mode="r", encoding='utf-8') as data_file:
