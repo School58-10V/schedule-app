@@ -109,9 +109,9 @@ class FileSource:
     # добавляем изменёный список и записываем обратно в фаил
     def delete(self, collection_name: str, object_id: int) -> dict:
         current_records = self.__read_json_db(collection_name)
-        for i in current_records:
-            if i["object_id"] == object_id:
-                current_records.remove(i)
+        for dct in current_records:
+            if dct["object_id"] == object_id:
+                current_records.remove(dct)
                 break
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
