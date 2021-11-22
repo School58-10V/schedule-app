@@ -89,6 +89,7 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         current_records_copy = current_records
         founded_id = False
+        new_dict = {None, None}
         for i in current_records:
             if i["object_id"] == object_id:
                 # проверяем, есть ли обжект айди в документе
@@ -109,10 +110,11 @@ class FileSource:
     # добавляем изменёный список и записываем обратно в фаил
     def delete(self, collection_name: str, object_id: int) -> dict:
         current_records = self.__read_json_db(collection_name)
+        current_records_copy = current_records
         del_dct = {}
         for dct in current_records:
             if dct["object_id"] == object_id:
-                current_records.remove(dct)
+                del current_records_copy[current_records_copy.index(dct)]
                 del_dct = dct
                 break
         target_json = self.__class__.serialize_records_to_json(current_records)

@@ -14,3 +14,5 @@ print(a.get_by_id('Location', 1041637588222989)) # у меня работает
 print(a.get_all('Location'))
 a.update('Location', 1041637588222989, {"comment": "Математика и Физика"})
 print(a.get_all('Location'))
+a.delete('Location', 1041637588222989)
+print(a.get_all('Location'))
