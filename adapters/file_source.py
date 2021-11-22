@@ -85,8 +85,16 @@ class FileSource:
 
     def insert(self, collection_name: str, document: dict) -> dict:
         current_records = self.__read_json_db(collection_name)
-
-        document["object_id"] = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
+        object_id = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
+        # назначаем айди отдельно
+        founded_id = FileSource.check_unique_id(collection_name, object_id)
+        if founded_id:
+            while founded_id:
+                # проверяем его на уникальность
+                object_id = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
+                # назначаем айди каждый раз когда мы его проверяем
+                founded_id = FileSource.check_unique_id(collection_name, object_id)
+        document["object_id"] = object_id
         current_records.append(document)
         target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
@@ -104,10 +112,11 @@ class FileSource:
         if "object_id" in document:
             del document[object_id]
         for i in current_records:
-            new_dict = i
-            new_dict.update(document)
-            del current_records_copy[current_records_copy.index(i)]
-            current_records_copy.append(new_dict)
+            if "object_id" in i:
+                new_dict = i
+                new_dict.update(document)
+                del current_records_copy[current_records_copy.index(i)]
+                current_records_copy.append(new_dict)
         target_json = self.__class__.serialize_records_to_json(current_records_copy)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
