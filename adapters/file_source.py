@@ -6,7 +6,7 @@ from typing import List
 class FileSource:
     # Метод  __init__ принимает путь до файла, с которым будут работать остальные методы и сохраняет его в private
     # переменную(по умолчанию "./db").
-    def __init__(self, dp_path: str = './db'):
+    def __init__(self, dp_path: str = '../db'):
         self.__dp_path = dp_path
         self.dictionary = {"group": 101,
                            "lesson": 102,

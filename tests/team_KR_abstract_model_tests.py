@@ -13,4 +13,4 @@ test1_class.save()
 test2_class = FileSource()
 print(test2_class.get_all("Location"))
 
-#
+# Тесты для метода get_by_id
