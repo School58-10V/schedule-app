@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+import datetime
 from typing import List
 
 
@@ -8,17 +8,17 @@ class FileSource:
     # переменную(по умолчанию "./db").
     def __init__(self, dp_path: str = '../db'):
         self.__dp_path = dp_path
-        self.dictionary = {"group": 101,
-                           "lesson": 102,
-                           "lesson_row": 103,
-                           "location": 104,
-                           "no_learning_period": 105,
-                           "student": 106,
-                           "student_in_group": 107,
-                           "subject_lesson": 108,
-                           "teacher": 109,
-                           "teachers_on_lesson_rows": 110,
-                           "timetable": 111}
+        self.dictionary = {"Group": 101,
+                           "Lesson": 102,
+                           "Lesson_row": 103,
+                           "Location": 104,
+                           "No_learning_period": 105,
+                           "Student": 106,
+                           "Student_in_group": 107,
+                           "Subject_lesson": 108,
+                           "Teacher": 109,
+                           "Teachers_on_lesson_rows": 110,
+                           "Timetable": 111}
 
     def get_by_query(self, collection_name: str, query: dict):
         dict_list = self.__read_json_db(collection_name)
@@ -137,4 +137,4 @@ class FileSource:
 
     @staticmethod
     def generate_id():
-        return datetime.microsecond
+        return round(datetime.datetime.utcnow().timestamp() * 1000)
