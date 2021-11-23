@@ -1,13 +1,13 @@
 [
   {"full_name": "Алер Миша Санович",
     "date_of_birth": "8.5.21",
-    "student_id": 678,
+    "object_id": 678,
     "contacts": "2947",
     "bio": "аркада"
   },
   {"full_name": "Микс Дмитрий Александрович",
     "date_of_birth": "7.9.22",
-    "student_id": 679,
+    "object_id": 679,
     "contacts": "9857",
     "bio": "аркада"
   }

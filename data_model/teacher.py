@@ -1,23 +1,27 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+
 import json
 
+from data_model.abstract_model import AbstractModel
 from typing import Optional, List
 
 
-class Teacher:
+class Teacher(AbstractModel):
     """
         Класс учителя.
         fio - ФИО
-        teacher_id - ид учителя
+        object_id - ид учителя
         bio - инфа о учителе
         contacts - Контакты учителя
         office_id - закреплённый кабинет
         subject - его предмет.
     """
-    def __init__(self, fio: str, teacher_id: int, subject: str, office_id: int = None, bio: str = None,
+
+    def __init__(self, fio: str, subject: str, object_id: Optional[int] = None, 
+                 office_id: int = None, bio: str = None,
                  contacts: str = None):
         self.__fio = fio
-        self.__teacher_id = teacher_id
+        self._object_id = object_id
         self.__bio = bio
         self.__contacts = contacts
         self.__office_id = office_id
@@ -25,9 +29,6 @@ class Teacher:
 
     def get_fio(self) -> str:
         return self.__fio
-
-    def get_teacher_id(self) -> int:
-        return self.__teacher_id
 
     def get_bio(self) -> Optional[str]:
         return self.__bio
@@ -51,12 +52,13 @@ class Teacher:
                 try:
                     fio = i[0]
                     subject = i[1]
-                    office_id = i[2]
+                    office_id = int(i[2])
                     bio = i[3]
                     contacts = i[4]
 
-                    res.append(
-                        (None, Teacher(fio, subject, office_id, bio, contacts)))
+                    res.append((None, Teacher(fio=fio, subject=subject, 
+                                              office_id=office_id, bio=bio, 
+                                              contacts=contacts, object_id=None)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
@@ -66,12 +68,11 @@ class Teacher:
                     exception_text = f"Неизвестная ошибка в Teacher.parse():\n{e}"
                     print(exception_text)
                     res.append((exception_text, None))
-
         return res
 
     def __dict__(self) -> dict:
         return {"fio": self.__fio,
-                "teacher_id": self.__teacher_id,
+                "object_id": self._object_id,
                 "bio": self.__bio,
                 "contacts": self.__contacts,
                 "office_id": self.__office_id,
@@ -81,37 +82,29 @@ class Teacher:
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts =  {self.__contacts}) '
 
-    def serialize_to_json(self, indent: Optional[int] = None) -> str:
-        return json.dumps(self.__dict__(),ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
+    def get_all_lesson_row(self, db_path: str = './db') -> list[int]:
+        """
+            Читает файл сохранения TeachersOnLessonRows и достает от
+            туда id всех урокой учителя с данным object_id
+            :param db_path: путь до папки с .json файлами
+            :return: список с id уроков
+        """
+        lst_lessons = []
+        file_lesson = []
         try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
+            # Открываем и читаем файл TeachersOnLessonRows
+            with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:
+                file_lesson = json.loads(file.read())
         except (FileNotFoundError, json.decoder.JSONDecodeError):
+            # Если файла нет или он пустой, то возвращаем пустой список
             return []
 
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[Teacher]:
-        return [cls(**i) for i in cls.__read_json_db(db_path)]
-
-    @classmethod
-    def get_by_id(cls, teacher_id: int, db_path: str = "./db") -> Teacher:
-        for i in cls.__read_json_db(db_path):
-            if i["teacher_id"] == teacher_id:
-                return cls(**i)
-        return ValueError(f"Объект с id {teacher_id} не найден")
+        # lst_lesson = [i['lesson_row_id'] for i in file_lesson if i['teacher_id'] == self._object_id]
+        for i in file_lesson:
+            # Пробегаемся циклом по списку  и находим
+            # там данные об объектах, где есть учитель на ряд
+            # уроков с таким же id, как и у нашего объекта
+            if i['teacher_id'] == self._object_id:
+                # Если он есть, добавляем id его урока в список, который будем возвращать
+                lst_lessons.append(i['lesson_row_id'])
+        return lst_lessons

@@ -1,22 +1,18 @@
 from __future__ import annotations
-import json
 from typing import Optional, List
+from data_model.abstract_model import AbstractModel
 
 
-class Subject:
+class Subject(AbstractModel):
     """
               name - Название предмета
-        subject_id - Идентификационный номер предмета
-
+        object_id - Идентификационный номер предмета
     """
 
     def __init__(self, subject_name: Optional[str] = None,
-                 subject_id: Optional[int] = None):
+                 object_id: Optional[int] = None):
         self.__subject_name = subject_name
-        self.__subject_id = subject_id
-
-    def get_subject_id(self) -> int:
-        return self.__subject_id
+        self._object_id = object_id
 
     def get_subject_name(self) -> str:
         return self.__subject_name
@@ -47,42 +43,5 @@ class Subject:
         return f'Subject(subject_name: {self.__subject_name})'
 
     def __dict__(self) -> dict:
-        return {"subject_id": self.__subject_id,
+        return {"object_id": self._object_id,
                 "subject_name": self.__subject_name}
-
-    def serialize_to_json(self, indent: Optional[int] = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: Optional[int] = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
-
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[Subject]:
-        data = cls.__read_json_db(db_path)
-        return [cls(**i) for i in data]
-
-    @classmethod
-    def get_by_id(cls, subject_id: int, db_path: str = "./db") -> Subject:
-        data = cls.__read_json_db(db_path)
-        for i in data:
-            if i["subject_id"] == subject_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {subject_id} не найден")
