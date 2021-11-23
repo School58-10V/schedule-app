@@ -1,31 +1,29 @@
-##          timetable_id - id расписания
-##                 start - начало каникул
-##                  stop - конец каникул
-## no_learning_period_id - id каникул
-
-
-import json
-from datetime import date
-from typing import List, Optional
 from __future__ import annotations
 
+from data_model.abstract_model import AbstractModel
+from typing import List, Optional
 
-class NoLearningPeriod:
-    def __init__(self, timetable_id: int, start: date, stop: date,
-                 no_learning_period_id: int = None):
+
+class NoLearningPeriod(AbstractModel):
+    def __init__(self, start: str, stop: str, timetable_id: Optional[int] = None,
+                 object_id: Optional[int] = None):
         # Для начала и конца каникул можно использовать только дату
-        self.__no_learning_period_id = no_learning_period_id
+        self._object_id = object_id
         self.__start_time = start
         self.__stop_time = stop
         self.__timetable_id = timetable_id
 
-    def get_no_learning_period_id(self) -> int:
-        return self.__no_learning_period_id
+    """
+        timetable_id - id расписания
+        start - начало каникул
+        stop - конец каникул
+        object_id - id каникул
+    """
 
-    def get_star_time(self) -> date:
+    def get_start_time(self) -> str:
         return self.__start_time
 
-    def get_stop_time(self) -> date:
+    def get_stop_time(self) -> str:
         return self.__stop_time
 
     def get_timetable_id(self) -> int:
@@ -36,36 +34,12 @@ class NoLearningPeriod:
             "timetable_id": self.__timetable_id,
             "start": self.__start_time,
             "stop": self.__stop_time,
-            "no_learning_period_id": self.__no_learning_period_id
-        }
-
-    def serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
+            "object_id": self._object_id
+            }
 
     def __str__(self):
         return f'NoLearningPeriod(timetable_id={self.__timetable_id}, start={self.__start_time}, ' \
-               f'stop={self.__stop_time}, no_learning_period_id={self.__no_learning_period_id})'
+               f'stop={self.__stop_time}, object_id={self._object_id})'
 
     @staticmethod
     def parse(file_no_learning_period) -> List[(Optional[str], Optional[NoLearningPeriod])]:
@@ -77,7 +51,7 @@ class NoLearningPeriod:
             try:
                 start = i[1]
                 stop = i[2]
-                res.append((None, NoLearningPeriod(timetable_id, start, stop, no_learning_period_id)))
+                res.append((None, NoLearningPeriod(start=start, stop=stop)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
