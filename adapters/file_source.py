@@ -17,8 +17,8 @@ class FileSource:
                            "Student_in_group": 107,
                            "Subject_lesson": 108,
                            "Teacher": 109,
-                           "Teachers_on_lesson_rows": 110,
-                           "Timetable": 111}
+                           "TeachersOnLessonRows": 110,
+                           "TimeTable": 111}
 
     def get_by_query(self, collection_name: str, query: dict):
         dict_list = self.__read_json_db(collection_name)
@@ -110,7 +110,7 @@ class FileSource:
         current_records_copy = current_records
         new_dict = {None, None}
         if "object_id" in document:
-            del document[object_id]
+            del document['object_id']
         for i in current_records:
             if "object_id" in i:
                 new_dict = i
