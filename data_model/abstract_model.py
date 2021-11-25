@@ -40,7 +40,7 @@ class AbstractModel(ABC):
                 # Делает новую версию данных без удалённого словаря
                 new_data = AbstractModel._serialize_records_to_json(data)
                 with open(f"{db_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-                    data_file.write(new_data)  # Перезаписывает сохранение новыеми данными
+                    data_file.write(new_data)  # Перезаписывает сохранение новыми данными
                 break
         self._set_main_id(None)  # В любом случае уничтожает все id-связи данного объекта
         return self  # Возвращает удалённый объект с self._object_id = None
