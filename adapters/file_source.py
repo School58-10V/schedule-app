@@ -10,12 +10,12 @@ class FileSource:
         self.__dp_path = dp_path
         self.dictionary = {"Group": 101,
                            "Lesson": 102,
-                           "Lesson_row": 103,
+                           "LessonRow": 103,
                            "Location": 104,
-                           "No_learning_period": 105,
+                           "NoLearningPeriod": 105,
                            "Student": 106,
-                           "Student_in_group": 107,
-                           "Subject_lesson": 108,
+                           "StudentInGroup": 107,
+                           "Subject": 108,
                            "Teacher": 109,
                            "TeachersOnLessonRows": 110,
                            "TimeTable": 111}
