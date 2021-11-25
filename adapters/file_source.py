@@ -6,7 +6,7 @@ from typing import List
 class FileSource:
     # Метод  __init__ принимает путь до файла, с которым будут работать остальные методы и сохраняет его в private
     # переменную(по умолчанию "./db").
-    def __init__(self, dp_path: str = './db'):
+    def __init__(self, dp_path: str = '../db'):
         self.__dp_path = dp_path
         self.dictionary = {"Group": 101,
                            "Lesson": 102,
@@ -112,7 +112,7 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         new_dict = {None, None}  # глобальная прееменная для цикла
         if "object_id" in document:
-            del document[object_id]  # удаляем из изменений id, чтобы он не перезаписался.
+            del document["object_id"]  # удаляем из изменений id, чтобы он не перезаписался.
         for dct in current_records:
             if object_id in dct:
                 new_dict = dct  # чтобы не портить dct, тк потом будем искать эту переменную в current_records
