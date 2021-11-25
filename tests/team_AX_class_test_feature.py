@@ -2,6 +2,7 @@
 from data_model.teachers_on_lesson_rows import TeachersOnLessonRows
 from adapters.file_source import FileSource
 from data_model.timetable import TimeTable
+from data_model.subject_lesson import Subject
 
 fS = FileSource('../db')
 
@@ -82,3 +83,42 @@ fS.insert(TimeTable.__name__,
           TimeTable(time_table_year=2005, object_id=None).__dict__())
 
 print("Опять все файлы?", *fS.get_all(TimeTable.__name__))
+
+
+subject_lessons = Subject.parse('../data_examples/timetable_test.csv')
+print(f'Список всех объектов из csv', *[i[1] for i in subject_lessons])
+# Берем один объект из списка и сохраняем его
+subject_lesson = subject_lessons[0][-1]
+subject_lesson = Subject(**fS.insert(Subject.__name__, subject_lesson.__dict__()))
+print(f'Первый объект: {subject_lesson}\n')
+print(f'Все объекты:', *fS.get_all(Subject.__name__))
+# Создаем еще два объекта
+subject_lesson1 = Subject(object_id=5, subject_name="Algebra")
+subject_lesson1.save('../db')
+subject_lesson2 = Subject(subject_name="Physics", object_id=6)
+subject_lesson2.save('../db')
+print(f'Еще два объекта: {subject_lesson1}, {subject_lesson2}\n')
+# Удалим первый объект
+subject_lesson.delete('../db')
+print(f'Удалили объект 1: {subject_lesson}\n')
+print('Все объекты:', *Subject.get_all('../db'))
+subject_lesson1 = Subject(subject_name="PE", object_id=5)
+fS.update(object_id=5, document=subject_lesson1.__dict__(),
+          collection_name=Subject.__name__)
+subject_lesson2 = Subject(subject_name="Eng", object_id=6)
+fS.update(object_id=6, document=subject_lesson2.__dict__(),
+          collection_name=Subject.__name__)
+
+print(f'Изменили 2 объекта: {subject_lesson1}; {subject_lesson2} \n')
+print('Все объекты через класс:', *Subject.get_all('../db'))
+print('Список всех через адаптер: ', fS.get_all(Subject.__name__), '\n')
+print('Ищем через адаптер: ', fS.get_by_id(collection_name=Subject.__name__,
+                                           object_id=subject_lesson2.get_main_id()))
+
+print("Ищем через адаптер рандомный объект: ", fS.get_by_id(Subject.__name__,
+                                                            2), end='\n\n')
+print("Опять все файлы?", *fS.get_all(Subject.__name__))
+fS.insert(Subject.__name__,
+          Subject(subject_name="Geometry", object_id=None).__dict__())
+
+print("Опять все файлы?", *fS.get_all(Subject.__name__))
