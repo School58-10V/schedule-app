@@ -110,7 +110,7 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         new_dict = {None, None}  # глобальная прееменная для цикла
         if "object_id" in document:
-            del document[object_id]  # удаляем из изменений id, чтобы он не перезаписался.
+            del document["object_id"]  # удаляем из изменений id, чтобы он не перезаписался.
         for dct in current_records:
             if object_id in dct:
                 new_dict = dct  # чтобы не портить dct, тк потом будем искать эту переменную в current_records
