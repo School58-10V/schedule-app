@@ -112,7 +112,7 @@ class FileSource:
         if "object_id" in document:
             del document["object_id"]  # удаляем из изменений id, чтобы он не перезаписался.
         for dct in current_records:
-            if object_id in dct:
+            if dct["object_id"] == object_id:
                 new_dict = dct  # чтобы не портить dct, тк потом будем искать эту переменную в current_records
                 new_dict.update(document)
                 del current_records[current_records.index(dct)]  # перезаписываем измененный dict
@@ -137,7 +137,7 @@ class FileSource:
                     del_dct = dct
                     break
             target_json = self.__class__.serialize_records_to_json(current_records)
-            del del_dct[object_id]
+            del del_dct['object_id']
             with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
                 data_file.write(target_json)
                 return del_dct
