@@ -80,8 +80,7 @@ class FileSource:
         for i in current_records:
             if i["object_id"] == object_id:
                 return True
-            else:
-                return False
+        return False
 
     def insert(self, collection_name: str, document: dict) -> dict:
         current_records = self.__read_json_db(collection_name)
