@@ -32,5 +32,16 @@ test2_class = FileSource()
 print("Пример работы метода get_by_id:")
 print("Мы берем из данного списка:")
 for i in test2_class.get_all("Location"): print(i)
-print("Ровно один элемент:")
+print("Ровно один элемент по указанному при вызове ID:")
 print(test2_class.get_by_id("Location", 2))
+space()
+
+# Тесты для методов update и delete
+
+test3_class = FileSource()
+print(test3_class.get_all('Location'))
+test3_class.update('Location', 1041637588222989, {"comment": "Математика и Физика"})
+print(test3_class.get_all('Location'))
+test3_class.delete('Location', 1041637588222989)
+print(test3_class.get_all('Location'))
+space()
