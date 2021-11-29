@@ -1,6 +1,6 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 from datetime import date
-
+from data_model.parsed_data import ParsedData
 from typing import Optional, List
 
 from data_model.abstract_model import AbstractModel
@@ -51,17 +51,16 @@ class Student(AbstractModel):
                     contacts = str(i[2])
                     bio = i[3]
 
-                    res.append(
-                        (None, Student(full_name, date_of_birth, contacts, bio)))
+                    res.append(ParsedData(None, Student(full_name, date_of_birth, contacts, bio)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
                     print(e)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
                 except Exception as e:
                     exception_text = f"Неизвестная ошибка в Student.parse():\n{e}"
                     print(exception_text)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
 
         return res
 

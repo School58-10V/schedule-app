@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Optional, List
 from data_model.abstract_model import AbstractModel
+from data_model.parsed_data import ParsedData
 
 
 class TimeTable(AbstractModel):
@@ -34,14 +35,14 @@ class TimeTable(AbstractModel):
         for elem in lines:
             try:
                 year = int(elem[0])
-                res.append((None, TimeTable(time_table_year=year)))
+                res.append(ParsedData(None, TimeTable(time_table_year=year)))
             except (IndexError, ValueError) as error:
                 exception_text = f"Запись {lines.index(elem) + 1} строка {lines.index(elem) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
                 print(exception_text)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
             except Exception as error:
                 exception_text = f"Неизвестная ошибка в TimeTable.parse():\n{error}"
                 print(exception_text + '\n')
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
         return res

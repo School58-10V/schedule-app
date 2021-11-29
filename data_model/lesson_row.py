@@ -1,6 +1,7 @@
 from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List
+from data_model.parsed_data import ParsedData
 
 
 class LessonRow(AbstractModel):
@@ -76,15 +77,15 @@ class LessonRow(AbstractModel):
                 end_time = i[5]
                 timetable_id = i[6]
 
-                res.append((None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id), int(room_id),
-                                            int(start_time), int(end_time), int(timetable_id),)))
+                res.append(ParsedData(None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id),
+                                                      int(room_id), int(start_time), int(end_time), int(timetable_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
                 print(e)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
             except Exception as e:
                 exception_text = f"Неизвестная ошибка в LessonRow.parse():\n{e}"
                 print(exception_text)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
         return res

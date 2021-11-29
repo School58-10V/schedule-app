@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+from data_model.parsed_data import ParsedData
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional
 
@@ -51,14 +51,14 @@ class NoLearningPeriod(AbstractModel):
             try:
                 start = i[1]
                 stop = i[2]
-                res.append((None, NoLearningPeriod(start=start, stop=stop)))
+                res.append(ParsedData(None, NoLearningPeriod(start=start, stop=stop)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
                 print(e)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
             except Exception as e:
                 exception_text = f"Неизвестная ошибка в NoLearningPeriod.parse():\n{e}"
                 print(exception_text)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
         return res

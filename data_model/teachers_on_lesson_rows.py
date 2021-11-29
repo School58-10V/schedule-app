@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import Optional, List
 from data_model.abstract_model import AbstractModel
+from data_model.parsed_data import ParsedData
+
 
 
 class TeachersOnLessonRows(AbstractModel):
@@ -45,13 +47,13 @@ class TeachersOnLessonRows(AbstractModel):
                 teacher_id = int(j[0])
                 lesson_row_id = int(j[1])
 
-                res.append((None, TeachersOnLessonRows(teacher_id=teacher_id, lesson_row_id=lesson_row_id)))
+                res.append(ParsedData(None, TeachersOnLessonRows(teacher_id=teacher_id, lesson_row_id=lesson_row_id)))
             except (IndexError, ValueError) as error:
                 exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
             except Exception as error:
                 exception_text = f"Неизвестная ошибка в TeachersOnLessonRows.parse():\n{error}"
                 print(exception_text + '\n')
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
         return res
