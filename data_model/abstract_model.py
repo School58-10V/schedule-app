@@ -9,40 +9,6 @@ class AbstractModel(ABC):
     """
         Абстрактный класс сущности
     """
-    # def save(self, output_path: str = './db') -> AbstractModel:
-    #     """
-    #     Добавляет данные текущего объекта в конец файла сохранения используя __dict__() этого класса
-    #
-    #     :param output_path: путь до папки с .json файлами
-    #     :return: объект который мы сохранили
-    #     """
-    #     current_records = self._read_json_db(output_path)  # Читает старую версию файла и записывает список словарей
-    #     current_records.append(self.__dict__())  # Добавляет настоящий объект
-    #     target_json = AbstractModel._serialize_records_to_json(current_records)  # Готовит данные для формата JSON
-    #     with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-    #         data_file.write(target_json)
-    #     return self  # Возвращает объект который был сохранён
-    #
-    # def delete(self, db_path: str = './db') -> AbstractModel:
-    #     """
-    #     Удаляет сохранения и id-связи текущего объекта
-    #
-    #     :param db_path: путь до папки с .json файлами
-    #     :return: объект который мы удалили
-    #     """
-    #     if self._object_id is None:  # Проверяет валидность данного объекта
-    #         return self
-    #     data = self._read_json_db(db_path)  # Читает файл сохранения и возвращает список словарей
-    #     for i, j in enumerate(data):  # Бежит по data и записывает в i индекс словаря, а в j сам словарь
-    #         if j['object_id'] == self._object_id:  # Проверяет совпадение искомого айдишника с словарём в j
-    #             del data[i]
-    #             # Делает новую версию данных без удалённого словаря
-    #             new_data = AbstractModel._serialize_records_to_json(data)
-    #             with open(f"{db_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-    #                 data_file.write(new_data)  # Перезаписывает сохранение новыеми данными
-    #             break
-    #     self._set_main_id(None)  # В любом случае уничтожает все id-связи данного объекта
-    #     return self  # Возвращает удалённый объект с self._object_id = None
 
     def serialize_to_json(self, indent: Optional[int] = None) -> str:
         """

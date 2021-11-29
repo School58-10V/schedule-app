@@ -74,7 +74,7 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
     for i in fS.get_all(TestingClass.__name__):
         fS.delete(TestingClass.__name__, i['object_id'])
 
-    print(f'------ КОНЕЦ ТЕСТА КЛАССА {TestingClass.__name__} ------\n\n')
+    print(f'\n------ КОНЕЦ ТЕСТА КЛАССА {TestingClass.__name__} ------\n\n')
 
 
 example_1 = {"teacher_id": 5, "lesson_row_id": 10, "object_id": 5}
