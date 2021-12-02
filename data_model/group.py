@@ -2,6 +2,7 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List
+from data_model.parsed_data import ParsedData
 
 
 class Group(AbstractModel):
@@ -43,17 +44,17 @@ class Group(AbstractModel):
                     class_letter = i[1]
                     grade = i[2]
                     profile_name = i[3]
-                    res.append((None, Group(int(teacher_id), class_letter, int(grade), profile_name)))
+                    res.append(ParsedData(None, Group(int(teacher_id), class_letter, int(grade), profile_name)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                     print(exception_text)
                     print(e)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
                 except Exception as e:
                     exception_text = f"Неизвестная ошибка в Group.parse():\n{e}"
                     print(exception_text)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
             return res
 
     def __str__(self) -> str:

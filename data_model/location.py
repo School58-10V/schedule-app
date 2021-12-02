@@ -1,6 +1,6 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
-
+from data_model.parsed_data import ParsedData
 from typing import Optional, List
 
 from data_model.abstract_model import AbstractModel
@@ -57,17 +57,17 @@ class Location(AbstractModel):
                 name = i[1]
                 link = i[2]
                 comment = i[3]
-                res.append((None, Location(location_type, link=link,
-                                           location_desc=name if name.isdigit() else None, comment=comment)))
+                res.append(ParsedData(None, Location(location_type, link=link,
+                                                     location_desc=name if name.isdigit() else None, comment=comment)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
                 print(e)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
             except Exception as e:
                 exception_text = f"Неизвестная ошибка в Location.parse():\n{e}"
                 print(exception_text)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
 
         return res
 

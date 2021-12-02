@@ -1,18 +1,22 @@
 from data_model.location import Location
 from adapters.file_source import FileSource
 
-a = FileSource()
-# a.insert('Location', {"location_type": "кабинет", "name": "213", "link": "None", "comment": "Математика"})
 
-# комментарий, так как я его уже себе добавила и теперь у меня есть его айди. На вашем устройстве придется
-# его перезаписать и проверить его айди.
+file_source = FileSource()
+location = Location.parse("../data_examples/location.csv")
+print(*location)
+for element in location:
+    if not element.has_error():
+        file_source.insert(type(element.get_model()).__name__, element.get_model().__dict__())
 
-print(a.get_by_id('Location', 1041637594512339)) # у меня работает
-# a.insert('Location', {"location_type": "кабинет", "name": "228", "link": "None", "comment": "Русский Язык"})
-
-# та же ситуация, что и с прошлым инсертом
-print(a.get_all('Location'))
-a.update('Location', 1041637594512339, {"comment": "Математика и Физика"})
-print(a.get_all('Location'))
-a.delete('Location', 1041637594512339)
-print(a.get_all('Location'))
+# file_source.insert('Location', {"location_type": "кабинет", "name": "258", "link": "None", "comment": "Физика"})
+# file_source.insert('Location', {"location_type": "кабинет", "name": "290", "link": "None", "comment": "Астрономия"})
+print(file_source.get_all('Location'))
+print('удалили объект', file_source.delete('Location', 1041637850941617))
+print('изменился ли айди?', file_source.update('Location', 1041637850941622, {"object_id": 1, "comment": 'Музыка'}))
+print('еще один поменяли', file_source.update('Location', 1041638194031070, {"location_type": 'ссылка'}))
+print('печатаем второй элемент', file_source.get_by_id('Location', 1041637850941622))
+print(file_source.get_by_query('Location', {"type_of_location": 'кабинет'}), "печатаем все по кабинету")
+print(file_source.get_all('Location'), 'печатаем все по заданию')
+file_source.insert('Location', {"location_type": "ссылка", "name": "290", "link": "None", "comment": "Литература"})
+print(file_source.get_all('Location'), 'печатаем все по заданию')

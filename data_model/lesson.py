@@ -2,6 +2,7 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional
+from data_model.parsed_data import ParsedData
 
 
 class Lesson(AbstractModel):
@@ -74,18 +75,18 @@ class Lesson(AbstractModel):
                     subject_id = i[5]
                     notes = i[6]
                     state = i[8] == 'True'
-                    res.append((None, Lesson(int(start_time), int(end_time), int(day), int(teacher_id),
-                                             int(group_id), int(subject_id), notes, state=state)))
+                    res.append(ParsedData(None, Lesson(int(start_time), int(end_time), int(day), int(teacher_id),
+                                                       int(group_id), int(subject_id), notes, state=state)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                     print(exception_text)
                     print(e)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
                 except Exception as e:
                     exception_text = f"Неизвестная ошибка в Lesson.parse():\n{e}"
                     print(exception_text)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
             return res
 
     def __str__(self):

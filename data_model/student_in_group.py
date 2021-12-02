@@ -1,5 +1,5 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-
+from data_model.parsed_data import ParsedData
 from typing import Optional, List
 
 from data_model.abstract_model import AbstractModel
@@ -36,16 +36,16 @@ class StudentInGroup(AbstractModel):
             try:
                 student_id = int(i[0])
                 group_id = int(i[1])
-                res.append((None, StudentInGroup(student_id, group_id)))
+                res.append(ParsedData(None, StudentInGroup(student_id, group_id)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)
                 print(e)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
             except Exception as e:
                 exception_text = f"Неизвестная ошибка в Student_in_group.parse():\n{e}"
                 print(exception_text)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
 
         return res
 
