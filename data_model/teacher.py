@@ -50,11 +50,13 @@ class Teacher(AbstractModel):
 
             for i in lines:
                 try:
+                    # внимание! здесь может быть баг, т.к. порядок аргументов здесь
+                    # не такой же как в __init__(), но я не уверен.
                     fio = i[0]
-                    subject = i[1]
-                    office_id = int(i[2])
-                    bio = i[3]
-                    contacts = i[4]
+                    bio = i[1]
+                    contacts = i[2]
+                    office_id = int(i[3])
+                    subject = i[4]
 
                     res.append((None, Teacher(fio=fio, subject=subject, 
                                               office_id=office_id, bio=bio, 
@@ -80,7 +82,7 @@ class Teacher(AbstractModel):
 
     def __str__(self):
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
-               f'contacts =  {self.__contacts}) '
+               f'contacts = {self.__contacts}) '
 
     def get_all_lesson_row(self, db_path: str = './db') -> list[int]:
         """

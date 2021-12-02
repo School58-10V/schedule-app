@@ -10,15 +10,15 @@ class FileSource:
         self.__dp_path = dp_path
         self.dictionary = {"Group": 101,
                            "Lesson": 102,
-                           "Lesson_row": 103,
+                           "LessonRow": 103,
                            "Location": 104,
-                           "No_learning_period": 105,
+                           "NoLearningPeriod": 105,
                            "Student": 106,
-                           "Student_in_group": 107,
-                           "Subject_lesson": 108,
+                           "StudentInGroup": 107,
+                           "Subject": 108,
                            "Teacher": 109,
-                           "Teachers_on_lesson_rows": 110,
-                           "Timetable": 111}
+                           "TeachersOnLessonRows": 110,
+                           "TimeTable": 111}
 
     def get_by_query(self, collection_name: str, query: dict):
         dict_list = self.__read_json_db(collection_name)
@@ -110,10 +110,10 @@ class FileSource:
         current_records = self.__read_json_db(collection_name)
         new_dict = {None, None}  # глобальная прееменная для цикла
         if "object_id" in document:
-            del document[object_id]  # удаляем из изменений id, чтобы он не перезаписался.
+            del document['object_id']   # удаляем из изменений id, чтобы он не перезаписался.
         for dct in current_records:
-            if object_id in dct:
-                new_dict = dct  # чтобы не портить dct, тк потом будем искать эту переменную в current_records
+            if "object_id" in dct:
+                new_dict = dct             # чтобы не портить dct, тк потом будем искать эту переменную в current_records
                 new_dict.update(document)
                 del current_records[current_records.index(dct)]  # перезаписываем измененный dict
                 current_records.append(new_dict)

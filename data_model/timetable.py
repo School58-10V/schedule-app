@@ -34,7 +34,7 @@ class TimeTable(AbstractModel):
         for elem in lines:
             try:
                 year = int(elem[0])
-                res.append((None, TimeTable(time_table_year=year)))
+                res.append((None, TimeTable(time_table_year=year, object_id=None)))
             except (IndexError, ValueError) as error:
                 exception_text = f"Запись {lines.index(elem) + 1} строка {lines.index(elem) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
