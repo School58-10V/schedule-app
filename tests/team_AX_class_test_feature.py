@@ -5,6 +5,7 @@ from data_model.teachers_on_lesson_rows import TeachersOnLessonRows
 from adapters.file_source import FileSource
 from data_model.timetable import TimeTable
 from data_model.subject_lesson import Subject
+from data_model.parsed_data import ParsedData
 
 db_location = '../db'
 fS = FileSource(db_location)
@@ -30,11 +31,15 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
     print(f'------ НАЧАЛО ТЕСТ КЛАССА {TestingClass.__name__} ------\n')
 
     # Берем список объектов из csv
-    teachers_on_lesson = TestingClass.parse(csv_location)
-    print(f'Список всех объектов из csv:', *[i[1] for i in teachers_on_lesson], sep='\n', end='\n\n')
+    test_class_samples = TestingClass.parse(csv_location)
+    for data_sample in test_class_samples:
+        if data_sample.has_error():
+            raise ValueError("В данных закралась ошибочка, проверьте их")
+
+    print(f'Список всех объектов из csv:', *[i.get_model() for i in test_class_samples], sep='\n', end='\n\n')
 
     # Берем один объект из списка и сохраняем его
-    from_csv_object = teachers_on_lesson[0][-1]
+    from_csv_object = test_class_samples[0][-1]
     from_csv_object = TestingClass(**fS.insert(TestingClass.__name__, from_csv_object.__dict__()))
     print(f'Первый объект из .csv (который мы только что сохранили):\n{from_csv_object}\n')
     print(f'Все объекты в db/.json (adapter):', *fS.get_all(TestingClass.__name__), sep='\n', end='\n\n')
