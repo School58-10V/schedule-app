@@ -39,7 +39,7 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
     print(f'Список всех объектов из csv:', *[i.get_model() for i in test_class_samples], sep='\n', end='\n\n')
 
     # Берем один объект из списка и сохраняем его
-    from_csv_object = test_class_samples[0][-1]
+    from_csv_object = test_class_samples[0].get_model()
     from_csv_object = TestingClass(**fS.insert(TestingClass.__name__, from_csv_object.__dict__()))
     print(f'Первый объект из .csv (который мы только что сохранили):\n{from_csv_object}\n')
     print(f'Все объекты в db/.json (adapter):', *fS.get_all(TestingClass.__name__), sep='\n', end='\n\n')

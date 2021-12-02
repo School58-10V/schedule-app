@@ -10,4 +10,4 @@ class ParsedData:
         return self.__model
 
     def has_error(self):
-        return self.__error is None
+        return self.__error is not None
