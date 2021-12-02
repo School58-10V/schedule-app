@@ -6,7 +6,7 @@ from typing import List
 class FileSource:
     # Метод  __init__ принимает путь до файла, с которым будут работать остальные методы и сохраняет его в private
     # переменную(по умолчанию "./db").
-    def __init__(self, dp_path: str = '../db'):
+    def __init__(self, dp_path: str = './db'):
         self.__dp_path = dp_path
         self.dictionary = {"Group": 101,
                            "Lesson": 102,
@@ -24,16 +24,16 @@ class FileSource:
         dict_list = self.__read_json_db(collection_name)
         # это коллекция словарей
         list_of_dicts = []
-        for i in dict_list:
+        for dct in dict_list:
             # тут мы берём по 1 словарю из коллекции
             matching_keys = 0
             # это счётчик совпадений в словарях
             for j in query:
-                if j in i and i[j] == query[j]:
+                if j in dct and dct[j] == query[j]:
                     matching_keys += 1
                     # если один ключ в query и словаре равен одному значению + 1 к совпадению
             if matching_keys == len(query):
-                list_of_dicts.append(i)
+                list_of_dicts.append(dct)
                 # если кол-во совпадений = кол-во ключей в query то словарь подходит
         return list_of_dicts
         # возвращаем список из подходяших словарей
@@ -87,60 +87,60 @@ class FileSource:
         object_id = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
         # назначаем айди отдельно
         founded_id = self.check_unique_id(collection_name, object_id)
-        if founded_id:
+        if founded_id:  # уточнить эту строчку
             while founded_id:
                 # проверяем его на уникальность
                 object_id = int(str(self.dictionary[collection_name]) + str(FileSource.generate_id()))
                 # назначаем айди каждый раз когда мы его проверяем
                 founded_id = self.check_unique_id(collection_name, object_id)
-        document["object_id"] = object_id
-        current_records.append(document)
-        target_json = self.__class__.serialize_records_to_json(current_records)
+                # каждую итерацию цикла проверяте существование id
+        document["object_id"] = object_id  # вываливаясть из цикла, добавляет в документ строку с описанием id,
+        # предавая значение id
+        current_records.append(document)  # добавляем в список словарей отредактированный document
+        target_json = self.__class__.serialize_records_to_json(current_records)  # переделывает
+        # current_records в формат json
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
-        return document
+        return document  # возвращаем отредактированный документ
 
-    # Метод update принимает на вход имя коллекции и dict объект для изменения имеюшегося и его айди.
-    # Мы ишим подходяший обьект, добавляем изменённые данные, чистим список
-    # добавляем изменёный и записываем обратно в фаил
+    # Метод update принимает на вход колекцию словарей, id объекта, который ты хочешь изменить и изменения,
+    # которые мы хотим внести в этот объект.
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
         founded_id = self.check_unique_id(collection_name, object_id)
         current_records = self.__read_json_db(collection_name)
-        current_records_copy = current_records
-        new_dict = {None, None}
+        new_dict = {None, None}  # глобальная прееменная для цикла
         if "object_id" in document:
-            del document['object_id']
-        for i in current_records:
-            if "object_id" in i:
-                new_dict = i
+            del document['object_id']   # удаляем из изменений id, чтобы он не перезаписался.
+        for dct in current_records:
+            if "object_id" in dct:
+                new_dict = dct             # чтобы не портить dct, тк потом будем искать эту переменную в current_records
                 new_dict.update(document)
-                del current_records_copy[current_records_copy.index(i)]
-                current_records_copy.append(new_dict)
-        target_json = self.__class__.serialize_records_to_json(current_records_copy)
+                del current_records[current_records.index(dct)]  # перезаписываем измененный dict
+                current_records.append(new_dict)
+                break
+        target_json = self.__class__.serialize_records_to_json(current_records)
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         if founded_id is True:
             return new_dict
         return {None: None} # ?? new возвращать рандомный элемент с таким же айди возможно (?)
 
-    # Метод delete принимает на вход имя коллекции и айди обьекта которого надо удалить.
-    # Мы ишим подходяший обьект, удаляем его
-    # добавляем изменёный список и записываем обратно в фаил
+    # Метод delete принимает на вход имя коллекции и id обьекта, который надо удалить.
     def delete(self, collection_name: str, object_id: int) -> dict:
         current_records = self.__read_json_db(collection_name)
-        current_records_copy = current_records
         del_dct = {}
         founded_id = self.check_unique_id(collection_name, object_id)
-        for dct in current_records:
-            if dct["object_id"] == object_id:
-                del current_records_copy[current_records_copy.index(dct)]
-                del_dct = dct
-                break
-        target_json = self.__class__.serialize_records_to_json(current_records)
         if founded_id:
+            for dct in current_records:
+                if dct["object_id"] == object_id:  # совпадют ли воводимый id c id текущего объекта в итерации
+                    del current_records[current_records.index(dct)]
+                    del_dct = dct
+                    break
+            target_json = self.__class__.serialize_records_to_json(current_records)
+            del del_dct[object_id]
             with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
                 data_file.write(target_json)
-                return del_dct.pop("object_id")  # new удаленный объект без обжект айди
+                return del_dct
         return {None: None}
 
     # __read_json_db подвергся некоторым изменениям, в частности на ввод был добавлен аргумент collection_name- он
