@@ -6,7 +6,8 @@ from data_model.parsed_data import ParsedData
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
 
-class TeachersOnLessonRows(AbstractModel):
+
+class TeachersForLessonRows(AbstractModel):
     """
         Класс учителя в LessonRow. Используется для m2m отношения между
         Teacher и LessonRow
@@ -28,7 +29,7 @@ class TeachersOnLessonRows(AbstractModel):
         return self.__lesson_row_id
 
     def __str__(self) -> str:
-        return f'TeachersOnLessonRows(teacher_id: {self.__teacher_id},' \
+        return f'TeachersForLessonRows(teacher_id: {self.__teacher_id},' \
                f' lesson_row_id: {self.__lesson_row_id},' \
                f' object_id: {self._object_id})'
 
@@ -38,7 +39,7 @@ class TeachersOnLessonRows(AbstractModel):
                 "object_id": self._object_id}
 
     @staticmethod
-    def parse(file_location: str) -> List[(Optional[str], Optional[TeachersOnLessonRows])]:
+    def parse(file_location: str) -> List[(Optional[str], Optional[TeachersForLessonRows])]:
         file = open(file_location, 'r', encoding='utf-8')
         lines = file.read().split('\n')[1:]
         file.close()
@@ -49,13 +50,13 @@ class TeachersOnLessonRows(AbstractModel):
                 teacher_id = int(j[0])
                 lesson_row_id = int(j[1])
 
-                res.append(ParsedData(None, TeachersOnLessonRows(teacher_id=teacher_id, lesson_row_id=lesson_row_id)))
+                res.append(ParsedData(None, TeachersForLessonRows(teacher_id=teacher_id, lesson_row_id=lesson_row_id)))
             except (IndexError, ValueError) as error:
                 exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
                 res.append(ParsedData(exception_text, None))
             except Exception as error:
-                exception_text = f"Неизвестная ошибка в TeachersOnLessonRows.parse():\n{error}"
+                exception_text = f"Неизвестная ошибка в TeachersForLessonRows.parse():\n{error}"
                 print(exception_text + '\n')
                 res.append(ParsedData(exception_text, None))
         return res

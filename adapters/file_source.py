@@ -17,7 +17,7 @@ class FileSource:
                            "StudentInGroup": 107,
                            "Subject": 108,
                            "Teacher": 109,
-                           "TeachersOnLessonRows": 110,
+                           "TeachersForLessonRows": 110,
                            "TimeTable": 111}
 
     def get_by_query(self, collection_name: str, query: dict):
@@ -67,7 +67,7 @@ class FileSource:
     # student_in_group - 107
     # subject_lesson - 108
     # teacher - 109
-    # teachers_on_lesson_rows - 110
+    # teachers_for_lesson_rows - 110
     # timetable - 111
 
     # принимает на вход имя коллекции и dict объект для сохранения

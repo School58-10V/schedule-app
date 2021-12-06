@@ -78,4 +78,3 @@ class Student(AbstractModel):
             "contacts": self.__contacts,
             "bio": self.__bio
             }
-

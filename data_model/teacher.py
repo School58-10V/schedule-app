@@ -5,9 +5,9 @@ import json
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+
 
 class Teacher(AbstractModel):
     """
@@ -20,7 +20,7 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, db_source: FileSource, fio: str, subject: str, object_id: Optional[int] = None, 
+    def __init__(self, db_source: FileSource, fio: str, subject: str, object_id: Optional[int] = None,
                  office_id: int = None, bio: str = None,
                  contacts: str = None):
         super().__init__(db_source)
@@ -63,8 +63,8 @@ class Teacher(AbstractModel):
                     subject = i[4]
 
                     res.append(ParsedData(None, Teacher(fio=fio, subject=subject,
-                                              office_id=office_id, bio=bio, 
-                                              contacts=contacts, object_id=None)))
+                                                        office_id=office_id, bio=bio,
+                                                        contacts=contacts, object_id=None)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
@@ -88,29 +88,9 @@ class Teacher(AbstractModel):
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts = {self.__contacts}) '
 
-    def get_all_lesson_row(self, db_path: str = './db') -> list[int]:
+    def get_all_lesson_row(self) -> List[int]:
         """
-            Читает файл сохранения TeachersOnLessonRows и достает от
-            туда id всех урокой учителя с данным object_id
-            :param db_path: путь до папки с .json файлами
-            :return: список с id уроков
+            Возвращает список словарей объектов TeacherForLessonRows используя db_source данный в __init__()
+            :return: список словарей объектов TeacherForLessonRows
         """
-        lst_lessons = []
-        file_lesson = []
-        try:
-            # Открываем и читаем файл TeachersOnLessonRows
-            with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:
-                file_lesson = json.loads(file.read())
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            # Если файла нет или он пустой, то возвращаем пустой список
-            return []
-
-        # lst_lesson = [i['lesson_row_id'] for i in file_lesson if i['teacher_id'] == self._object_id]
-        for i in file_lesson:
-            # Пробегаемся циклом по списку  и находим
-            # там данные об объектах, где есть учитель на ряд
-            # уроков с таким же id, как и у нашего объекта
-            if i['teacher_id'] == self._object_id:
-                # Если он есть, добавляем id его урока в список, который будем возвращать
-                lst_lessons.append(i['lesson_row_id'])
-        return lst_lessons
+        return self._db_source.get_by_query('TeacherForLessonRows', {'teacher_id': self._object_id})

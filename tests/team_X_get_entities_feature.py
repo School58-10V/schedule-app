@@ -1,5 +1,5 @@
 from data_model.subject_lesson import Subject
-from data_model.teachers_on_lesson_rows import TeachersOnLessonRows
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.timetable import TimeTable
 #
 # teacher1 = TeachersOnLessonRows.get_by_id(5, '../db')
