@@ -23,7 +23,8 @@ class AbstractModel(ABC):
 
     def save(self):
         if (self.get_main_id() is None):
-            self._db_source.insert(self._get_collection_name(), self.__dict__())
+            result = self._db_source.insert(self._get_collection_name(), self.__dict__())
+            self._set_main_id(result['object_id'])
         else:
             self._db_source.update(self._get_collection_name(), self.get_main_id(), self.__dict__())
         return self
@@ -32,6 +33,7 @@ class AbstractModel(ABC):
     def delete(self):
         if (self.get_main_id() is not None):
             self._db_source.delete(self._get_collection_name(), self.get_main_id())
+            self._set_main_id(None)
         return self
 
 
