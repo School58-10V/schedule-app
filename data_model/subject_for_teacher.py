@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class SubjectForTeacher(AbstractModel):
     """
-    Вспомогательный класс для реализации связей many to many между Teacher и Student
+    Вспомогательный класс для реализации связей many to many между Teacher и Subject
     """
 
     def __init__(self, db_source: FileSource, teacher_id: int, subject_id: int, object_id: Optional[int] = None):
