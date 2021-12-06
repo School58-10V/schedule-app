@@ -9,6 +9,7 @@ from data_model.student_in_group import StudentInGroup
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
 
+
 class Student(AbstractModel):
     """
         Класс ученика.
@@ -80,8 +81,10 @@ class Student(AbstractModel):
             "bio": self.__bio
             }
 
-    def get_all_student_group(self):
+    def get_all_student_group(self) -> list:
+        # Берем все
         all_student_group = StudentInGroup.get_all(db_source=self._db_source)
+        # Проходимся по списку циклом, проверяя равен ли id
+        # студента с id данного студента и, если да, добавляем
+        # его в список, который потом возвращаем
         return [i.get_group_id() for i in all_student_group if i.get_student_id() == self._object_id]
-
-
