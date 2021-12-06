@@ -37,7 +37,7 @@ class Group(AbstractModel):
         return self.__profile_name
 
     @staticmethod
-    def parse(file_location: str) -> List[(Optional[str], Optional[Group])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Group])]:
         with open(file_location, encoding='utf-8') as file:
             lines = file.read().split('\n')[1:]
             lines = [i.split(';') for i in lines]
@@ -48,7 +48,7 @@ class Group(AbstractModel):
                     class_letter = i[1]
                     grade = i[2]
                     profile_name = i[3]
-                    res.append(ParsedData(None, Group(int(teacher_id), class_letter, int(grade), profile_name)))
+                    res.append(ParsedData(None, Group(db_source, int(teacher_id), class_letter, int(grade), profile_name)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"

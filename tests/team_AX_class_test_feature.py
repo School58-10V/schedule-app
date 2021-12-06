@@ -1,5 +1,9 @@
 import random
 
+from data_model.group import Group
+from data_model.lesson import Lesson
+from data_model.lesson_row import LessonRow
+from data_model.location import Location
 from data_model.teacher import Teacher
 from data_model.teachers_on_lesson_rows import TeachersOnLessonRows
 from adapters.file_source import FileSource
@@ -116,3 +120,35 @@ example_2_update = {'office_id': 13}
 test_function(Teacher, example_1=example_1, example_2=example_2, example_1_update=example_1_update,
               example_2_update=example_2_update, csv_location='../data_examples/teacher.csv'
               )
+
+example_1 = {'teacher_id': 10, 'class_letter': 'Б', 'grade': 10, 'profile_name': 'Математика'}
+example_2 = {'teacher_id': 10, 'class_letter': 'А', 'grade': 10, 'profile_name': 'Математика'}
+example_1_update = {'class_letter': 'В'}
+example_2_update = {'profile_name': 'Русский Язык'}
+test_function(Group, example_1=example_1, example_2=example_2, example_1_update=example_1_update,
+              example_2_update=example_2_update, csv_location='../data_examples/group.csv'
+              )
+
+# example_1 = {'start_time': 1015, 'end_time': 1100, 'day': 12, 'teacher_id': int, 'group_id': int, 'subject_id': int, 'notes': str}
+# example_2 = {'start_time': 1100, 'end_time': 1145, 'day': 01, 'teacher_id': int, 'group_id': int, 'subject_id': int, 'notes': str}
+# example_1_update = {'class_letter': 'В'}
+# example_2_update = {'profile_name': 'Русский Язык'}
+# test_function(Lesson, example_1=example_1, example_2=example_2, example_1_update=example_1_update,
+              #example_2_update=example_2_update, csv_location='../data_examples/lesson.csv'
+              #)
+
+# example_1 = {'teacher_id': 10, 'class_letter': 'Б', 'grade': 10, 'profile_name': 'Математика'}
+# example_2 = {'teacher_id': 10, 'class_letter': 'А', 'grade': 10, 'profile_name': 'Математика'}
+# example_1_update = {'class_letter': 'В'}
+# example_2_update = {'profile_name': 'Русский Язык'}
+# test_function(LessonRow, example_1=example_1, example_2=example_2, example_1_update=example_1_update,
+               #example_2_update=example_2_update, csv_location='../data_examples/group.csv'
+               #)
+
+#example_1 = {'teacher_id': 10, 'class_letter': 'Б', 'grade': 10, 'profile_name': 'Математика'}
+#example_2 = {'teacher_id': 10, 'class_letter': 'А', 'grade': 10, 'profile_name': 'Математика'}
+#example_1_update = {'class_letter': 'В'}
+#example_2_update = {'profile_name': 'Русский Язык'}
+#test_function(Location, example_1=example_1, example_2=example_2, example_1_update=example_1_update,
+              #example_2_update=example_2_update, csv_location='../data_examples/group.csv'
+              #)

@@ -47,7 +47,7 @@ class Teacher(AbstractModel):
         return self.__office_id
 
     @staticmethod
-    def parse(file_location, db_source: db_source) -> List[(Optional[str], Optional[Teacher])]:
+    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[Teacher])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
