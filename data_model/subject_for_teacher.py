@@ -1,7 +1,4 @@
 from __future__ import annotations
-
-from abc import ABC
-
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
@@ -10,7 +7,7 @@ if TYPE_CHECKING:
     from adapters.file_source import FileSource
 
 
-class SubjectForTeacher(AbstractModel, ABC):
+class SubjectForTeacher(AbstractModel):
     """
     Вспомогательный класс для реализации связей many to many между Teacher и Student
     """
