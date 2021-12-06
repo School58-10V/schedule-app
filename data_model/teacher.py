@@ -47,7 +47,7 @@ class Teacher(AbstractModel):
         return self.__office_id
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Teacher])]:
+    def parse(file_location, db_source: db_source) -> List[(Optional[str], Optional[Teacher])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
@@ -64,7 +64,7 @@ class Teacher(AbstractModel):
 
                     res.append(ParsedData(None, Teacher(fio=fio, subject=subject,
                                               office_id=office_id, bio=bio, 
-                                              contacts=contacts, object_id=None)))
+                                              contacts=contacts, object_id=None, db_source=db_source)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
