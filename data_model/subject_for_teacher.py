@@ -21,6 +21,13 @@ class SubjectForTeacher(AbstractModel):
     """
 
         super().__init__(db_source)
-        self.teacher_id = teacher_id
-        self.subject_id = subject_id
-        self.object_id = object_id
+        self.__teacher_id = teacher_id
+        self.__subject_id = subject_id
+        self.__object_id = object_id
+
+    def get_teacher_id(self) -> int:
+        return self.__teacher_id
+
+    def get_subject_id(self) -> int:
+        return self.__subject_id
+
