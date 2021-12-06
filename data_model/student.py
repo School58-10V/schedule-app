@@ -4,6 +4,7 @@ from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
+from data_model.student_in_group import StudentInGroup
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -78,4 +79,9 @@ class Student(AbstractModel):
             "contacts": self.__contacts,
             "bio": self.__bio
             }
+
+    def get_all_student_group(self):
+        all_student_group = StudentInGroup.get_all(db_source=self._db_source)
+        return [i.get_group_id() for i in all_student_group if i.get_student_id() == self._object_id]
+
 
