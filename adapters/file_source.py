@@ -99,9 +99,7 @@ class FileSource:
         current_records.append(document)  # добавляем в список словарей отредактированный document
         target_json = self.__class__.serialize_records_to_json(current_records)  # переделывает
         # current_records в формат json
-        print(f'{self.__dp_path}/{collection_name}.json')
         with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
-            print('-----')
             data_file.write(target_json)
         return document  # возвращаем отредактированный документ
 

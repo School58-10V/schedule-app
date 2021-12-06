@@ -23,11 +23,9 @@ class AbstractModel(ABC):
     def save(self):
         if (self.get_main_id() is None):
             result = self._db_source.insert(self._get_collection_name(), self.__dict__())
-            print('tyt')
             self._set_main_id(result['object_id'])
         else:
             self._db_source.update(self._get_collection_name(), self.get_main_id(), self.__dict__())
-            print(9090)
         return self
 
     def delete(self):
