@@ -3,8 +3,11 @@ from data_model.parsed_data import ParsedData
 import json
 
 from data_model.abstract_model import AbstractModel
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 class Teacher(AbstractModel):
     """
@@ -17,9 +20,10 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, fio: str, subject: str, object_id: Optional[int] = None, 
+    def __init__(self, db_source: FileSource, fio: str, subject: str, object_id: Optional[int] = None, 
                  office_id: int = None, bio: str = None,
                  contacts: str = None):
+        super().__init__(db_source)
         self.__fio = fio
         self._object_id = object_id
         self.__bio = bio

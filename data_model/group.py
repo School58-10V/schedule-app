@@ -1,8 +1,11 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
 from data_model.abstract_model import AbstractModel
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
 class Group(AbstractModel):
@@ -11,9 +14,10 @@ class Group(AbstractModel):
     """
 
     def __init__(
-            self, teacher_id: int, class_letter: str, grade: int,
+            self, db_source: FileSource, teacher_id: int, class_letter: str, grade: int,
             profile_name: str, object_id: Optional[int] = None
             ):
+        super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__class_letter = class_letter
         self.__grade = grade

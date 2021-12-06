@@ -1,13 +1,16 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
 from data_model.abstract_model import AbstractModel
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
 class Lesson(AbstractModel):
 
-    def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
+    def __init__(self, db_source: FileSource, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
                  subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
         """
             :param start_time: начало урока
@@ -20,6 +23,7 @@ class Lesson(AbstractModel):
             :param group_id: урок
             :param state: состояние
         """
+        super().__init__(db_source)
         self.__start_time = start_time
         self.__end_time = end_time
         self.__day = day

@@ -1,8 +1,10 @@
 from __future__ import annotations
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 class Subject(AbstractModel):
     """
@@ -10,8 +12,9 @@ class Subject(AbstractModel):
         object_id - Идентификационный номер предмета
     """
 
-    def __init__(self, subject_name: Optional[str] = None,
+    def __init__(self, db_source: FileSource, subject_name: Optional[str] = None,
                  object_id: Optional[int] = None):
+        super().__init__(db_source)
         self.__subject_name = subject_name
         self._object_id = object_id
 

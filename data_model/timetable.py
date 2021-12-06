@@ -1,7 +1,10 @@
 from __future__ import annotations
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
 class TimeTable(AbstractModel):
@@ -10,8 +13,9 @@ class TimeTable(AbstractModel):
         Year - учебный год данного расписания
     """
 
-    def __init__(self, time_table_year: Optional[int] = None,
+    def __init__(self, db_source: FileSource, time_table_year: Optional[int] = None,
                  object_id: Optional[int] = None):
+        super().__init__(db_source)
         self.__year = time_table_year
         self._object_id = object_id
 

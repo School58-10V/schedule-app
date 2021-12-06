@@ -1,13 +1,17 @@
 from __future__ import annotations
 from data_model.parsed_data import ParsedData
 from data_model.abstract_model import AbstractModel
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
 class NoLearningPeriod(AbstractModel):
-    def __init__(self, start: str, stop: str, timetable_id: Optional[int] = None,
+    def __init__(self, db_source: FileSource, start: str, stop: str, timetable_id: Optional[int] = None,
                  object_id: Optional[int] = None):
         # Для начала и конца каникул можно использовать только дату
+        super().__init__(db_source)
         self._object_id = object_id
         self.__start_time = start
         self.__stop_time = stop

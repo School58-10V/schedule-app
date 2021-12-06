@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 
-
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 class TeachersOnLessonRows(AbstractModel):
     """
@@ -14,7 +15,8 @@ class TeachersOnLessonRows(AbstractModel):
         object_id - Идентификационный номер учителя на ряд уроков
     """
 
-    def __init__(self, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
+    def __init__(self, db_source: FileSource, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
+        super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__lesson_row_id = lesson_row_id
         self._object_id = object_id

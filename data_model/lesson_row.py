@@ -1,12 +1,16 @@
 from __future__ import annotations
 from data_model.abstract_model import AbstractModel
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
 class LessonRow(AbstractModel):
-    def __init__(self, count_studying_hours: int, group_id: int, subject_id: int, room_id: int, start_time: int,
+    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int, start_time: int,
                  end_time: int, timetable_id: int, object_id: Optional[int] = None):
+        super().__init__(db_source)
         self.__count_studying_hours = count_studying_hours
         self.__start_time = start_time
         self.__end_time = end_time

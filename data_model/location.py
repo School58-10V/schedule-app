@@ -1,9 +1,12 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 import json
 from data_model.parsed_data import ParsedData
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
 class Location(AbstractModel):
@@ -16,8 +19,9 @@ class Location(AbstractModel):
         type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
     """
 
-    def __init__(self, type_of_location: str, object_id: int = None, location_desc: str = None, profile: str = None,
+    def __init__(self, db_source: FileSource, type_of_location: str, object_id: int = None, location_desc: str = None, profile: str = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
+        super().__init__(db_source)
         self._object_id = object_id
         self.__location_desc = location_desc
         self.__profile = profile

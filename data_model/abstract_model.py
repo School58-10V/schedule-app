@@ -2,13 +2,38 @@ from __future__ import annotations
 
 import json
 from abc import ABC, abstractmethod
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
 class AbstractModel(ABC):
     """
         Абстрактный класс сущности
     """
+    def __init__(self, db_source: FileSource):
+        self._db_source = db_source
+
+
+    @classmethod
+    def _get_collection_name(cls):
+        return cls.__name__
+
+
+    def save(self):
+        if (self.get_main_id() is None):
+            self._db_source.insert(self._get_collection_name(), self.__dict__())
+        else:
+            self._db_source.update(self._get_collection_name(), self.get_main_id(), self.__dict__())
+        return self
+    
+
+    def delete(self):
+        if (self.get_main_id() is not None):
+            self._db_source.delete(self._get_collection_name(), self.get_main_id())
+        return self
+
 
     def serialize_to_json(self, indent: Optional[int] = None) -> str:
         """
@@ -20,56 +45,28 @@ class AbstractModel(ABC):
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @classmethod
-    def get_all(cls, db_path: str = "./db") -> List[AbstractModel]:
+    def get_all(cls, db_source: FileSource) -> List[AbstractModel]:
         """
         Возвращает все данные из сохранений в формате объектов соответствующих классов
 
-        :param db_path: путь до папки с .json файлами
+        :param db_source: data_source объект
         :return: Список всех объектов этого класса
         """
-        return [cls(**i) for i in cls._read_json_db(db_path)]
+        return [cls(**obj, db_source=db_source) for obj in db_source.get_all(cls._get_collection_name())]
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_path: str = "./db") -> AbstractModel:
+    def get_by_id(cls, element_id: int, db_source: FileSource) -> AbstractModel:
         """
-        Возвращает запрощенный по element_id объект класса по данным из сохранений
+        Возвращает запрошенный по element_id объект класса по данным из сохранений
 
         :param element_id: айдишник объекта
-        :param db_path: путь до папки с .json файлами
+        :param db_source: data_source объект
         :return: Объект этого класса с таким идшником
         """
-        # Проходит по списку словарей в файле сохранения
-        for i in cls._read_json_db(db_path):
-            if i['object_id'] == element_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {element_id} не найден")
 
-    @classmethod
-    def _read_json_db(cls, db_path: str) -> List[dict]:
-        """
-        Читает файл сохранения текущего объекта и возращает пустой список при ошибке
-
-        :param db_path: путь до папки с .json файлами
-        :return:
-        """
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
-    @staticmethod
-    def _serialize_records_to_json(records: List[dict], indent: Optional[int] = None) -> str:
-        """
-        Подготавливает входные данные к записи в JSON
-
-        :param records: список словарей каких-то объектов
-        :param indent: табуляция для полученной строки json-а
-        :return: json-строку
-        """
-        return json.dumps(records, ensure_ascii=False, indent=indent)
+        obj = db_source.get_by_id(cls._get_collection_name(), element_id)
+        return cls(**obj, db_source=db_source)
+    
 
     @abstractmethod
     def __str__(self):
