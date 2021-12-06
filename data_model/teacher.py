@@ -5,6 +5,8 @@ import json
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
 
@@ -93,4 +95,4 @@ class Teacher(AbstractModel):
             Возвращает список словарей объектов TeacherForLessonRows используя db_source данный в __init__()
             :return: список словарей объектов TeacherForLessonRows
         """
-        return self._db_source.get_by_query('TeacherForLessonRows', {'teacher_id': self._object_id})
+        return TeachersForLessonRows.get_lesson_rows_by_teacher_id(self._object_id, self._db_source)

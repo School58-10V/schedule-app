@@ -2,6 +2,7 @@ from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -93,3 +94,10 @@ class LessonRow(AbstractModel):
                 print(exception_text)
                 res.append(ParsedData(exception_text, None))
         return res
+
+    def get_teachers_by_lesson_row_id(self) -> List[int]:
+        """
+            Возвращает список словарей объектов TeacherForLessonRows используя db_source данный в __init__()
+            :return: список словарей объектов TeacherForLessonRows
+        """
+        return TeachersForLessonRows.get_teachers_by_lesson_row_id(self._object_id, self._db_source)

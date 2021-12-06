@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
+from data_model.lesson_row import LessonRow
 from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
@@ -60,3 +61,11 @@ class TeachersForLessonRows(AbstractModel):
                 print(exception_text + '\n')
                 res.append(ParsedData(exception_text, None))
         return res
+
+    @classmethod
+    def get_lesson_rows_by_teacher_id(cls, teacher_id: int, _db_source: FileSource):
+        return _db_source.get_by_query('LessonRow', {'teacher_id': teacher_id})
+
+    @classmethod
+    def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, _db_source: FileSource):
+        return _db_source.get_by_query('Teacher', {'lesson_row_id': lesson_row_id})
