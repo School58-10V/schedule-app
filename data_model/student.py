@@ -4,7 +4,7 @@ from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
-from data_model.student_in_group import StudentInGroup
+from data_model.students_for_groups import StudentsForGroups
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -81,9 +81,9 @@ class Student(AbstractModel):
             "bio": self.__bio
             }
 
-    def get_all_student_group(self) -> list:
+    def get_all_groups(self) -> list:
         # Берем все
-        all_student_group = StudentInGroup.get_all(db_source=self._db_source)
+        all_student_group = StudentsForGroups.get_all(db_source=self._db_source)
         # Проходимся по списку циклом, проверяя равен ли id
         # студента с id данного студента и, если да, добавляем
         # его в список, который потом возвращаем

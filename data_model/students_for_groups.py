@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from adapters.file_source import FileSource
 
 
-class StudentInGroup(AbstractModel):
+class StudentsForGroups(AbstractModel):
     """
         Класс ученика в группе. Используется для m2m отношения между
         Group и Student
@@ -30,7 +30,7 @@ class StudentInGroup(AbstractModel):
         return self.__group_id
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[StudentInGroup])]:
+    def parse(file_location) -> List[(Optional[str], Optional[StudentsForGroups])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -40,7 +40,7 @@ class StudentInGroup(AbstractModel):
             try:
                 student_id = int(i[0])
                 group_id = int(i[1])
-                res.append(ParsedData(None, StudentInGroup(student_id, group_id)))
+                res.append(ParsedData(None, StudentsForGroups(student_id, group_id)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)
