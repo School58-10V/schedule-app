@@ -31,7 +31,7 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
     print(f'------ НАЧАЛО ТЕСТ КЛАССА {TestingClass.__name__} ------\n')
 
     # Берем список объектов из csv
-    test_class_samples = TestingClass.parse(csv_location)
+    test_class_samples = TestingClass.parse(csv_location, fS)
     for data_sample in test_class_samples:
         if data_sample.has_error():
             raise ValueError("В данных закралась ошибочка, проверьте их")
@@ -40,21 +40,21 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
 
     # Берем один объект из списка и сохраняем его
     from_csv_object = test_class_samples[0].get_model()
-    from_csv_object = TestingClass(**fS.insert(TestingClass.__name__, from_csv_object.__dict__()))
+    from_csv_object = TestingClass(**fS.insert(TestingClass.__name__, from_csv_object.__dict__()), db_source=fS)
     print(f'Первый объект из .csv (который мы только что сохранили):\n{from_csv_object}\n')
     print(f'Все объекты в db/.json (adapter):', *fS.get_all(TestingClass.__name__), sep='\n', end='\n\n')
 
     # Создаем еще два объекта
-    object_2 = TestingClass(**example_1)
+    object_2 = TestingClass(**example_1, db_source=fS)
     object_2 = fS.insert(TestingClass.__name__, object_2.__dict__())
-    object_3 = TestingClass(**example_2)
+    object_3 = TestingClass(**example_2, db_source=fS)
     object_3 = fS.insert(TestingClass.__name__, object_3.__dict__())
     print(f'fs.insert() еще два объекта: \n{object_2}\n{object_3}\n')
 
     # Удалим первый объект
     deleted_object = fS.delete(TestingClass.__name__, from_csv_object.get_main_id())
     print(f'Удалили объект который был из .csv, его ID было:\n{deleted_object}\n')
-    print('Все объекты в db/.json (class):', *TestingClass.get_all('../db'), sep='\n', end='\n\n')
+    print('Все объекты в db/.json (class):', *TestingClass.get_all(fS), sep='\n', end='\n\n')
     object_2 = fS.update(object_id=object_2['object_id'], document=example_1_update,
                          collection_name=TestingClass.__name__)
 
@@ -62,7 +62,7 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
                          collection_name=TestingClass.__name__)
 
     print(f'Изменили 2 объекта:\n{object_2}\n{object_3}\n')
-    print('Все объекты в db/.json (class):', *TestingClass.get_all('../db'), sep='\n', end='\n\n')
+    print('Все объекты в db/.json (class):', *TestingClass.get_all(fS), sep='\n', end='\n\n')
     print('Все объекты в db/.json (adapter):', *fS.get_all(TestingClass.__name__), sep='\n', end='\n\n')
     print('Ищем второй объект (adapter):', fS.get_by_id(collection_name=TestingClass.__name__,
                                                         object_id=object_3['object_id']), '\n')
