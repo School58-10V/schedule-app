@@ -22,7 +22,7 @@ class Subject(AbstractModel):
         return self.__subject_name
 
     @staticmethod
-    def parse(file_location: str, db_source: db_source) -> List[(Optional[str], Optional[Subject])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Subject])]:
         file = open(file_location, 'r', encoding='utf-8')
         lines = file.read().split('\n')[1:]
         file.close()

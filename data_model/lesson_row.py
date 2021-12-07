@@ -66,7 +66,7 @@ class LessonRow(AbstractModel):
                f', object_id={self._object_id}) '
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[LessonRow])]:
+    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[LessonRow])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -81,8 +81,9 @@ class LessonRow(AbstractModel):
                 end_time = i[5]
                 timetable_id = i[6]
 
-                res.append(ParsedData(None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id),
-                                                      int(room_id), int(start_time), int(end_time), int(timetable_id))))
+                res.append(ParsedData(None, LessonRow(db_source, int(count_studying_hours), int(group_id),
+                                                      int(subject_id), int(room_id), int(start_time),
+                                                      int(end_time), int(timetable_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)

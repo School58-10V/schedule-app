@@ -49,7 +49,7 @@ class Location(AbstractModel):
         return self.__comment
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Location])]:
+    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[Location])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -61,7 +61,7 @@ class Location(AbstractModel):
                 name = i[1]
                 link = i[2]
                 comment = i[3]
-                res.append(ParsedData(None, Location(location_type, link=link,
+                res.append(ParsedData(None, Location(db_source, location_type, link=link,
                                                      location_desc=name if name.isdigit() else None, comment=comment)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"

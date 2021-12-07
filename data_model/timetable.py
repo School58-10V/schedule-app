@@ -30,7 +30,7 @@ class TimeTable(AbstractModel):
                 "time_table_year": self.__year}
 
     @staticmethod
-    def parse(file_timetable: str, db_source: db_source) -> List[(Optional[str], Optional[TimeTable])]:
+    def parse(file_timetable: str, db_source: FileSource) -> List[(Optional[str], Optional[TimeTable])]:
         f = open(file_timetable, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
