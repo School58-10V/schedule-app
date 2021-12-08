@@ -34,14 +34,14 @@ class Subject(AbstractModel):
         lst_teachers = []
 
         try:
-            with open(f'{db_path}/.json', encoding='utf-8') as file:
+            with open(f'{db_path}/Teacher.json', encoding='utf-8') as file:
                 data = json.loads(file.read())
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return lst_teachers
 
         for i in data:
             if i['subject'] == self.__subject_name:
-                lst_teachers.append(i['lesson_row_id'])
+                lst_teachers.append(i["object_id"])
         return lst_teachers
 
     @staticmethod
