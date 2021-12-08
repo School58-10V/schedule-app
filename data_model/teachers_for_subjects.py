@@ -1,10 +1,6 @@
 from __future__ import annotations
-
-from abc import ABC
-
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
-from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -12,12 +8,15 @@ if TYPE_CHECKING:
 
 class TeachersForSubjects(AbstractModel):
     """
-   :param teacher_id - Идентификационный номер Teacher
-   :param subject_id - Идентификационный номер Subject
-   :param object_id - Идентификационный номер SubjectForTeacher(опционально)
-
-   """
+Вспомогательный класс для реализации связей many to many между Subject и Teacher
+"""
     def __init__(self, db_source: FileSource, teacher_id: int, subject_id: int, object_id: Optional[int] = None):
+        """
+:param teacher_id - Идентификационный номер Teacher
+:param subject_id - Идентификационный номер Subject
+:param object_id - Идентификационный номер SubjectForTeacher(опционально)
+
+"""
         super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__subject_id = subject_id
@@ -38,3 +37,4 @@ class TeachersForSubjects(AbstractModel):
         return {"teacher_id": self.__teacher_id,
                 "subject_id": self.__subject_id,
                 "object_id": self._object_id}
+
