@@ -8,15 +8,15 @@ if TYPE_CHECKING:
 
 class TeachersForSubjects(AbstractModel):
     """
-Вспомогательный класс для реализации связей many to many между Subject и Teacher
-"""
+        Вспомогательный класс для реализации связей many to many между Subject и Teacher
+    """
     def __init__(self, db_source: FileSource, teacher_id: int, subject_id: int, object_id: Optional[int] = None):
         """
-:param teacher_id - Идентификационный номер Teacher
-:param subject_id - Идентификационный номер Subject
-:param object_id - Идентификационный номер SubjectForTeacher(опционально)
+            :param teacher_id - Идентификационный номер Teacher
+            :param subject_id - Идентификационный номер Subject
+            :param object_id - Идентификационный номер SubjectForTeacher(опционально)
 
-"""
+        """
         super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__subject_id = subject_id
