@@ -96,7 +96,6 @@ class Teacher(AbstractModel):
             :return: список с id уроков
         """
         lst_lessons = []
-        file_lesson = []
         try:
             # Открываем и читаем файл TeachersOnLessonRows
             with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:

@@ -1,13 +1,12 @@
 from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
-from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
 
 
-class SubjectForTeacher(AbstractModel):
+class SubjectsForTeachers(AbstractModel):
     """
     Вспомогательный класс для реализации связей many to many между Teacher и Subject
     """
@@ -41,25 +40,6 @@ class SubjectForTeacher(AbstractModel):
                 "subject_id": self.__subject_id,
                 "object_id": self._object_id}
 
-    @staticmethod
-    def parse(file_location: str) -> List[(Optional[str], Optional[SubjectForTeacher])]:
-        file = open(file_location, 'r', encoding='utf-8')
-        lines = file.read().split('\n')[1:]
-        file.close()
-        res = []
-        for i in lines:
-            j = i.split(';')
-            try:
-                teacher_id = int(j[0])
-                subject_id = int(j[1])
 
-                res.append(ParsedData(None, SubjectForTeacher(teacher_id=teacher_id, subject_id=subject_id)))  # надо добавить db_source
-            except (IndexError, ValueError) as error:
-                exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
-                                 f"не добавилась в [res].\nОшибка: {error}"
-                res.append(ParsedData(exception_text, None))
-            except Exception as error:
-                exception_text = f"Неизвестная ошибка в SubjectForTeacher.parse():\n{error}"
-                print(exception_text + '\n')
-                res.append(ParsedData(exception_text, None))
-        return res
+
+
