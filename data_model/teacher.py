@@ -9,6 +9,7 @@ from typing import Optional, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
 
+
 class Teacher(AbstractModel):
     """
         Класс учителя.
@@ -91,7 +92,7 @@ class Teacher(AbstractModel):
     def get_all_lesson_row(self, db_path: str = './db') -> list[int]:
         """
             Читает файл сохранения TeachersOnLessonRows и достает от
-            туда id всех урокой учителя с данным object_id
+            туда id всех уроков учителя с данным object_id
             :param db_path: путь до папки с .json файлами
             :return: список с id уроков
         """
