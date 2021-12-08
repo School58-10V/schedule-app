@@ -12,9 +12,9 @@ class AbstractModel(ABC):
     """
         Абстрактный класс сущности
     """
+
     def __init__(self, db_source: FileSource):
         self._db_source = db_source
-
 
     @classmethod
     def _get_collection_name(cls):
@@ -33,7 +33,6 @@ class AbstractModel(ABC):
             self._db_source.delete(self._get_collection_name(), self.get_main_id())
             self._set_main_id(None)
         return self
-
 
     def serialize_to_json(self, indent: Optional[int] = None) -> str:
         """
@@ -66,7 +65,6 @@ class AbstractModel(ABC):
 
         obj = db_source.get_by_id(cls._get_collection_name(), element_id)
         return cls(**obj, db_source=db_source)
-    
 
     @abstractmethod
     def __str__(self):

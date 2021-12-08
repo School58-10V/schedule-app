@@ -2,6 +2,8 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
+
+from data_model.groups_for_students import GroupsForStudents
 from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
@@ -71,3 +73,13 @@ class Group(AbstractModel):
                 "grade": self.__grade,
                 "profile_name": self.__profile_name,
                 "object_id": self._object_id}
+
+    def get_all_students(self):
+        # Действуем так же, как и в классе Student.
+        # Вопрос, почему мы не можем использовать ту сущность?
+        # Тут вроде нет перекрещивающихся импортов...
+        all_student_group = GroupsForStudents.get_all(db_source=self._db_source)
+        # Проходимся по списку циклом, проверяя равен ли id
+        # студента с id данного студента и, если да, добавляем
+        # его в список, который потом возвращаем
+        return [i.get_student_id() for i in all_student_group if i.get_group_id() == self._object_id]
