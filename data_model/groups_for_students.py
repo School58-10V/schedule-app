@@ -30,7 +30,7 @@ class GroupsForStudents(AbstractModel):
         return self.__group_id
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[GroupsForStudents])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[GroupsForStudents])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -40,7 +40,8 @@ class GroupsForStudents(AbstractModel):
             try:
                 student_id = int(i[0])
                 group_id = int(i[1])
-                res.append(ParsedData(None, GroupsForStudents(student_id, group_id)))
+                res.append(ParsedData(None, GroupsForStudents(student_id=student_id,
+                                                              group_id=group_id, db_source=db_source)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)

@@ -81,7 +81,7 @@ class Student(AbstractModel):
             "bio": self.__bio
             }
 
-    def get_all_groups(self) -> list:
+    def get_all_groups(self) -> List[int]:
         # Берем все
         all_student_group = StudentsForGroups.get_all(db_source=self._db_source)
         # Проходимся по списку циклом, проверяя равен ли id
