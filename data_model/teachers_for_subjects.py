@@ -45,6 +45,7 @@ class TeachersForSubjects(AbstractModel):
 
     @classmethod
     def get_teachers_by_subject_id(cls, subject_id: int, db_source: FileSource) -> List[Teacher]:
+        # в качестве аргумента подаем id, по которому будем искать все Teacher
         return [Teacher.get_by_id(i["teacher_id"], db_source) for i in
                 db_source.get_by_query(cls._get_collection_name(), query={"subject_id": subject_id})]
         # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "subject_id" соответствует
