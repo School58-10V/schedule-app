@@ -20,12 +20,13 @@ class Location(AbstractModel):
     """
 
     def __init__(self, db_source: FileSource, location_type: str, object_id: int = None,
-                 location_desc: str = None, profile: str = None,
+                 location_desc: str = None, profile: str = None, num_of_class: int = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
         super().__init__(db_source)
         self._object_id = object_id
         self.__location_desc = location_desc
         self.__profile = profile
+        self.__num_of_class = num_of_class
         self.__equipment = equipment
         self.__link = link
         self.__location_type = location_type
@@ -59,11 +60,11 @@ class Location(AbstractModel):
         for i in lines:
             try:
                 location_type = i[0]
-                name = i[1]
+                num_of_class = int(i[1])
                 link = i[2]
                 comment = i[3]
                 res.append(ParsedData(None, Location(db_source, location_type, link=link,
-                                                     location_desc=name if name.isdigit() else None, comment=comment)))
+                                                     num_of_class=num_of_class, comment=comment)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
@@ -77,13 +78,14 @@ class Location(AbstractModel):
         return res
 
     def __str__(self):
-        return f'Location(location_type={self.__location_type}, name={self.__location_desc}, ' \
+        return f'Location(location_type={self.__location_type}, num_of_class={self.__location_desc}, ' \
                f'link={self.__link}, comment={self.__comment})'
 
     def __dict__(self):
         return {'object_id': self._object_id,
                 'location_desc': self.__location_desc,
                 'profile': self.__profile,
+                'num_of_class': self.__num_of_class,
                 'equipment': self.__equipment,
                 'link': self.__link,
                 'location_type': self.__location_type,
