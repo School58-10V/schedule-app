@@ -1,5 +1,6 @@
 from __future__ import annotations
-import json
+from data_model.teacher import Teacher
+from data_model.teachers_for_subjects import TeachersForSubjects
 from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
@@ -23,26 +24,13 @@ class Subject(AbstractModel):
     def get_subject_name(self) -> str:
         return self.__subject_name
 
-    def get_all_teachers(self, db_path: str = "./db") -> list[int]:
+    def get_teachers(self) -> list[Teacher]:
         """
-            Читает файл сохранения  и достает от
-            туда id всех учителей с данным object_id
-            :param db_path: путь до папки с .json файлами
+            Ссылается на класс TeachersForSubjects и использует его метод
             :return: список с id уроков
         """
 
-        lst_teachers = []
-
-        try:
-            with open(f'{db_path}/Teacher.json', encoding='utf-8') as file:
-                data = json.loads(file.read())
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return lst_teachers
-
-        for i in data:
-            if i['subject'] == self.__subject_name:
-                lst_teachers.append(i["object_id"])
-        return lst_teachers
+        return TeachersForSubjects.get_teachers_by_subject_id(self._object_id, self._db_source)
 
     @staticmethod
     def parse(file_location: str) -> List[(Optional[str], Optional[Subject])]:

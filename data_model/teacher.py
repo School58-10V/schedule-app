@@ -5,6 +5,8 @@ import json
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
+from data_model.subject_lesson import Subject
+from data_model.subjects_for_teachers import SubjectsForTeachers
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -114,3 +116,6 @@ class Teacher(AbstractModel):
                 # Если он есть, добавляем id его урока в список, который будем возвращать
                 lst_lessons.append(i['lesson_row_id'])
         return lst_lessons
+
+    def get_subjects(self) -> list[Subject]:
+        return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)
