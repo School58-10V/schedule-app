@@ -1,6 +1,8 @@
 from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
+import json
+from data_model.subject_lesson import Subject
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -40,6 +42,11 @@ class SubjectsForTeachers(AbstractModel):
                 "subject_id": self.__subject_id,
                 "object_id": self._object_id}
 
+    @classmethod
+    def _get_collection_name(cls):
+        return "SubjectsAndTeachers"
 
-
-
+    @classmethod
+    def get_subjects_by_teacher_id(cls, teacher_id: int, db_source: FileSource) -> List[Subject]:
+        return [Subject.get_by_id(i["subject_id"], db_source) for i in
+                db_source.get_by_query(cls._get_collection_name(), query={"teacher_id": teacher_id})]
