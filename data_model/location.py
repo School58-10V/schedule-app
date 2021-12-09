@@ -16,10 +16,11 @@ class Location(AbstractModel):
                  Profile - профиль класса(например "хим.", если кабинет оборудован для уроков химии)
                Equipment - оборудование в классе
                     Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
-        type_of_location - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
+        location_type - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
     """
 
-    def __init__(self, db_source: FileSource, type_of_location: str, object_id: int = None, location_desc: str = None, profile: str = None,
+    def __init__(self, db_source: FileSource, location_type: str, object_id: int = None,
+                 location_desc: str = None, profile: str = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
         super().__init__(db_source)
         self._object_id = object_id
@@ -27,7 +28,7 @@ class Location(AbstractModel):
         self.__profile = profile
         self.__equipment = equipment
         self.__link = link
-        self.__type_of_location = type_of_location
+        self.__location_type = location_type
         self.__comment = comment
 
     def get_location_desc(self):
@@ -42,8 +43,8 @@ class Location(AbstractModel):
     def get_link(self):
         return self.__link
 
-    def get_type_of_location(self):
-        return self.__type_of_location
+    def get_location_type(self):
+        return self.__location_type
 
     def get_comment(self):
         return self.__comment
@@ -76,7 +77,7 @@ class Location(AbstractModel):
         return res
 
     def __str__(self):
-        return f'Location(type_of_location={self.__type_of_location}, name={self.__location_desc}, ' \
+        return f'Location(location_type={self.__location_type}, name={self.__location_desc}, ' \
                f'link={self.__link}, comment={self.__comment})'
 
     def __dict__(self):
@@ -85,5 +86,5 @@ class Location(AbstractModel):
                 'profile': self.__profile,
                 'equipment': self.__equipment,
                 'link': self.__link,
-                'type_of_location': self.__type_of_location,
+                'location_type': self.__location_type,
                 'comment': self.__comment}
