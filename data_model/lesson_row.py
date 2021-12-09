@@ -2,6 +2,7 @@ from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
+from data_model.teacher import Teacher
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 if TYPE_CHECKING:
@@ -67,7 +68,7 @@ class LessonRow(AbstractModel):
                f', object_id={self._object_id}) '
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[LessonRow])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[LessonRow])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -82,7 +83,7 @@ class LessonRow(AbstractModel):
                 end_time = i[5]
                 timetable_id = i[6]
 
-                res.append(ParsedData(None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id),
+                res.append(ParsedData(None, LessonRow(db_source, int(count_studying_hours), int(group_id), int(subject_id),
                                                       int(room_id), int(start_time), int(end_time), int(timetable_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
@@ -95,9 +96,9 @@ class LessonRow(AbstractModel):
                 res.append(ParsedData(exception_text, None))
         return res
 
-    def get_teachers_by_lesson_row_id(self) -> List[int]:
+    def get_teachers(self) -> List[Teacher]:
         """
-            Возвращает список словарей объектов TeacherForLessonRows используя db_source данный в __init__()
-            :return: список словарей объектов TeacherForLessonRows
+            Возвращает список объектов Teacher используя db_source данный в __init__()
+            :return: список словарей объектов Teacher
         """
         return TeachersForLessonRows.get_teachers_by_lesson_row_id(self._object_id, self._db_source)

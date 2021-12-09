@@ -1,4 +1,7 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+
+from data_model.lesson_row import LessonRow
+from data_model.lesson_rows_for_teachers import LessonRowsForTeachers
 from data_model.parsed_data import ParsedData
 import json
 
@@ -90,9 +93,9 @@ class Teacher(AbstractModel):
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts = {self.__contacts}) '
 
-    def get_all_lesson_row(self) -> List[int]:
+    def get_lesson_rows(self) -> List[LessonRow]:
         """
             Возвращает список словарей объектов TeacherForLessonRows используя db_source данный в __init__()
             :return: список словарей объектов TeacherForLessonRows
         """
-        return TeachersForLessonRows.get_lesson_rows_by_teacher_id(self._object_id, self._db_source)
+        return LessonRowsForTeachers.get_lesson_rows_by_teacher_id(self._object_id, self._db_source)

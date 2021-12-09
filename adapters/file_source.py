@@ -20,7 +20,7 @@ class FileSource:
                            "TeachersForLessonRows": 110,
                            "TimeTable": 111}
 
-    def get_by_query(self, collection_name: str, query: dict):
+    def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         dict_list = self.__read_json_db(collection_name)
         # это коллекция словарей
         list_of_dicts = []
