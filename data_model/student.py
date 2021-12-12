@@ -5,10 +5,11 @@ from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
 from data_model.students_for_groups import StudentsForGroups
-from data_model.group import Group
+
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+    from data_model.group import Group
 
 
 class Student(AbstractModel):
@@ -24,7 +25,7 @@ class Student(AbstractModel):
     def __init__(
             self, db_source: FileSource, full_name: str, date_of_birth: date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
-    ):
+            ):
         super().__init__(db_source)
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
@@ -80,8 +81,8 @@ class Student(AbstractModel):
             "object_id": self._object_id,
             "contacts": self.__contacts,
             "bio": self.__bio
-        }
+            }
 
     def get_all_groups(self) -> List[Group]:
-        ## Возвращает список объектов Student при поммощи db_source
+        # Возвращает список объектов Student при поммощи db_source
         return StudentsForGroups.get_group_by_student_id(self._object_id, self._db_source)

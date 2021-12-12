@@ -76,5 +76,5 @@ class Group(AbstractModel):
                 "object_id": self._object_id}
 
     def get_all_students(self) -> List[Student]:
-        ## Возвращает список объектов Student при поммощи db_source
+        # Возвращает список объектов Student при поммощи db_source
         return GroupsForStudents.get_student_by_group_id(self._object_id, self._db_source)
