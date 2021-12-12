@@ -5,6 +5,7 @@ from typing import Optional, List, TYPE_CHECKING
 
 from data_model.groups_for_students import GroupsForStudents
 from data_model.parsed_data import ParsedData
+from data_model.student import Student
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -74,12 +75,6 @@ class Group(AbstractModel):
                 "profile_name": self.__profile_name,
                 "object_id": self._object_id}
 
-    def get_all_students(self):
-        # Действуем так же, как и в классе Student.
-        # Вопрос, почему мы не можем использовать ту сущность?
-        # Тут вроде нет перекрещивающихся импортов...
-        all_student_group = GroupsForStudents.get_all(db_source=self._db_source)
-        # Проходимся по списку циклом, проверяя равен ли id
-        # студента с id данного студента и, если да, добавляем
-        # его в список, который потом возвращаем
-        return [i.get_student_id() for i in all_student_group if i.get_group_id() == self._object_id]
+    def get_all_students(self) -> List[Student]:
+        ## Возвращает список объектов Student при поммощи db_source
+        return GroupsForStudents.get_student_by_group_id(self._object_id, self._db_source)
