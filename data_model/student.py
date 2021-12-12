@@ -23,7 +23,7 @@ class Student(AbstractModel):
     def __init__(
             self, db_source: FileSource, full_name: str, date_of_birth: date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
-            ):
+    ):
         super().__init__(db_source)
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
@@ -79,7 +79,7 @@ class Student(AbstractModel):
             "object_id": self._object_id,
             "contacts": self.__contacts,
             "bio": self.__bio
-            }
+        }
 
     def get_all_groups(self) -> List[int]:
         # Берем все
