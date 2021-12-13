@@ -2,12 +2,12 @@ from datetime import date
 
 from data_model.subject import Subject
 from data_model.teacher import Teacher
-from data_model.teachers_on_lesson_rows import TeachersOnLessonRows
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.group import Group
 from data_model.timetable import TimeTable
 from data_model.no_learning_period import NoLearningPeriod
 
-teacher = TeachersOnLessonRows(teacher_id=5, lesson_row_id=10, object_id=5)
+teacher = TeachersForLessonRows(teacher_id=5, lesson_row_id=10, object_id=5)
 teacher.save('../db')
 # teacher1 = TeachersOnLessonRows(4, 6, object_id=5)
 # teachers = TeachersOnLessonRows.get_all('../db')

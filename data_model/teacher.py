@@ -1,16 +1,19 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+
+from data_model.lesson_row import LessonRow
+from data_model.lesson_rows_for_teachers import LessonRowsForTeachers
 from data_model.parsed_data import ParsedData
 import json
 
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
-from data_model.subject import Subject
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.subjects_for_teachers import SubjectsForTeachers
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
-
+    from data_model.subject import Subject
 
 class Teacher(AbstractModel):
     """
@@ -23,7 +26,7 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, db_source: FileSource, fio: str, object_id: Optional[int] = None,
+    def __init__(self, db_source: FileSource, fio: str, subject: str, object_id: Optional[int] = None,
                  office_id: int = None, bio: str = None,
                  contacts: str = None):
         super().__init__(db_source)
@@ -60,7 +63,7 @@ class Teacher(AbstractModel):
                     contacts = i[2]
                     office_id = int(i[3])
 
-                    res.append(ParsedData(None, Teacher(fio=fio,
+                    res.append(ParsedData(None, Teacher(fio=fio, subject=subject,
                                                         office_id=office_id, bio=bio,
                                                         contacts=contacts, object_id=None)))
                 except IndexError as e:
@@ -86,31 +89,13 @@ class Teacher(AbstractModel):
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts = {self.__contacts}) '
 
-    def get_all_lesson_row(self, db_path: str = './db') -> List[int]:
+    def get_lesson_rows(self) -> List[LessonRow]:
         """
-            Читает файл сохранения TeachersOnLessonRows и достает от
-            туда id всех уроков учителя с данным object_id
-            :param db_path: путь до папки с .json файлами
-            :return: список с id уроков
+            Возвращает список словарей объектов TeacherForLessonRows используя db_source данный в __init__()
+            :return: список словарей объектов TeacherForLessonRows
         """
-        lst_lessons = []
-        try:
-            # Открываем и читаем файл TeachersOnLessonRows
-            with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:
-                file_lesson = json.loads(file.read())
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            # Если файла нет или он пустой, то возвращаем пустой список
-            return []
-
-        # lst_lesson = [i['lesson_row_id'] for i in file_lesson if i['teacher_id'] == self._object_id]
-        for i in file_lesson:
-            # Пробегаемся циклом по списку  и находим
-            # там данные об объектах, где есть учитель на ряд
-            # уроков с таким же id, как и у нашего объекта
-            if i['teacher_id'] == self._object_id:
-                # Если он есть, добавляем id его урока в список, который будем возвращать
-                lst_lessons.append(i['lesson_row_id'])
-        return lst_lessons
+        return LessonRowsForTeachers.get_lesson_rows_by_teacher_id(self._object_id, self._db_source)
 
     def get_subjects(self) -> List[Subject]:
         return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)
+
