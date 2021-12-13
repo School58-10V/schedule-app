@@ -46,7 +46,7 @@ class NoLearningPeriod(AbstractModel):
                f'stop={self.__stop_time}, object_id={self._object_id})'
 
     @staticmethod
-    def parse(file_no_learning_period) -> List[(Optional[str], Optional[NoLearningPeriod])]:
+    def parse(file_no_learning_period, db_source: FileSource) -> List[(Optional[str], Optional[NoLearningPeriod])]:
         f = open(file_no_learning_period, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -55,7 +55,7 @@ class NoLearningPeriod(AbstractModel):
             try:
                 start = i[1]
                 stop = i[2]
-                res.append(ParsedData(None, NoLearningPeriod(start=start, stop=stop)))
+                res.append(ParsedData(None, NoLearningPeriod(start=start, stop=stop, db_source=db_source)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)

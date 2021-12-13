@@ -30,7 +30,7 @@ class TimeTable(AbstractModel):
                 "time_table_year": self.__year}
 
     @staticmethod
-    def parse(file_timetable: str) -> List[(Optional[str], Optional[TimeTable])]:
+    def parse(file_timetable: str, db_source: FileSource) -> List[(Optional[str], Optional[TimeTable])]:
         f = open(file_timetable, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -39,7 +39,7 @@ class TimeTable(AbstractModel):
         for elem in lines:
             try:
                 year = int(elem[0])
-                res.append(ParsedData(None, TimeTable(time_table_year=year)))
+                res.append(ParsedData(None, TimeTable(time_table_year=year, db_source=db_source)))
             except (IndexError, ValueError) as error:
                 exception_text = f"Запись {lines.index(elem) + 1} строка {lines.index(elem) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
