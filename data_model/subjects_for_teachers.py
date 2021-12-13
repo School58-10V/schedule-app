@@ -1,11 +1,9 @@
 from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
-import json
-from data_model.subject import Subject
-
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+    from data_model.subject import Subject
 
 
 class SubjectsForTeachers(AbstractModel):
@@ -49,6 +47,7 @@ class SubjectsForTeachers(AbstractModel):
     @classmethod
     def get_subjects_by_teacher_id(cls, teacher_id: int, db_source: FileSource) -> List[Subject]:  # в качестве
         # аргумента подаем id, по которому будем искать все Subject
+        from data_model.subject import Subject
 
         return [Subject.get_by_id(i["subject_id"], db_source) for i in
                 db_source.get_by_query(cls._get_collection_name(), query={"teacher_id": teacher_id})]
