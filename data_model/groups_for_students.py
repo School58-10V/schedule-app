@@ -3,10 +3,11 @@ from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
-# from data_model.student import Student
+
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+    from data_model.student import Student
 
 
 class GroupsForStudents(AbstractModel):
@@ -70,6 +71,7 @@ class GroupsForStudents(AbstractModel):
         return 'StudentsForGroups'
 
     @classmethod
-    def get_student_by_group_id(cls, group_id: int, db_source: FileSource) -> List:
-        # return [Student.get_by_id(i['student_id'], db_source=db_source)
-        return [i['student_id'] for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
+    def get_student_by_group_id(cls, group_id: int, db_source: FileSource) -> List[Student]:
+        from data_model.student import Student
+        return [Student.get_by_id(i['student_id'], db_source=db_source)
+                for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
