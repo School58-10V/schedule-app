@@ -6,8 +6,8 @@ from typing import List
 class FileSource:
     # Метод  __init__ принимает путь до файла, с которым будут работать остальные методы и сохраняет его в private
     # переменную(по умолчанию "./db").
-    def __init__(self, dp_path: str = './db'):
-        self.__dp_path = dp_path
+    def __init__(self, db_path: str = './db'):
+        self.__db_path = db_path
         self.dictionary = {"Group": 101,
                            "Lesson": 102,
                            "LessonRow": 103,
@@ -17,10 +17,10 @@ class FileSource:
                            "StudentInGroup": 107,
                            "Subject": 108,
                            "Teacher": 109,
-                           "TeachersOnLessonRows": 110,
+                           "TeachersForLessonRows": 110,
                            "TimeTable": 111}
 
-    def get_by_query(self, collection_name: str, query: dict):
+    def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         dict_list = self.__read_json_db(collection_name)
         # это коллекция словарей
         list_of_dicts = []
@@ -52,7 +52,7 @@ class FileSource:
         for cnt in self.__read_json_db(collection_name):
             if cnt['object_id'] == object_id:
                 return cnt
-        return {None: None}
+        raise ValueError(f'Объект с id {object_id} из {collection_name} не существует')
 
     # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять время в микросекудах. Таким
     # образом мы получим айдишник, который можно будет понимать и без словаря обозначений. Например экземпляр класса
@@ -67,7 +67,7 @@ class FileSource:
     # student_in_group - 107
     # subject_lesson - 108
     # teacher - 109
-    # teachers_on_lesson_rows - 110
+    # teachers_for_lesson_rows - 110
     # timetable - 111
 
     # принимает на вход имя коллекции и dict объект для сохранения
@@ -99,7 +99,7 @@ class FileSource:
         current_records.append(document)  # добавляем в список словарей отредактированный document
         target_json = self.__class__.serialize_records_to_json(current_records)  # переделывает
         # current_records в формат json
-        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+        with open(f"{self.__db_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         return document  # возвращаем отредактированный документ
 
@@ -121,7 +121,7 @@ class FileSource:
                 current_records.append(new_dict)
                 break
         target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+        with open(f"{self.__db_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         return new_dict
 
@@ -138,7 +138,7 @@ class FileSource:
                     break
             target_json = self.__class__.serialize_records_to_json(current_records)
             del del_dct["object_id"]
-            with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+            with open(f"{self.__db_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
                 data_file.write(target_json)
                 return del_dct
         return {None: None}
@@ -147,7 +147,7 @@ class FileSource:
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
     def __read_json_db(self, collection_name: str) -> List[dict]:
         try:
-            with open(f"{self.__dp_path}/{collection_name}.json",
+            with open(f"{self.__db_path}/{collection_name}.json",
                       mode="r", encoding='utf-8') as data_file:
                 record = json.loads(data_file.read())
                 return record

@@ -1,10 +1,13 @@
 from __future__ import annotations
+from data_model.teacher import Teacher
+from data_model.teachers_for_subjects import TeachersForSubjects
 from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+
 
 class Subject(AbstractModel):
     """
@@ -20,6 +23,14 @@ class Subject(AbstractModel):
 
     def get_subject_name(self) -> str:
         return self.__subject_name
+
+    def get_teachers(self) -> List[Teacher]:
+        """
+            Ссылается на класс TeachersForSubjects и использует его метод
+            :return: список с id уроков
+        """
+
+        return TeachersForSubjects.get_teachers_by_subject_id(self._object_id, self._db_source)
 
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Subject])]:
@@ -49,3 +60,4 @@ class Subject(AbstractModel):
     def __dict__(self) -> dict:
         return {"object_id": self._object_id,
                 "subject_name": self.__subject_name}
+
