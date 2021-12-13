@@ -1,4 +1,4 @@
-from data_model.subject_lesson import Subject
+from data_model.subject import Subject
 from tests.team_AX_class_test_feature import test_function
 
 example_1 = {'subject_name': 'Алгебра'}

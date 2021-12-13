@@ -26,7 +26,7 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, db_source: FileSource, fio: str, subject: str, object_id: Optional[int] = None,
+    def __init__(self, db_source: FileSource, fio: str, object_id: Optional[int] = None,
                  office_id: int = None, bio: str = None,
                  contacts: str = None):
         super().__init__(db_source)
@@ -49,7 +49,7 @@ class Teacher(AbstractModel):
         return self.__office_id
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Teacher])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Teacher])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
@@ -63,7 +63,7 @@ class Teacher(AbstractModel):
                     contacts = i[2]
                     office_id = int(i[3])
 
-                    res.append(ParsedData(None, Teacher(fio=fio, subject=subject,
+                    res.append(ParsedData(None, Teacher(db_source=db_source, fio=fio,
                                                         office_id=office_id, bio=bio,
                                                         contacts=contacts, object_id=None)))
                 except IndexError as e:
@@ -82,20 +82,23 @@ class Teacher(AbstractModel):
                 "object_id": self._object_id,
                 "bio": self.__bio,
                 "contacts": self.__contacts,
-                "office_id": self.__office_id,
-                "subject": self.__subject}
+                "office_id": self.__office_id}
 
     def __str__(self):
-        return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
+        return f'Teacher(fio = {self.__fio}, bio = {self.__bio}, ' \
                f'contacts = {self.__contacts}) '
 
     def get_lesson_rows(self) -> List[LessonRow]:
         """
-            Возвращает список словарей объектов TeacherForLessonRows используя db_source данный в __init__()
-            :return: список словарей объектов TeacherForLessonRows
+            Возвращает список объектов LessonRow используя db_source данный в __init__()
+            :return: список объектов LessonRow
         """
         return LessonRowsForTeachers.get_lesson_rows_by_teacher_id(self._object_id, self._db_source)
 
     def get_subjects(self) -> List[Subject]:
+        """
+            Возвращает список объектов Subject используя db_source данный в __init__()
+            :return: список объектов Subject
+        """
         return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)
 

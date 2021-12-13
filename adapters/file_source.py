@@ -14,11 +14,12 @@ class FileSource:
                            "Location": 104,
                            "NoLearningPeriod": 105,
                            "Student": 106,
-                           "StudentInGroup": 107,
+                           "StudentsForGroups": 107,
                            "Subject": 108,
                            "Teacher": 109,
                            "TeachersForLessonRows": 110,
-                           "TimeTable": 111}
+                           "TimeTable": 111,
+                           "GroupsForStudents": 112}
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         dict_list = self.__read_json_db(collection_name)

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class Subject(AbstractModel):
     """
-              name - Название предмета
+        name - Название предмета
         object_id - Идентификационный номер предмета
     """
 
@@ -27,9 +27,8 @@ class Subject(AbstractModel):
     def get_teachers(self) -> List[Teacher]:
         """
             Ссылается на класс TeachersForSubjects и использует его метод
-            :return: список с id уроков
+            :return: список объектов Teacher
         """
-
         return TeachersForSubjects.get_teachers_by_subject_id(self._object_id, self._db_source)
 
     @staticmethod

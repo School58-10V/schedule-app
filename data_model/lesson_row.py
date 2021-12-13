@@ -2,10 +2,10 @@ from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
-from data_model.teacher import Teacher
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 if TYPE_CHECKING:
+    from data_model.teacher import Teacher
     from adapters.file_source import FileSource
 
 
@@ -23,13 +23,13 @@ class LessonRow(AbstractModel):
         self._object_id = object_id
 
     """
-        start_time  начальное время
-        end_time конечное время
-        num_of_group номер группы
-        subject_id айди предмета
-        room_id айди комнаты
-        timetable_id год в который происходят уроки
-        object_id айди самого класса ряд уроков
+        :param start_time:  начальное время
+        :param end_time: конечное время
+        :param num_of_group: номер группы
+        :param subject_id: айди предмета
+        :param room_id: айди комнаты
+        :param timetable_id: год в который происходят уроки
+        :param object_id: айди самого класса ряд уроков
     """
 
     def get_group_id(self) -> int:
