@@ -24,7 +24,7 @@ class Subject(AbstractModel):
     def get_subject_name(self) -> str:
         return self.__subject_name
 
-    def get_teachers(self) -> list[Teacher]:
+    def get_teachers(self) -> List[Teacher]:
         """
             Ссылается на класс TeachersForSubjects и использует его метод
             :return: список с id уроков

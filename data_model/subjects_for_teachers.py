@@ -2,7 +2,7 @@ from __future__ import annotations
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
 import json
-from data_model.subject_lesson import Subject
+from data_model.subject import Subject
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
