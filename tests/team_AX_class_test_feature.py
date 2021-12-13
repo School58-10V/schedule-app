@@ -4,7 +4,7 @@ from data_model.teacher import Teacher
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from adapters.file_source import FileSource
 from data_model.timetable import TimeTable
-from data_model.subject_lesson import Subject
+from data_model.subject import Subject
 from data_model.parsed_data import ParsedData
 
 db_location = '../db'

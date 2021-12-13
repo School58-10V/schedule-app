@@ -9,10 +9,11 @@ from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+from data_model.subjects_for_teachers import SubjectsForTeachers
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
-
+    from data_model.subject import Subject
 
 class Teacher(AbstractModel):
     """
@@ -34,7 +35,6 @@ class Teacher(AbstractModel):
         self.__bio = bio
         self.__contacts = contacts
         self.__office_id = office_id
-        self.__subject = subject
 
     def get_fio(self) -> str:
         return self.__fio
@@ -44,9 +44,6 @@ class Teacher(AbstractModel):
 
     def get_contacts(self) -> Optional[str]:
         return self.__contacts
-
-    def get_subject(self) -> str:
-        return self.__subject
 
     def get_office_id(self) -> Optional[int]:
         return self.__office_id
@@ -65,7 +62,6 @@ class Teacher(AbstractModel):
                     bio = i[1]
                     contacts = i[2]
                     office_id = int(i[3])
-                    subject = i[4]
 
                     res.append(ParsedData(None, Teacher(fio=fio, subject=subject,
                                                         office_id=office_id, bio=bio,
@@ -99,3 +95,7 @@ class Teacher(AbstractModel):
             :return: список словарей объектов TeacherForLessonRows
         """
         return LessonRowsForTeachers.get_lesson_rows_by_teacher_id(self._object_id, self._db_source)
+
+    def get_subjects(self) -> List[Subject]:
+        return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)
+

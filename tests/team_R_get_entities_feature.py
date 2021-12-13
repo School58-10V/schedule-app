@@ -1,6 +1,6 @@
 from data_model.teacher import Teacher
 from data_model.student import Student
-from data_model.student_in_group import StudentInGroup
+from data_model.students_for_groups import StudentsForGroups
 
 
 res = Teacher.get_all("../data_examples")
@@ -21,9 +21,9 @@ print(res_id)
 
 print("----------")
 
-res = StudentInGroup.get_all("../data_examples")
+res = StudentsForGroups.get_all("../data_examples")
 print(res)
 for i in res:
     print(i)
-res_id = StudentInGroup.get_by_id(345, "../data_examples")
+res_id = StudentsForGroups.get_by_id(345, "../data_examples")
 print(res_id)

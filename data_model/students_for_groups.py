@@ -1,4 +1,5 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
+
 from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
@@ -6,9 +7,10 @@ from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+    from data_model.group import Group
 
 
-class StudentInGroup(AbstractModel):
+class StudentsForGroups(AbstractModel):
     """
         Класс ученика в группе. Используется для m2m отношения между
         Group и Student
@@ -17,7 +19,8 @@ class StudentInGroup(AbstractModel):
         object_id - айди группы учeников
     """
 
-    def __init__(self, db_source: FileSource, student_id: int, group_id: int, object_id: Optional[int] = None):
+    def __init__(self, db_source: FileSource, student_id: int,
+                 group_id: int, object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__student_id = student_id
         self.__group_id = group_id
@@ -30,7 +33,7 @@ class StudentInGroup(AbstractModel):
         return self.__group_id
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[StudentInGroup])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -40,7 +43,8 @@ class StudentInGroup(AbstractModel):
             try:
                 student_id = int(i[0])
                 group_id = int(i[1])
-                res.append(ParsedData(None, StudentInGroup(student_id, group_id)))
+                res.append(ParsedData(None, StudentsForGroups(student_id=student_id,
+                                                              group_id=group_id, db_source=db_source)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                 print(exception_text)
@@ -61,3 +65,8 @@ class StudentInGroup(AbstractModel):
                 'group_id': self.__group_id,
                 'object_id': self._object_id}
 
+    @classmethod
+    def get_group_by_student_id(cls, student_id: int, db_source: FileSource) -> List[Group]:
+        from data_model.group import Group
+        return [Group.get_by_id(i['group_id'], db_source=db_source)
+                for i in db_source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
