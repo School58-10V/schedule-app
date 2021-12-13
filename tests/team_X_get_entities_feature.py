@@ -1,4 +1,4 @@
-from data_model.subject_lesson import Subject
+from data_model.subject import Subject
 from data_model.teachers_on_lesson_rows import TeachersOnLessonRows
 from data_model.timetable import TimeTable
 #

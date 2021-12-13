@@ -5,9 +5,12 @@ import json
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
+from data_model.subject import Subject
+from data_model.subjects_for_teachers import SubjectsForTeachers
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+
 
 class Teacher(AbstractModel):
     """
@@ -20,7 +23,7 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, db_source: FileSource, fio: str, subject: str, object_id: Optional[int] = None, 
+    def __init__(self, db_source: FileSource, fio: str, object_id: Optional[int] = None,
                  office_id: int = None, bio: str = None,
                  contacts: str = None):
         super().__init__(db_source)
@@ -29,7 +32,6 @@ class Teacher(AbstractModel):
         self.__bio = bio
         self.__contacts = contacts
         self.__office_id = office_id
-        self.__subject = subject
 
     def get_fio(self) -> str:
         return self.__fio
@@ -39,9 +41,6 @@ class Teacher(AbstractModel):
 
     def get_contacts(self) -> Optional[str]:
         return self.__contacts
-
-    def get_subject(self) -> str:
-        return self.__subject
 
     def get_office_id(self) -> Optional[int]:
         return self.__office_id
@@ -60,11 +59,10 @@ class Teacher(AbstractModel):
                     bio = i[1]
                     contacts = i[2]
                     office_id = int(i[3])
-                    subject = i[4]
 
-                    res.append(ParsedData(None, Teacher(fio=fio, subject=subject,
-                                              office_id=office_id, bio=bio, 
-                                              contacts=contacts, object_id=None)))
+                    res.append(ParsedData(None, Teacher(fio=fio,
+                                                        office_id=office_id, bio=bio,
+                                                        contacts=contacts, object_id=None)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
@@ -88,15 +86,14 @@ class Teacher(AbstractModel):
         return f'Teacher(fio = {self.__fio}, subject = {self.__subject}, bio = {self.__bio}, ' \
                f'contacts = {self.__contacts}) '
 
-    def get_all_lesson_row(self, db_path: str = './db') -> list[int]:
+    def get_all_lesson_row(self, db_path: str = './db') -> List[int]:
         """
             Читает файл сохранения TeachersOnLessonRows и достает от
-            туда id всех урокой учителя с данным object_id
+            туда id всех уроков учителя с данным object_id
             :param db_path: путь до папки с .json файлами
             :return: список с id уроков
         """
         lst_lessons = []
-        file_lesson = []
         try:
             # Открываем и читаем файл TeachersOnLessonRows
             with open(f'{db_path}/TeachersOnLessonRows.json', encoding='utf-8') as file:
@@ -114,3 +111,6 @@ class Teacher(AbstractModel):
                 # Если он есть, добавляем id его урока в список, который будем возвращать
                 lst_lessons.append(i['lesson_row_id'])
         return lst_lessons
+
+    def get_subjects(self) -> List[Subject]:
+        return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)

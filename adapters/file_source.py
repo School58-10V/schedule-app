@@ -6,8 +6,8 @@ from typing import List
 class FileSource:
     # Метод  __init__ принимает путь до файла, с которым будут работать остальные методы и сохраняет его в private
     # переменную(по умолчанию "./db").
-    def __init__(self, dp_path: str = './db'):
-        self.__dp_path = dp_path
+    def __init__(self, db_path: str = './db'):
+        self.__db_path = db_path
         self.dictionary = {"Group": 101,
                            "Lesson": 102,
                            "LessonRow": 103,
@@ -99,7 +99,7 @@ class FileSource:
         current_records.append(document)  # добавляем в список словарей отредактированный document
         target_json = self.__class__.serialize_records_to_json(current_records)  # переделывает
         # current_records в формат json
-        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+        with open(f"{self.__db_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         return document  # возвращаем отредактированный документ
 
@@ -121,7 +121,7 @@ class FileSource:
                 current_records.append(new_dict)
                 break
         target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+        with open(f"{self.__db_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
             data_file.write(target_json)
         return new_dict
 
@@ -138,7 +138,7 @@ class FileSource:
                     break
             target_json = self.__class__.serialize_records_to_json(current_records)
             del del_dct["object_id"]
-            with open(f"{self.__dp_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
+            with open(f"{self.__db_path}/{collection_name}.json", mode="w", encoding='utf-8') as data_file:
                 data_file.write(target_json)
                 return del_dct
         return {None: None}
@@ -147,7 +147,7 @@ class FileSource:
     # принимает имя файла, чтобы данную функцию стало возможно применять для любого класса
     def __read_json_db(self, collection_name: str) -> List[dict]:
         try:
-            with open(f"{self.__dp_path}/{collection_name}.json",
+            with open(f"{self.__db_path}/{collection_name}.json",
                       mode="r", encoding='utf-8') as data_file:
                 record = json.loads(data_file.read())
                 return record

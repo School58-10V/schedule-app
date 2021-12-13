@@ -15,27 +15,23 @@ class AbstractModel(ABC):
     def __init__(self, db_source: FileSource):
         self._db_source = db_source
 
-
     @classmethod
     def _get_collection_name(cls):
         return cls.__name__
 
-
     def save(self):
-        if (self.get_main_id() is None):
+        if self.get_main_id() is None:
             result = self._db_source.insert(self._get_collection_name(), self.__dict__())
             self._set_main_id(result['object_id'])
         else:
             self._db_source.update(self._get_collection_name(), self.get_main_id(), self.__dict__())
         return self
-    
 
     def delete(self):
-        if (self.get_main_id() is not None):
+        if self.get_main_id() is not None:
             self._db_source.delete(self._get_collection_name(), self.get_main_id())
             self._set_main_id(None)
         return self
-
 
     def serialize_to_json(self, indent: Optional[int] = None) -> str:
         """
@@ -68,7 +64,6 @@ class AbstractModel(ABC):
 
         obj = db_source.get_by_id(cls._get_collection_name(), element_id)
         return cls(**obj, db_source=db_source)
-    
 
     @abstractmethod
     def __str__(self):
