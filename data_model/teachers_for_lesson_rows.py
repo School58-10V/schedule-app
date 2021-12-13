@@ -12,8 +12,8 @@ class TeachersForLessonRows(AbstractModel):
     """
         Класс учителя в LessonRow. Используется для m2m отношения между
         Teacher и LessonRow
-                      teacher_id - Идентификационный номер учителя
-                   lesson_row_id - Идентификационный номер ряда уроков
+        teacher_id - Идентификационный номер учителя
+        lesson_row_id - Идентификационный номер ряда уроков
         object_id - Идентификационный номер учителя на ряд уроков
     """
 

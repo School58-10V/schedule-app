@@ -54,9 +54,9 @@ class Subject(AbstractModel):
         return res
 
     def __str__(self):
-        return f'Subject(subject_name: {self.__subject_name})'
+        return f'Subject(subject_name: {self.get_subject_name()})'
 
     def __dict__(self) -> dict:
-        return {"object_id": self._object_id,
-                "subject_name": self.__subject_name}
+        return {"object_id": self.get_main_id(),
+                "subject_name": self.get_subject_name()}
 
