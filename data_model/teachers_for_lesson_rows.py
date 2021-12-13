@@ -3,10 +3,10 @@ from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.lesson_row import LessonRow
 from data_model.parsed_data import ParsedData
-from data_model.teacher import Teacher
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
+    from data_model.teacher import Teacher
 
 
 class TeachersForLessonRows(AbstractModel):
@@ -76,7 +76,9 @@ class TeachersForLessonRows(AbstractModel):
         :param db_source: наш дб сорс
         :return: список идшинков учителей, у которых lesson_row_id равен тому что мы передали
         """
+        from data_model.teacher import Teacher
+
         return [
-            Teacher.get_by_id(i['object_id'], db_source=db_source)
+            Teacher.get_by_id(i['teacher_id'], db_source=db_source)
             for i in db_source.get_by_query(cls._get_collection_name(), {'lesson_row_id': lesson_row_id})
         ]
