@@ -52,7 +52,7 @@ class FileSource:
         for cnt in self.__read_json_db(collection_name):
             if cnt['object_id'] == object_id:
                 return cnt
-        return {None: None}
+        raise ValueError(f'Объект с id {object_id} из {collection_name} не существует')
 
     # Предложения по назначению ID-шников(Оля). После номеров класса стоит добавлять время в микросекудах. Таким
     # образом мы получим айдишник, который можно будет понимать и без словаря обозначений. Например экземпляр класса

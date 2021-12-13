@@ -12,6 +12,7 @@ class AbstractModel(ABC):
     """
         Абстрактный класс сущности
     """
+
     def __init__(self, db_source: FileSource):
         self._db_source = db_source
 

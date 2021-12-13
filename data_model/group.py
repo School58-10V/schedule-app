@@ -2,7 +2,10 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
+
+from data_model.groups_for_students import GroupsForStudents
 from data_model.parsed_data import ParsedData
+from data_model.student import Student
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -71,3 +74,7 @@ class Group(AbstractModel):
                 "grade": self.__grade,
                 "profile_name": self.__profile_name,
                 "object_id": self._object_id}
+
+    def get_all_students(self) -> List[Student]:
+        # Возвращает список объектов Student при поммощи db_source
+        return GroupsForStudents.get_student_by_group_id(self._object_id, self._db_source)
