@@ -53,7 +53,6 @@ class Student(AbstractModel):
 
             for i in lines:
                 try:
-                    print(i)
                     full_name = i[0]
                     my_datetime = datetime.datetime.strptime(i[1], '%d.%m.%Y')
                     my_date = my_datetime.date()
