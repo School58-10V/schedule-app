@@ -75,13 +75,11 @@ class Student(AbstractModel):
         return f'Student(full_name = {self.__full_name}, date_of_birth = {self.__date_of_birth}, contacts = {self.__contacts}, bio =  {self.__bio}) '
 
     def __dict__(self) -> dict:
-        return {
-            "full_name": self.__full_name,
-            "date_of_birth": self.__date_of_birth,
-            "object_id": self._object_id,
-            "contacts": self.__contacts,
-            "bio": self.__bio
-            }
+        return {"full_name": self.get_full_name(),
+                "date_of_birth": self.get_date_of_birth(),
+                "object_id": self.get_main_id(),
+                "contacts": self.get_contacts(),
+                "bio": self.get_bio()}
   
     def get_all_groups(self) -> List[Group]:
         """
