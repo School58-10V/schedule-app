@@ -54,7 +54,7 @@ class Student(AbstractModel):
             for i in lines:
                 try:
                     full_name = i[0]
-                    date_of_birth = date.fromisoformat(i[1])
+                    date_of_birth = date(i[1])
                     contacts = str(i[2])
                     bio = i[3]
 
