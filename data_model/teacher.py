@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from adapters.file_source import FileSource
     from data_model.subject import Subject
 
+
 class Teacher(AbstractModel):
     """
         Класс учителя.

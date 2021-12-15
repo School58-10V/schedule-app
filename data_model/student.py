@@ -23,7 +23,7 @@ class Student(AbstractModel):
     """
 
     def __init__(
-            self, db_source: FileSource, full_name: str, date_of_birth: date, object_id: Optional[int] = None,
+            self, db_source: FileSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
             ):
         super().__init__(db_source)
@@ -36,7 +36,7 @@ class Student(AbstractModel):
     def get_full_name(self) -> str:
         return self.__full_name
 
-    def get_date_of_birth(self) -> date:
+    def get_date_of_birth(self) -> datetime.date:
         return self.__date_of_birth
 
     def get_contacts(self) -> Optional[str]:
@@ -73,7 +73,8 @@ class Student(AbstractModel):
         return res
 
     def __str__(self):
-        return f'Student(full_name = {self.__full_name}, date_of_birth = {self.__date_of_birth}, contacts = {self.__contacts}, bio =  {self.__bio}) '
+        return f'Student(full_name = {self.__full_name}, date_of_birth = {self.__date_of_birth}, ' \
+               f'contacts = {self.__contacts}, bio =  {self.__bio}) '
 
     def __dict__(self) -> dict:
         return {

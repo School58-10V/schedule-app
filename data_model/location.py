@@ -1,5 +1,4 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-import json
 from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
@@ -16,7 +15,7 @@ class Location(AbstractModel):
                  Profile - профиль класса(например "хим.", если кабинет оборудован для уроков химии)
                Equipment - оборудование в классе
                     Link - на случай дистанта ссылка(в Сибирь) для подключения к месту проведения урока
-        location_type - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
+           location_type - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
     """
 
     def __init__(self, db_source: FileSource, location_type: str, object_id: int = None,
