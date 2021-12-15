@@ -1,5 +1,5 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-import datetime
+from datetime import datetime
 from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
@@ -23,7 +23,7 @@ class Student(AbstractModel):
     """
 
     def __init__(
-            self, db_source: FileSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
+            self, db_source: FileSource, full_name: str, date_of_birth: date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
             ):
         super().__init__(db_source)
@@ -36,7 +36,7 @@ class Student(AbstractModel):
     def get_full_name(self) -> str:
         return self.__full_name
 
-    def get_date_of_birth(self) -> datetime.date:
+    def get_date_of_birth(self) -> date:
         return self.__date_of_birth
 
     def get_contacts(self) -> Optional[str]:
@@ -54,13 +54,12 @@ class Student(AbstractModel):
             for i in lines:
                 try:
                     full_name = i[0]
-                    my_datetime = datetime.datetime.strptime(i[1], '%d.%m.%Y')
-                    my_date = my_datetime.date()
+                    date_of_birth = datetime.strptime(i[1], '%d.%m.%Y').date()
                     contacts = str(i[2])
                     bio = i[3]
 
-                    res.append(ParsedData(None, Student(db_source=db_source, full_name=full_name,
-                                                        date_of_birth=my_date, contacts=contacts, bio=bio)))
+                    res.append(ParsedData(None, Student(db_source, full_name=full_name, date_of_birth=date_of_birth,
+                                                        contacts=contacts, bio=bio)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)

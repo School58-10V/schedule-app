@@ -90,3 +90,4 @@ class Location(AbstractModel):
                 'link': self.__link,
                 'location_type': self.__location_type,
                 'comment': self.__comment}
+
