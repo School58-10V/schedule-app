@@ -14,7 +14,7 @@ class LessonRow(AbstractModel):
                  start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
         # TODO: write down
         """
-            :param count_studying_hours: ????
+            :param count_studying_hours: количество академических часов в занятии (возможно нет!!!!)
             :param db_source: Адаптер бд сорса
             :param start_time:  начальное время
             :param end_time: конечное время
