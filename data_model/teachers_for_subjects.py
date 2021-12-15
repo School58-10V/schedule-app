@@ -31,14 +31,14 @@ class TeachersForSubjects(AbstractModel):
         return self.__subject_id
 
     def __str__(self):
-        return f'TeachersForSubjects(teacher_id: {self.__teacher_id},' \
-               f' subject_id: {self.__subject_id},' \
-               f' object_id: {self._object_id})'
+        return f'TeachersForSubjects(teacher_id: {self.get_teacher_id},' \
+               f' subject_id: {self.get_subject_id},' \
+               f' object_id: {self.get_main_id()})'
 
     def __dict__(self):
-        return {"teacher_id": self.__teacher_id,
-                "subject_id": self.__subject_id,
-                "object_id": self._object_id}
+        return {"teacher_id": self.get_teacher_id,
+                "subject_id": self.get_subject_id,
+                "object_id": self.get_main_id()}
 
     @classmethod
     def _get_collection_name(cls):
