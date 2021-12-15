@@ -63,7 +63,8 @@ class Location(AbstractModel):
                 num_of_class = int(i[1])
                 link = i[2]
                 comment = i[3]
-                res.append(ParsedData(None, Location(db_source, location_type, link=link,
+                res.append(ParsedData(None, Location(db_source=db_source,
+                                                     location_type=location_type, link=link,
                                                      num_of_class=num_of_class, comment=comment)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"

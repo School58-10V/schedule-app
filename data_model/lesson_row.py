@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 
 class LessonRow(AbstractModel):
-    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int, start_time: int,
+    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int,
+                 subject_id: int, room_id: int, start_time: int,
                  end_time: int, timetable_id: int, object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__count_studying_hours = count_studying_hours
@@ -83,8 +84,14 @@ class LessonRow(AbstractModel):
                 end_time = i[5]
                 timetable_id = i[6]
 
-                res.append(ParsedData(None, LessonRow(db_source, int(count_studying_hours), int(group_id), int(subject_id),
-                                                      int(room_id), int(start_time), int(end_time), int(timetable_id))))
+                res.append(ParsedData(None, LessonRow(db_source=db_source,
+                                                      count_studying_hours=int(count_studying_hours),
+                                                      group_id=int(group_id),
+                                                      subject_id=int(subject_id),
+                                                      room_id=int(room_id),
+                                                      start_time=int(start_time),
+                                                      end_time=int(end_time),
+                                                      timetable_id=int(timetable_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
