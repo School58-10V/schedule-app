@@ -19,7 +19,7 @@ class Group(AbstractModel):
     def __init__(
             self, db_source: FileSource, teacher_id: int, class_letter: str, grade: int,
             profile_name: str, object_id: Optional[int] = None
-            ):
+    ):
         super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__class_letter = class_letter
@@ -41,23 +41,23 @@ class Group(AbstractModel):
 
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Group])]:
-    #ввод; адрес файла,
+        # ввод; адрес файла,
         with open(file_location, encoding='utf-8') as file:
-            #файд теперь в file
+            # файд теперь в file
             lines = file.read().split('\n')[1:]
             lines = [i.split(';') for i in lines]
-            #превпащаем файл в лист
+            # превпащаем файл в лист
             res = []
             for i in lines:
-                #тут трай
+                # тут трай
                 try:
                     teacher_id = i[0]
                     class_letter = i[1]
                     grade = i[2]
                     profile_name = i[3]
-                    #тут наполняем список
-                    res.append(ParsedData(None, Group(db_source, int(teacher_id), class_letter,
-                                                    int(grade), profile_name)))
+                    # тут наполняем список
+                    res.append(ParsedData(None, Group(db_source, teacher_id=int(teacher_id), class_letter=class_letter,
+                                                      grade=int(grade), profile_name=profile_name)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
@@ -68,7 +68,7 @@ class Group(AbstractModel):
                     exception_text = f"Неизвестная ошибка в Group.parse():\n{e}"
                     print(exception_text)
                     res.append(ParsedData(exception_text, None))
-        #тут ретёрнем список
+        # тут ретёрнем список
         return res
 
     def __str__(self) -> str:
