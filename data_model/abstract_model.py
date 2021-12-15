@@ -73,6 +73,9 @@ class AbstractModel(ABC):
     def __dict__(self):
         pass
 
+    def get_db_source(self):
+        return self._db_source
+
     def get_main_id(self):
         """
         Возвращает айди текущего объекта
