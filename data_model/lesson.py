@@ -95,7 +95,14 @@ class Lesson(AbstractModel):
             return res
 
     def __str__(self):
-        return f"Урок с id={self._object_id}"
+        return f'Lesson(start_time: {self.__start_time},'\
+               f'day: {self.__day},'\
+               f'teacher_id: {self.__teacher_id},'\
+               f'group_id: {self.__group_id},'\
+               f'subject_id: {self.__subject_id},'\
+               f'notes: {self.__notes},'\
+               f'object_id: {self._object_id},'\
+               f'state: {self.__state})'
 
     def __dict__(self) -> dict:
         return {"start_time": self.__start_time,
