@@ -1,5 +1,5 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-from datetime import date
+from datetime import datetime
 from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
@@ -54,11 +54,12 @@ class Student(AbstractModel):
             for i in lines:
                 try:
                     full_name = i[0]
-                    date_of_birth = date(i[1])
+                    date_of_birth = datetime.strptime(i[1], '%d.%m.%Y').date()
                     contacts = str(i[2])
                     bio = i[3]
 
-                    res.append(ParsedData(None, Student(db_source, full_name, date_of_birth, contacts, bio)))
+                    res.append(ParsedData(None, Student(db_source, full_name=full_name, date_of_birth=date_of_birth,
+                                                        contacts=contacts, bio=bio)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
