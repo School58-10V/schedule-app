@@ -32,22 +32,25 @@ class Location(AbstractModel):
         self.__location_type = location_type
         self.__comment = comment
 
-    def get_location_desc(self):
+    def get_location_desc(self) -> str:
         return self.__location_desc
 
-    def get_profile(self):
+    def get_profile(self) -> str:
         return self.__profile
 
-    def get_equipment(self):
+    def get_num_of_class(self) -> int:
+        return self.__num_of_class
+
+    def get_equipment(self) -> list:
         return self.__equipment
 
-    def get_link(self):
+    def get_link(self) -> str:
         return self.__link
 
-    def get_location_type(self):
+    def get_location_type(self) -> str:
         return self.__location_type
 
-    def get_comment(self):
+    def get_comment(self) -> str:
         return self.__comment
 
     @staticmethod
@@ -78,15 +81,15 @@ class Location(AbstractModel):
         return res
 
     def __str__(self):
-        return f'Location(location_type={self.__location_type}, num_of_class={self.__location_desc}, ' \
-               f'link={self.__link}, comment={self.__comment})'
+        return f'Location(location_type={self.get_location_type()}, num_of_class={self.get_location_desc()}, ' \
+               f'link={self.get_link()}, comment={self.get_comment()})'
 
     def __dict__(self):
-        return {'object_id': self._object_id,
-                'location_desc': self.__location_desc,
-                'profile': self.__profile,
-                'num_of_class': self.__num_of_class,
-                'equipment': self.__equipment,
-                'link': self.__link,
-                'location_type': self.__location_type,
-                'comment': self.__comment}
+        return {'object_id': self.get_main_id(),
+                'location_desc': self.get_location_desc(),
+                'profile': self.get_profile(),
+                'num_of_class': self.get_num_of_class(),
+                'equipment': self.get_equipment(),
+                'link': self.get_link(),
+                'location_type': self.get_location_type(),
+                'comment': self.get_comment()}
