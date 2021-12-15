@@ -23,13 +23,13 @@ class Location(AbstractModel):
                  location_desc: str = None, profile: str = None, num_of_class: int = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
         super().__init__(db_source)
+        self.__location_type = location_type
         self._object_id = object_id
         self.__location_desc = location_desc
         self.__profile = profile
         self.__num_of_class = num_of_class
         self.__equipment = equipment
         self.__link = link
-        self.__location_type = location_type
         self.__comment = comment
 
     def get_location_desc(self) -> str:
@@ -85,11 +85,11 @@ class Location(AbstractModel):
                f'link={self.get_link()}, comment={self.get_comment()})'
 
     def __dict__(self):
-        return {'object_id': self.get_main_id(),
+        return {'location_type': self.get_location_type(),
+                'object_id': self.get_main_id(),
                 'location_desc': self.get_location_desc(),
                 'profile': self.get_profile(),
                 'num_of_class': self.get_num_of_class(),
                 'equipment': self.get_equipment(),
                 'link': self.get_link(),
-                'location_type': self.get_location_type(),
                 'comment': self.get_comment()}
