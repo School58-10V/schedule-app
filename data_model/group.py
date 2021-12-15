@@ -66,19 +66,19 @@ class Group(AbstractModel):
             return res
 
     def __str__(self) -> str:
-        return f'Group(teacher_id={self.__teacher_id}, class_letter={self.__class_letter}, ' \
-               f'grade={self.__grade}, profile_name={self.__profile_name}, object_id={self._object_id})'
+        return f'Group(teacher_id={self.get_teacher_id()}, class_letter={self.get_letter()}, ' \
+               f'grade={self.get_grade()}, profile_name={self.get_profile_name()}, object_id={self.get_main_id()})'
 
     def __dict__(self) -> dict:
-        return {"teacher_id": self.__teacher_id,
-                "class_letter": self.__class_letter,
-                "grade": self.__grade,
-                "profile_name": self.__profile_name,
-                "object_id": self._object_id}
+        return {"teacher_id": self.get_teacher_id(),
+                "class_letter": self.get_letter(),
+                "grade": self.get_letter(),
+                "profile_name": self.get_profile_name(),
+                "object_id": self.get_main_id()}
 
     def get_all_students(self) -> List[Student]:
         """
            Возвращает список объектов GroupsForStudents используя db_source данный в __init__()
            :return: список словарей объектов Student
         """
-        return GroupsForStudents.get_student_by_group_id(self._object_id, self._db_source)
+        return GroupsForStudents.get_student_by_group_id(self.get_main_id(), self._db_source)
