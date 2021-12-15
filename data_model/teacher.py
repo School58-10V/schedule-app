@@ -79,26 +79,26 @@ class Teacher(AbstractModel):
         return res
 
     def __dict__(self) -> dict:
-        return {"fio": self.__fio,
-                "object_id": self._object_id,
-                "bio": self.__bio,
-                "contacts": self.__contacts,
-                "office_id": self.__office_id}
+        return {"fio": self.get_fio(),
+                "object_id": self.get_main_id(),
+                "bio": self.get_bio,
+                "contacts": self.get_contacts,
+                "office_id": self.get_office_id}
 
     def __str__(self):
-        return f'Teacher(fio = {self.__fio}, bio = {self.__bio}, ' \
-               f'contacts = {self.__contacts}) '
+        return f'Teacher(fio = {self.get_fio}, bio = {self.get_bio}, ' \
+               f'contacts = {self.get_contacts}) '
 
     def get_lesson_rows(self) -> List[LessonRow]:
         """
             Возвращает список объектов LessonRow используя db_source данный в __init__()
             :return: список объектов LessonRow
         """
-        return LessonRowsForTeachers.get_lesson_rows_by_teacher_id(self._object_id, self._db_source)
+        return LessonRowsForTeachers.get_lesson_rows_by_teacher_id(self.get_main_id(), self.get_db_source())
 
     def get_subjects(self) -> List[Subject]:
         """
             Возвращает список объектов Subject используя db_source данный в __init__()
             :return: список объектов Subject
         """
-        return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)
+        return SubjectsForTeachers.get_subjects_by_teacher_id(self.get_main_id(), self.get_db_source())

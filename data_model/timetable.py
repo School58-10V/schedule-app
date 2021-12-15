@@ -23,11 +23,11 @@ class TimeTable(AbstractModel):
         return self.__year
 
     def __str__(self):
-        return f"Timetable(object_id={self._object_id}, year={self.__year})"
+        return f"Timetable(object_id={self.get_main_id()}, year={self.get_year})"
 
     def __dict__(self) -> dict:
-        return {"object_id": self._object_id,
-                "time_table_year": self.__year}
+        return {"object_id": self.get_main_id(),
+                "time_table_year": self.get_year()}
 
     @staticmethod
     def parse(file_timetable: str, db_source: FileSource) -> List[(Optional[str], Optional[TimeTable])]:
