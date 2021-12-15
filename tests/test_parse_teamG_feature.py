@@ -13,7 +13,7 @@ from data_model.no_learning_period import NoLearningPeriod
 
 def test_parse(db_source, subject, file_folder):
     all_object = subject.parse(file_folder, db_source)
-    print(*[i.get_model() for i in all_object])
+    print(*[i.get_model() for i in all_object], '\n')
     return all_object
 
 
