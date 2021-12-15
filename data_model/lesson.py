@@ -79,8 +79,14 @@ class Lesson(AbstractModel):
                     subject_id = i[5]
                     notes = i[6]
                     state = i[7] == 'True'
-                    res.append(ParsedData(None, Lesson(db_source, int(start_time), int(end_time), int(day),
-                                                       int(teacher_id), int(group_id), int(subject_id), notes,
+                    res.append(ParsedData(None, Lesson(db_source=db_source,
+                                                       start_time=int(start_time),
+                                                       end_time=int(end_time),
+                                                       day=int(day),
+                                                       teacher_id=int(teacher_id),
+                                                       group_id=int(group_id),
+                                                       subject_id=int(subject_id),
+                                                       notes=notes,
                                                        state=state)))
 
                 except IndexError as e:

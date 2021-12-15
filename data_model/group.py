@@ -40,31 +40,36 @@ class Group(AbstractModel):
         return self.__profile_name
 
     @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Group])]:
-        with open(file_location, encoding='utf-8') as file:
-            lines = file.read().split('\n')[1:]
-            lines = [i.split(';') for i in lines]
-            res = []
-            for i in lines:
-                try:
-                    teacher_id = i[0]
-                    class_letter = i[1]
-                    grade = i[2]
-                    profile_name = i[3]
-                    res.append(ParsedData(None, Group(db_source=db_source, teacher_id=int(teacher_id),
-                                                      class_letter=class_letter,
-                                                      grade=int(grade), profile_name=profile_name)))
+def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Group])]:
+    #ввод; адрес файла,
+    with open(file_location, encoding='utf-8') as file:
+        #файд теперь в file
+        lines = file.read().split('\n')[1:]
+        lines = [i.split(';') for i in lines]
+        #превпащаем файл в лист
+        res = []
+        for i in lines:
+            #тут трай
+            try:
+                teacher_id = i[0]
+                class_letter = i[1]
+                grade = i[2]
+                profile_name = i[3]
+                #тут наполняем список
+                res.append(ParsedData(None, Group(db_source, int(teacher_id), class_letter,
+                                                  int(grade), profile_name)))
 
-                except IndexError as e:
-                    exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
-                    print(exception_text)
-                    print(e)
-                    res.append(ParsedData(exception_text, None))
-                except Exception as e:
-                    exception_text = f"Неизвестная ошибка в Group.parse():\n{e}"
-                    print(exception_text)
-                    res.append(ParsedData(exception_text, None))
-            return res
+            except IndexError as e:
+                exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
+                print(exception_text)
+                print(e)
+                res.append(ParsedData(exception_text, None))
+            except Exception as e:
+                exception_text = f"Неизвестная ошибка в Group.parse():\n{e}"
+                print(exception_text)
+                res.append(ParsedData(exception_text, None))
+        #тут ретёрнем список
+        return res
 
     def __str__(self) -> str:
         return f'Group(teacher_id={self.__teacher_id}, class_letter={self.__class_letter}, ' \
