@@ -86,4 +86,4 @@ class Student(AbstractModel):
            Ссылается на класс StudentsForGroups и использует его метод
            :return: список объектов Group
         """
-        return StudentsForGroups.get_group_by_student_id(self._object_id, self._db_source)
+        return StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source())

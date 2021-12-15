@@ -29,7 +29,7 @@ class Subject(AbstractModel):
             Ссылается на класс TeachersForSubjects и использует его метод
             :return: список объектов Teacher
         """
-        return TeachersForSubjects.get_teachers_by_subject_id(self.get_main_id(), self._db_source)
+        return TeachersForSubjects.get_teachers_by_subject_id(self.get_main_id(), self.get_db_source())
 
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Subject])]:
