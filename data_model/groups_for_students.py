@@ -31,30 +31,30 @@ class GroupsForStudents(AbstractModel):
     def get_group_id(self) -> int:
         return self.__group_id
 
-    @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[GroupsForStudents])]:
-        f = open(file_location, encoding='utf-8')
-        lines = f.read().split('\n')[1:]
-        lines = [i.split(';') for i in lines]
-        res = []
-
-        for i in lines:
-            try:
-                student_id = int(i[0])
-                group_id = int(i[1])
-                res.append(ParsedData(None, GroupsForStudents(student_id=student_id,
-                                                              group_id=group_id, db_source=db_source)))
-            except IndexError as e:
-                exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
-                print(exception_text)
-                print(e)
-                res.append(ParsedData(exception_text, None))
-            except Exception as e:
-                exception_text = f"Неизвестная ошибка в Student_in_group.parse():\n{e}"
-                print(exception_text)
-                res.append(ParsedData(exception_text, None))
-
-        return res
+#    @staticmethod
+#    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[GroupsForStudents])]:
+#        f = open(file_location, encoding='utf-8')
+#        lines = f.read().split('\n')[1:]
+#        lines = [i.split(';') for i in lines]
+#        res = []
+#
+#        for i in lines:
+#            try:
+#                student_id = int(i[0])
+#                group_id = int(i[1])
+#                res.append(ParsedData(None, GroupsForStudents(student_id=student_id,
+#                                                              group_id=group_id, db_source=db_source)))
+#            except IndexError as e:
+#                exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
+#                print(exception_text)
+#                print(e)
+#                res.append(ParsedData(exception_text, None))
+#            except Exception as e:
+#                exception_text = f"Неизвестная ошибка в Student_in_group.parse():\n{e}"
+#                print(exception_text)
+#                res.append(ParsedData(exception_text, None))
+#
+#       return res
 
     def __str__(self):
         return f''

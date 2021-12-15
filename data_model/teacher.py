@@ -101,4 +101,3 @@ class Teacher(AbstractModel):
             :return: список объектов Subject
         """
         return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)
-

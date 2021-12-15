@@ -53,4 +53,3 @@ class TeachersForSubjects(AbstractModel):
         # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "subject_id" соответствует
         # subject_id в вводимом аргументе. Из полученного списка словарей достаем из каждого словаря
         # по ключу "subject_id" его id и передаем в метод, вызываемой от класса Teacher
-
