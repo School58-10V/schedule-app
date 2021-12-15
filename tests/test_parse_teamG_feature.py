@@ -1,5 +1,10 @@
 from data_model.timetable import TimeTable
 from adapters.file_source import FileSource
+# from data_model.teachers_for_subjects import TeachersForSubjects
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+from data_model.location import Location
+from data_model.teacher import Teacher
+from data_model.subject import Subject
 
 
 def test_parse(db_source, subject, file_folder):
@@ -9,4 +14,14 @@ def test_parse(db_source, subject, file_folder):
 
 
 source = FileSource('../db')
+
 timetables = test_parse(db_source=source, subject=TimeTable, file_folder='../data_examples/timetable_test.csv')
+
+# teachers_for_lesson_rows = test_parse(source, TeachersForLessonRows,
+#                                       '../data_examples/teachers_for_lesson_rows_test.csv')
+
+locations = test_parse(source, Location, '../data_examples/location.csv')
+
+teachers = test_parse(source, Teacher, '../data_examples/teacher.csv')
+
+subjects = test_parse(source, Subject, '../data_examples/subject_test.csv')
