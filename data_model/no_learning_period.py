@@ -53,8 +53,8 @@ class NoLearningPeriod(AbstractModel):
         res = []
         for i in lines:
             try:
-                start = i[1]
-                stop = i[2]
+                start = i[0]
+                stop = i[1]
                 res.append(ParsedData(None, NoLearningPeriod(start=start, stop=stop, db_source=db_source)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
