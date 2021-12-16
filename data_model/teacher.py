@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from adapters.file_source import FileSource
     from data_model.subject import Subject
 
+
 class Teacher(AbstractModel):
     """
         Класс учителя.
@@ -101,4 +102,3 @@ class Teacher(AbstractModel):
             :return: список объектов Subject
         """
         return SubjectsForTeachers.get_subjects_by_teacher_id(self._object_id, self._db_source)
-

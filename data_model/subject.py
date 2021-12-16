@@ -59,4 +59,3 @@ class Subject(AbstractModel):
     def __dict__(self) -> dict:
         return {"object_id": self.get_main_id(),
                 "subject_name": self.get_subject_name()}
-

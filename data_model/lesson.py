@@ -79,8 +79,14 @@ class Lesson(AbstractModel):
                     subject_id = i[5]
                     notes = i[6]
                     state = i[7] == 'True'
-                    res.append(ParsedData(None, Lesson(db_source, int(start_time), int(end_time), int(day),
-                                                       int(teacher_id), int(group_id), int(subject_id), notes,
+                    res.append(ParsedData(None, Lesson(db_source=db_source,
+                                                       start_time=int(start_time),
+                                                       end_time=int(end_time),
+                                                       day=int(day),
+                                                       teacher_id=int(teacher_id),
+                                                       group_id=int(group_id),
+                                                       subject_id=int(subject_id),
+                                                       notes=notes,
                                                        state=state)))
 
                 except IndexError as e:
@@ -95,7 +101,14 @@ class Lesson(AbstractModel):
             return res
 
     def __str__(self):
-        return f"Урок с id={self._object_id}"
+        return f'Lesson(start_time: {self.__start_time},'\
+               f'day: {self.__day},'\
+               f'teacher_id: {self.__teacher_id},'\
+               f'group_id: {self.__group_id},'\
+               f'subject_id: {self.__subject_id},'\
+               f'notes: {self.__notes},'\
+               f'object_id: {self._object_id},'\
+               f'state: {self.__state})'
 
     def __dict__(self) -> dict:
         return {"start_time": self.__start_time,

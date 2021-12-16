@@ -39,30 +39,30 @@ class TeachersForLessonRows(AbstractModel):
                 "lesson_row_id": self.__lesson_row_id,
                 "object_id": self._object_id}
 
-    @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[TeachersForLessonRows])]:
-        file = open(file_location, 'r', encoding='utf-8')
-        lines = file.read().split('\n')[1:]
-        file.close()
-        res = []
-        for i in lines:
-            j = i.split(';')
-            try:
-                teacher_id = int(j[0])
-                lesson_row_id = int(j[1])
-
-                res.append(ParsedData(None, TeachersForLessonRows(db_source=db_source,
-                                                                  teacher_id=teacher_id,
-                                                                  lesson_row_id=lesson_row_id)))
-            except (IndexError, ValueError) as error:
-                exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
-                                 f"не добавилась в [res].\nОшибка: {error}"
-                res.append(ParsedData(exception_text, None))
-            except Exception as error:
-                exception_text = f"Неизвестная ошибка в TeachersForLessonRows.parse():\n{error}"
-                print(exception_text + '\n')
-                res.append(ParsedData(exception_text, None))
-        return res
+    # @staticmethod
+    # def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[TeachersForLessonRows])]:
+    #     file = open(file_location, 'r', encoding='utf-8')
+    #     lines = file.read().split('\n')[1:]
+    #     file.close()
+    #     res = []
+    #     for i in lines:
+    #         j = i.split(';')
+    #         try:
+    #             teacher_id = int(j[0])
+    #             lesson_row_id = int(j[1])
+    #
+    #             res.append(ParsedData(None, TeachersForLessonRows(db_source=db_source,
+    #                                                               teacher_id=teacher_id,
+    #                                                               lesson_row_id=lesson_row_id)))
+    #         except (IndexError, ValueError) as error:
+    #             exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
+    #                              f"не добавилась в [res].\nОшибка: {error}"
+    #             res.append(ParsedData(exception_text, None))
+    #         except Exception as error:
+    #             exception_text = f"Неизвестная ошибка в TeachersForLessonRows.parse():\n{error}"
+    #             print(exception_text + '\n')
+    #             res.append(ParsedData(exception_text, None))
+    #     return res
 
     @classmethod
     def _get_collection_name(cls):
@@ -81,4 +81,4 @@ class TeachersForLessonRows(AbstractModel):
         return [
             Teacher.get_by_id(i['teacher_id'], db_source=db_source)
             for i in db_source.get_by_query(cls._get_collection_name(), {'lesson_row_id': lesson_row_id})
-        ]
+            ]
