@@ -78,7 +78,7 @@ class Location(AbstractModel):
         return res
 
     def __str__(self):
-        return f'Location(location_type={self.__location_type}, num_of_class={self.__location_desc}, ' \
+        return f'Location(location_type={self.__location_type}, num_of_class={self.__num_of_class}, ' \
                f'link={self.__link}, comment={self.__comment})'
 
     def __dict__(self):
@@ -90,4 +90,3 @@ class Location(AbstractModel):
                 'link': self.__link,
                 'location_type': self.__location_type,
                 'comment': self.__comment}
-
