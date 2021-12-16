@@ -81,13 +81,13 @@ class Teacher(AbstractModel):
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),
                 "object_id": self.get_main_id(),
-                "bio": self.get_bio,
-                "contacts": self.get_contacts,
-                "office_id": self.get_office_id}
+                "bio": self.get_bio(),
+                "contacts": self.get_contacts(),
+                "office_id": self.get_office_id()}
 
     def __str__(self):
-        return f'Teacher(fio = {self.get_fio}, bio = {self.get_bio}, ' \
-               f'contacts = {self.get_contacts}) '
+        return f'Teacher(fio = {self.get_fio()}, bio = {self.get_bio()}, ' \
+               f'contacts = {self.get_contacts()}) '
 
     def get_lesson_rows(self) -> List[LessonRow]:
         """

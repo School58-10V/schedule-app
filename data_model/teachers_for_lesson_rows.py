@@ -30,13 +30,13 @@ class TeachersForLessonRows(AbstractModel):
         return self.__lesson_row_id
 
     def __str__(self) -> str:
-        return f'TeachersForLessonRows(teacher_id: {self.get_teacher_id},' \
-               f' lesson_row_id: {self.get_lesson_row_id},' \
+        return f'TeachersForLessonRows(teacher_id: {self.get_teacher_id()},' \
+               f' lesson_row_id: {self.get_lesson_row_id()},' \
                f' object_id: {self.get_main_id()})'
 
     def __dict__(self) -> dict:
-        return {"teacher_id": self.get_teacher_id,
-                "lesson_row_id": self.get_lesson_row_id,
+        return {"teacher_id": self.get_teacher_id(),
+                "lesson_row_id": self.get_lesson_row_id(),
                 "object_id": self.get_main_id()}
 
     @staticmethod
