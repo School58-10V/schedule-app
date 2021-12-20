@@ -31,6 +31,25 @@ class Subject(AbstractModel):
         """
         return TeachersForSubjects.get_teachers_by_subject_id(self.get_main_id(), self.get_db_source())
 
+    def append_teacher(self, teacher: Teacher) -> Teacher:
+        """
+            Получает на вход учителя и записывает в базу данных новый объект связи TeachersForSubjects, если таковой
+            еще нет.
+            :return: учителя, с которым мы работали
+        """
+        if teacher not in self.get_teachers():
+            TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).save()
+        return teacher
+
+    def delete_teacher(self, teacher: Teacher) -> Teacher:
+        """
+            Получает на вход учителя и удаляет связь между учителем и предметом из базы.
+            :return: учителя, с которым мы работали
+        """
+        if teacher in self.get_teachers():
+            TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).delete()
+        return teacher
+
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Subject])]:
         file = open(file_location, 'r', encoding='utf-8')
