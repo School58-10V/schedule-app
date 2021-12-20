@@ -91,3 +91,11 @@ class Group(AbstractModel):
            :return: список словарей объектов Student
         """
         return StudentsForGroups.get_student_by_group_id(self.get_main_id(), self._db_source)
+
+    def append(self, student: Student) -> Group:
+        """
+            Сохраняем нового студента для группы. На ввод объект класса Student, который мы хотим
+            добавить, на вывод self
+        """
+        StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
+        return self
