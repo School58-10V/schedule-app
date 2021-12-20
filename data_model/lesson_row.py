@@ -112,3 +112,7 @@ class LessonRow(AbstractModel):
             :return: список словарей объектов Teacher
         """
         return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source())
+
+    def append_teacher(self, teacher_id: str):
+        instance = TeachersForLessonRows(teacher_id=teacher_id, lesson_row_id=self._object_id, db_source=FileSource)
+        instance.save()
