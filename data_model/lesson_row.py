@@ -113,6 +113,20 @@ class LessonRow(AbstractModel):
         """
         return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source())
 
-    def append_teacher(self, teacher_id: str):
-        instance = TeachersForLessonRows(teacher_id=teacher_id, lesson_row_id=self._object_id, db_source=FileSource)
+    def append_teacher(self, teacher: Teacher) -> LessonRow:
+        instance = TeachersForLessonRows(teacher_id=teacher.get_main_id(),
+                                         lesson_row_id=self._object_id, db_source=FileSource)
+        for elem in instance.get_teachers_by_lesson_row_id(lesson_row_id=self._object_id, db_source=FileSource):
+            if elem.get_main_id() == teacher.get_main_id():
+                return self
         instance.save()
+        return self
+
+    def remove_teacher(self, teacher: Teacher) -> LessonRow:
+        instance = TeachersForLessonRows(teacher_id=teacher.get_main_id(),
+                                         lesson_row_id=self._object_id, db_source=FileSource)
+        for elem in instance.get_all(db_source=FileSource):
+            if elem.get_main_id() == teacher.get_main_id():
+                elem.delete()
+                break
+        return self
