@@ -53,3 +53,14 @@ class TeachersForSubjects(AbstractModel):
         # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "subject_id" соответствует
         # subject_id в вводимом аргументе. Из полученного списка словарей достаем из каждого словаря
         # по ключу "subject_id" его id и передаем в метод, вызываемой от класса Teacher
+
+    @classmethod
+    def get_subjects_by_teacher_id(cls, teacher_id: int, db_source: FileSource) -> List[Subject]:  # в качестве
+        # аргумента подаем id, по которому будем искать все Subject
+        from data_model.subject import Subject
+
+        return [Subject.get_by_id(i["subject_id"], db_source) for i in
+                db_source.get_by_query(cls._get_collection_name(), query={"teacher_id": teacher_id})]
+        # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "teacher_id" соответствует
+        # teacher_id в вводимом аргументе. Из полученного списка словарей достаем из каждого словаря
+        # по ключу "subject_id" его id и передаем в метод, вызываемой от класса Subject
