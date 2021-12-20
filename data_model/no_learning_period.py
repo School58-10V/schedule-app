@@ -35,15 +35,15 @@ class NoLearningPeriod(AbstractModel):
 
     def __dict__(self) -> dict:
         return {
-            "timetable_id": self.__timetable_id,
-            "start": self.__start_time,
-            "stop": self.__stop_time,
-            "object_id": self._object_id
+            "timetable_id": self.get_timetable_id(),
+            "start": self.get_start_time(),
+            "stop": self.get_stop_time(),
+            "object_id": self.get_main_id()
             }
 
     def __str__(self):
-        return f'NoLearningPeriod(timetable_id={self.__timetable_id}, start={self.__start_time}, ' \
-               f'stop={self.__stop_time}, object_id={self._object_id})'
+        return f'NoLearningPeriod(timetable_id={self.get_timetable_id()}, start={self.get_start_time()}, ' \
+               f'stop={self.get_stop_time()}, object_id={self.get_main_id()})'
 
     @staticmethod
     def parse(file_no_learning_period, db_source: FileSource) -> List[(Optional[str], Optional[NoLearningPeriod])]:

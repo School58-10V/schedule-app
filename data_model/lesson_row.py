@@ -10,9 +10,19 @@ if TYPE_CHECKING:
 
 
 class LessonRow(AbstractModel):
-    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int,
-                 subject_id: int, room_id: int, start_time: int,
-                 end_time: int, timetable_id: int, object_id: Optional[int] = None):
+    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int,
+                 start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
+        """
+            :param count_studying_hours: количество академических часов в занятии (возможно нет!!!!)
+            :param db_source: Адаптер бд сорса
+            :param start_time:  начальное время
+            :param end_time: конечное время
+            :param group_id: номер группы
+            :param subject_id: айди предмета
+            :param room_id: айди комнаты
+            :param timetable_id: год в который происходят уроки
+            :param object_id: айди самого класса ряд уроков
+        """
         super().__init__(db_source)
         self.__count_studying_hours = count_studying_hours
         self.__start_time = start_time
@@ -23,15 +33,8 @@ class LessonRow(AbstractModel):
         self.__timetable_id = timetable_id
         self._object_id = object_id
 
-    """
-        :param start_time:  начальное время
-        :param end_time: конечное время
-        :param num_of_group: номер группы
-        :param subject_id: айди предмета
-        :param room_id: айди комнаты
-        :param timetable_id: год в который происходят уроки
-        :param object_id: айди самого класса ряд уроков
-    """
+    def get_count_studying_hours(self) -> int:
+        return self.__count_studying_hours
 
     def get_group_id(self) -> int:
         return self.__group_id
@@ -53,20 +56,20 @@ class LessonRow(AbstractModel):
 
     def __dict__(self) -> dict:
         return {
-            "count_studying_hours": self.__count_studying_hours,
-            "group_id": self.__group_id,
-            "subject_id": self.__subject_id,
-            "room_id": self.__room_id,
-            "start_time": self.__start_time,
-            "end_time": self.__end_time,
-            "timetable_id": self.__timetable_id,
-            "object_id": self._object_id}
+            "count_studying_hours": self.get_count_studying_hours(),
+            "group_id": self.get_group_id(),
+            "subject_id": self.get_subject_id(),
+            "room_id": self.get_room_id(),
+            "start_time": self.get_start_time(),
+            "end_time": self.get_end_time(),
+            "timetable_id": self.get_timetable_id(),
+            "object_id": self.get_main_id()}
 
     def __str__(self):
-        return f'LessonRow(count_studying_hours={self.__count_studying_hours}, group_id={self.__group_id}' \
-               f', subject_id={self.__subject_id}, room_id={self.__room_id}), start_time={self.__start_time})' \
-               f', end_time={self.__end_time}), timetable_id={self.__timetable_id})' \
-               f', object_id={self._object_id}) '
+        return f'LessonRow(count_studying_hours={self.get_count_studying_hours()}, group_id={self.get_group_id()}' \
+               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
+               f', end_time={self.get_end_time()}), timetable_id={self.get_timetable_id()})' \
+               f', object_id={self.get_main_id()})'
 
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[LessonRow])]:
@@ -108,4 +111,4 @@ class LessonRow(AbstractModel):
             Возвращает список объектов Teacher используя db_source данный в __init__()
             :return: список словарей объектов Teacher
         """
-        return TeachersForLessonRows.get_teachers_by_lesson_row_id(self._object_id, self._db_source)
+        return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source())

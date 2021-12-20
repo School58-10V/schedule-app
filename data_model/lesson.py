@@ -101,22 +101,17 @@ class Lesson(AbstractModel):
             return res
 
     def __str__(self):
-        return f'Lesson(start_time: {self.__start_time},'\
-               f'day: {self.__day},'\
-               f'teacher_id: {self.__teacher_id},'\
-               f'group_id: {self.__group_id},'\
-               f'subject_id: {self.__subject_id},'\
-               f'notes: {self.__notes},'\
-               f'object_id: {self._object_id},'\
-               f'state: {self.__state})'
+        return f"Урок с который начинается в {self.get_start_time()} и заканчивается в {self.get_end_time()}, " \
+               f"id={self.get_main_id()}"
+
 
     def __dict__(self) -> dict:
-        return {"start_time": self.__start_time,
-                "end_time": self.__end_time,
-                "day": self.__day,
-                "teacher_id": self.__teacher_id,
-                "group_id": self.__group_id,
-                "subject_id": self.__subject_id,
-                "notes": self.__notes,
-                "object_id": self._object_id,
-                "state": self.__state}
+        return {"start_time": self.get_start_time(),
+                "end_time": self.get_end_time(),
+                "day": self.get_day(),
+                "teacher_id": self.get_teacher_id(),
+                "group_id": self.get_group_id(),
+                "subject_id": self.get_subject_id(),
+                "notes": self.get_notes(),
+                "object_id": self.get_main_id(),
+                "state": self.get_state()}

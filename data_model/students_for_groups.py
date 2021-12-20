@@ -61,9 +61,9 @@ class StudentsForGroups(AbstractModel):
         return f''
 
     def __dict__(self) -> dict:
-        return {'student_id': self.__student_id,
-                'group_id': self.__group_id,
-                'object_id': self._object_id}
+        return {'student_id': self.get_student_id(),
+                'group_id': self.get_group_id(),
+                'object_id': self.get_main_id()}
 
     @classmethod
     def get_group_by_student_id(cls, student_id: int, db_source: FileSource) -> List[Group]:

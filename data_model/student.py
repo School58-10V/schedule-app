@@ -77,17 +77,15 @@ class Student(AbstractModel):
                f'contacts = {self.__contacts}, bio =  {self.__bio}) '
 
     def __dict__(self) -> dict:
-        return {
-            "full_name": self.__full_name,
-            "date_of_birth": self.__date_of_birth,
-            "object_id": self._object_id,
-            "contacts": self.__contacts,
-            "bio": self.__bio
-            }
+        return {"full_name": self.get_full_name(),
+                "date_of_birth": self.get_date_of_birth(),
+                "object_id": self.get_main_id(),
+                "contacts": self.get_contacts(),
+                "bio": self.get_bio()}
   
     def get_all_groups(self) -> List[Group]:
         """
            Ссылается на класс StudentsForGroups и использует его метод
            :return: список объектов Group
         """
-        return StudentsForGroups.get_group_by_student_id(self._object_id, self._db_source)
+        return StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source())
