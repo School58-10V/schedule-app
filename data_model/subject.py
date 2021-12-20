@@ -37,7 +37,7 @@ class Subject(AbstractModel):
             еще нет.
             :return: учителя, с которым мы работали
         """
-        if teacher not in self.get_teachers():
+        if teacher.get_main_id() not in [x.get_main_id() for x in self.get_teachers()]:
             TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).save()
         return teacher
 
@@ -46,8 +46,10 @@ class Subject(AbstractModel):
             Получает на вход учителя и удаляет связь между учителем и предметом из базы.
             :return: учителя, с которым мы работали
         """
-        if teacher in self.get_teachers():
-            TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).delete()
+        if teacher.get_main_id() in [x.get_main_id() for x in self.get_teachers()]:
+            connection = self.get_db_source().get_by_query("SubjectsAndTeachers", query={"teacher_id": teacher.get_main_id(), "subject_id": self.get_main_id()})[0]
+            # выше мы получаем наш объект TeachersForSubjects в виде словаря из файла SubjectsAndTeachers
+            self.get_db_source().delete("SubjectsAndTeachers", connection["object_id"])
         return teacher
 
     @staticmethod
