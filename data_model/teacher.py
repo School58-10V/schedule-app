@@ -108,7 +108,8 @@ class Teacher(AbstractModel):
         :return:
         """
         obj = TeachersForSubjects(self.get_db_source(), subject_id=subject_id, teacher_id=self.get_main_id())
-        obj.save()
+        if obj.get_main_id() not in [i.get_main_id() for i in self.get_subjects()]:
+            obj.save()
         return obj
 
     def __dict__(self) -> dict:
