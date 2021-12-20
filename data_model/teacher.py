@@ -91,26 +91,35 @@ class Teacher(AbstractModel):
         """
         return TeachersForSubjects.get_subjects_by_teacher_id(self.get_main_id(), self.get_db_source())
 
-    def append_lesson_row(self, lesson_row_id: int) -> TeachersForLessonRows:
+    def append_lesson_row(self, lesson_row_obj: LessonRow) -> Teacher:
         """
         Создает сущность TeachersForLessonRows и
-        :param lesson_row_id: id LessonRow связь с которым мы хотим создать
+        :param lesson_row_obj: LessonRow связь с которым мы хотим создать
         :return:
         """
-        obj = TeachersForLessonRows(self.get_db_source(), lesson_row_id=lesson_row_id, teacher_id=self.get_main_id())
+        obj = TeachersForLessonRows(self.get_db_source(), lesson_row_id=lesson_row_obj.get_main_id(),
+                                    teacher_id=self.get_main_id())
+        for i in self.get_lesson_rows():
+            if obj.get_lesson_row_id() == i.get_main_id():
+                return self
         obj.save()
-        return obj
+        return self
 
-    def append_subject(self, subject_id: int) -> TeachersForSubjects:
+    def append_subject(self, subject_obj: Subject) -> Teacher:
         """
         Создает сущность TeachersForSubjects и
-        :param subject_id: id Subject связь с которым мы хотим создать
+        :param subject_obj: Subject связь с которым мы хотим создать
         :return:
         """
-        obj = TeachersForSubjects(self.get_db_source(), subject_id=subject_id, teacher_id=self.get_main_id())
-        if obj.get_main_id() not in [i.get_main_id() for i in self.get_subjects()]:
-            obj.save()
-        return obj
+        obj = TeachersForSubjects(
+            self.get_db_source(), subject_id=subject_obj.get_main_id(),
+            teacher_id=self.get_main_id()
+        )
+        for i in self.get_subjects():
+            if obj.get_subject_id() == i.get_main_id():
+                return self
+        obj.save()
+        return self
 
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),
