@@ -3,7 +3,7 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
-from data_model.groups_for_students import GroupsForStudents
+from data_model.students_for_groups import StudentsForGroups
 from data_model.parsed_data import ParsedData
 from data_model.student import Student
 
@@ -90,4 +90,4 @@ class Group(AbstractModel):
            Возвращает список объектов GroupsForStudents используя db_source данный в __init__()
            :return: список словарей объектов Student
         """
-        return GroupsForStudents.get_student_by_group_id(self.get_main_id(), self._db_source)
+        return StudentsForGroups.get_student_by_group_id(self.get_main_id(), self._db_source)
