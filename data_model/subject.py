@@ -31,7 +31,7 @@ class Subject(AbstractModel):
         """
         return TeachersForSubjects.get_teachers_by_subject_id(self.get_main_id(), self.get_db_source())
 
-    def append_teacher(self, teacher: Teacher) -> Teacher:
+    def append_teacher(self, teacher: Teacher) -> Subject:
         """
             Получает на вход учителя и записывает в базу данных новый объект связи TeachersForSubjects, если таковой
             еще нет.
@@ -39,9 +39,9 @@ class Subject(AbstractModel):
         """
         if teacher.get_main_id() not in [x.get_main_id() for x in self.get_teachers()]:
             TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).save()
-        return teacher
+        return self
 
-    def delete_teacher(self, teacher: Teacher) -> Teacher:
+    def remove_teacher(self, teacher: Teacher) -> Subject:
         """
             Получает на вход учителя и удаляет связь между учителем и предметом из базы.
             :return: учителя, с которым мы работали
@@ -50,7 +50,7 @@ class Subject(AbstractModel):
             connection = self.get_db_source().get_by_query("SubjectsAndTeachers", query={"teacher_id": teacher.get_main_id(), "subject_id": self.get_main_id()})[0]
             # выше мы получаем наш объект TeachersForSubjects в виде словаря из файла SubjectsAndTeachers
             self.get_db_source().delete("SubjectsAndTeachers", connection["object_id"])
-        return teacher
+        return self
 
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Subject])]:
