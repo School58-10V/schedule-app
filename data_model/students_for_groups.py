@@ -8,6 +8,7 @@ from data_model.abstract_model import AbstractModel
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
     from data_model.group import Group
+    from data_model.student import Student
 
 
 class StudentsForGroups(AbstractModel):
@@ -70,3 +71,9 @@ class StudentsForGroups(AbstractModel):
         from data_model.group import Group
         return [Group.get_by_id(i['group_id'], db_source=db_source)
                 for i in db_source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
+
+    @classmethod
+    def get_student_by_group_id(cls, group_id: int, db_source: FileSource) -> List[Student]:
+        from data_model.student import Student
+        return [Student.get_by_id(i['student_id'], db_source=db_source)
+                for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
