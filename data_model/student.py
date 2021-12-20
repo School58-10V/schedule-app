@@ -90,12 +90,13 @@ class Student(AbstractModel):
         """
         return StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source())
 
-    def append(self, group: Group) -> Student:
+    def append_group(self, group: Group) -> Student:
         """
             Сохраняем новую группу для этого студента, используя класс
-        :param group: объект класса Group, который мы хотим добавить этому студенту StudentsForGroups
-        :return: себя
+            :param group: объект класса Group, который мы хотим добавить этому студенту StudentsForGroups
+            :return: себя
         """
         if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'group_id': group.get_main_id()})) == 0:
             StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
         return self
+

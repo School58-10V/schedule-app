@@ -92,7 +92,7 @@ class Group(AbstractModel):
         """
         return StudentsForGroups.get_student_by_group_id(self.get_main_id(), self._db_source)
 
-    def append(self, student: Student) -> Group:
+    def append_student(self, student: Student) -> Group:
         """
             Сохраняем нового студента для группы. На ввод объект класса Student, который мы хотим
             добавить, на вывод self
