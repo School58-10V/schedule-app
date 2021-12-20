@@ -108,6 +108,6 @@ class Group(AbstractModel):
             удалить, на вывод self
         """
 
-        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'student_id': student.get_main_id()})) == 0:
+        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'student_id': student.get_main_id()})) != 0:
             StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).delete()
         return self

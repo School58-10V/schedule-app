@@ -106,6 +106,6 @@ class Student(AbstractModel):
         :param group: объект класса Group, который мы хотим удалить этому студенту StudentsForGroups
         :return: себя
         """
-        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'group_id': group.get_main_id()})) == 0:
+        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'group_id': group.get_main_id()})) != 0:
             StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).delete()
         return self
