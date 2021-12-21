@@ -6,7 +6,6 @@ from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.students_for_groups import StudentsForGroups
 
-
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
     from data_model.group import Group
@@ -82,7 +81,7 @@ class Student(AbstractModel):
                 "object_id": self.get_main_id(),
                 "contacts": self.get_contacts(),
                 "bio": self.get_bio()}
-  
+
     def get_all_groups(self) -> List[Group]:
         """
            Ссылается на класс StudentsForGroups и использует его метод
@@ -106,6 +105,8 @@ class Student(AbstractModel):
         :param group: объект класса Group, который мы хотим удалить этому студенту StudentsForGroups
         :return: себя
         """
-        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'group_id': group.get_main_id()})) != 0:
-            StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).delete()
+        for i in StudentsForGroups.get_all(self.get_db_source()):
+            if i.get_group_id() == group.get_main_id() \
+                    and i.get_student_id() == self.get_main_id():
+                i.delete()
         return self
