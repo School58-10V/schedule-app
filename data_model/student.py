@@ -105,8 +105,11 @@ class Student(AbstractModel):
         :param group: объект класса Group, который мы хотим удалить этому студенту StudentsForGroups
         :return: себя
         """
+        # Берем все объекты смежной сущности и проходим по нему циклом
         for i in StudentsForGroups.get_all(self.get_db_source()):
+            # Проверяем, если смежная сущность связана с этим студентом и этой группой,
             if i.get_group_id() == group.get_main_id() \
                     and i.get_student_id() == self.get_main_id():
+                # То удаляем ее
                 i.delete()
         return self
