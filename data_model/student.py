@@ -100,7 +100,7 @@ class Student(AbstractModel):
             StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
         return self
 
-    def delete_group(self, group: Group) -> Student:
+    def remove_group(self, group: Group) -> Student:
         """
             Удаляем новую группу для этого студента, используя класс
         :param group: объект класса Group, который мы хотим удалить этому студенту StudentsForGroups
