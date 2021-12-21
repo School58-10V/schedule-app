@@ -107,7 +107,8 @@ class Group(AbstractModel):
             Удалять студента для группы. На ввод объект класса Student, который мы хотим
             удалить, на вывод self
         """
-
-        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'student_id': student.get_main_id()})) != 0:
-            StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).delete()
+        for i in StudentsForGroups.get_all(self.get_db_source()):
+            if i.get_student_id() == student.get_main_id() \
+                    and i.get_group_id() == self.get_main_id():
+                i.delete()
         return self
