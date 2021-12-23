@@ -132,7 +132,8 @@ class LessonRow(AbstractModel):
             Удаляем связь из TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id
             :return: новый экземпляр класса LessonRow(пустой?)
         """
-        for elem in TeachersForLessonRows.get_all(db_source=self.get_db_source()):
-            if elem.get_main_id() == teacher.get_main_id():
-                elem.delete()
+        for elem in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_id=self.get_main_id(),
+                                                                           teacher_id=teacher.get_main_id(),
+                                                                           db_source=self.get_db_source()):
+            elem.delete()
         return self

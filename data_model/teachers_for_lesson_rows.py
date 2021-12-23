@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
-from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -84,6 +83,9 @@ class TeachersForLessonRows(AbstractModel):
             ]
 
     @classmethod
-    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id, teacher_id, db_source) -> List[]:
-        for elem in db_source.get_by_query(cls._get_collection_name(), []):
-
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id, teacher_id, db_source) -> List[TeachersForLessonRows]:
+        output = []
+        for elem in db_source.get_by_query(cls._get_collection_name(), {"lesson_row_id": lesson_row_id,
+                                                                        "teacher_id": teacher_id}):
+            output.append(TeachersForLessonRows(**elem))
+        return output
