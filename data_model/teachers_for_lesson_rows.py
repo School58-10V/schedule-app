@@ -87,5 +87,5 @@ class TeachersForLessonRows(AbstractModel):
         output = []
         for elem in db_source.get_by_query(cls._get_collection_name(), {"lesson_row_id": lesson_row_id,
                                                                         "teacher_id": teacher_id}):
-            output.append(TeachersForLessonRows(**elem))
+            output.append(TeachersForLessonRows(**elem, db_source=db_source))
         return output
