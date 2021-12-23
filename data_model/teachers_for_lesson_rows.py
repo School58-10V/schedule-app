@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
-from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -66,19 +65,33 @@ class TeachersForLessonRows(AbstractModel):
 
     @classmethod
     def _get_collection_name(cls):
-        return 'LessonRowsAndTeachers'
+        return 'TeachersForLessonRows'
 
     @classmethod
     def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, db_source: FileSource) -> List[Teacher]:
         """
         возвращает всех учителей, у которых есть определенный lesson_row_id
 
-        :param lesson_row_id: идшник LessonRow который должен быть у учителя
+        :param lesson_row_id: айдшник LessonRow который должен быть у учителя
         :param db_source: наш дб сорс
-        :return: список идшинков учителей, у которых lesson_row_id равен тому что мы передали
+        :return: список айдшинков учителей, у которых lesson_row_id равен тому что мы передали
         """
         from data_model.teacher import Teacher
         return [
             Teacher.get_by_id(i['teacher_id'], db_source=db_source)
             for i in db_source.get_by_query(cls._get_collection_name(), {'lesson_row_id': lesson_row_id})
             ]
+
+    @classmethod
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int,
+                                         teacher_id: int,
+                                         db_source: FileSource) -> List[TeachersForLessonRows]:
+        """"
+        возвращает отсортированный список объектов TeachersForLessonRows, у которых совпадает
+        с предоставленными lesson_row_id и teacher_id
+        """
+        output = []
+        for elem in db_source.get_by_query(cls._get_collection_name(), {"lesson_row_id": lesson_row_id,
+                                                                        "teacher_id": teacher_id}):
+            output.append(TeachersForLessonRows(**elem, db_source=db_source))
+        return output
