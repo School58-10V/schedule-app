@@ -141,7 +141,7 @@ class Teacher(AbstractModel):
         :return: сущность Teacher над которой работаем
         """
         for i in TeachersForSubjects.get_all(self.get_db_source()):
-            if i.get_teacher_id() == self.get_main_id() and i.get_main_id() == subject_obj.get_main_id():
+            if i.get_teacher_id() == self.get_main_id() and i.get_subject_id() == subject_obj.get_main_id():
                 i.delete()
                 return self
 
