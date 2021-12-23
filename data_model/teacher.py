@@ -127,12 +127,9 @@ class Teacher(AbstractModel):
         :param lesson_row_obj: LessonRow связь с которым мы хотим удалить
         :return: сущность Teacher над которой работаем
         """
-        for i in TeachersForLessonRows.get_all(self.get_db_source()):
-            if i.get_teacher_id() == self.get_main_id() and i.get_lesson_row_id() == lesson_row_obj.get_main_id():
-                i.delete()
-                return self
-
-        raise ValueError(f'Объекта не существует')
+        for i in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_obj.get_main_id(), self.get_main_id(), self.get_db_source()):
+            i.delete()
+        return self
 
     def remove_subject(self, subject_obj: Subject) -> Teacher:
         """
@@ -140,12 +137,9 @@ class Teacher(AbstractModel):
         :param subject_obj: Subject связь с которым мы хотим удалить
         :return: сущность Teacher над которой работаем
         """
-        for i in TeachersForSubjects.get_all(self.get_db_source()):
-            if i.get_teacher_id() == self.get_main_id() and i.get_subject_id() == subject_obj.get_main_id():
-                i.delete()
-                return self
-
-        raise ValueError(f'Объекта не существует')
+        for i in TeachersForSubjects.get_by_subject_and_teacher_id(subject_obj.get_main_id(), self.get_main_id(), self.get_db_source()):
+            i.delete()
+        return self
 
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),

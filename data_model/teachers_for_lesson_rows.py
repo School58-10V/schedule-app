@@ -98,3 +98,11 @@ class TeachersForLessonRows(AbstractModel):
             LessonRow.get_by_id(i['lesson_row_id'], db_source=db_source)
             for i in db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
         ]
+
+    @classmethod
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, db_source: FileSource) -> list:
+        """
+
+        """
+        objs = db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'lesson_row_id': lesson_row_id})
+        return [cls(**obj, db_source=db_source) for obj in objs]
