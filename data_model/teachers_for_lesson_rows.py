@@ -83,7 +83,9 @@ class TeachersForLessonRows(AbstractModel):
             ]
 
     @classmethod
-    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id, teacher_id, db_source) -> List[TeachersForLessonRows]:
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int,
+                                         teacher_id: int,
+                                         db_source: FileSource) -> List[TeachersForLessonRows]:
         """"
         возвращает отсортированный список объектов TeachersForLessonRows, у которых совпадает
         с предоставленными lesson_row_id и teacher_id
