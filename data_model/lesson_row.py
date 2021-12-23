@@ -114,6 +114,10 @@ class LessonRow(AbstractModel):
         return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source())
 
     def append_teacher(self, teacher: Teacher) -> LessonRow:
+        """
+            Добавляем новую связь в TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id
+            :return: новый экземпляр класса LessonRow
+        """
         instance = TeachersForLessonRows(teacher_id=teacher.get_main_id(),
                                          lesson_row_id=self._object_id, db_source=self.get_db_source())
         for elem in TeachersForLessonRows.get_teachers_by_lesson_row_id(lesson_row_id=self._object_id,
@@ -124,6 +128,10 @@ class LessonRow(AbstractModel):
         return self
 
     def remove_teacher(self, teacher: Teacher) -> LessonRow:
+        """
+            Удаляем связь из TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id
+            :return: новый экземпляр класса LessonRow(пустой?)
+        """
         for elem in TeachersForLessonRows.get_all(db_source=self.get_db_source()):
             if elem.get_main_id() == teacher.get_main_id():
                 elem.delete()
