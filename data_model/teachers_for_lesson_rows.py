@@ -73,12 +73,17 @@ class TeachersForLessonRows(AbstractModel):
         """
         возвращает всех учителей, у которых есть определенный lesson_row_id
 
-        :param lesson_row_id: идшник LessonRow который должен быть у учителя
+        :param lesson_row_id: айдшник LessonRow который должен быть у учителя
         :param db_source: наш дб сорс
-        :return: список идшинков учителей, у которых lesson_row_id равен тому что мы передали
+        :return: список айдшинков учителей, у которых lesson_row_id равен тому что мы передали
         """
         from data_model.teacher import Teacher
         return [
             Teacher.get_by_id(i['teacher_id'], db_source=db_source)
             for i in db_source.get_by_query(cls._get_collection_name(), {'lesson_row_id': lesson_row_id})
             ]
+
+    @classmethod
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id, teacher_id, db_source) -> List[]:
+        for elem in db_source.get_by_query(cls._get_collection_name(), []):
+
