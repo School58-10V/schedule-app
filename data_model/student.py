@@ -95,8 +95,11 @@ class Student(AbstractModel):
         :param group: объект класса Group, который мы хотим добавить этому студенту StudentsForGroups
         :return: себя
         """
-        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'group_id': group.get_main_id()})) == 0:
-            StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
+        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source()):
+            if i.get_main_id() == group.get_main_id():
+                return self
+
+        StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
         return self
 
     def remove_group(self, group: Group) -> Student:
