@@ -83,5 +83,5 @@ class StudentsForGroups(AbstractModel):
                                     db_source: FileSource) -> List[StudentsForGroups]:
         res = []
         for i in db_source.get_by_query(cls.__name__, {"student_id": student_id, 'group_id': group_id}):
-            res.append(cls(**i))
+            res.append(cls(**i, db_source=db_source))
         return res
