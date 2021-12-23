@@ -85,6 +85,6 @@ class StudentsForGroups(AbstractModel):
         # Проходим циклом по списку словарей с данными про объекты,
         # в которых student_id и group_id, которые нам нужны
         # и переводим их в объекты класса
-        for i in db_source.get_by_query(cls.__name__, {"student_id": student_id, 'group_id': group_id}):
+        for i in db_source.get_by_query(cls._get_collection_name(), {"student_id": student_id, 'group_id': group_id}):
             res.append(cls(**i, db_source=db_source))
         return res
