@@ -46,8 +46,7 @@ class Subject(AbstractModel):
             Получает на вход учителя и удаляет связь между учителем и предметом из базы.
             :return: сам предмет
         """
-        if teacher.get_main_id() in [obj.get_main_id() for obj in self.get_teachers()]:
-            [obj.delete() for obj in TeachersForSubjects.get_by_teacher_and_subject_id(self.get_main_id(), teacher.get_main_id(), self.get_db_source())]
+        [obj.delete() for obj in TeachersForSubjects.get_by_teacher_and_subject_id(self.get_main_id(), teacher.get_main_id(), self.get_db_source())]
         return self
 
     @staticmethod
