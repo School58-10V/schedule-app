@@ -19,7 +19,7 @@ class Group(AbstractModel):
     def __init__(
             self, db_source: FileSource, teacher_id: int, class_letter: str, grade: int,
             profile_name: str, object_id: Optional[int] = None
-            ):
+    ):
         super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__class_letter = class_letter
@@ -110,10 +110,8 @@ class Group(AbstractModel):
             удалить, на вывод self
         """
         # Берем все объекты смежной сущности и проходим по нему циклом
-        for i in StudentsForGroups.get_all(self.get_db_source()):
-            # Проверяем, если смежная сущность связана с этим студентом и этой группой,
-            if i.get_student_id() == student.get_main_id() \
-                    and i.get_group_id() == self.get_main_id():
-                # То удаляем ее
-                i.delete()
+        for i in StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()) \
+                .get_by_student_and_group_id(db_source=self._db_source, group_id=student.get_main_id(),
+                                             student_id=self.get_main_id()):
+            i.delete()
         return self
