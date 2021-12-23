@@ -93,7 +93,7 @@ class Teacher(AbstractModel):
 
     def append_lesson_row(self, lesson_row_obj: LessonRow) -> Teacher:
         """
-        Создает сущность TeachersForLessonRows и
+        Создает сущность TeachersForLessonRows
         :param lesson_row_obj: LessonRow связь с которым мы хотим создать
         :return:
         """
@@ -107,9 +107,9 @@ class Teacher(AbstractModel):
 
     def append_subject(self, subject_obj: Subject) -> Teacher:
         """
-        Создает сущность TeachersForSubjects и
-        :param subject_obj: Subject связь с которым мы хотим создать
-        :return:
+        Создает сущность TeachersForSubjects
+        :param subject_obj: Subject связь с которым мы хотим удалить
+        :return: сущность Teacher над которой работаем
         """
         obj = TeachersForSubjects(
             self.get_db_source(), subject_id=subject_obj.get_main_id(),
@@ -120,6 +120,32 @@ class Teacher(AbstractModel):
                 return self
         obj.save()
         return self
+
+    def remove_lesson_row(self, lesson_row_obj: LessonRow) -> Teacher:
+        """
+        Удаляет сущность TeachersForLessonRow, которая обозначает связь этого Teacher и lesson_row_obj
+        :param lesson_row_obj: LessonRow связь с которым мы хотим удалить
+        :return: сущность Teacher над которой работаем
+        """
+        for i in TeachersForLessonRows.get_all(self.get_db_source()):
+            if i.get_teacher_id() == self.get_main_id() and i.get_lesson_row_id() == lesson_row_obj.get_main_id():
+                i.delete()
+                return self
+
+        raise ValueError(f'Объекта не существует')
+
+    def remove_subject(self, subject_obj: Subject) -> Teacher:
+        """
+        Удаляет сущность TeachersForSubjects, которая обозначает связь этого Teacher и subject_obj
+        :param subject_obj: Subject связь с которым мы хотим удалить
+        :return: сущность Teacher над которой работаем
+        """
+        for i in TeachersForSubjects.get_all(self.get_db_source()):
+            if i.get_teacher_id() == self.get_main_id() and i.get_main_id() == subject_obj.get_main_id():
+                i.delete()
+                return self
+
+        raise ValueError(f'Объекта не существует')
 
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),
