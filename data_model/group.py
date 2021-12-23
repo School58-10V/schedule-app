@@ -97,9 +97,11 @@ class Group(AbstractModel):
             Сохраняем нового студента для группы. На ввод объект класса Student, который мы хотим
             добавить, на вывод self
         """
+        for i in StudentsForGroups.get_student_by_group_id(self.get_main_id(), self.get_db_source()):
+            if i.get_main_id() == student.get_main_id():
+                return self
 
-        if len(self._db_source.get_by_query(StudentsForGroups.__name__, {'student_id': student.get_main_id()})) == 0:
-            StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
+        StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
         return self
 
     def remove_student(self, student: Student) -> Group:
