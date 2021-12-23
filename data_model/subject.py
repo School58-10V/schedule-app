@@ -37,7 +37,7 @@ class Subject(AbstractModel):
             еще нет.
             :return: сам предмет
         """
-        if teacher.get_main_id() not in [x.get_main_id() for x in self.get_teachers()]:
+        if teacher.get_main_id() not in [obj.get_main_id() for obj in self.get_teachers()]:
             TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).save()
         return self
 
@@ -46,8 +46,8 @@ class Subject(AbstractModel):
             Получает на вход учителя и удаляет связь между учителем и предметом из базы.
             :return: сам предмет
         """
-        if teacher.get_main_id() in [x.get_main_id() for x in self.get_teachers()]:
-            [x.delete() for x in TeachersForSubjects.get_by_teacher_and_subject_id(self.get_main_id(), teacher.get_main_id(), self.get_db_source())]
+        if teacher.get_main_id() in [obj.get_main_id() for obj in self.get_teachers()]:
+            [obj.delete() for obj in TeachersForSubjects.get_by_teacher_and_subject_id(self.get_main_id(), teacher.get_main_id(), self.get_db_source())]
         return self
 
     @staticmethod
