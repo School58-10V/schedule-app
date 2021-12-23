@@ -47,9 +47,7 @@ class Subject(AbstractModel):
             :return: учителя, с которым мы работали
         """
         if teacher.get_main_id() in [x.get_main_id() for x in self.get_teachers()]:
-            connection = self.get_db_source().get_by_query("SubjectsAndTeachers", query={"teacher_id": teacher.get_main_id(), "subject_id": self.get_main_id()})[0]
-            # выше мы получаем наш объект TeachersForSubjects в виде словаря из файла SubjectsAndTeachers
-            self.get_db_source().delete("SubjectsAndTeachers", connection["object_id"])
+            [x.delete() for x in TeachersForSubjects.get_by_teacher_and_subject_id(self.get_main_id(), teacher.get_main_id(), self.get_db_source())]
         return self
 
     @staticmethod

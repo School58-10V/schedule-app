@@ -53,3 +53,11 @@ class TeachersForSubjects(AbstractModel):
         # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "subject_id" соответствует
         # subject_id в вводимом аргументе. Из полученного списка словарей достаем из каждого словаря
         # по ключу "subject_id" его id и передаем в метод, вызываемой от класса Teacher
+
+    @classmethod
+    def get_by_teacher_and_subject_id(cls, subject_id: int, teacher_id: int, db_source: FileSource) -> list[TeachersForSubjects]:
+        # передаем айди объекта и айди учителя
+        return [cls(**obj, db_source=db_source) for obj in db_source.get_by_query("SubjectsAndTeachers", query={"teacher_id": teacher_id, "subject_id": subject_id})]
+        # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "subject_id" соответствует
+        # subject_id в вводимом аргументе, и ключ "teacher_id" соответствует передаваемому
+        # teacher_id. Из полученного списка словарей делаем объекты класса связи и передаем в списке объектов класса.
