@@ -35,7 +35,7 @@ class Subject(AbstractModel):
         """
             Получает на вход учителя и записывает в базу данных новый объект связи TeachersForSubjects, если таковой
             еще нет.
-            :return: учителя, с которым мы работали
+            :return: сам предмет
         """
         if teacher.get_main_id() not in [x.get_main_id() for x in self.get_teachers()]:
             TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).save()
@@ -44,7 +44,7 @@ class Subject(AbstractModel):
     def remove_teacher(self, teacher: Teacher) -> Subject:
         """
             Получает на вход учителя и удаляет связь между учителем и предметом из базы.
-            :return: учителя, с которым мы работали
+            :return: сам предмет
         """
         if teacher.get_main_id() in [x.get_main_id() for x in self.get_teachers()]:
             [x.delete() for x in TeachersForSubjects.get_by_teacher_and_subject_id(self.get_main_id(), teacher.get_main_id(), self.get_db_source())]
