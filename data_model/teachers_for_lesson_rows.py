@@ -1,9 +1,9 @@
 from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
-from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
+    from data_model.lesson_row import LessonRow
     from adapters.file_source import FileSource
     from data_model.teacher import Teacher
 

@@ -4,6 +4,7 @@ from typing import List, Optional, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
+    from data_model.subject import Subject
     from data_model.teacher import Teacher
     from adapters.file_source import FileSource
 
