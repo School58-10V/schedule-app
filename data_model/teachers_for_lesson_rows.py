@@ -102,7 +102,12 @@ class TeachersForLessonRows(AbstractModel):
     @classmethod
     def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, db_source: FileSource) -> list:
         """
+        Возвращает список обьектов этого класса в котором у нас совподают идишник который мы передали
 
+        :param teacher_id: идшник Teacher у которого есть Lesson_row
+        :param lesson_row_id: идшник Lesson_row который есть у учитель
+        :param db_source: класс укоторого у нас есть нужный нам метод get_by_query
+        :return: список обьектов этого класса в котором у нас совподают идишник который мы передали
         """
         objs = db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'lesson_row_id': lesson_row_id})
         return [cls(**obj, db_source=db_source) for obj in objs]

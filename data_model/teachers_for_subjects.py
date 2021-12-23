@@ -67,5 +67,13 @@ class TeachersForSubjects(AbstractModel):
 
     @classmethod
     def get_by_subject_and_teacher_id(cls, subject_id: int, teacher_id: int, db_source: FileSource) -> list:
+        """
+        список обьектов этого класса в котором у нас совподают идишник который мы передали
+
+        :param teacher_id: идшник Teacher у которого есть Lesson_row
+        :param subject_id: идшник Subject который есть у учитель
+        :param db_source: класс укоторого у нас есть нужный нам метод get_by_query
+        :return: список обьектов этого класса в котором у нас совподают идишник который мы передали
+        """
         objs = db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'subject_id': subject_id})
         return [cls(**obj, db_source=db_source) for obj in objs]
