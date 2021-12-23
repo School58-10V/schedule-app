@@ -109,8 +109,10 @@ class Group(AbstractModel):
             Удалять студента для группы. На ввод объект класса Student, который мы хотим
             удалить, на вывод self
         """
-        # Берем все объекты смежной сущности и проходим по нему циклом
+        # Берем все объекты смежной сущности, проходим по нему циклом
         for i in StudentsForGroups.get_by_student_and_group_id(db_source=self._db_source, group_id=self.get_main_id(),
                                                                student_id=student.get_main_id()):
+
+            # И все удаляем
             i.delete()
         return self
