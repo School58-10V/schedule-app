@@ -65,7 +65,7 @@ class TeachersForLessonRows(AbstractModel):
 
     @classmethod
     def _get_collection_name(cls):
-        return 'LessonRowsAndTeachers'
+        return 'TeachersForLessonRows'
 
     @classmethod
     def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, db_source: FileSource) -> List[Teacher]:
