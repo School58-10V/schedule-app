@@ -110,9 +110,7 @@ class Group(AbstractModel):
             удалить, на вывод self
         """
         # Берем все объекты смежной сущности и проходим по нему циклом
-        for i in StudentsForGroups(db_source=self._db_source, student_id=student.get_main_id(),
-                                   group_id=self.get_main_id()).get_by_student_and_group_id(
-                                   db_source=self._db_source, group_id=self.get_main_id(),
-                                   student_id=student.get_main_id()):
+        for i in StudentsForGroups.get_by_student_and_group_id(db_source=self._db_source, group_id=self.get_main_id(),
+                                                               student_id=student.get_main_id()):
             i.delete()
         return self
