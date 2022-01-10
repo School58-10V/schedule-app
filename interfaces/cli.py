@@ -52,7 +52,7 @@ class CLI:
     #         self.__user.
 
     def show_menu(self, num_of_panel):
-        print(self.data[num_of_panel])  # Что это?
+        print(self.data_of_panel[num_of_panel])  # Что это?
         answer = False
         # Необходимо преорбазовать отбор ввода в отдельную функцию(принимаем на ввод корректные значения,
         # ругаем пользователя, пока он не введет одно из них)
