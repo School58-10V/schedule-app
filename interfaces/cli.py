@@ -23,3 +23,13 @@ class CLI:
     def __get_all_group(self):
         if self.__status == 0:
             print('\n'.join([f'Группа {i.get_letter()}' for i in self.__user.get_all_groups()]))
+
+    def __get_all_subjects(self):
+        if self.__status == 1:
+            print('\n'.join([f'Предмет {i.get_subject_name()}' for i in self.__user.get_subjects()]))
+
+    # def __get_timetable(self):
+    #     if self.__status == 0:
+    #         for i in self.__user.get_all_groups():
+    #
+    #         self.__user.

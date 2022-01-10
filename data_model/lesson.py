@@ -104,7 +104,6 @@ class Lesson(AbstractModel):
         return f"Урок с который начинается в {self.get_start_time()} и заканчивается в {self.get_end_time()}, " \
                f"id={self.get_main_id()}"
 
-
     def __dict__(self) -> dict:
         return {"start_time": self.get_start_time(),
                 "end_time": self.get_end_time(),
