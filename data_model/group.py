@@ -3,7 +3,7 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
-from data_model.groups_for_students import GroupsForStudents
+from data_model.students_for_groups import StudentsForGroups
 from data_model.parsed_data import ParsedData
 from data_model.student import Student
 
@@ -19,7 +19,7 @@ class Group(AbstractModel):
     def __init__(
             self, db_source: FileSource, teacher_id: int, class_letter: str, grade: int,
             profile_name: str, object_id: Optional[int] = None
-            ):
+    ):
         super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__class_letter = class_letter
@@ -90,4 +90,29 @@ class Group(AbstractModel):
            Возвращает список объектов GroupsForStudents используя db_source данный в __init__()
            :return: список словарей объектов Student
         """
-        return GroupsForStudents.get_student_by_group_id(self.get_main_id(), self._db_source)
+        return StudentsForGroups.get_student_by_group_id(self.get_main_id(), self._db_source)
+
+    def append_student(self, student: Student) -> Group:
+        """
+            Сохраняем нового студента для группы. На ввод объект класса Student, который мы хотим
+            добавить, на вывод self
+        """
+        for i in StudentsForGroups.get_student_by_group_id(self.get_main_id(), self.get_db_source()):
+            if i.get_main_id() == student.get_main_id():
+                return self
+
+        StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
+        return self
+
+    def remove_student(self, student: Student) -> Group:
+        """
+            Удалять студента для группы. На ввод объект класса Student, который мы хотим
+            удалить, на вывод self
+        """
+        # Берем все объекты смежной сущности, проходим по нему циклом
+        for i in StudentsForGroups.get_by_student_and_group_id(db_source=self._db_source, group_id=self.get_main_id(),
+                                                               student_id=student.get_main_id()):
+
+            # И все удаляем
+            i.delete()
+        return self

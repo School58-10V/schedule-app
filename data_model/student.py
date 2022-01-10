@@ -6,7 +6,6 @@ from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 from data_model.students_for_groups import StudentsForGroups
 
-
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
     from data_model.group import Group
@@ -82,10 +81,36 @@ class Student(AbstractModel):
                 "object_id": self.get_main_id(),
                 "contacts": self.get_contacts(),
                 "bio": self.get_bio()}
-  
+
     def get_all_groups(self) -> List[Group]:
         """
            Ссылается на класс StudentsForGroups и использует его метод
            :return: список объектов Group
         """
         return StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source())
+
+    def append_group(self, group: Group) -> Student:
+        """
+            Сохраняем новую группу для этого студента, используя класс
+        :param group: объект класса Group, который мы хотим добавить этому студенту StudentsForGroups
+        :return: себя
+        """
+        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source()):
+            if i.get_main_id() == group.get_main_id():
+                return self
+
+        StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
+        return self
+
+    def remove_group(self, group: Group) -> Student:
+        """
+            Удаляем новую группу для этого студента, используя класс
+        :param group: объект класса Group, который мы хотим удалить этому студенту StudentsForGroups
+        :return: себя
+        """
+        # Берем все объекты смежной сущности, проходим по нему циклом
+        for i in StudentsForGroups.get_by_student_and_group_id(db_source=self._db_source, group_id=group.get_main_id(),
+                                                               student_id=self.get_main_id()):
+            # И все удаляем
+            i.delete()
+        return self

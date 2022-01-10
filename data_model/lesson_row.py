@@ -112,3 +112,28 @@ class LessonRow(AbstractModel):
             :return: список словарей объектов Teacher
         """
         return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source())
+
+    def append_teacher(self, teacher: Teacher) -> LessonRow:
+        """
+            Добавляем новую связь в TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id
+            :return: новый экземпляр класса LessonRow
+        """
+        instance = TeachersForLessonRows(teacher_id=teacher.get_main_id(),
+                                         lesson_row_id=self._object_id, db_source=self.get_db_source())
+        for elem in TeachersForLessonRows.get_teachers_by_lesson_row_id(lesson_row_id=self._object_id,
+                                                                        db_source=self.get_db_source()):
+            if elem.get_main_id() == teacher.get_main_id():
+                return self
+        instance.save()
+        return self
+
+    def remove_teacher(self, teacher: Teacher) -> LessonRow:
+        """
+            Удаляем связь из TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id
+            :return: новый экземпляр класса LessonRow(пустой?)
+        """
+        for elem in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_id=self.get_main_id(),
+                                                                           teacher_id=teacher.get_main_id(),
+                                                                           db_source=self.get_db_source()):
+            elem.delete()
+        return self

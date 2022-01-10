@@ -66,16 +66,16 @@ class TeachersForLessonRows(AbstractModel):
 
     @classmethod
     def _get_collection_name(cls):
-        return 'LessonRowsAndTeachers'
+        return 'TeachersForLessonRows'
 
     @classmethod
     def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, db_source: FileSource) -> List[Teacher]:
         """
         возвращает всех учителей, у которых есть определенный lesson_row_id
 
-        :param lesson_row_id: идшник LessonRow который должен быть у учителя
+        :param lesson_row_id: айдшник LessonRow который должен быть у учителя
         :param db_source: наш дб сорс
-        :return: список идшинков учителей, у которых lesson_row_id равен тому что мы передали
+        :return: список айдшинков учителей, у которых lesson_row_id равен тому что мы передали
         """
         from data_model.teacher import Teacher
         return [

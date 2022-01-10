@@ -19,7 +19,8 @@ class FileSource:
                            "Teacher": 109,
                            "TeachersForLessonRows": 110,
                            "TimeTable": 111,
-                           "GroupsForStudents": 112}
+                           "GroupsForStudents": 112,
+                           "SubjectsAndTeachers": 113}
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         dict_list = self.__read_json_db(collection_name)
