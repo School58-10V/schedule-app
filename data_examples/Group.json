@@ -1,0 +1,23 @@
+[
+  {
+    "teacher_id": null,
+    "class_letter": "Тестовый",
+    "grade": null,
+    "profile_name": "Тестовый",
+    "object_id": null
+  },
+  {
+    "teacher_id": 12,
+    "class_letter": "Б",
+    "grade": 10,
+    "profile_name": "матинф",
+    "object_id": 3
+  },
+  {
+    "teacher_id": 13,
+    "class_letter": "Г",
+    "grade": 10,
+    "profile_name": "матэк",
+    "object_id": 4
+  }
+]

@@ -1,32 +1,40 @@
-# start_time  начальное время
-# end_time конечное время
-# num_of_group номер группы
-# subject_id айди предмета
-# room_id айди комнаты
-# timetable_id год в который происходят уроки
-# lesson_row_id айди самого класса ряд уроков
-
 from __future__ import annotations
+from data_model.abstract_model import AbstractModel
+from typing import Optional, List, TYPE_CHECKING
+from data_model.parsed_data import ParsedData
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
-import json
+if TYPE_CHECKING:
+    from data_model.teacher import Teacher
+    from adapters.file_source import FileSource
 
-from typing import Optional, List
 
-
-class LessonRow:
-    def __init__(self, group_id: int, subject_id: int, room_id: int, start_time: int, end_time: int,
-                 timetable_id: int, lesson_row_id: int = None):
-        self.__count_studying_hours = None
+class LessonRow(AbstractModel):
+    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int,
+                 start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
+        """
+            :param count_studying_hours: количество академических часов в занятии (возможно нет!!!!)
+            :param db_source: Адаптер бд сорса
+            :param start_time:  начальное время
+            :param end_time: конечное время
+            :param group_id: номер группы
+            :param subject_id: айди предмета
+            :param room_id: айди комнаты
+            :param timetable_id: год в который происходят уроки
+            :param object_id: айди самого класса ряд уроков
+        """
+        super().__init__(db_source)
+        self.__count_studying_hours = count_studying_hours
         self.__start_time = start_time
         self.__end_time = end_time
         self.__group_id = group_id
         self.__subject_id = subject_id
         self.__room_id = room_id
         self.__timetable_id = timetable_id
-        self.__lesson_row_id = lesson_row_id
+        self._object_id = object_id
 
-    def count_studying_hours(self):
-        pass
+    def get_count_studying_hours(self) -> int:
+        return self.__count_studying_hours
 
     def get_group_id(self) -> int:
         return self.__group_id
@@ -46,54 +54,25 @@ class LessonRow:
     def get_timetable_id(self) -> int:
         return self.__timetable_id
 
-    def get_lesson_row_id(self) -> int:
-        return self.__lesson_row_id
-
     def __dict__(self) -> dict:
         return {
-            "count_studying_hours": self.__count_studying_hours,
-            "group_id": self.__group_id,
-            "subject_id": self.__subject_id,
-            "room_id": self.__room_id,
-            "start_time": self.__start_time,
-            "end_time": self.__end_time,
-            "timetable_id": self.__timetable_id,
-            "lesson_row_id": self.__lesson_row_id
-        }
-
-    def serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
+            "count_studying_hours": self.get_count_studying_hours(),
+            "group_id": self.get_group_id(),
+            "subject_id": self.get_subject_id(),
+            "room_id": self.get_room_id(),
+            "start_time": self.get_start_time(),
+            "end_time": self.get_end_time(),
+            "timetable_id": self.get_timetable_id(),
+            "object_id": self.get_main_id()}
 
     def __str__(self):
-        return f'LessonRow(count_studying_hours={self.__count_studying_hours}, group_id={self.__group_id}, ' \
-               f'subject_id={self.__subject_id} ' \
-               f'room_id={self.__room_id}), start_time={self.__start_time}), end_time={self.__end_time}), ' \
-               f'timetable_id={self.__timetable_id}), ' \
-               f'lesson_row_id={self.__lesson_row_id}) '
+        return f'LessonRow(count_studying_hours={self.get_count_studying_hours()}, group_id={self.get_group_id()}' \
+               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
+               f', end_time={self.get_end_time()}), timetable_id={self.get_timetable_id()})' \
+               f', object_id={self.get_main_id()})'
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[LessonRow])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[LessonRow])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -108,27 +87,53 @@ class LessonRow:
                 end_time = i[5]
                 timetable_id = i[6]
 
-                res.append((None, LessonRow(int(count_studying_hours), int(group_id), int(subject_id), int(room_id),
-                                            int(start_time), int(end_time), int(timetable_id))))
-
+                res.append(ParsedData(None, LessonRow(db_source=db_source,
+                                                      count_studying_hours=int(count_studying_hours),
+                                                      group_id=int(group_id),
+                                                      subject_id=int(subject_id),
+                                                      room_id=int(room_id),
+                                                      start_time=int(start_time),
+                                                      end_time=int(end_time),
+                                                      timetable_id=int(timetable_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
                 print(e)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
             except Exception as e:
                 exception_text = f"Неизвестная ошибка в LessonRow.parse():\n{e}"
                 print(exception_text)
-                res.append((exception_text, None))
+                res.append(ParsedData(exception_text, None))
         return res
 
-    @classmethod
-    def get_all(cls, db_path: str = "./db") -> list[LessonRow]:
-        return [cls(**i) for i in cls.__read_json_db(db_path)]
+    def get_teachers(self) -> List[Teacher]:
+        """
+            Возвращает список объектов Teacher используя db_source данный в __init__()
+            :return: список словарей объектов Teacher
+        """
+        return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source())
 
-    @classmethod
-    def get_by_id(cls, element_id: int, db_path: str = "./db") -> LessonRow:
-        for i in cls.__read_json_db(db_path):
-            if i['lesson_row_id'] == element_id:
-                return cls(**i)
-        raise ValueError(f"Объект с id {element_id} не найден")
+    def append_teacher(self, teacher: Teacher) -> LessonRow:
+        """
+            Добавляем новую связь в TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id
+            :return: новый экземпляр класса LessonRow
+        """
+        instance = TeachersForLessonRows(teacher_id=teacher.get_main_id(),
+                                         lesson_row_id=self._object_id, db_source=self.get_db_source())
+        for elem in TeachersForLessonRows.get_teachers_by_lesson_row_id(lesson_row_id=self._object_id,
+                                                                        db_source=self.get_db_source()):
+            if elem.get_main_id() == teacher.get_main_id():
+                return self
+        instance.save()
+        return self
+
+    def remove_teacher(self, teacher: Teacher) -> LessonRow:
+        """
+            Удаляем связь из TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id
+            :return: новый экземпляр класса LessonRow(пустой?)
+        """
+        for elem in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_id=self.get_main_id(),
+                                                                           teacher_id=teacher.get_main_id(),
+                                                                           db_source=self.get_db_source()):
+            elem.delete()
+        return self

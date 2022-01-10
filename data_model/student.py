@@ -1,38 +1,42 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-import json
-from datetime import date
+from datetime import datetime
+from data_model.parsed_data import ParsedData
+from typing import Optional, List, TYPE_CHECKING
 
-from typing import Optional, List
+from data_model.abstract_model import AbstractModel
+from data_model.students_for_groups import StudentsForGroups
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
+    from data_model.group import Group
 
 
-class Student:
+class Student(AbstractModel):
     """
         Класс ученика.
         full name - полное имя студента
         date_of_birth - дата рождения ученика
-        student_id - id студента
+        object_id - id студента
         contacts - контакты родителей ученика
         bio - биография студента
     """
 
     def __init__(
-            self, full_name: str, date_of_birth: date, student_id: Optional[int] = None,
+            self, db_source: FileSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
-    ):
+            ):
+        super().__init__(db_source)
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
-        self.__student_id = student_id
+        self._object_id = object_id
         self.__contacts = contacts
         self.__bio = bio
 
     def get_full_name(self) -> str:
         return self.__full_name
 
-    def get_date_of_birth(self) -> date:
+    def get_date_of_birth(self) -> datetime.date:
         return self.__date_of_birth
-
-    def get_id(self) -> Optional[int]:
-        return self.__student_id
 
     def get_contacts(self) -> Optional[str]:
         return self.__contacts
@@ -41,7 +45,7 @@ class Student:
         return self.__bio
 
     @staticmethod
-    def parse(file_location) -> List[(Optional[str], Optional[Student])]:
+    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[Student])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
@@ -49,56 +53,64 @@ class Student:
             for i in lines:
                 try:
                     full_name = i[0]
-                    date_of_birth = date(i[1])
+                    date_of_birth = datetime.strptime(i[1], '%d.%m.%Y').date()
                     contacts = str(i[2])
                     bio = i[3]
 
-                    res.append(
-                        (None, Student(full_name, date_of_birth, contacts, bio)))
+                    res.append(ParsedData(None, Student(db_source, full_name=full_name, date_of_birth=date_of_birth,
+                                                        contacts=contacts, bio=bio)))
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
                     print(exception_text)
                     print(e)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
                 except Exception as e:
                     exception_text = f"Неизвестная ошибка в Student.parse():\n{e}"
                     print(exception_text)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
 
         return res
 
     def __str__(self):
-        return f'Student(full_name = {self.__full_name}, date_of_birth = {self.__date_of_birth}, contacts = {self.__contacts}, bio =  {self.__bio}) '
+        return f'Student(full_name = {self.__full_name}, date_of_birth = {self.__date_of_birth}, ' \
+               f'contacts = {self.__contacts}, bio =  {self.__bio}) '
 
     def __dict__(self) -> dict:
-        return {
-            "full_name": self.__full_name,
-            "date_of_birth": self.__date_of_birth,
-            "student_id": self.__student_id,
-            "contacts": self.__contacts,
-            "bio": self.__bio
-        }
+        return {"full_name": self.get_full_name(),
+                "date_of_birth": self.get_date_of_birth(),
+                "object_id": self.get_main_id(),
+                "contacts": self.get_contacts(),
+                "bio": self.get_bio()}
 
-    def serialize_to_json(self, indent: int = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
+    def get_all_groups(self) -> List[Group]:
+        """
+           Ссылается на класс StudentsForGroups и использует его метод
+           :return: список объектов Group
+        """
+        return StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source())
 
-    @staticmethod
-    def serialize_records_to_json(records: list, indent: int = None) -> str:
-        return json.dumps(records, ensure_ascii=False, indent=indent)
+    def append_group(self, group: Group) -> Student:
+        """
+            Сохраняем новую группу для этого студента, используя класс
+        :param group: объект класса Group, который мы хотим добавить этому студенту StudentsForGroups
+        :return: себя
+        """
+        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source()):
+            if i.get_main_id() == group.get_main_id():
+                return self
 
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json",
-                      mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
+        StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
+        return self
 
-    def save(self, output_path: str = './db'):
-        current_records = list(self.__read_json_db(output_path))
-        current_records.append(self.__dict__())
-        target_json = self.__class__.serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
+    def remove_group(self, group: Group) -> Student:
+        """
+            Удаляем новую группу для этого студента, используя класс
+        :param group: объект класса Group, который мы хотим удалить этому студенту StudentsForGroups
+        :return: себя
+        """
+        # Берем все объекты смежной сущности, проходим по нему циклом
+        for i in StudentsForGroups.get_by_student_and_group_id(db_source=self._db_source, group_id=group.get_main_id(),
+                                                               student_id=self.get_main_id()):
+            # И все удаляем
+            i.delete()
+        return self

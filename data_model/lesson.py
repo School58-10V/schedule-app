@@ -1,25 +1,29 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
-import json
-from typing import List, Optional
+from data_model.abstract_model import AbstractModel
+from typing import List, Optional, TYPE_CHECKING
+from data_model.parsed_data import ParsedData
+
+if TYPE_CHECKING:
+    from adapters.file_source import FileSource
 
 
-class Lesson:
-    """
-        Класс урока
-        start_time начало урока
-        end_time конец урока
-        day дата
-        teacher_id замена
-        group_id группа учеников
-        subject_id предмет
-        notes примечания
-        lesson_id урок
-        state состояние
-    """
+class Lesson(AbstractModel):
 
-    def __init__(self, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
-                 subject_id: int, notes: str, lesson_id: int = None, state: bool = True):
+    def __init__(self, db_source: FileSource, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
+                 subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
+        """
+            :param start_time: начало урока
+            :param end_time: конец урока
+            :param day: дата
+            :param teacher_id: замена
+            :param object_id: группа учеников
+            :param subject_id: предмет
+            :param notes: примечания
+            :param group_id: урок
+            :param state: состояние
+        """
+        super().__init__(db_source)
         self.__start_time = start_time
         self.__end_time = end_time
         self.__day = day
@@ -27,7 +31,7 @@ class Lesson:
         self.__group_id = group_id
         self.__subject_id = subject_id
         self.__notes = notes
-        self.__lesson_id = lesson_id
+        self._object_id = object_id
         self.__state = state
 
     def toggle_state(self):
@@ -56,37 +60,11 @@ class Lesson:
     def get_notes(self) -> str:
         return self.__notes
 
-    def get_lesson_id(self) -> int:
-        return self.__lesson_id
-
-    def get_state(self) -> bool:
+    def get_state(self) -> Optional[bool]:
         return self.__state
 
-    def save(self, output_path: str = './db'):
-        current_records = self.__read_json_db(output_path)
-        current_records.append(self.__dict__())
-        target_json = self.__serialize_records_to_json(current_records)
-        with open(f"{output_path}/{type(self).__name__}.json", mode="w", encoding='utf-8') as data_file:
-            data_file.write(target_json)
-
-    def serialize_to_json(self, indent: Optional[int] = None) -> str:
-        return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
-
-    @classmethod
-    def __read_json_db(cls, db_path) -> list:
-        try:
-            with open(f"{db_path}/{cls.__name__}.json", mode="r", encoding='utf-8') as data_file:
-                record = json.loads(data_file.read())
-                return record
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            return []
-
     @staticmethod
-    def __serialize_records_to_json(records: list, indent: int = None):
-        return json.dumps(records, ensure_ascii=False, indent=indent)
-
-    @staticmethod
-    def parse(file_location: str) -> List[(Optional[str], Optional[Lesson])]:
+    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Lesson])]:
         with open(file_location, encoding='utf-8') as file:
             lines = file.read().split('\n')[1:]
             lines = [i.split(';') for i in lines]
@@ -100,32 +78,40 @@ class Lesson:
                     group_id = i[4]
                     subject_id = i[5]
                     notes = i[6]
-                    lesson_id = i[7]
-                    state = i[8] == 'True'
-                    res.append((None, Lesson(int(start_time), int(end_time), int(day), int(teacher_id),
-                                             int(group_id), int(subject_id), notes, int(lesson_id), state)))
+                    state = i[7] == 'True'
+                    res.append(ParsedData(None, Lesson(db_source=db_source,
+                                                       start_time=int(start_time),
+                                                       end_time=int(end_time),
+                                                       day=int(day),
+                                                       teacher_id=int(teacher_id),
+                                                       group_id=int(group_id),
+                                                       subject_id=int(subject_id),
+                                                       notes=notes,
+                                                       state=state)))
 
                 except IndexError as e:
                     exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                     print(exception_text)
                     print(e)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
                 except Exception as e:
                     exception_text = f"Неизвестная ошибка в Lesson.parse():\n{e}"
                     print(exception_text)
-                    res.append((exception_text, None))
+                    res.append(ParsedData(exception_text, None))
             return res
 
     def __str__(self):
-        return f"Урок с id={self.__lesson_id}"
+        return f"Урок с который начинается в {self.get_start_time()} и заканчивается в {self.get_end_time()}, " \
+               f"id={self.get_main_id()}"
+
 
     def __dict__(self) -> dict:
-        return {"start_time": self.__start_time,
-                "end_time": self.__end_time,
-                "day": self.__day,
-                "teacher_id": self.__teacher_id,
-                "group_id": self.__group_id,
-                "subject_id": self.__subject_id,
-                "notes": self.__notes,
-                "lesson_id": self.__lesson_id,
-                "state": self.__state}
+        return {"start_time": self.get_start_time(),
+                "end_time": self.get_end_time(),
+                "day": self.get_day(),
+                "teacher_id": self.get_teacher_id(),
+                "group_id": self.get_group_id(),
+                "subject_id": self.get_subject_id(),
+                "notes": self.get_notes(),
+                "object_id": self.get_main_id(),
+                "state": self.get_state()}
