@@ -13,4 +13,4 @@ class CLI:
                 for i in read_data:
                     if i["login"] == login and i["password"] == password:
                         entrance = True
-                        status = i["status"]
+                        self.__status = i["status"]
