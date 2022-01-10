@@ -18,3 +18,8 @@ class CLI:
                     if i["login"] == login and i["password"] == password:
                         entrance = True
                         self.__status = i["status"]
+                        break
+
+    def __get_all_group(self):
+        if self.__status == 0:
+            print('\n'.join([f'Группа {i.get_letter()}' for i in self.__user.get_all_groups()]))
