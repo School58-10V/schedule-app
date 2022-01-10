@@ -1,4 +1,6 @@
 import json
+
+
 # Уровни допуска-
 # 0- учащийся
 # 1- преподаватель
@@ -7,6 +9,10 @@ import json
 
 class CLI:
     def __init__(self):
+        self.data_of_panel = ["    Доступные действия:\n"
+                              "информация       завершить сессию\n"
+                              "          \     /\n"
+                              "           1   2\n"]
         login = input()  # Собираем с пользователя его данные, чтобы узнать, кто он
         password = input()
         entrance = False
@@ -33,3 +39,17 @@ class CLI:
     #         for i in self.__user.get_all_groups():
     #
     #         self.__user.
+
+    def show_menu(self, num_of_panel):
+        print(self.data[num_of_panel])
+        answer = False
+        # Необходимо преорбазовать отбор ввода в отдельную функцию(принимаем на ввод корректные значения,
+        # ругаем пользователя, пока он не введет одно из них)
+        while answer is False:
+            ans = input()
+            if ans in ["1", "2"]:
+                answer = True
+        if ans == "1":
+            return 1
+        if ans == "2":
+            return 2
