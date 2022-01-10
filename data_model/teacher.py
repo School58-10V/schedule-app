@@ -1,7 +1,6 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
 from data_model.lesson_row import LessonRow
-from data_model.lesson_rows_for_teachers import LessonRowsForTeachers
 from data_model.parsed_data import ParsedData
 import json
 
@@ -9,7 +8,7 @@ from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
-from data_model.subjects_for_teachers import SubjectsForTeachers
+from data_model.teachers_for_subjects import TeachersForSubjects
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -78,6 +77,70 @@ class Teacher(AbstractModel):
                     res.append(ParsedData(exception_text, None))
         return res
 
+    def get_lesson_rows(self) -> List[LessonRow]:
+        """
+            Возвращает список объектов LessonRow используя db_source данный в __init__()
+            :return: список объектов LessonRow
+        """
+        return TeachersForLessonRows.get_lesson_rows_by_teacher_id(self.get_main_id(), self.get_db_source())
+
+    def get_subjects(self) -> List[Subject]:
+        """
+            Возвращает список объектов Subject используя db_source данный в __init__()
+            :return: список объектов Subject
+        """
+        return TeachersForSubjects.get_subjects_by_teacher_id(self.get_main_id(), self.get_db_source())
+
+    def append_lesson_row(self, lesson_row_obj: LessonRow) -> Teacher:
+        """
+        Создает сущность TeachersForLessonRows
+        :param lesson_row_obj: LessonRow связь с которым мы хотим создать
+        :return:
+        """
+        obj = TeachersForLessonRows(self.get_db_source(), lesson_row_id=lesson_row_obj.get_main_id(),
+                                    teacher_id=self.get_main_id())
+        for i in self.get_lesson_rows():
+            if obj.get_lesson_row_id() == i.get_main_id():
+                return self
+        obj.save()
+        return self
+
+    def append_subject(self, subject_obj: Subject) -> Teacher:
+        """
+        Создает сущность TeachersForSubjects
+        :param subject_obj: Subject связь с которым мы хотим удалить
+        :return: сущность Teacher над которой работаем
+        """
+        obj = TeachersForSubjects(
+            self.get_db_source(), subject_id=subject_obj.get_main_id(),
+            teacher_id=self.get_main_id()
+        )
+        for i in self.get_subjects():
+            if obj.get_subject_id() == i.get_main_id():
+                return self
+        obj.save()
+        return self
+
+    def remove_lesson_row(self, lesson_row_obj: LessonRow) -> Teacher:
+        """
+        Удаляет сущность TeachersForLessonRow, которая обозначает связь этого Teacher и lesson_row_obj
+        :param lesson_row_obj: LessonRow связь с которым мы хотим удалить
+        :return: сущность Teacher над которой работаем
+        """
+        for i in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_obj.get_main_id(), self.get_main_id(), self.get_db_source()):
+            i.delete()
+        return self
+
+    def remove_subject(self, subject_obj: Subject) -> Teacher:
+        """
+        Удаляет сущность TeachersForSubjects, которая обозначает связь этого Teacher и subject_obj
+        :param subject_obj: Subject связь с которым мы хотим удалить
+        :return: сущность Teacher над которой работаем
+        """
+        for i in TeachersForSubjects.get_by_subject_and_teacher_id(subject_obj.get_main_id(), self.get_main_id(), self.get_db_source()):
+            i.delete()
+        return self
+
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),
                 "object_id": self.get_main_id(),
@@ -88,17 +151,3 @@ class Teacher(AbstractModel):
     def __str__(self):
         return f'Teacher(fio = {self.get_fio()}, bio = {self.get_bio()}, ' \
                f'contacts = {self.get_contacts()}) '
-
-    def get_lesson_rows(self) -> List[LessonRow]:
-        """
-            Возвращает список объектов LessonRow используя db_source данный в __init__()
-            :return: список объектов LessonRow
-        """
-        return LessonRowsForTeachers.get_lesson_rows_by_teacher_id(self.get_main_id(), self.get_db_source())
-
-    def get_subjects(self) -> List[Subject]:
-        """
-            Возвращает список объектов Subject используя db_source данный в __init__()
-            :return: список объектов Subject
-        """
-        return SubjectsForTeachers.get_subjects_by_teacher_id(self.get_main_id(), self.get_db_source())

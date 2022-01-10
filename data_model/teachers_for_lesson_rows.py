@@ -3,6 +3,7 @@ from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
+    from data_model.lesson_row import LessonRow
     from adapters.file_source import FileSource
     from data_model.teacher import Teacher
 
@@ -83,15 +84,30 @@ class TeachersForLessonRows(AbstractModel):
             ]
 
     @classmethod
-    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int,
-                                         teacher_id: int,
-                                         db_source: FileSource) -> List[TeachersForLessonRows]:
-        """"
-        возвращает отсортированный список объектов TeachersForLessonRows, у которых совпадает
-        с предоставленными lesson_row_id и teacher_id
+    def get_lesson_rows_by_teacher_id(cls, teacher_id: int, db_source: FileSource) -> List[LessonRow]:
         """
-        output = []
-        for elem in db_source.get_by_query(cls._get_collection_name(), {"lesson_row_id": lesson_row_id,
-                                                                        "teacher_id": teacher_id}):
-            output.append(TeachersForLessonRows(**elem, db_source=db_source))
-        return output
+        возвращает всех учителей, у которых есть определенный teacher_id
+
+        :param teacher_id: идшник Teacher который должен быть у учителя
+        :param db_source: наш дб сорс
+        :return: список идшинков учителей, у которых teacher_id равен тому что мы передали
+        """
+        from data_model.lesson_row import LessonRow
+
+        return [
+            LessonRow.get_by_id(i['lesson_row_id'], db_source=db_source)
+            for i in db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
+        ]
+
+    @classmethod
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, db_source: FileSource) -> list:
+        """
+        Возвращает список обьектов этого класса в котором у нас совподают идишник который мы передали
+
+        :param teacher_id: идшник Teacher у которого есть Lesson_row
+        :param lesson_row_id: идшник Lesson_row который есть у учитель
+        :param db_source: класс укоторого у нас есть нужный нам метод get_by_query
+        :return: список обьектов этого класса в котором у нас совподают идишник который мы передали
+        """
+        objs = db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'lesson_row_id': lesson_row_id})
+        return [cls(**obj, db_source=db_source) for obj in objs]

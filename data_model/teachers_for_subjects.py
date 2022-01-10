@@ -4,6 +4,7 @@ from typing import List, Optional, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
+    from data_model.subject import Subject
     from data_model.teacher import Teacher
     from adapters.file_source import FileSource
 
@@ -55,9 +56,25 @@ class TeachersForSubjects(AbstractModel):
         # по ключу "subject_id" его id и передаем в метод, вызываемой от класса Teacher
 
     @classmethod
-    def get_by_teacher_and_subject_id(cls, subject_id: int, teacher_id: int, db_source: FileSource) -> list[TeachersForSubjects]:
-        # передаем айди объекта и айди учителя
-        return [cls(**obj, db_source=db_source) for obj in db_source.get_by_query(cls._get_collection_name(), query={"teacher_id": teacher_id, "subject_id": subject_id})]
-        # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "subject_id" соответствует
-        # subject_id в вводимом аргументе, и ключ "teacher_id" соответствует передаваемому
-        # teacher_id. Из полученного списка словарей делаем объекты класса связи и передаем в списке объектов класса.
+    def get_subjects_by_teacher_id(cls, teacher_id: int, db_source: FileSource) -> List[Subject]:  # в качестве
+        # аргумента подаем id, по которому будем искать все Subject
+        from data_model.subject import Subject
+
+        return [Subject.get_by_id(i["subject_id"], db_source) for i in
+                db_source.get_by_query(cls._get_collection_name(), query={"teacher_id": teacher_id})]
+        # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "teacher_id" соответствует
+        # teacher_id в вводимом аргументе. Из полученного списка словарей достаем из каждого словаря
+        # по ключу "subject_id" его id и передаем в метод, вызываемой от класса Subject
+
+    @classmethod
+    def get_by_subject_and_teacher_id(cls, subject_id: int, teacher_id: int, db_source: FileSource) -> list:
+        """
+        список обьектов этого класса в котором у нас совподают идишник который мы передали
+
+        :param teacher_id: идшник Teacher у которого есть Lesson_row
+        :param subject_id: идшник Subject который есть у учитель
+        :param db_source: класс укоторого у нас есть нужный нам метод get_by_query
+        :return: список обьектов этого класса в котором у нас совподают идишник который мы передали
+        """
+        objs = db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'subject_id': subject_id})
+        return [cls(**obj, db_source=db_source) for obj in objs]
