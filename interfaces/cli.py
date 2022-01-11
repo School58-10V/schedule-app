@@ -43,12 +43,12 @@ class CLI:
                               "       пользователей \     /\n"
                               "                      1   2\n"
                               ]
-        login = input()  # Собираем с пользователя его данные, чтобы узнать, кто он
-        password = input()
         entrance = False
         self.__db_source = db_source
 
         while entrance is False:
+            login = input()  # Собираем с пользователя его данные, чтобы узнать, кто он
+            password = input()
             with open("interfaces/logins_and_passwords.json") as file:
                 data = file.read()
                 read_data = json.loads(data)
