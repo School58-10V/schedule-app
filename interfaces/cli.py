@@ -2,6 +2,8 @@ from adapters.file_source import FileSource
 from data_model.student import Student
 from data_model.subject import Subject
 from data_model.teacher import Teacher
+from data_model.lesson_row import LessonRow
+
 
 
 class CLI:
@@ -30,9 +32,8 @@ class CLI:
             self.__get_all_teachers()
 
     def __menu_for_teacher(self, action):
-        while action not in ['1', '2', '3']:
+        while str(action) not in ['1', '2', '3']:
             action = input('Неверный ввод данных, попробуйте еще раз')
-        action = int(action)
         if action == 1:
             self.__schedule_by_teacher()
         elif action == 2:
@@ -47,6 +48,8 @@ class CLI:
             self.__add_new_student()
         elif action == 3:
             self.__add_new_schedule_change()
+        elif action == 4:
+            self.__add_new_lesson_row()
 
     def show_menu(self):
         if not self.name:
@@ -56,7 +59,7 @@ class CLI:
             if self.user_type == "учитель":
                 prompt = ["расписание (уроки и группы на этих уроках)", "замены", "добавить новый предмет"]
             elif self.user_type == "администратор":
-                prompt = ["добавить учителя", "добавить ученика", "добавить замены"]
+                prompt = ["добавить учителя", "добавить ученика", "добавить замены", "добавить новый ряд уроков"]
             elif self.user_type == 'ученик':
                 prompt = ["расписание (уроки и групы на этих уроках)", "все учителя"]
 
@@ -98,8 +101,22 @@ class CLI:
         s.save()
         self.__pretty_print('Готово!')
 
+    def __add_new_lesson_row(self):
+        start_time = int(input('начало урока:'))
+        end_time = int(input('конец урока:'))
+        count_studying_hours = int(input('количество академических часов в занятии:'))
+        room_id = int(input('айди комнаты:'))
+        group_id = int(input('группа учеников:'))
+        subject_id = int(input('предмет:'))
+        timetable_id = int(input('год в который происходят уроки:'))
+        day_of_weer = int(input('номер дня недели:'))
+        s = LessonRow(self.db_adapter, count_studying_hours, group_id, subject_id, room_id, start_time, end_time, timetable_id, day_of_weer)
+        s.save()
+        self.__pretty_print('Готово!')
+
     def __schedule_by_teacher(self):
-        pass
+        day = self.db_adapter.get_by_query("LessonRow", {"timetable_id": 2022, "day_of_weer": 1, "group_id": 23})
+        print(day)
 
     def __schedule_changes_by_teacher(self):
         pass
@@ -111,7 +128,7 @@ class CLI:
         pass
 
 
-# cli = CLI('Хромов Михаил', 'администратор')
-cli = CLI()
+cli = CLI('Хромов Михаил', 'учитель')
+#   cli = CLI()
 cli.set_database_path('../db/')
 cli.show_menu()

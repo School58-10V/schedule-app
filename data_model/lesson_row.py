@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class LessonRow(AbstractModel):
     def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int,
-                 start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
+                 start_time: int, end_time: int, timetable_id: int, day_of_weer: int, object_id: Optional[int] = None):
         """
             :param count_studying_hours: количество академических часов в занятии (возможно нет!!!!)
             :param db_source: Адаптер бд сорса
@@ -21,6 +21,7 @@ class LessonRow(AbstractModel):
             :param subject_id: айди предмета
             :param room_id: айди комнаты
             :param timetable_id: год в который происходят уроки
+            :param day_of_weer: день недели
             :param object_id: айди самого класса ряд уроков
         """
         super().__init__(db_source)
@@ -31,6 +32,7 @@ class LessonRow(AbstractModel):
         self.__subject_id = subject_id
         self.__room_id = room_id
         self.__timetable_id = timetable_id
+        self.__day_of_weer = day_of_weer
         self._object_id = object_id
 
     def get_count_studying_hours(self) -> int:
@@ -54,6 +56,9 @@ class LessonRow(AbstractModel):
     def get_timetable_id(self) -> int:
         return self.__timetable_id
 
+    def get_day_of_weer(self) -> int:
+        return self.__day_of_weer
+
     def __dict__(self) -> dict:
         return {
             "count_studying_hours": self.get_count_studying_hours(),
@@ -63,13 +68,14 @@ class LessonRow(AbstractModel):
             "start_time": self.get_start_time(),
             "end_time": self.get_end_time(),
             "timetable_id": self.get_timetable_id(),
+            "day_of_weer": self.get_day_of_weer(),
             "object_id": self.get_main_id()}
 
     def __str__(self):
         return f'LessonRow(count_studying_hours={self.get_count_studying_hours()}, group_id={self.get_group_id()}' \
-               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
-               f', end_time={self.get_end_time()}), timetable_id={self.get_timetable_id()})' \
-               f', object_id={self.get_main_id()})'
+               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}, start_time={self.get_start_time()}' \
+               f', end_time={self.get_end_time()}, timetable_id={self.get_timetable_id()}' \
+               f', day_of_weer={self.get_day_of_weer()}, object_id={self.get_main_id()}'
 
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[LessonRow])]:
@@ -85,7 +91,8 @@ class LessonRow(AbstractModel):
                 room_id = i[3]
                 start_time = i[4]
                 end_time = i[5]
-                timetable_id = i[6]
+                day_of_weer = i[6]
+                timetable_id = i[7]
 
                 res.append(ParsedData(None, LessonRow(db_source=db_source,
                                                       count_studying_hours=int(count_studying_hours),
@@ -94,6 +101,7 @@ class LessonRow(AbstractModel):
                                                       room_id=int(room_id),
                                                       start_time=int(start_time),
                                                       end_time=int(end_time),
+                                                      day_of_weer=int(day_of_weer),
                                                       timetable_id=int(timetable_id))))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
