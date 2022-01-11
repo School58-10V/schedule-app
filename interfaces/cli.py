@@ -172,7 +172,7 @@ class CLI:
                     else:
                         pass
                 elif self.__status == 2:
-                    user_input = self.show_menu(num_of_panel=3, right_answer=["1", "2"])
+                    user_input = self.show_menu(num_of_panel=3, right_answer=["1", "2", "back"])
                     if user_input == "1":
                         self.__new_group_for_student()
                     elif user_input == "2":
