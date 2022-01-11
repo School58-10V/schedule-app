@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from data_model.group import Group
 from data_model.student import Student
 from data_model.subject import Subject
+from datetime import date
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -71,6 +72,12 @@ class CLI:
             self.__user = Student.get_by_id(inf['object_id'], self.__db_source)
         else:
             self.__user = Teacher.get_by_id(inf['object_id'], self.__db_source)
+
+        self.__timetable = f'Мое расписание на {date.today()}'
+
+    def __get_my_timetable(self):
+        if date.today().weekday() < 5:
+            print(self.__timetable)
 
     def __get_all_group(self):
         if self.__status == 0:
