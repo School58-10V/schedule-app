@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from typing import TYPE_CHECKING, Optional
 
@@ -52,7 +54,9 @@ class CLI:
         inf = {}
 
         while entrance is False:
+            print("Введите логин")
             login = input()  # Собираем с пользователя его данные, чтобы узнать, кто он
+            print("Введите пароль")
             password = input()
             with open("logins_and_passwords.json") as file:
                 data = file.read()
