@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from typing import TYPE_CHECKING, Optional
+import os
 
 from data_model.group import Group
 from data_model.student import Student
@@ -28,20 +29,20 @@ class CLI:
         self.data_of_panel = ["               Доступные действия:\n"
                               "   возможные действия       завершить сессию\n"
                               "                     \     /\n"
-                              "                      1   2\n"
-                              "                           3 - изменить пароль\n",
+                              "                      1   2\n",
 
                               "               Доступные действия:\n"
                               "           мои группы       моё расписание\n"
                               "                     \     /\n"
-                              "                      1   2\n",
+                              "                      1   2\n"
+                              "                           3 - изменить пароль\n",
 
                               "               Доступные действия:\n"
                               "     добавить ученика       изменить пароль\n"
                               "         в группу    \     /\n"
-                              "                      6   1\n"
-                              "показать все группы- 5     2 -показать всех учеников\n"
-                              "      ученика         4   3            в группе\n"
+                              "                      1   2\n"
+                              "                           3 -показать всех учеников\n"
+                              "                      5   4         по группам\n"
                               "                     /     \ \n"
                               "        добавить урок       моё расписание\n",
 
@@ -136,3 +137,45 @@ class CLI:
             ans = input()
         return ans
 
+    def run(self):
+        print("                Добро пожаловать!")
+        input("                 Нажмите Enter,\n"
+              "                чтобы продолжить")
+        while True:
+            os.system("cls")
+            user_input = self.show_menu(num_of_panel=0, right_answer=["1", "2", "back"])
+            if user_input == "1":
+                if self.__status == 0:
+                    user_input = self.show_menu(num_of_panel=1, right_answer=["1", "2", "3", "back"])
+                    if user_input == "1":
+                        self.__get_all_group()
+                    elif user_input == "2":
+                        self.__get_my_timetable()
+                    elif user_input == "3":
+                        pass
+                    else:
+                        pass
+                elif self.__status == 1:
+                    user_input = self.show_menu(num_of_panel=2, right_answer=["1", "2", "3", "4", "5", "back"])
+                    if user_input == "1":
+                        self.__get_all_group()
+                    elif user_input == "2":
+                        pass
+                    elif user_input == "3":
+                        self.__get_all_student()
+                    elif user_input == "4":
+                        self.__get_my_timetable()
+                    elif user_input == "5":
+                        self.__new_subject_for_teacher()
+                    else:
+                        pass
+                elif self.__status == 2:
+                    user_input = self.show_menu(num_of_panel=3, right_answer=["1", "2"])
+                    if user_input == "1":
+                        self.__new_group_for_student()
+                    elif user_input == "2":
+                        pass
+                    else:
+                        pass
+            else:
+                break
