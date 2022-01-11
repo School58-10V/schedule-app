@@ -77,17 +77,11 @@ class CLI:
     #
     #         self.__user.
 
-    def show_menu(self, num_of_panel):
+    def show_menu(self, num_of_panel, right_answer=["back"]):
         print(self.data_of_panel[num_of_panel])  # Что это?
-        answer = False
         # Необходимо преорбазовать отбор ввода в отдельную функцию(принимаем на ввод корректные значения,
         # ругаем пользователя, пока он не введет одно из них)
-        ans = ''
-        while answer is False:
+        ans = input()
+        while ans not in right_answer:
             ans = input()
-            if ans in ["1", "2"]:
-                answer = True
-        if ans == "1":
-            return 1
-        if ans == "2":
-            return 2
+        return ans
