@@ -76,19 +76,23 @@ class CLI:
         if self.__status == 0:
             print('\n'.join([f'Группа {i.get_letter()}' for i in self.__user.get_all_groups()]))
 
+    def __get_all_student(self):
+        lst = {}
+        groups = {}
+        for i in Group.get_all(self.__db_source):
+            if i.get_teacher_id() == self.__user.get_main_id():
+                groups[i.get_letter()] = i
+            print('Группа', i.get_letter())
+            for j in i.get_all_students():
+                lst[j.get_full_name()] = j
+                print(j.get_full_name, end=', ')
+            print('\n')
+        return lst, groups
+
     def __new_group_for_student(self):
         if self.__status == 1:
             print('Выберите ученика из списка')
-            lst = {}
-            groups = {}
-            for i in Group.get_all(self.__db_source):
-                if i.get_teacher_id() == self.__user.get_main_id():
-                    groups[i.get_letter()] = i
-                print('Группа', i.get_letter())
-                for j in i.get_all_students():
-                    lst[j.get_full_name()] = j
-                    print(j.get_full_name, end=', ')
-                print('\n')
+            lst, groups = self.__get_all_student()
             student_name = self.__input_processing(lst)
             print("Выберите группу из списка")
             group = groups[self.__input_processing(groups)]
@@ -98,7 +102,6 @@ class CLI:
         if self.__status == 1:
             print('Выберите предмет из списка')
             lst = {}
-            groups = {}
             for i in Subject.get_all(self.__db_source):
                 lst[i.get_subject_name()] = i
                 print(i.get_subject_name(), end=', ')
