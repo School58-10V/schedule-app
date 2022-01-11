@@ -149,5 +149,4 @@ class Teacher(AbstractModel):
                 "office_id": self.get_office_id()}
 
     def __str__(self):
-        return f'Teacher(fio = {self.get_fio()}, bio = {self.get_bio()}, ' \
-               f'contacts = {self.get_contacts()}) '
+        return f'Учитель(ница) {self.get_fio()}, контакты: {self.get_contacts()}'
