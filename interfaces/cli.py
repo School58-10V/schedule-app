@@ -37,7 +37,7 @@ class CLI:
                               "     добавить ученика       изменить пароль\n"
                               "         в группу    \     /\n"
                               "                      6   1\n"
-                              "показать все группы- 5     2 - показать всех учеников\n"
+                              "показать все группы- 5     2 -показать всех учеников\n"
                               "      ученика         4   3            в группе\n"
                               "                     /     \ \n"
                               "        добавить урок       моё расписание\n",
@@ -75,51 +75,40 @@ class CLI:
     def __new_group_for_student(self):
         if self.__status == 1:
             print('Выберите ученика из списка')
-            spisok = {}
+            lst = {}
             groups = {}
             for i in Group.get_all(self.__db_source):
                 if i.get_teacher_id() == self.__user.get_main_id():
                     groups[i.get_letter()] = i
                 print('Группа', i.get_letter())
                 for j in i.get_all_students():
-                    spisok[j.get_full_name()] = j
+                    lst[j.get_full_name()] = j
                     print(j.get_full_name, end=', ')
                 print('\n')
-            student_name = self.__input_processing(spisok)
+            student_name = self.__input_processing(lst)
             print("Выберите группу из списка")
             group = groups[self.__input_processing(groups)]
-            group.append_student(spisok[student_name])
+            group.append_student(lst[student_name])
 
     def __new_subject_for_teacher(self):
         if self.__status == 1:
             print('Выберите предмет из списка')
-            spisok = {}
+            lst = {}
             groups = {}
             for i in Subject.get_all(self.__db_source):
-                spisok[i.get_subject_name()] = i
+                lst[i.get_subject_name()] = i
                 print(i.get_subject_name(), end=', ')
             print('\n')
-            subject_name = self.__input_processing(spisok)
-            self.__user.append_subject(spisok[subject_name])
-
-    # Не успела доделать
-    # def __parse_new_group(self, file_location):
-    #     if self.__status == 0:
-    #         groups = Group.parse(file_location, self.__db_source)
+            subject_name = self.__input_processing(lst)
+            self.__user.append_subject(lst[subject_name])
 
     def __get_all_subjects(self):
         if self.__status == 1:
             print('\n'.join([f'Предмет {i.get_subject_name()}' for i in self.__user.get_subjects()]))
 
-    # def __get_timetable(self):
-    #     if self.__status == 0:
-    #         for i in self.__user.get_all_groups():
-    #
-    #         self.__user.
-
-    def __input_processing(self, spisok: Optional[list, dict]) -> str:
+    def __input_processing(self, lst: Optional[list, dict]) -> str:
         user_answer = input()
-        while user_answer not in spisok:
+        while user_answer not in lst:
             print('Введите еще раз')
             user_answer = input()
         return user_answer
@@ -132,3 +121,4 @@ class CLI:
         while ans not in right_answer:
             ans = input()
         return ans
+
