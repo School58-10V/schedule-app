@@ -1,7 +1,9 @@
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from data_model.group import Group
+from data_model.student import Student
+from data_model.subject import Subject
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -15,6 +17,7 @@ if TYPE_CHECKING:
 # 2- Панель действий учителя
 # 3- Панель действий администратора
 # Для возврата на предыдущую панель используем команду back
+from data_model.teacher import Teacher
 
 
 class CLI:
@@ -46,22 +49,46 @@ class CLI:
                               ]
         entrance = False
         self.__db_source = db_source
+        inf = {}
 
         while entrance is False:
             login = input()  # Собираем с пользователя его данные, чтобы узнать, кто он
             password = input()
-            with open("interfaces/logins_and_passwords.json") as file:
+            with open("logins_and_passwords.json") as file:
                 data = file.read()
                 read_data = json.loads(data)
                 for i in read_data:
                     if i["login"] == login and i["password"] == password:
                         entrance = True
                         self.__status = i["status"]
+                        inf = i
                         break
+        if self.__status == 0:
+            self.__user = Student.get_by_id(inf['object_id'], self.__db_source)
+        else:
+            self.__user = Teacher.get_by_id(inf['object_id'], self.__db_source)
 
     def __get_all_group(self):
         if self.__status == 0:
             print('\n'.join([f'Группа {i.get_letter()}' for i in self.__user.get_all_groups()]))
+
+    def __new_group_for_student(self):
+        if self.__status == 1:
+            print('Выберите ученика из списка')
+            spisok = {}
+            groups = {}
+            for i in Group.get_all(self.__db_source):
+                if i.get_teacher_id() == self.__user.get_main_id():
+                    groups[i.get_letter()] = i
+                print('Группа', i.get_letter())
+                for j in i.get_all_students():
+                    spisok[j.get_full_name()] = j
+                    print(j.get_full_name, end=', ')
+                print('\n')
+            student_name = self.__input_processing(spisok)
+            print("Выберите группу из списка")
+            group = groups[self.__input_processing(groups)]
+            group.append_student(spisok[student_name])
 
     # Не успела доделать
     # def __parse_new_group(self, file_location):
@@ -77,6 +104,13 @@ class CLI:
     #         for i in self.__user.get_all_groups():
     #
     #         self.__user.
+
+    def __input_processing(self, spisok: Optional[list, dict]) -> str:
+        user_answer = input()
+        while user_answer not in spisok:
+            print('Введите еще раз')
+            user_answer = input()
+        return user_answer
 
     def show_menu(self, num_of_panel, right_answer=["back"]):
         print(self.data_of_panel[num_of_panel])  # Что это?
