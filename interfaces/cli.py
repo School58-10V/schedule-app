@@ -90,6 +90,18 @@ class CLI:
             group = groups[self.__input_processing(groups)]
             group.append_student(spisok[student_name])
 
+    def __new_subject_for_teacher(self):
+        if self.__status == 1:
+            print('Выберите предмет из списка')
+            spisok = {}
+            groups = {}
+            for i in Subject.get_all(self.__db_source):
+                spisok[i.get_subject_name()] = i
+                print(i.get_subject_name(), end=', ')
+            print('\n')
+            subject_name = self.__input_processing(spisok)
+            self.__user.append_subject(spisok[subject_name])
+
     # Не успела доделать
     # def __parse_new_group(self, file_location):
     #     if self.__status == 0:
@@ -113,7 +125,7 @@ class CLI:
         return user_answer
 
     def show_menu(self, num_of_panel, right_answer=["back"]):
-        print(self.data_of_panel[num_of_panel])  # Что это?
+        print(self.data_of_panel[num_of_panel])
         # Необходимо преорбазовать отбор ввода в отдельную функцию(принимаем на ввод корректные значения,
         # ругаем пользователя, пока он не введет одно из них)
         ans = input()
