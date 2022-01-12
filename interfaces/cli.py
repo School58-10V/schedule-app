@@ -1,4 +1,5 @@
 from adapters.file_source import FileSource
+from data_model.teacher import Teacher
 
 
 menu = '''------------------------
@@ -24,7 +25,7 @@ class CLI:
         self.identifier = [self.__show_timetable(), self.__show_teachers(), self.__show_classes(), self.get_user_info()]
 
     def __show_timetable(self):
-        pass
+        print(FileSource.get_all(self._db_source, "Timetable"))
 
     def __show_classes(self):
         print(FileSource.get_all(self._db_source, "Group"))
@@ -34,7 +35,7 @@ class CLI:
                f"surname:{self._surname}"
 
     def __show_teachers(self):
-        pass
+        print(FileSource.get_all(self._db_source, "Teacher"))
 
     def show_menu(self):
         print(menu)
@@ -47,5 +48,7 @@ example = CLI(input("Ваш статус в иерхахии:").lower(),
               input("Ваш класс(если вы студент):").upper(),
               input("Ваше имя:").lower(),
               input("Ваша фамилия:").lower(), FileSource())
+boyyyyyy = Teacher(FileSource(), "уцпйкк232", bio="сидел 3 года")
+boyyyyyy.save()
 example.show_menu()
 
