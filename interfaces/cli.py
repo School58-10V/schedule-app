@@ -1,7 +1,9 @@
 from adapters.file_source import FileSource
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from tabulate import tabulate
 
 fs = FileSource('../db')
+TfS = TeachersForLessonRows(fs, 0, 0)
 
 
 class CLI:
@@ -57,14 +59,14 @@ class CLI:
             for title in column_list:
                 for elem in subject:
                     if title in elem:
-                        if title == 'teacher':
-                            continue
-                        elif 'id' in elem and title != 'room':
+                        if 'id' in elem and title != 'room':
                             object = fs.get_by_id(title.capitalize(), subject[elem])
                             if title == 'group':
-                                teacher = fs.get_by_id('Teacher', object['teacher_id'])
-                                del teacher['object_id']
-                                new_list.append(teacher)
+                                teachers = [teacher.__dict__() for teacher in
+                                            TfS.get_teachers_by_lesson_row_id(subject['object_id'], fs)]
+                                for teacher in teachers:
+                                    del teacher['object_id']
+                                new_list.append(teachers)
                                 del object['teacher_id']
                             del object['object_id']
                             new_list.append(object)
