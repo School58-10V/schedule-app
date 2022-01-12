@@ -36,8 +36,9 @@ class CLI:
     def show_menu(self):
         print(menu)
         choice = input()
-        self.identifier[int(choice) - 1]
+        print(self.identifier[int(choice) - 1])
 
 
-
+example = CLI("", "", "", "")
+example.show_menu()
 
