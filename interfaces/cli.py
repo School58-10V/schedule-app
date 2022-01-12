@@ -22,7 +22,7 @@ class CLI:
         self._class_of_user = class_of_user
         self._name = name
         self._surname = surname
-        self.identifier = [self.__show_timetable(), self.__show_teachers(), self.__show_classes(), self.get_user_info()]
+        self.identifier = [self.__show_timetable, self.__show_teachers, self.__show_classes, self.get_user_info]
 
     def __show_timetable(self):
         print(FileSource.get_all(self._db_source, "Timetable"))
@@ -40,15 +40,15 @@ class CLI:
     def show_menu(self):
         print(menu)
         choice = input()
-        print(self.identifier[int(choice) - 1])
+        print(self.identifier[int(choice) - 1]())
+        print("a")
 
 
 print("Предьявите инфу о себе здесь:")
 example = CLI(input("Ваш статус в иерхахии:").lower(),
               input("Ваш класс(если вы студент):").upper(),
               input("Ваше имя:").lower(),
-              input("Ваша фамилия:").lower(), FileSource())
-boyyyyyy = Teacher(FileSource(), "уцпйкк232", bio="сидел 3 года")
+              input("Ваша фамилия:").lower(), FileSource("../db"))
+boyyyyyy = Teacher(FileSource("../db"), "уцпйкк232", bio="сидел 3 года")
 boyyyyyy.save()
 example.show_menu()
-
