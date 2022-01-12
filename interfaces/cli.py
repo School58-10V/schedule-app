@@ -1,3 +1,6 @@
+from adapters.file_source import FileSource
+
+
 menu = '''------------------------
 please enter number from 1 to 4(we hope u r smart enough to enter numbers not names of ur friends like Anton
 ------------------------
@@ -19,12 +22,13 @@ class CLI:
         self._surname = surname
         self.identifier = [self.__show_timetable(), self.__show_teachers(), self.__show_classes(), self.get_user_info()]
         self.__logged_in = False
+        self.__CLI_db_source = FileSource()  # проинициализировали Filesource, чтобы передать как параметр в get_all
 
     def __show_timetable(self):
         pass
 
     def __show_classes(self):
-        pass
+        print(FileSource.get_all(self.__CLI_db_source, "Group"))
 
     def get_user_info(self):
         return f"status:{self._user_status}, user's class:{self._class_of_user}, name:{self._name}, " \
