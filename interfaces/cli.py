@@ -2,7 +2,8 @@ from adapters.file_source import FileSource
 from data_model.teacher import Teacher
 
 
-menu = '''------------------------
+menu = '''
+------------------------
 please enter number from 1 to 4(we hope u r smart enough to enter numbers not names of ur friends like Anton
 ------------------------
 [1] show_timetable
@@ -12,7 +13,10 @@ please enter number from 1 to 4(we hope u r smart enough to enter numbers not na
 [3] show_classes
 ------------------------
 [4] get_user_info
-------------------------'''
+------------------------
+[5] exit
+------------------------
+'''
 
 
 class CLI:
@@ -28,7 +32,7 @@ class CLI:
         print(FileSource.get_all(self._db_source, "Timetable"))
 
     def __show_classes(self):
-        print(FileSource.get_all(self._db_source, "Group"))
+        print(self._db_source.get_all("Group"))
 
     def get_user_info(self):
         return f"status:{self._user_status}, user's class:{self._class_of_user}, name:{self._name}, " \
@@ -39,9 +43,13 @@ class CLI:
 
     def show_menu(self):
         print(menu)
-        choice = input()
-        print(self.identifier[int(choice) - 1]())
-        print("a")
+        choice = int(input())
+        if choice == 5:
+            return True
+        else:
+            print()
+            print(self.identifier[int(choice) - 1]())
+            return False
 
 
 print("Предьявите инфу о себе здесь:")
@@ -51,4 +59,7 @@ example = CLI(input("Ваш статус в иерхахии:").lower(),
               input("Ваша фамилия:").lower(), FileSource("../db"))
 boyyyyyy = Teacher(FileSource("../db"), "уцпйкк232", bio="сидел 3 года")
 boyyyyyy.save()
-example.show_menu()
+while True:
+    if example.show_menu():
+        print("Всем пока!!!!!!")
+        break
