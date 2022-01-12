@@ -115,20 +115,20 @@ class CLI:
         self.__pretty_print('Готово!')
 
     def __schedule_by_teacher(self):
-        day = self.db_adapter.get_by_query("LessonRow", {"timetable_id": 2022, "day_of_weer": 1, "group_id": 23})
-        print(day)
+        pass
 
     def __schedule_changes_by_teacher(self):
         pass
 
     def __get_schedule_by_student(self):
-        pass
+        day = self.db_adapter.get_by_query("LessonRow", {"timetable_id": 2022, "day_of_weer": 1, "group_id": 23})
+        print(['\n'.join([f'{i["subject_id"]} начало урока:{i["start_time"]} конец урока:{i["end_time"]}' for i in sorted(day, key=lambda x: x["end_time"])])])
 
     def __add_new_schedule_change(self):
         pass
 
 
-cli = CLI('Хромов Михаил', 'учитель')
+cli = CLI('Хромов Михаил', 'ученик')
 #   cli = CLI()
 cli.set_database_path('../db/')
 cli.show_menu()
