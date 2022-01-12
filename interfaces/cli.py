@@ -15,20 +15,19 @@ please enter number from 1 to 4(we hope u r smart enough to enter numbers not na
 
 
 class CLI:
-    def __init__(self, user_status: str, class_of_user: str, name: str, surname: str):
+    def __init__(self, user_status: str, class_of_user: str, name: str, surname: str, _db_source: FileSource):
+        self._db_source = _db_source  # проинициализировали Filesource, чтобы передать как параметр в get_all
         self._user_status = user_status
         self._class_of_user = class_of_user
         self._name = name
         self._surname = surname
         self.identifier = [self.__show_timetable(), self.__show_teachers(), self.__show_classes(), self.get_user_info()]
-        self.__logged_in = False
-        self.__CLI_db_source = FileSource()  # проинициализировали Filesource, чтобы передать как параметр в get_all
 
     def __show_timetable(self):
         pass
 
     def __show_classes(self):
-        print(FileSource.get_all(self.__CLI_db_source, "Group"))
+        print(FileSource.get_all(self._db_source, "Group"))
 
     def get_user_info(self):
         return f"status:{self._user_status}, user's class:{self._class_of_user}, name:{self._name}, " \
@@ -43,6 +42,10 @@ class CLI:
         print(self.identifier[int(choice) - 1])
 
 
-example = CLI("", "", "", "")
+print("Предьявите инфу о себе здесь:")
+example = CLI(input("Ваш статус в иерхахии:").lower(),
+              input("Ваш класс(если вы студент):").upper(),
+              input("Ваше имя:").lower(),
+              input("Ваша фамилия:").lower(), FileSource())
 example.show_menu()
 
