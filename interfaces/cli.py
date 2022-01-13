@@ -93,7 +93,7 @@ class CLI:
             print('Группа', i.get_letter())
             for j in i.get_all_students():
                 lst[j.get_full_name()] = j
-                print(j.get_full_name, end=', ')
+                print(j.get_full_name(), end=', ')
             print('\n')
         return lst, groups
 
@@ -145,10 +145,10 @@ class CLI:
               "                чтобы продолжить")
         while True:
             os.system("cls")
-            user_input = self.show_menu(num_of_panel=0, right_answer=["1", "2", "back"])
+            user_input = self.__show_menu(num_of_panel=0, right_answer=["1", "2", "back"])
             if user_input == "1":
                 if self.__status == 0:
-                    user_input = self.show_menu(num_of_panel=1, right_answer=["1", "2", "3", "back"])
+                    user_input = self.__show_menu(num_of_panel=1, right_answer=["1", "2", "3", "back"])
                     if user_input == "1":
                         self.__get_all_group()
                     elif user_input == "2":
@@ -158,7 +158,7 @@ class CLI:
                     else:
                         pass
                 elif self.__status == 1:
-                    user_input = self.show_menu(num_of_panel=2, right_answer=["1", "2", "3", "4", "5", "back"])
+                    user_input = self.__show_menu(num_of_panel=2, right_answer=["1", "2", "3", "4", "5", "back"])
                     if user_input == "1":
                         self.__get_all_group()
                     elif user_input == "2":
@@ -172,7 +172,7 @@ class CLI:
                     else:
                         pass
                 elif self.__status == 2:
-                    user_input = self.show_menu(num_of_panel=3, right_answer=["1", "2", "back"])
+                    user_input = self.__show_menu(num_of_panel=3, right_answer=["1", "2", "back"])
                     if user_input == "1":
                         self.__new_group_for_student()
                     elif user_input == "2":
