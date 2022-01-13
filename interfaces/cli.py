@@ -35,8 +35,8 @@ class CLI:
         print(self.__db_source.get_all("Group"))
 
     def get_user_info(self):
-        return f"status:{self.__user}, user's class:{self._class_of_user}, name:{self._name}, " \
-               f"surname:{self._surname}"
+        return f"status: {self.__user.get_access_level()}, user's class: {self.__user.get_class_of_user()}," \
+               f"name: {self.__user.get_identity()[0]}, surname: {self.__user.get_identity()[1]}"
 
     def __show_teachers(self):
         print(FileSource.get_all(self.__db_source, "Teacher"))
@@ -53,12 +53,7 @@ class CLI:
 
 
 print("Предьявите инфу о себе здесь:")
-example = CLI(input("Ваш статус в иерхахии:").lower(),
-              input("Ваш класс(если вы студент):").upper(),
-              input("Ваше имя:").lower(),
-              input("Ваша фамилия:").lower(), FileSource("../db"))
-boyyyyyy = Teacher(FileSource("../db"), "уцпйкк232", bio="сидел 3 года")
-boyyyyyy.save()
+example = CLI(User(), FileSource("../db"))
 while True:
     if example.show_menu():
         print("Всем пока!!!!!!")

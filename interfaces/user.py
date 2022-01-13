@@ -6,16 +6,16 @@ class User:
         self.__surname = ""
         self.__class_of_user = ""
 
-    def get_user_state(self):
+    def get_user_state(self) -> str:
         return self.__logged_in
 
-    def get_identity(self):
+    def get_identity(self) -> list:
         return [self.__name, self.__surname]
 
-    def get_user_access_level(self):
-        return
+    def get_access_level(self) -> str:
+        return self.__access_level
 
-    def get_class_of_user(self):
+    def get_class_of_user(self) -> str:
         return self.__class_of_user
 
     def log_in(self, name: str, surname: str, access_level: str = "Студент", uclass: str = ""):
