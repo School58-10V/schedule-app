@@ -19,14 +19,13 @@ class CLI:
         if number:
             if number == 1:
                 self.__show_all_teachers()
-            if number == 2:
+            elif number == 2:
                 self.__show_all_subjects()
-            if number == 3:
+            elif number == 3:
                 self.__show_all_students()
-            if number == 4:
+            elif number == 4:
                 self.__show_timetable()
-        else:
-            return
+        return
 
     def __show_all_teachers(self):
         all_teachers = fs.get_all('Teacher')
