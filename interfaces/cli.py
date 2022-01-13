@@ -96,4 +96,9 @@ class CLI:
                 thursday.append(dct)
             elif dct[0] == days[4]:
                 friday.append(dct)
-        return monday + tuesday + wednesday + thursday + friday
+        return CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(wednesday) + CLI.sort_by_start_time(thursday) + CLI.sort_by_start_time(friday)
+
+
+    @staticmethod
+    def sort_by_start_time(day):
+        return sorted(day, key=lambda lesson: lesson[5])
