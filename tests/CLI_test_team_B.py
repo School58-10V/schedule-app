@@ -24,7 +24,7 @@ lesson_row_1.append_teacher(teacher_2)
 lesson_row_2.append_teacher(teacher_2)
 lesson_row_3.append_teacher(teacher_1)
 
-interface = CLI()
+interface = CLI(fs)
 interface.show_menu()
 
 fs.delete('Subject', subject_1.get_main_id())
