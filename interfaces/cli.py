@@ -2,12 +2,11 @@ from adapters.file_source import FileSource
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from tabulate import tabulate
 
-fs = FileSource('../db')
-TfS = TeachersForLessonRows(fs, 0, 0)
-
 
 class CLI:
-    def __init__(self):
+    def __init__(self, db_source: FileSource):
+        self._db_source = db_source
+        self._TfLR = TeachersForLessonRows(self._db_source, 0, 0)
         self.tasks = {1: "1. показать всех учителей", 2: "2. показать список всех преподаваемых предметов",
                       3: "3. показать всех учеников школы", 4: "4. показать расписание"}
 
@@ -28,28 +27,28 @@ class CLI:
         return
 
     def __show_all_teachers(self):
-        all_teachers = fs.get_all('Teacher')
+        all_teachers = self._db_source.get_all('Teacher')
         for teacher in all_teachers:
             del teacher['object_id']
         print(*[teacher for teacher in all_teachers], sep='\n')
         self.show_menu()
 
     def __show_all_subjects(self):
-        all_subject = fs.get_all('Subject')
+        all_subject = self._db_source.get_all('Subject')
         for subject in all_subject:
             del subject['object_id']
         print(*[subject for subject in all_subject], sep='\n')
         self.show_menu()
 
     def __show_all_students(self):
-        all_student = fs.get_all('Student')
+        all_student = self._db_source.get_all('Student')
         for student in all_student:
             del student['object_id']
         print(*[student for student in all_student], sep='\n')
         self.show_menu()
 
     def __show_timetable(self):
-        subjects = fs.get_all('LessonRow')
+        subjects = self._db_source.get_all('LessonRow')
         column_list = ['day_of_the_week', 'teacher', 'group', 'subject', 'room',
                        'start_time', 'end_time']
         value_list = []
@@ -59,11 +58,11 @@ class CLI:
                 for elem in subject:  # перебираем дикт нашего LessonRow по ключам (т.е. параметры LessonRow)
                     if title in elem:  # если заголовок соответствует ключу дикта объекта LessonRow
                         if 'id' in elem and title != 'room':
-                            object = fs.get_by_id(title.capitalize(), subject[elem])
+                            object = self._db_source.get_by_id(title.capitalize(), subject[elem])
                             if title == 'group':
                                 # т.к. мы не учитываем Teacher в самом объекте, я добавляю его перед группой
                                 teachers = [teacher.__dict__() for teacher in
-                                            TfS.get_teachers_by_lesson_row_id(subject['object_id'], fs)]
+                                            self._TfLR.get_teachers_by_lesson_row_id(subject['object_id'], self._db_source)]
                                 for teacher in teachers:
                                     del teacher['object_id']
                                 new_list.append(teachers)
