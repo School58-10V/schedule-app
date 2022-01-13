@@ -69,6 +69,8 @@ class CLI:
                         self.__status = i["status"]
                         inf = i
                         break
+                if entrance is False:
+                    print('Неверный логин или пароль!')
         if self.__status == 0:
             self.__user = Student.get_by_id(inf['object_id'], self.__db_source)
         else:
@@ -140,6 +142,7 @@ class CLI:
         return ans
 
     def run(self):
+        os.system("cls")
         print("                Добро пожаловать!")
         input("                 Нажмите Enter,\n"
               "                чтобы продолжить")
@@ -151,8 +154,10 @@ class CLI:
                     user_input = self.__show_menu(num_of_panel=1, right_answer=["1", "2", "3", "back"])
                     if user_input == "1":
                         self.__get_all_group()
+                        input()
                     elif user_input == "2":
                         self.__get_my_timetable()
+                        input()
                     elif user_input == "3":
                         pass
                     else:
@@ -161,20 +166,25 @@ class CLI:
                     user_input = self.__show_menu(num_of_panel=2, right_answer=["1", "2", "3", "4", "5", "back"])
                     if user_input == "1":
                         self.__get_all_group()
+                        input()
                     elif user_input == "2":
                         pass
                     elif user_input == "3":
                         self.__get_all_student()
+                        input()
                     elif user_input == "4":
                         self.__get_my_timetable()
+                        input()
                     elif user_input == "5":
                         self.__new_subject_for_teacher()
+                        input()
                     else:
                         pass
                 elif self.__status == 2:
                     user_input = self.__show_menu(num_of_panel=3, right_answer=["1", "2", "back"])
                     if user_input == "1":
                         self.__new_group_for_student()
+                        input()
                     elif user_input == "2":
                         pass
                     else:
