@@ -21,8 +21,8 @@ class CLI:
         print(*args, **kwargs)
 
     def get_info(self):
-        self.__pretty_print("Ввидите данные")
-        self.user_type = input("Ваш вид дейтельности (учитель/ученик/администратор)")
+        self.__pretty_print("Ввидите данные:")
+        self.user_type = input("Ваш вид дейтельности (учитель/ученик/администратор):")
         while self.user_type != "учитель" and self.user_type != "ученик" and self.user_type != "администратор":
             self.user_type = input("такого типа нет, выберите 'учитель' или 'ученик' или 'администратор'")
         self.name = input("ФИО")
@@ -97,7 +97,6 @@ class CLI:
     def __get_all_teachers(self):
         for i in self.db_adapter.get_all("Teacher"):
             self.__pretty_print(i["fio"])
-        #  self.__pretty_print(str(t["fio"]) for t in self.db_adapter.get_all("Teacher"))
 
     def __add_new_subject(self):
         new_subject_name = input('Имя нового предмета: ')
@@ -130,7 +129,8 @@ class CLI:
         for i in StudentsForGroups.get_group_by_student_id(student[0]["object_id"], self.db_adapter):
             for x in self.db_adapter.get_by_query("LessonRow", {"timetable_id": self.year, "day_of_weer": self.day_of_weeks, "group_id": i.get_main_id()}):
                 day.append(x)
-        self.__pretty_print('\n'.join([f'{self.db_adapter.get_by_id("Subject", i["subject_id"])["subject_name"]} начало урока: {str(i["start_time"])[:-2]}:{str(i["start_time"])[2:]} конец урока: {str(i["end_time"])[:-2]}:{str(i["end_time"])[2:]}' for i in sorted(day, key=lambda x: x["end_time"])]))
+        self.__pretty_print('\n'.join([f'{self.db_adapter.get_by_id("Subject", i["subject_id"])["subject_name"]} начало урока: {str(i["start_time"])[:-2]}:{str(i["start_time"])[2:]} конец урока: {str(i["end_time"])[:-2]}:{str(i["end_time"])[2:]}' for i in sorted(day, key=lambda y: y["end_time"])]))
+        self.__pretty_print('Готово!')
 
     def __add_new_schedule_change(self):
         pass
