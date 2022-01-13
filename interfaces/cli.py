@@ -128,7 +128,7 @@ class CLI:
             user_answer = input()
         return user_answer
 
-    def show_menu(self, num_of_panel, right_answer=None):
+    def __show_menu(self, num_of_panel, right_answer=None):
         if right_answer is None:
             right_answer = ["back"]
         print(self.data_of_panel[num_of_panel])
