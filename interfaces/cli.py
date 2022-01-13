@@ -13,7 +13,7 @@ class CLI:
 
     def show_menu(self):
         print('Меню:', 'Список команд.', sep='\n')
-        print(*[self.tasks[i] for i in range(1, len(self.tasks) + 1)], sep="\n", end='\n')
+        print(*[self.tasks[number] for number in range(1, len(self.tasks) + 1)], sep="\n", end='\n')
         print("Выберите номер нужной команды из списка или введите 0 для окончания работы с интерфейсом.")
         number = int(input())
         if number:
@@ -57,11 +57,12 @@ class CLI:
         for subject in subjects:
             new_list = []
             for title in column_list:
-                for elem in subject:
-                    if title in elem:
+                for elem in subject:  # перебираем дикт нашего LessonRow по ключам (т.е. параметры LessonRow)
+                    if title in elem:  # если заголовок соответствует ключу дикта объекта LessonRow
                         if 'id' in elem and title != 'room':
                             object = fs.get_by_id(title.capitalize(), subject[elem])
                             if title == 'group':
+                                # т.к. мы не учитываем Teacher в самом объекте, я добавляю его перед группой
                                 teachers = [teacher.__dict__() for teacher in
                                             TfS.get_teachers_by_lesson_row_id(subject['object_id'], fs)]
                                 for teacher in teachers:
@@ -76,28 +77,27 @@ class CLI:
         print(tabulate(self.sort_days_of_the_week(value_list), column_list, tablefmt='grid'))
         self.show_menu()
 
-
     @staticmethod
-    def sort_days_of_the_week(dicts) -> list[dict]:
-        days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    def sort_days_of_the_week(lesson_rows) -> list:
+        days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница']
         monday = []
         tuesday = []
         wednesday = []
         thursday = []
         friday = []
-        for dct in dicts:
-            if dct[0] == days[0]:
-                monday.append(dct)
-            elif dct[0] == days[1]:
-                tuesday.append(dct)
-            elif dct[0] == days[2]:
-                wednesday.append(dct)
-            elif dct[0] == days[3]:
-                thursday.append(dct)
-            elif dct[0] == days[4]:
-                friday.append(dct)
-        return CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(wednesday) + CLI.sort_by_start_time(thursday) + CLI.sort_by_start_time(friday)
-
+        for lesson_row in lesson_rows:
+            if lesson_row[0] == days[0]:
+                monday.append(lesson_row)
+            elif lesson_row[0] == days[1]:
+                tuesday.append(lesson_row)
+            elif lesson_row[0] == days[2]:
+                wednesday.append(lesson_row)
+            elif lesson_row[0] == days[3]:
+                thursday.append(lesson_row)
+            elif lesson_row[0] == days[4]:
+                friday.append(lesson_row)
+        return CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(
+            wednesday) + CLI.sort_by_start_time(thursday) + CLI.sort_by_start_time(friday)
 
     @staticmethod
     def sort_by_start_time(day):
