@@ -3,14 +3,16 @@ from data_model.student import Student
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.lesson_row import LessonRow
-
+from data_model.students_for_groups import StudentsForGroups
 
 
 class CLI:
-    def __init__(self, name: str = None, user_type: str = None):
+    def __init__(self, name: str = None, user_type: str = None, year: int = 2022, day_of_weeks: int = 1):
         self.user_type = user_type
         self.name = name
         self.db_adapter = FileSource()
+        self.year = year
+        self.day_of_weeks = day_of_weeks
 
     def set_database_path(self, path):
         self.db_adapter = FileSource(path)
@@ -93,7 +95,9 @@ class CLI:
         self.__pretty_print('Готово!')
 
     def __get_all_teachers(self):
-        self.__pretty_print(str(t) for t in Teacher.get_all(FileSource()))
+        for i in self.db_adapter.get_all("Teacher"):
+            self.__pretty_print(i["fio"])
+        #  self.__pretty_print(str(t["fio"]) for t in self.db_adapter.get_all("Teacher"))
 
     def __add_new_subject(self):
         new_subject_name = input('Имя нового предмета: ')
@@ -121,8 +125,12 @@ class CLI:
         pass
 
     def __get_schedule_by_student(self):
-        day = self.db_adapter.get_by_query("LessonRow", {"timetable_id": 2022, "day_of_weer": 1, "group_id": 23})
-        print(['\n'.join([f'{i["subject_id"]} начало урока:{i["start_time"]} конец урока:{i["end_time"]}' for i in sorted(day, key=lambda x: x["end_time"])])])
+        student = self.db_adapter.get_by_query("Student", {"full_name": self.name})
+        day = []
+        for i in StudentsForGroups.get_group_by_student_id(student[0]["object_id"], self.db_adapter):
+            for x in self.db_adapter.get_by_query("LessonRow", {"timetable_id": self.year, "day_of_weer": self.day_of_weeks, "group_id": i.get_main_id()}):
+                day.append(x)
+        self.__pretty_print('\n'.join([f'{self.db_adapter.get_by_id("Subject", i["subject_id"])["subject_name"]} начало урока: {str(i["start_time"])[:-2]}:{str(i["start_time"])[2:]} конец урока: {str(i["end_time"])[:-2]}:{str(i["end_time"])[2:]}' for i in sorted(day, key=lambda x: x["end_time"])]))
 
     def __add_new_schedule_change(self):
         pass
