@@ -18,21 +18,20 @@ class CLI:
     def show_menu(self):
         print('Меню:', 'Список команд.', sep='\n')
         print(*[self.tasks[number] for number in range(1, len(self.tasks) + 1)], sep="\n", end='\n')
-        print("Выберите номер нужной команды из списка или введите - для окончания работы с интерфейсом.")
+        print("Выберите номер нужной команды из списка или введите 0 для окончания работы с интерфейсом.")
         number = input()
-        if str(number) in '-1234':
-            if number == '1':
-                self.__show_all_teachers()
-            elif number == '2':
-                self.__show_all_subjects()
-            elif number == '3':
-                self.__show_all_students()
-            elif number == '4':
-                self.__show_timetable()
-            elif number == '-':
-                return
-        print('Неправильный ввод. Повторите еще раз.')
-        self.restart_menu()
+        while str(number) not in ['0', '1', '2', '3', '4']:
+            number = input('Неверный ввод данных, попробуйте еще раз')
+        if number == '1':
+            self.__show_all_teachers()
+        elif number == '2':
+            self.__show_all_subjects()
+        elif number == '3':
+            self.__show_all_students()
+        elif number == '4':
+            self.__show_timetable()
+        elif number == '0':
+            return
 
     def __show_all_teachers(self):
         all_teachers = Teacher.get_all(self.db_source)
