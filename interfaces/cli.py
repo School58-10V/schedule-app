@@ -67,9 +67,8 @@ class CLI:
                        'Начало урока', 'Конец урока']
         value_list = []
         for subject in subjects:
-            teachers = '\n'.join([f'ФИО={teacher.get_fio()}, био={teacher.get_bio()}, контакты={teacher.get_contacts()}, кабинет={teacher.get_office_id()}' for teacher in subject.get_teachers()])
             value_list.append([subject.get_day_of_the_week(),
-                               teachers,
+                               '\n'.join([f'ФИО={teacher.get_fio()}, био={teacher.get_bio()}, контакты={teacher.get_contacts()}, кабинет={teacher.get_office_id()}' for teacher in subject.get_teachers()]),
                                f'Цифра={Group.get_by_id(subject.get_group_id(), self.db_source).get_grade()}, буква={Group.get_by_id(subject.get_group_id(), self.db_source).get_letter()}, профиль={Group.get_by_id(subject.get_group_id(), self.db_source).get_profile_name()}',
                                Subject.get_by_id(subject.get_subject_id(), self.db_source).get_subject_name(), subject.get_room_id(),
                                subject.get_start_time(), subject.get_end_time()])
