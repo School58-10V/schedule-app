@@ -1,78 +1,82 @@
+from operator import itemgetter
+
+from data_model.teacher import Teacher
+from data_model.lesson_row import LessonRow
+from data_model.subject import Subject
+from data_model.group import Group
+from data_model.student import Student
 from adapters.file_source import FileSource
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from tabulate import tabulate
 
 
 class CLI:
-    def __init__(self, db_source: FileSource):
-        self._db_source = db_source
-        self._TfLR = TeachersForLessonRows(self._db_source, 0, 0)
+    def __init__(self, db_path):
+        self.db_source = FileSource(db_path)
         self.tasks = {1: "1. показать всех учителей", 2: "2. показать список всех преподаваемых предметов",
                       3: "3. показать всех учеников школы", 4: "4. показать расписание"}
 
     def show_menu(self):
         print('Меню:', 'Список команд.', sep='\n')
         print(*[self.tasks[number] for number in range(1, len(self.tasks) + 1)], sep="\n", end='\n')
-        print("Выберите номер нужной команды из списка или введите 0 для окончания работы с интерфейсом.")
-        number = int(input())
-        if number:
-            if number == 1:
+        print("Выберите номер нужной команды из списка или введите - для окончания работы с интерфейсом.")
+        number = input()
+        if str(number) in '-1234':
+            if number == '1':
                 self.__show_all_teachers()
-            elif number == 2:
+            elif number == '2':
                 self.__show_all_subjects()
-            elif number == 3:
+            elif number == '3':
                 self.__show_all_students()
-            elif number == 4:
+            elif number == '4':
                 self.__show_timetable()
-        return
+            elif number == '-':
+                return
+        print('Неправильный ввод. Повторите еще раз.')
+        self.restart_menu()
 
     def __show_all_teachers(self):
-        all_teachers = self._db_source.get_all('Teacher')
+        all_teachers = Teacher.get_all(self.db_source)
+        column_list = ['ФИО', 'БИО', 'контакты', 'Кабинет']
+        value_list = []
         for teacher in all_teachers:
-            del teacher['object_id']
-        print(*[teacher for teacher in all_teachers], sep='\n')
+            value_list.append([teacher.get_fio(), teacher.get_bio(), teacher.get_contacts(), teacher.get_office_id()])
+        print(tabulate(sorted(value_list, key=lambda elem: elem[2]), column_list, tablefmt='grid')) # сортировка по био (чтобы сначала все учителя математики были, потом етс)
         self.show_menu()
 
     def __show_all_subjects(self):
-        all_subject = self._db_source.get_all('Subject')
+        all_subject = Subject.get_all(self.db_source)
+        column_list = ['Название предмета']
+        value_list = []
         for subject in all_subject:
-            del subject['object_id']
-        print(*[subject for subject in all_subject], sep='\n')
+            value_list.append([subject.get_subject_name()])
+        print(tabulate(sorted(value_list), column_list, tablefmt='grid'))
         self.show_menu()
 
     def __show_all_students(self):
-        all_student = self._db_source.get_all('Student')
+        all_student = Student.get_all(self.db_source)
+        column_list = ['ФИО', 'Дата рождения', 'Контакты', 'Био', 'Группы ученика']
+        value_list = []
         for student in all_student:
-            del student['object_id']
-        print(*[student for student in all_student], sep='\n')
+            value_list.append([student.get_full_name(), student.get_date_of_birth(), student.get_contacts(), student.get_bio(), '\n'.join([f'Цифра={group.get_grade()}, буква={group.get_letter()}, профиль={group.get_profile_name()}' for group in student.get_all_groups()])])
+        print(tabulate(sorted(value_list, key=lambda elem: elem[4]), column_list, tablefmt='grid'))
         self.show_menu()
 
     def __show_timetable(self):
-        subjects = self._db_source.get_all('LessonRow')
-        column_list = ['day_of_the_week', 'teacher', 'group', 'subject', 'room',
-                       'start_time', 'end_time']
+        subjects = LessonRow.get_all(self.db_source)
+        column_list = ['День недели', 'Учитель', 'Класс/Группа', 'Предмет', 'Кабинет',
+                       'Начало урока', 'Конец урока']
         value_list = []
         for subject in subjects:
-            new_list = []
-            for title in column_list:
-                for elem in subject:  # перебираем дикт нашего LessonRow по ключам (т.е. параметры LessonRow)
-                    if title in elem:  # если заголовок соответствует ключу дикта объекта LessonRow
-                        if 'id' in elem and title != 'room':
-                            object = self._db_source.get_by_id(title.capitalize(), subject[elem])
-                            if title == 'group':
-                                # т.к. мы не учитываем Teacher в самом объекте, я добавляю его перед группой
-                                teachers = [teacher.__dict__() for teacher in
-                                            self._TfLR.get_teachers_by_lesson_row_id(subject['object_id'], self._db_source)]
-                                for teacher in teachers:
-                                    del teacher['object_id']
-                                new_list.append(teachers)
-                                del object['teacher_id']
-                            del object['object_id']
-                            new_list.append(object)
-                        else:
-                            new_list.append(subject[elem])
-            value_list.append(new_list)
+            teachers = '\n'.join([f'ФИО={teacher.get_fio()}, био={teacher.get_bio()}, контакты={teacher.get_contacts()}, кабинет={teacher.get_office_id()}' for teacher in subject.get_teachers()])
+            value_list.append([subject.get_day_of_the_week(),
+                               teachers,
+                               f'Цифра={Group.get_by_id(subject.get_group_id(), self.db_source).get_grade()}, буква={Group.get_by_id(subject.get_group_id(), self.db_source).get_letter()}, профиль={Group.get_by_id(subject.get_group_id(), self.db_source).get_profile_name()}',
+                               Subject.get_by_id(subject.get_subject_id(), self.db_source).get_subject_name(), subject.get_room_id(),
+                               subject.get_start_time(), subject.get_end_time()])
         print(tabulate(self.sort_days_of_the_week(value_list), column_list, tablefmt='grid'))
+        self.show_menu()
+
+    def restart_menu(self):
         self.show_menu()
 
     @staticmethod
@@ -94,9 +98,10 @@ class CLI:
                 thursday.append(lesson_row)
             elif lesson_row[0] == days[4]:
                 friday.append(lesson_row)
-        return CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(
+        return  CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(
             wednesday) + CLI.sort_by_start_time(thursday) + CLI.sort_by_start_time(friday)
 
     @staticmethod
     def sort_by_start_time(day):
-        return sorted(day, key=lambda lesson: lesson[5])
+        return sorted(day, key=itemgetter(2, 5))
+

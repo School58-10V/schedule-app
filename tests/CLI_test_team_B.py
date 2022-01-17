@@ -19,12 +19,16 @@ student_2 = Student(db_source=fs, full_name="Юлия", date_of_birth="01.02.04"
 lesson_row_1 = LessonRow(db_source=fs, day_of_the_week='Пятница', group_id=group_1.get_main_id(), subject_id=subject_1.get_main_id(), room_id=416, start_time=1230, end_time=1315, timetable_id=1).save()
 lesson_row_2 = LessonRow(db_source=fs,day_of_the_week='Понедельник', group_id=group_2.get_main_id(), subject_id=subject_2.get_main_id(), room_id=413, start_time=1030, end_time=1115, timetable_id=1).save()
 lesson_row_3 = LessonRow(db_source=fs, day_of_the_week='Понедельник', group_id=group_2.get_main_id(), subject_id=subject_1.get_main_id(), room_id=412, start_time=930, end_time=1015, timetable_id=1).save()
+lesson_row_4 = LessonRow(db_source=fs, day_of_the_week='Понедельник', group_id=group_1.get_main_id(), subject_id=subject_1.get_main_id(), room_id=416, start_time=945, end_time=1035, timetable_id=1).save()
 lesson_row_1.append_teacher(teacher_1)
 lesson_row_1.append_teacher(teacher_2)
 lesson_row_2.append_teacher(teacher_2)
 lesson_row_3.append_teacher(teacher_1)
+lesson_row_4.append_teacher(teacher_2)
+group_1.append_student(student_1)
+group_2.append_student(student_2)
 
-interface = CLI(fs)
+interface = CLI('../db')
 interface.show_menu()
 
 fs.delete('Subject', subject_1.get_main_id())
