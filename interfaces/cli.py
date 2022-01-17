@@ -21,7 +21,7 @@ class CLI:
         print("Выберите номер нужной команды из списка или введите 0 для окончания работы с интерфейсом.")
         number = input()
         while str(number) not in ['0', '1', '2', '3', '4']:
-            number = input('Неверный ввод данных, попробуйте еще раз')
+            number = input('Неверный ввод данных, попробуйте еще раз.\n')
         if number == '1':
             self.__show_all_teachers()
         elif number == '2':
