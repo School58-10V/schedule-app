@@ -74,8 +74,6 @@ class CLI:
         print(tabulate(self.sort_days_of_the_week(value_list), column_list, tablefmt='grid'))
         self.show_menu()
 
-    def restart_menu(self):
-        self.show_menu()
 
     @staticmethod
     def sort_days_of_the_week(lesson_rows) -> list:
