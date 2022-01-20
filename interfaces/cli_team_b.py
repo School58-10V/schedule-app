@@ -39,7 +39,8 @@ class CLI:
         value_list = []
         for teacher in all_teachers:
             value_list.append([teacher.get_fio(), teacher.get_bio(), teacher.get_contacts(), teacher.get_office_id()])
-        print(tabulate(sorted(value_list, key=lambda elem: elem[2]), column_list, tablefmt='grid')) # сортировка по био (чтобы сначала все учителя математики были, потом етс)
+        print(tabulate(sorted(value_list, key=lambda elem: elem[2]), column_list,
+                       tablefmt='grid'))  # сортировка по био (чтобы сначала все учителя математики были, потом етс)
         self.show_menu()
 
     def __show_all_subjects(self):
@@ -56,7 +57,11 @@ class CLI:
         column_list = ['ФИО', 'Дата рождения', 'Контакты', 'Био', 'Группы ученика']
         value_list = []
         for student in all_student:
-            value_list.append([student.get_full_name(), student.get_date_of_birth(), student.get_contacts(), student.get_bio(), '\n'.join([f'Цифра={group.get_grade()}, буква={group.get_letter()}, профиль={group.get_profile_name()}' for group in student.get_all_groups()])])
+            value_list.append(
+                [student.get_full_name(), student.get_date_of_birth(), student.get_contacts(), student.get_bio(),
+                 '\n'.join(
+                     [f'Цифра={group.get_grade()}, буква={group.get_letter()}, профиль={group.get_profile_name()}' for
+                      group in student.get_all_groups()])])
         print(tabulate(sorted(value_list, key=lambda elem: elem[4]), column_list, tablefmt='grid'))
         self.show_menu()
 
@@ -67,13 +72,15 @@ class CLI:
         value_list = []
         for subject in subjects:
             value_list.append([subject.get_day_of_the_week(),
-                               '\n'.join([f'ФИО={teacher.get_fio()}, био={teacher.get_bio()}, контакты={teacher.get_contacts()}, кабинет={teacher.get_office_id()}' for teacher in subject.get_teachers()]),
+                               '\n'.join([
+                                             f'ФИО={teacher.get_fio()}, био={teacher.get_bio()}, контакты={teacher.get_contacts()}, кабинет={teacher.get_office_id()}'
+                                             for teacher in subject.get_teachers()]),
                                f'Цифра={Group.get_by_id(subject.get_group_id(), self.db_source).get_grade()}, буква={Group.get_by_id(subject.get_group_id(), self.db_source).get_letter()}, профиль={Group.get_by_id(subject.get_group_id(), self.db_source).get_profile_name()}',
-                               Subject.get_by_id(subject.get_subject_id(), self.db_source).get_subject_name(), subject.get_room_id(),
+                               Subject.get_by_id(subject.get_subject_id(), self.db_source).get_subject_name(),
+                               subject.get_room_id(),
                                subject.get_start_time(), subject.get_end_time()])
         print(tabulate(self.sort_days_of_the_week(value_list), column_list, tablefmt='grid'))
         self.show_menu()
-
 
     @staticmethod
     def sort_days_of_the_week(lesson_rows) -> list:
@@ -94,10 +101,9 @@ class CLI:
                 thursday.append(lesson_row)
             elif lesson_row[0] == days[4]:
                 friday.append(lesson_row)
-        return  CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(
+        return CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(
             wednesday) + CLI.sort_by_start_time(thursday) + CLI.sort_by_start_time(friday)
 
     @staticmethod
     def sort_by_start_time(day):
         return sorted(day, key=itemgetter(2, 5))
-
