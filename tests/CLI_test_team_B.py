@@ -3,7 +3,7 @@ from data_model.lesson_row import LessonRow
 from data_model.student import Student
 from data_model.subject import Subject
 from data_model.teacher import Teacher
-from interfaces.cli import CLI
+from interfaces.cli_team_b import CLI
 from adapters.file_source import FileSource
 
 
