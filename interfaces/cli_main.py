@@ -1,3 +1,5 @@
+from tabulate import tabulate
+
 from adapters.file_source import FileSource
 from data_model.student import Student
 from data_model.subject import Subject
@@ -94,9 +96,17 @@ class CLI:
         s = Student(self.db_adapter, new_student_name, new_student_date_of_birth)
         s.save()
 
+    def __show_all_teachers(self):
+        all_teachers = self.__get_all_teachers()
+        column_list = ['ФИО', 'БИО', 'контакты', 'Кабинет']
+        value_list = []
+        for teacher in all_teachers:
+            value_list.append([teacher.get_fio(), teacher.get_bio(), teacher.get_contacts(), teacher.get_office_id()])
+        print(tabulate(sorted(value_list, key=lambda elem: elem[2]), column_list,
+                       tablefmt='grid'))  # сортировка по био (чтобы сначала все учителя математики были, потом етс)
+
     def __get_all_teachers(self):
-        for i in Teacher.get_all(self.db_adapter):
-            self.__pretty_print(i.get_fio())
+        return Teacher.get_all(self.db_adapter)
 
     def __add_new_subject(self):
         new_subject_name = input('Имя нового предмета: ')
@@ -113,7 +123,8 @@ class CLI:
         subject_id = int(input('предмет:'))
         timetable_id = int(input('год в который происходят уроки:'))
         day_of_week = int(input('номер дня недели:'))
-        s = LessonRow(self.db_adapter, count_studying_hours, group_id, subject_id, room_id, start_time, end_time, timetable_id, day_of_week)
+        s = LessonRow(self.db_adapter, count_studying_hours, group_id, subject_id, room_id, start_time, end_time,
+                      timetable_id, day_of_week)
         s.save()
         self.__pretty_print('Готово!')
 
@@ -127,9 +138,12 @@ class CLI:
         student = [i for i in Student.get_all(self.db_adapter) if i.get_full_name() == self.name][0]
         day = []
         for i in StudentsForGroups.get_group_by_student_id(student.get_main_id(), self.db_adapter):
-            for x in [j for j in LessonRow.get_all(self.db_adapter) if j.get_timetable_id() == self.year and j.get_day_of_week() == self.day_of_weeks and j.get_group_id() == i.get_main_id()]:
+            for x in [j for j in LessonRow.get_all(self.db_adapter) if
+                      j.get_timetable_id() == self.year and j.get_day_of_week() == self.day_of_weeks and j.get_group_id() == i.get_main_id()]:
                 day.append(x)
-        self.__pretty_print('\n'.join([f'{Student.get_by_id(i.get_subject_id(), self.db_adapter).get_subject_name()} начало урока: {str(i.get_start_time())[:-2]}:{str(i.get_start_time())[2:]} конец урока: {str(i.get_end_time())[:-2]}:{str(i.get_end_time())[2:]}' for i in sorted(day, key=lambda y: y.get_end_time())]))
+        self.__pretty_print('\n'.join([
+                                          f'{Student.get_by_id(i.get_subject_id(), self.db_adapter).get_subject_name()} начало урока: {str(i.get_start_time())[:-2]}:{str(i.get_start_time())[2:]} конец урока: {str(i.get_end_time())[:-2]}:{str(i.get_end_time())[2:]}'
+                                          for i in sorted(day, key=lambda y: y.get_end_time())]))
         self.__pretty_print('Готово!')
 
     def __add_new_schedule_change(self):
