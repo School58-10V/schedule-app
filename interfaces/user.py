@@ -1,7 +1,7 @@
 class User:
     def __init__(self):
         self.__access_level = ""
-        self.__logged_in = True
+        self.__logged_in = False
         self.__name = ""
         self.__surname = ""
         self.__class_of_user = ""
@@ -23,4 +23,3 @@ class User:
         if self.__access_level == "студент":
             self.__class_of_user = uclass
         self.__logged_in = True
-        print("Вход проведён успешно!")
