@@ -1,6 +1,9 @@
+from operator import itemgetter
+
 from tabulate import tabulate
 
 from adapters.file_source import FileSource
+from data_model.group import Group
 from data_model.student import Student
 from data_model.subject import Subject
 from data_model.teacher import Teacher
@@ -29,9 +32,9 @@ class CLI:
 
     def __menu_for_student(self, action):
         if action == 1:
-            self.__get_schedule_by_student()
+            self.__show_timetable()
         elif action == 2:
-            self.__get_all_teachers()
+            self.__show_all_teachers()
 
     def __menu_for_teacher(self, action):
         if action == 1:
@@ -138,16 +141,55 @@ class CLI:
         student = [i for i in Student.get_all(self.db_adapter) if i.get_full_name() == self.name][0]
         day = []
         for i in StudentsForGroups.get_group_by_student_id(student.get_main_id(), self.db_adapter):
-            for x in [j for j in LessonRow.get_all(self.db_adapter) if
-                      j.get_timetable_id() == self.year and j.get_day_of_week() == self.day_of_weeks and j.get_group_id() == i.get_main_id()]:
+            for x in [j for j in LessonRow.get_all(self.db_adapter) if j.get_group_id() == i.get_main_id()]:
                 day.append(x)
-        self.__pretty_print('\n'.join([
-                                          f'{Student.get_by_id(i.get_subject_id(), self.db_adapter).get_subject_name()} начало урока: {str(i.get_start_time())[:-2]}:{str(i.get_start_time())[2:]} конец урока: {str(i.get_end_time())[:-2]}:{str(i.get_end_time())[2:]}'
-                                          for i in sorted(day, key=lambda y: y.get_end_time())]))
-        self.__pretty_print('Готово!')
+        return day
 
     def __add_new_schedule_change(self):
         pass
+
+    def __show_timetable(self):
+        subjects = self.__get_schedule_by_student()
+        column_list = ['День недели', 'Учитель', 'Класс/Группа', 'Предмет', 'Кабинет',
+                       'Начало урока', 'Конец урока']
+        value_list = []
+        for subject in subjects:
+            value_list.append([subject.get_day_of_the_week(),
+                               '\n'.join([
+                                             f'ФИО={teacher.get_fio()}, био={teacher.get_bio()}, контакты={teacher.get_contacts()}, кабинет={teacher.get_office_id()}'
+                                             for teacher in subject.get_teachers()]),
+                               f'Цифра={Group.get_by_id(subject.get_group_id(), self.db_adapter).get_grade()}, буква={Group.get_by_id(subject.get_group_id(), self.db_adapter).get_letter()}, профиль={Group.get_by_id(subject.get_group_id(), self.db_adapter).get_profile_name()}',
+                               Subject.get_by_id(subject.get_subject_id(), self.db_adapter).get_subject_name(),
+                               subject.get_room_id(),
+                               f'{str(subject.get_start_time())[:-2]}:{str(subject.get_start_time())[2:]}', f'{str(subject.get_end_time())[:-2]}:{str(subject.get_end_time())[2:]}'])
+        print(tabulate(self.sort_days_of_the_week(value_list), column_list, tablefmt='grid'))
+
+    @staticmethod
+    def sort_days_of_the_week(lesson_rows) -> list:
+        days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница']
+        monday = []
+        tuesday = []
+        wednesday = []
+        thursday = []
+        friday = []
+        for lesson_row in lesson_rows:
+            if lesson_row[0] == days[0]:
+                monday.append(lesson_row)
+            elif lesson_row[0] == days[1]:
+                tuesday.append(lesson_row)
+            elif lesson_row[0] == days[2]:
+                wednesday.append(lesson_row)
+            elif lesson_row[0] == days[3]:
+                thursday.append(lesson_row)
+            elif lesson_row[0] == days[4]:
+                friday.append(lesson_row)
+        return CLI.sort_by_start_time(monday) + CLI.sort_by_start_time(tuesday) + CLI.sort_by_start_time(
+            wednesday) + CLI.sort_by_start_time(thursday) + CLI.sort_by_start_time(friday)
+
+    @staticmethod
+    def sort_by_start_time(day):
+        return sorted(day, key=itemgetter(2, 5))
+
 
 
 # cli = CLI('Хромов Михаил', 'ученик')
