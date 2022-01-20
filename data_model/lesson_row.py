@@ -10,10 +10,10 @@ if TYPE_CHECKING:
 
 
 class LessonRow(AbstractModel):
-    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int,
-                 start_time: int, end_time: int, timetable_id: int, day_of_week: int, object_id: Optional[int] = None):
+    def __init__(self, db_source: FileSource, day_of_the_week: str, group_id: int, subject_id: int, room_id: int,
+                 start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
         """
-            :param count_studying_hours: количество академических часов в занятии (возможно нет!!!!)
+            :param day_of_the_week: день, в который проводится урок
             :param db_source: Адаптер бд сорса
             :param start_time:  начальное время
             :param end_time: конечное время
@@ -25,7 +25,7 @@ class LessonRow(AbstractModel):
             :param object_id: айди самого класса ряд уроков
         """
         super().__init__(db_source)
-        self.__count_studying_hours = count_studying_hours
+        self.__day_of_the_week = day_of_the_week
         self.__start_time = start_time
         self.__end_time = end_time
         self.__group_id = group_id
@@ -35,8 +35,8 @@ class LessonRow(AbstractModel):
         self.__day_of_week = day_of_week
         self._object_id = object_id
 
-    def get_count_studying_hours(self) -> int:
-        return self.__count_studying_hours
+    def get_day_of_the_week(self) -> str:
+        return self.__day_of_the_week
 
     def get_group_id(self) -> int:
         return self.__group_id
@@ -61,7 +61,7 @@ class LessonRow(AbstractModel):
 
     def __dict__(self) -> dict:
         return {
-            "count_studying_hours": self.get_count_studying_hours(),
+            "day_of_the_week": self.get_day_of_the_week(),
             "group_id": self.get_group_id(),
             "subject_id": self.get_subject_id(),
             "room_id": self.get_room_id(),
@@ -72,10 +72,10 @@ class LessonRow(AbstractModel):
             "object_id": self.get_main_id()}
 
     def __str__(self):
-        return f'LessonRow(count_studying_hours={self.get_count_studying_hours()}, group_id={self.get_group_id()}' \
-               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}, start_time={self.get_start_time()}' \
-               f', end_time={self.get_end_time()}, timetable_id={self.get_timetable_id()}' \
-               f', day_of_week={self.get_day_of_week()}, object_id={self.get_main_id()}'
+        return f'LessonRow(day_of_the_week={self.get_day_of_the_week()}, group_id={self.get_group_id()}' \
+               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
+               f', end_time={self.get_end_time()}), timetable_id={self.get_timetable_id()})' \
+               f', object_id={self.get_main_id()})'
 
     @staticmethod
     def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[LessonRow])]:
@@ -85,7 +85,7 @@ class LessonRow(AbstractModel):
         res = []
         for i in lines:
             try:
-                count_studying_hours = i[0]
+                day_of_the_week = i[0]
                 group_id = i[1]
                 subject_id = i[2]
                 room_id = i[3]
@@ -95,7 +95,7 @@ class LessonRow(AbstractModel):
                 timetable_id = i[7]
 
                 res.append(ParsedData(None, LessonRow(db_source=db_source,
-                                                      count_studying_hours=int(count_studying_hours),
+                                                      day_of_the_week=day_of_the_week,
                                                       group_id=int(group_id),
                                                       subject_id=int(subject_id),
                                                       room_id=int(room_id),
