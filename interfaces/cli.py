@@ -95,8 +95,8 @@ class CLI:
         self.__pretty_print('Готово!')
 
     def __get_all_teachers(self):
-        for i in self.db_adapter.get_all("Teacher"):
-            self.__pretty_print(i["fio"])
+        for i in Teacher.get_all(self.db_adapter):
+            self.__pretty_print(i.get_fio())
 
     def __add_new_subject(self):
         new_subject_name = input('Имя нового предмета: ')
