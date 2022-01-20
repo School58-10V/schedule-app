@@ -60,7 +60,8 @@ class CLI:
             login = input()  # Собираем с пользователя его данные, чтобы узнать, кто он
             print("Введите пароль")
             password = input()
-            with open("logins_and_passwords.json") as file:
+            # a = open('../i')
+            with open("../interfaces/logins_and_passwords.json") as file:
                 data = file.read()
                 read_data = json.loads(data)
                 for i in read_data:
@@ -89,6 +90,7 @@ class CLI:
     def __get_all_student(self):
         lst = {}
         groups = {}
+        print(Group.get_all(self.__db_source))
         for i in Group.get_all(self.__db_source):
             if i.get_teacher_id() == self.__user.get_main_id():
                 groups[i.get_letter()] = i
