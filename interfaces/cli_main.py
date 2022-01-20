@@ -32,13 +32,13 @@ class CLI:
 
     def __menu_for_student(self, action):
         if action == 1:
-            self.__show_timetable()
+            self.__show_timetable(self.__get_schedule_by_student())
         elif action == 2:
             self.__show_all_teachers()
 
     def __menu_for_teacher(self, action):
         if action == 1:
-            self.__schedule_by_teacher()
+            self.__show_timetable(self.__get_schedule_by_teacher())
         elif action == 2:
             self.__schedule_changes_by_teacher()
         elif action == 3:
@@ -140,16 +140,21 @@ class CLI:
     def __get_schedule_by_student(self):
         student = [i for i in Student.get_all(self.db_adapter) if i.get_full_name() == self.name][0]
         day = []
-        for i in StudentsForGroups.get_group_by_student_id(student.get_main_id(), self.db_adapter):
+        for i in student.get_all_groups():
             for x in [j for j in LessonRow.get_all(self.db_adapter) if j.get_group_id() == i.get_main_id()]:
                 day.append(x)
         return day
 
+    def __get_schedule_by_teacher(self):
+        teacher = [i for i in self.__get_all_teachers() if i.get_fio() == self.name][0]
+        day = teacher.get_lesson_rows()
+        return day
+
+
     def __add_new_schedule_change(self):
         pass
 
-    def __show_timetable(self):
-        subjects = self.__get_schedule_by_student()
+    def __show_timetable(self, subjects):
         column_list = ['День недели', 'Учитель', 'Класс/Группа', 'Предмет', 'Кабинет',
                        'Начало урока', 'Конец урока']
         value_list = []
