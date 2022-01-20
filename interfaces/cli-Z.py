@@ -1,6 +1,6 @@
 from adapters.file_source import FileSource
 from data_model.teacher import Teacher
-from interfaces.user import User
+# from . import User
 
 
 # menu = [show_timetable, show_teachers, show_classes, get_user_info]
