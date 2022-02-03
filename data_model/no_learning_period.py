@@ -8,21 +8,20 @@ if TYPE_CHECKING:
 
 
 class NoLearningPeriod(AbstractModel):
-    def __init__(self, db_source: FileSource, start: str, stop: str, timetable_id: Optional[int] = None,
+    def __init__(self, db_source: FileSource, start: str, stop: str, timetable_id: int,
                  object_id: Optional[int] = None):
-        # Для начала и конца каникул можно использовать только дату
+        # start и stop указаны как DATE в POSTGRES DB!!!
+        """
+            timetable_id - id расписания
+            start - начало каникул
+            stop - конец каникул
+            object_id - id каникул
+        """
         super().__init__(db_source)
         self._object_id = object_id
         self.__start_time = start
         self.__stop_time = stop
         self.__timetable_id = timetable_id
-
-    """
-        timetable_id - id расписания
-        start - начало каникул
-        stop - конец каникул
-        object_id - id каникул
-    """
 
     def get_start_time(self) -> str:
         return self.__start_time
@@ -39,7 +38,7 @@ class NoLearningPeriod(AbstractModel):
             "start": self.get_start_time(),
             "stop": self.get_stop_time(),
             "object_id": self.get_main_id()
-            }
+        }
 
     def __str__(self):
         return f'NoLearningPeriod(timetable_id={self.get_timetable_id()}, start={self.get_start_time()}, ' \
