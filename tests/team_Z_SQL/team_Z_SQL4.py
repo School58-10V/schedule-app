@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import DictCursor
-with psycopg2.connect(dbname='schedule_app', user='smirnov',
-                      password='ThfXckb@EvQ4zXqLm3Bb',
+with psycopg2.connect(dbname='schedule_app', user='schedule_app',
+                      password='VYRL!9XEB3yXQs4aPz_Q',
                       host='postgresql.aakapustin.ru') as conn:
     with conn.cursor(cursor_factory=DictCursor) as cursor:
 
