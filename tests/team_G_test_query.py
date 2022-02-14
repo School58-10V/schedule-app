@@ -8,6 +8,7 @@ time = 1000
 student = 'Бугаенко Оля Алексеевна'
 year = 2020
 
+subject_name = 'English'
 conn = psycopg2.connect(dbname='schedule_app', user='kuranova',
                         password='s9iz.4c-yC-LREFf_63_', host='postgresql.aakapustin.ru')
 cursor = conn.cursor()
@@ -38,10 +39,9 @@ cursor.execute(f'''select distinct sb.name from
                  ''')
 records2 = cursor.fetchall()
 
-# Запрос 3
-cursor.execute('''select DISTINCT
-                  st.full_name, st.object_id,
-                  sb.name
+# Запрос 4
+cursor.execute(f'''select DISTINCT
+                  st.full_name
                   from
                   "Students" as st,
                   "StudentsForGroups" as stfg,
@@ -50,7 +50,7 @@ cursor.execute('''select DISTINCT
                   "Teachers" as tch,
                   "Subjects" as sb
                   where
-                  sb.name = 'English'
+                  sb.name = '{subject_name}'
                   and
                   st.object_id = stfg.student_id
                   and
@@ -59,13 +59,14 @@ cursor.execute('''select DISTINCT
                   gr.object_id = lsr.group_id
                   and
                   lsr.subject_id = sb.object_id''')
-records3 = cursor.fetchall()
+records4 = cursor.fetchall()
 
 cursor.close()
 conn.close()
 try:
     records = records[0]
     records2 = records2[0]
+    records4 = records4[0]
 except IndexError:
     pass
 # Печатаем запросы.
@@ -77,6 +78,5 @@ print()
 # Запрос 2
 print(f"Предметы, которые изучает ученик {student} в {year} году:", *records2)
 print()
-# Запрос 3
-print(*records3)
-print()
+# Запрос 4
+print(f"Какие ученики изучают предмет {subject_name}:", *records4)
