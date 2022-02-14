@@ -9,8 +9,8 @@ student = 'Бугаенко Оля Алексеевна'
 year = 2020
 
 subject_name = 'English'
-conn = psycopg2.connect(dbname='schedule_app', user='kuranova',
-                        password='s9iz.4c-yC-LREFf_63_', host='postgresql.aakapustin.ru')
+conn = psycopg2.connect(dbname='schedule_app', user='',
+                        password='', host='postgresql.aakapustin.ru')
 cursor = conn.cursor()
 # Запрос 2
 cursor.execute(f'''select count (distinct lr.object_id) from
@@ -61,12 +61,26 @@ cursor.execute(f'''select DISTINCT
                   lsr.subject_id = sb.object_id''')
 records4 = cursor.fetchall()
 
+# Запрос 3
+cursor.execute('''select DISTINCT
+                gr.object_id, gr.profile_name
+                from
+                "LessonRows" as lr,
+                "Groups" as gr
+                where
+                lr.day_of_the_week = 'пятница'
+                and
+                lr.room_id = 1
+                and
+                lr.group_id = gr.object_id''')
+records3 = cursor.fetchall()
+
 cursor.close()
 conn.close()
 try:
     records = records[0]
     records2 = records2[0]
-    records4 = records4[0]
+    records3 = records3[0]
 except IndexError:
     pass
 # Печатаем запросы.
@@ -79,4 +93,7 @@ print()
 print(f"Предметы, которые изучает ученик {student} в {year} году:", *records2)
 print()
 # Запрос 4
-print(f"Какие ученики изучают предмет {subject_name}:", *records4)
+print(f"Какие ученики изучают предмет {subject_name}:", *records3)
+# Запрос 3
+print(*records4)
+print()
