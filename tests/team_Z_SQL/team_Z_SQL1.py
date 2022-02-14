@@ -11,7 +11,7 @@ with psycopg2.connect(dbname='schedule_app', user='smirnov',
                 join "Groups" as gr on gr.object_id = lr.group_id
                 join "StudentsForGroups" as sfg on sfg.group_id = gr.object_id
                 join "Students" as st on st.object_id = sfg.student_id
-                where st.full_name = %s and tt.time_table_year = 2020''', ("Хромов Михаил Романович", ))
+                where st.full_name = %s and tt.time_table_year = %s ''', ("Хромов Михаил Романович", 2020, ))
 
         records = cursor.fetchall()
         print(*records, sep='')

@@ -12,7 +12,7 @@ with psycopg2.connect(dbname='schedule_app', user='smirnov',
                         where
                         tc.fio = %s
                         and
-                        l.day = '2023-02-03' ''', ("Хромов Михаил Романович", ))
+                        l.day = %s ''', ("Хромов Михаил Романович", '2023-02-03', ))
 
         records = cursor.fetchall()
         print(*records, sep='')

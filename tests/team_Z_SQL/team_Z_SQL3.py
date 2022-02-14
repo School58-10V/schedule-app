@@ -12,7 +12,7 @@ with psycopg2.connect(dbname='schedule_app', user='smirnov',
                         where
                         lr.day_of_the_week = %s
                         and
-                        l.num_of_class = 422''', ("пятница", ))
+                        l.num_of_class = %s ''', ("пятница", 422))
         records = cursor.fetchall()
         print(*records, sep='')
 cursor.close()
