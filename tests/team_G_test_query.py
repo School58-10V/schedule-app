@@ -32,7 +32,6 @@ cursor.execute('''select distinct sb.name from
 records2 = cursor.fetchall()
 
 # Запрос 3
-cursor = conn.cursor()
 cursor.execute('''select DISTINCT
                   st.full_name, st.object_id,
                   sb.name
