@@ -1,4 +1,6 @@
 import psycopg2
+conn = psycopg2.connect(dbname='schedule_app', user='schedule_app',
+                        password='VYRL!9XEB3yXQs4aPz_Q', host='postgresql.aakapustin.ru')
 
 
 day = 'пятница'
@@ -9,8 +11,7 @@ student = 'Бугаенко Оля Алексеевна'
 year = 2020
 
 subject_name = 'English'
-conn = psycopg2.connect(dbname='schedule_app', user='',
-                        password='', host='postgresql.aakapustin.ru')
+
 cursor = conn.cursor()
 # Запрос 2
 cursor.execute(f'''select count (distinct lr.object_id) from
@@ -77,12 +78,7 @@ records3 = cursor.fetchall()
 
 cursor.close()
 conn.close()
-try:
-    records = records[0]
-    records2 = records2[0]
-    records3 = records3[0]
-except IndexError:
-    pass
+
 # Печатаем запросы.
 # Запрос 1
 print(f"Количество уроков, которое осталость вести "
