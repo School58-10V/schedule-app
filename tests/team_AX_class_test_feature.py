@@ -1,8 +1,9 @@
 import random
-from adapters.file_source import FileSource
+from db_source import DBSource
 
 db_location = '../db'
-fS = FileSource(db_location)
+fS = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+              password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
 
 
 def test_function(TestingClass, example_1: dict, example_2: dict,

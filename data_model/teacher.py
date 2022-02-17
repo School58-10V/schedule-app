@@ -2,13 +2,13 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 
 from data_model.lesson_row import LessonRow
 from data_model.parsed_data import ParsedData
-import json
 
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.teachers_for_subjects import TeachersForSubjects
+from db_source import DBSource
 
 if TYPE_CHECKING:
     from adapters.file_source import FileSource
@@ -26,7 +26,7 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, db_source: FileSource, fio: str, object_id: Optional[int] = None,
+    def __init__(self, db_source: DBSource, fio: str, object_id: Optional[int] = None,
                  office_id: int = None, bio: str = None,
                  contacts: str = None):
         super().__init__(db_source)
