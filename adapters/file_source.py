@@ -1,6 +1,6 @@
 import json
 import datetime
-from abstract_source import AbstractSource
+from adapters.abstract_source import AbstractSource
 from typing import List
 
 
