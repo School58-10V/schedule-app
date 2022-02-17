@@ -1,6 +1,6 @@
-import datetime
 from typing import List
 import psycopg2
+from psycopg2 import errorcodes
 
 
 class DBSource:
@@ -40,15 +40,23 @@ class DBSource:
     def check_unique_id(self, collection_name: str, object_id: int) -> bool:
         pass
 
-    def insert(self, collection_name: str, document: dict) -> dict:  # назначение айди надо будет вынести в общий класс
-        # ФАНФАКТ: psycopg2.errors.NumericValueOutOfRange: value "1011645028399052" is out of range for type integer
-        self.__cursor.execute(f'SELECT * FROM "{collection_name}s" LIMIT 0')  # делаем пустой запрос, чтобы обратиться к таблице
-        desc = [x[0] for x in self.__cursor.description]  # получаем столбцы таблицы (чтобы потом передать данные в нужном порядке)
-        values = [f'\'{document[x]}\'' for x in desc]  # записываем все нужные нам данные из документа
+    def insert(self, collection_name: str, document: dict) -> dict:
+        self.__cursor.execute(f'SELECT * FROM "{collection_name}s" LIMIT 0')
+        desc = [x[0] for x in self.__cursor.description]
+        values = [f'\'{document[x]}\'' if x != 'object_id' else 'default' for x in desc]
         request = f'INSERT INTO "{collection_name}s" VALUES ({",".join(map(str, values))});'
-        self.__cursor.execute(request)  # выполняем запрос
-        self.__conn.commit()  # сохраняем изменения в базе
-        return document  # ??? не знаю, что возвращать на самом дел
+        try:
+            self.__cursor.execute(request)
+        except psycopg2.Error as e:
+            if errorcodes.lookup(e.pgcode) == 'UNIQUE_VIOLATION':
+                raise ValueError('ID добавляемого объекта уже существует.')
+            elif errorcodes.lookup(e.pgcode) == 'FOREIGN_KEY_VIOLATION':
+                raise ValueError('Один из ID связанных объектов недействителен.')
+            elif errorcodes.lookup(e.pgcode) == 'INVALID_TEXT_REPRESENTATION':
+                raise TypeError('Ошибка в типах данных.')
+            raise ValueError(f"Неизвестная ошибка при добавлении новой записи в {collection_name}")
+        self.__conn.commit()
+        return document
 
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
         pass
@@ -65,4 +73,4 @@ class DBSource:
         for i in data:
             to_return.append({desc[j].name: i[j] for j in range(len(desc))})
         return to_return
-      
+
