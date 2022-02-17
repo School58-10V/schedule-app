@@ -54,7 +54,7 @@ class DBSource:
                 raise ValueError('Один из ID связанных объектов недействителен.')
             elif errorcodes.lookup(e.pgcode) == 'INVALID_TEXT_REPRESENTATION':
                 raise TypeError('Ошибка в типах данных.')
-            raise ValueError(f"Неизвестная ошибка при добавлении новой записи в {collection_name}")
+            raise ValueError(f"Неизвестная ошибка при добавлении новой записи в {collection_name}. Код ошибки: {errorcodes.lookup(e.pgcode)}")
         self.__conn.commit()
         return document
 
