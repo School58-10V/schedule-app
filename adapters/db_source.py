@@ -17,7 +17,19 @@ class DBSource:
         self.__cursor = conn.cursor()
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
-        pass
+        pairs = query.items()
+        request = f'SELECT * FROM "{collection_name}" WHERE '
+        for i in pairs:
+            request += f'{i[0]}={i[1]} and '
+
+        self.__cursor.execute(request[:-5])
+        data = self.__cursor.fetchall()
+        desc = self.__cursor.description
+
+        if len(data) == 0:
+            raise ValueError(f'Объект МИША НАПИШи НОРМАЛЬНО не существует')
+
+        return self.__format_tuple_to_dict(data, desc)
 
     def get_all(self, collection_name: str) -> List[dict]:
         request = f'SELECT * FROM "{collection_name}"'
@@ -60,6 +72,7 @@ class DBSource:
         return to_return
 
 
-# a = DBSource(user='', password='', host='postgresql.aakapustin.ru')
+# a = DBSource(user='schedule_app', password='VYRL!9XEB3yXQs4aPz_Q', host='postgresql.aakapustin.ru')
 # print(a.get_all('Students'))
 # print(a.get_by_id('Students', 122))
+# print(a.get_by_query('Groups', {'object_id': 1, 'grade': 11}))
