@@ -5,12 +5,12 @@ from typing import List, Optional, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class Lesson(AbstractModel):
 
-    def __init__(self, db_source: FileSource, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
+    def __init__(self, db_source: DBSource, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
                  subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
         """
             :param start_time: начало урока
@@ -64,7 +64,7 @@ class Lesson(AbstractModel):
         return self.__state
 
     @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Lesson])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Lesson])]:
         with open(file_location, encoding='utf-8') as file:
             lines = file.read().split('\n')[1:]
             lines = [i.split(';') for i in lines]

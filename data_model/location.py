@@ -5,7 +5,7 @@ from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class Location(AbstractModel):
@@ -18,7 +18,7 @@ class Location(AbstractModel):
            location_type - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
     """
 
-    def __init__(self, db_source: FileSource, location_type: str, object_id: int = None,
+    def __init__(self, db_source: DBSource, location_type: str, object_id: int = None,
                  location_desc: str = None, profile: str = None, num_of_class: int = None,
                  equipment: list = None, link: str = 'Offline', comment: str = ''):
         super().__init__(db_source)
@@ -53,7 +53,7 @@ class Location(AbstractModel):
         return self.__comment
 
     @staticmethod
-    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[Location])]:
+    def parse(file_location, db_source: DBSource) -> List[(Optional[str], Optional[Location])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]

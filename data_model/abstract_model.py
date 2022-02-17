@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Optional, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
     from adapters.db_source import DBSource
 
 

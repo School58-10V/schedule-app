@@ -4,11 +4,11 @@ from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class NoLearningPeriod(AbstractModel):
-    def __init__(self, db_source: FileSource, start: str, stop: str, timetable_id: int,
+    def __init__(self, db_source: DBSource, start: str, stop: str, timetable_id: int,
                  object_id: Optional[int] = None):
         # start и stop указаны как DATE в POSTGRES DB!!!
         """
@@ -45,7 +45,7 @@ class NoLearningPeriod(AbstractModel):
                f'stop={self.get_stop_time()}, object_id={self.get_main_id()})'
 
     @staticmethod
-    def parse(file_no_learning_period, db_source: FileSource) -> List[(Optional[str], Optional[NoLearningPeriod])]:
+    def parse(file_no_learning_period, db_source: DBSource) -> List[(Optional[str], Optional[NoLearningPeriod])]:
         f = open(file_no_learning_period, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]

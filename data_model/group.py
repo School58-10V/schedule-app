@@ -8,7 +8,7 @@ from data_model.parsed_data import ParsedData
 from data_model.student import Student
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class Group(AbstractModel):
@@ -17,7 +17,7 @@ class Group(AbstractModel):
     """
 
     def __init__(
-            self, db_source: FileSource, teacher_id: int, class_letter: str, grade: int,
+            self, db_source: DBSource, teacher_id: int, class_letter: str, grade: int,
             profile_name: str, object_id: Optional[int] = None
     ):
         super().__init__(db_source)
@@ -40,7 +40,7 @@ class Group(AbstractModel):
         return self.__profile_name
 
     @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Group])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Group])]:
         # ввод; адрес файла,
         with open(file_location, encoding='utf-8') as file:
             # файл теперь в file

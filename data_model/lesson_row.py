@@ -6,11 +6,11 @@ from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 if TYPE_CHECKING:
     from data_model.teacher import Teacher
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class LessonRow(AbstractModel):
-    def __init__(self, db_source: FileSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int,
+    def __init__(self, db_source: DBSource, count_studying_hours: int, group_id: int, subject_id: int, room_id: int,
                  start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
         """
             :param count_studying_hours: количество академических часов в занятии (возможно нет!!!!)
@@ -72,7 +72,7 @@ class LessonRow(AbstractModel):
                f', object_id={self.get_main_id()})'
 
     @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[LessonRow])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[LessonRow])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
