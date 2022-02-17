@@ -1,12 +1,19 @@
 import json
 import datetime
+import time
+
+import psycopg2
 from typing import List
+
+from psycopg2.extras import DictCursor
 
 
 class FileSource:
     # Метод  __init__ принимает путь до файла, с которым будут работать остальные методы и сохраняет его в private
     # переменную(по умолчанию "./db").
     def __init__(self, db_path: str = './db'):
+        self.__connection = None
+        self.__cursor = None
         self.__db_path = db_path
         self.dictionary = {"Group": 101,
                            "Lesson": 102,
@@ -155,6 +162,21 @@ class FileSource:
                 return record
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return []
+
+    def __read_sql_db(self, collection_name: str):
+        if self.__connection is None:
+            self.__open_sql()
+        return self.__cursor.execute("SELECT * FROM %s", (collection_name + "s", ))
+
+    def __open_sql(self):
+        try:
+            self.__connection = psycopg2.connect(dbname='schedule-app', user='schedule_app',
+                                                 password='VYRL!9XEB3yXQs4aPz_Q', host='')
+            self.__cursor = self.__connection.cursor(cursor_factory=DictCursor)
+            return True
+        except Exception:
+            time.sleep(5)
+            self.__open_sql()
 
     @staticmethod
     def serialize_records_to_json(records: list, indent: int = None) -> str:
