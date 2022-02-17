@@ -1,6 +1,5 @@
 import datetime
 from typing import List
-
 import psycopg2
 
 
@@ -49,7 +48,7 @@ class DBSource:
         request = f'INSERT INTO "{collection_name}s" VALUES ({",".join(map(str, values))});'
         self.__cursor.execute(request)  # выполняем запрос
         self.__conn.commit()  # сохраняем изменения в базе
-        return document  # ??? не знаю, что возвращать на самом деле
+        return document  # ??? не знаю, что возвращать на самом дел
 
     def update(self, collection_name: str, object_id: int, document: dict) -> dict:
         pass
@@ -66,16 +65,4 @@ class DBSource:
         for i in data:
             to_return.append({desc[j].name: i[j] for j in range(len(desc))})
         return to_return
-
-    @staticmethod
-    def generate_id():
-        return round(datetime.datetime.utcnow().timestamp() * 1000)
-
-# a = DBSource(user='', password='', host='postgresql.aakapustin.ru')
-# print(a.get_all('Students'))
-# print(a.get_by_id('Students', 122))
-
-
-a = DBSource(user='schedule_app', password='VYRL!9XEB3yXQs4aPz_Q', host='postgresql.aakapustin.ru')
-b = {"teacher_id": 19, "class_letter": "В", "grade": "9", "profile_name": "соцэки", "object_id": 14}
-a.insert('Group', b)
+      
