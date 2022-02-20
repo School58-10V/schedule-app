@@ -81,7 +81,7 @@ class Group(AbstractModel):
     def __dict__(self) -> dict:
         return {"teacher_id": self.get_teacher_id(),
                 "class_letter": self.get_letter(),
-                "grade": self.get_letter(),
+                "grade": self.get_grade(),
                 "profile_name": self.get_profile_name(),
                 "object_id": self.get_main_id()}
 
