@@ -1,6 +1,5 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
-from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
@@ -34,7 +33,7 @@ class StudentsForGroups(AbstractModel):
         return self.__group_id
 
     #    @staticmethod
-    #    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
+    #    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
     #        f = open(file_location, encoding='utf-8')
     #        lines = f.read().split('\n')[1:]
     #        lines = [i.split(';') for i in lines]
