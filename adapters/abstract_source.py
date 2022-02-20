@@ -1,9 +1,9 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List
 
 
-class AbstractSource:
+class AbstractSource(ABC):
     @abstractmethod
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         pass
