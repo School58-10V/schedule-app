@@ -42,13 +42,13 @@ class DBSource:
 
     def insert(self, collection_name: str, document: dict) -> dict:
         try:
-            self.__cursor.execute(f'SELECT * FROM "{collection_name}s" LIMIT 0')
+            self.__cursor.execute(f'SELECT * FROM "{collection_name}" LIMIT 0')
         except psycopg2.Error as e:
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 raise ValueError('Данной таблицы не существует.')
         desc = [x[0] for x in self.__cursor.description]
         values = [f'\'{document[x]}\'' if x != 'object_id' else 'default' for x in desc]
-        request = f'INSERT INTO "{collection_name}s" VALUES ({",".join(map(str, values))});'
+        request = f'INSERT INTO "{collection_name}" VALUES ({",".join(map(str, values))});'
         try:
             self.__cursor.execute(request)
         except psycopg2.Error as e:
