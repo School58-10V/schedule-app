@@ -17,10 +17,6 @@ class AbstractSource(ABC):
         pass
 
     @abstractmethod
-    def check_unique_id(self, collection_name: str, object_id: int) -> bool:
-        pass
-
-    @abstractmethod
     def insert(self, collection_name: str, document: dict) -> dict:
         pass
 
