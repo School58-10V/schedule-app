@@ -1,6 +1,8 @@
 import datetime
+import time
 from typing import List
 import psycopg2
+from psycopg2.extras import DictCursor
 
 
 class DBSource:
@@ -9,12 +11,21 @@ class DBSource:
     """
 
     def __init__(self, host, user, password, dbname='schedule_app'):
-        conn = psycopg2.connect(
-            dbname=dbname, user=user,
-            password=password, host=host
-        )
-        self.__conn = conn
-        self.__cursor = conn.cursor()
+        self.__connection_data = {"host": host, "user": user, "password": password, "dbname": dbname}
+        self.__conn = None
+        self.__cursor = None
+
+    def connect(self):
+        try:
+            self.__conn = psycopg2.connect(**self.__connection_data)
+            self.__cursor = self.__conn.cursor()
+            # cursor_factory=DictCursor
+            # это можно добавить чтобы курсор работал с словарями вместо кортежей, но я не стал впиливать его сразу
+            print("Успешное подключение к базе!")
+        except Exception:
+            print("Невозможно подключиться к базе, проверьте данные!")
+            time.sleep(5)
+            self.connect()
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         pass
@@ -48,13 +59,41 @@ class DBSource:
         request = f'INSERT INTO "{collection_name}s" VALUES ({",".join(map(str, values))});'
         self.__cursor.execute(request)  # выполняем запрос
         self.__conn.commit()  # сохраняем изменения в базе
-        return document  # ??? не знаю, что возвращать на самом дел
+        return document  # ??? не знаю, что возвращать на самом деле
 
-    def update(self, collection_name: str, object_id: int, document: dict) -> dict:
-        pass
+    def update(self, collection_name: str, data: dict):
+        object_id = data.pop("object_id")
+        collection = collection_name
+        if not collection_name.endswith("s"):
+            collection += "s"
+        for i in range(len(data)):
+            key = self.get_dict_key(data, i)
+            request = f'UPDATE "{collection}" SET {str(key)} = {str(data.get(key))} WHERE object_id = {str(object_id)}'
+            print(request)
+            self.__cursor.execute(request)
+            self.__conn.commit()
+        return data
 
-    def delete(self, collection_name: str, object_id: int) -> dict:
-        pass
+    def delete(self, collection_name: str, object_id: int):
+        collection = collection_name
+        if not collection_name.endswith("s"):
+            collection += "s"
+        try:
+            request = f'DELETE FROM {collection} WHERE object_id = {object_id}'
+
+            self.__cursor.execute(request)
+            self.__conn.commit()
+        except Exception:
+            print("Что то пошло не так при удалении этого элемента, скорее всего виноваты внешние ключи.")
+
+    @staticmethod
+    def get_dict_key(data: dict, iterator: int):
+        counter = -1
+        for key in data:
+            counter += 1
+            if counter == iterator:
+                return key
+        return None
 
     @classmethod
     def __format_tuple_to_dict(cls, data, desc):
