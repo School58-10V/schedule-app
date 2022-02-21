@@ -27,7 +27,7 @@ class DBSource:
         desc = self.__cursor.description
 
         if len(data) == 0:
-            raise ValueError(f'Объект МИША НАПИШи НОРМАЛЬНО не существует')
+            raise ValueError(f'Объект где {", ".join([str(i[0]) + "=" + str(i[1]) for i in pairs])} не существует.')
 
         return self.__format_tuple_to_dict(data, desc)
 
