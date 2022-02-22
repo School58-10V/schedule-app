@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class NoLearningPeriod(AbstractModel):
-    def __init__(self, db_source: DBSource, start: str, stop: str, timetable_id: int,
+    def __init__(self, db_source: DBSource, start_time: str, stop_time: str, timetable_id: int,
                  object_id: Optional[int] = None):
         # start и stop указаны как DATE в POSTGRES DB!!!
         """
@@ -19,8 +19,8 @@ class NoLearningPeriod(AbstractModel):
         """
         super().__init__(db_source)
         self._object_id = object_id
-        self.__start_time = start
-        self.__stop_time = stop
+        self.__start_time = start_time
+        self.__stop_time = stop_time
         self.__timetable_id = timetable_id
 
     def get_start_time(self) -> str:
@@ -35,8 +35,8 @@ class NoLearningPeriod(AbstractModel):
     def __dict__(self) -> dict:
         return {
             "timetable_id": self.get_timetable_id(),
-            "start": self.get_start_time(),
-            "stop": self.get_stop_time(),
+            "start_time": self.get_start_time(),
+            "stop_time": self.get_stop_time(),
             "object_id": self.get_main_id()
         }
 
@@ -54,7 +54,9 @@ class NoLearningPeriod(AbstractModel):
             try:
                 start = i[0]
                 stop = i[1]
-                res.append(ParsedData(None, NoLearningPeriod(start=start, stop=stop, db_source=db_source)))
+                timetable = int(i[2])
+                res.append(ParsedData(None, NoLearningPeriod(start_time=start, stop_time=stop,
+                                                             db_source=db_source, timetable_id=timetable)))
             except IndexError as e:
                 exception_text = f"Строка {lines.index(i) + 2} не добавилась в [res]"
                 print(exception_text)
