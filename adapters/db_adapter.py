@@ -11,6 +11,7 @@ class DbAdapter:
         self.start_adapter()
 
     def start_adapter(self):
+        # проверка наличия подключения к бд.
         try:
             self.__connection = psycopg2.connect(dbname='schedule_app', user='schedule_app',
                                                  password='VYRL!9XEB3yXQs4aPz_Q', host='postgresql.aakapustin.ru')
@@ -27,11 +28,11 @@ class DbAdapter:
         if self.__connection is None:
             self.start_adapter()
         if not collection_name.endswith("s"):
-            collection += "s"
+            collection += "s"  # приписываем ко всему s для совпадения названий коллекций с таблицами в бд
         for i in range(len(data)):
             key = self.get_key(data, i)
             request = f'UPDATE "{collection}" SET {str(key)} = {str(data.get(key))} WHERE object_id = {str(object_id)}'
-            print(request)
+            print(*request)  # если что-то сломается, уберите звездочку
             self.__cursor.execute(request)
         return data
 
