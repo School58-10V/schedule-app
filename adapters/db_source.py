@@ -54,7 +54,7 @@ class DBSource(AbstractSource):
     def insert(self, collection_name: str, document: dict) -> dict:
         column, value = self.__data_processing(document)  # Берем обработанные для запроса данные
         request = f'INSERT INTO "{collection_name}s"({column}) VALUES ({value});'  # Генерируем запрос
-        print(request)
+        # print(request)
         self.__cursor.execute(request)  # выполняем запрос
         self.__conn.commit()  # сохраняем изменения в базе
         return document

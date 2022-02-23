@@ -23,7 +23,6 @@ class NoLearningPeriod(AbstractModel):
         self._object_id = object_id
         self.__start_time = start_time
         self.__stop_time = stop_time
-        print(stop_time, start_time, type(stop_time), type(start_time))
         self.__timetable_id = timetable_id
 
     def get_start_time(self) -> datetime.date:

@@ -59,7 +59,7 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
     print(f'Изменили 2 объекта:\n{object_2}\n{object_3}\n')
     print('Все объекты в db/.json (class):', *TestingClass.get_all(fS), sep='\n', end='\n\n')
     print('Все объекты в db/.json (adapter):', *fS.get_all(TestingClass.__name__), sep='\n', end='\n\n')
-    print(object_3, "fjjfjfjjfjffjffojgnfjgir")
+    # print(object_3, "fjjfjfjjfjffjffojgnfjgir")
     try:
         print('Ищем второй объект (adapter):', fS.get_by_id(collection_name=TestingClass.__name__,
                                                             object_id=object_3['object_id']), '\n')
