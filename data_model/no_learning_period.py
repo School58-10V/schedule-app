@@ -2,13 +2,15 @@ from __future__ import annotations
 from data_model.parsed_data import ParsedData
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
+import datetime
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
 
 
 class NoLearningPeriod(AbstractModel):
-    def __init__(self, db_source: DBSource, start_time: str, stop_time: str, timetable_id: int,
+    def __init__(self, db_source: DBSource, start_time: datetime.date,
+                 stop_time: datetime.date, timetable_id: int,
                  object_id: Optional[int] = None):
         # start и stop указаны как DATE в POSTGRES DB!!!
         """
@@ -21,12 +23,13 @@ class NoLearningPeriod(AbstractModel):
         self._object_id = object_id
         self.__start_time = start_time
         self.__stop_time = stop_time
+        print(stop_time, start_time, type(stop_time), type(start_time))
         self.__timetable_id = timetable_id
 
-    def get_start_time(self) -> str:
+    def get_start_time(self) -> datetime.date:
         return self.__start_time
 
-    def get_stop_time(self) -> str:
+    def get_stop_time(self) -> datetime.date:
         return self.__stop_time
 
     def get_timetable_id(self) -> int:
@@ -38,7 +41,7 @@ class NoLearningPeriod(AbstractModel):
             "start_time": self.get_start_time(),
             "stop_time": self.get_stop_time(),
             "object_id": self.get_main_id()
-        }
+            }
 
     def __str__(self):
         return f'NoLearningPeriod(timetable_id={self.get_timetable_id()}, start={self.get_start_time()}, ' \
@@ -52,8 +55,8 @@ class NoLearningPeriod(AbstractModel):
         res = []
         for i in lines:
             try:
-                start = i[0]
-                stop = i[1]
+                start = datetime.datetime.strptime(i[0], '%Y-%m-%d').date()
+                stop = datetime.datetime.strptime(i[1], '%Y-%m-%d').date()
                 timetable = int(i[2])
                 res.append(ParsedData(None, NoLearningPeriod(start_time=start, stop_time=stop,
                                                              db_source=db_source, timetable_id=timetable)))
