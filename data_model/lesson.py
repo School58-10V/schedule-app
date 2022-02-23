@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class Lesson(AbstractModel):
 
-    def __init__(self, db_source: DBSource, start_time: int, end_time: int, day: datetime.date, teacher_id: int,
+    def __init__(self, db_source: DBSource, start_time: int, end_time: int, day: str, teacher_id: int,
                  group_id: int,
                  subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
         """
@@ -28,7 +28,7 @@ class Lesson(AbstractModel):
         super().__init__(db_source)
         self.__start_time = start_time
         self.__end_time = end_time
-        self.__day = day
+        self.__day = datetime.datetime.strptime(day, '%Y-%m-%d').date()
         self.__teacher_id = teacher_id
         self.__group_id = group_id
         self.__subject_id = subject_id
@@ -47,7 +47,7 @@ class Lesson(AbstractModel):
     def get_end_time(self) -> int:
         return self.__end_time
 
-    def get_day(self) -> int:
+    def get_day(self) -> str:
         return self.__day.strftime('%Y-%m-%d')
 
     def get_teacher_id(self) -> int:
@@ -84,7 +84,7 @@ class Lesson(AbstractModel):
                     res.append(ParsedData(None, Lesson(db_source=db_source,
                                                        start_time=int(start_time),
                                                        end_time=int(end_time),
-                                                       day=datetime.datetime.strptime(day, '%Y-%m-%d').date(),
+                                                       day=day,
                                                        teacher_id=int(teacher_id),
                                                        group_id=int(group_id),
                                                        subject_id=int(subject_id),
