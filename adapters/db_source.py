@@ -1,4 +1,3 @@
-import datetime
 import time
 from typing import List
 import psycopg2

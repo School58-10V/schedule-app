@@ -4,5 +4,5 @@ from adapters.db_source import DBSource
 source = DBSource(dbname='schedule_app', user='schedule_app',
                   password='VYRL!9XEB3yXQs4aPz_Q', host='postgresql.aakapustin.ru')
 source.connect()
-source.update("TimeTables", {"object_id": 11, "time_table_year": 5654})
-source.delete("TimeTables", 33)
+source.update("TimeTables", {"object_id": 11, "time_table_year": 2018})
+source.delete("TimeTables", 111)
