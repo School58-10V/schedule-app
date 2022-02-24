@@ -1,12 +1,11 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
-from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
     from data_model.group import Group
     from data_model.student import Student
 
@@ -20,7 +19,7 @@ class StudentsForGroups(AbstractModel):
         object_id - айди группы учeников
     """
 
-    def __init__(self, db_source: FileSource, student_id: int,
+    def __init__(self, db_source: DBSource, student_id: int,
                  group_id: int, object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__student_id = student_id
@@ -34,7 +33,7 @@ class StudentsForGroups(AbstractModel):
         return self.__group_id
 
     #    @staticmethod
-    #    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
+    #    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
     #        f = open(file_location, encoding='utf-8')
     #        lines = f.read().split('\n')[1:]
     #        lines = [i.split(';') for i in lines]
@@ -67,20 +66,20 @@ class StudentsForGroups(AbstractModel):
                 'object_id': self.get_main_id()}
 
     @classmethod
-    def get_group_by_student_id(cls, student_id: int, db_source: FileSource) -> List[Group]:
+    def get_group_by_student_id(cls, student_id: int, db_source: DBSource) -> List[Group]:
         from data_model.group import Group
         return [Group.get_by_id(i['group_id'], db_source=db_source)
                 for i in db_source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
 
     @classmethod
-    def get_student_by_group_id(cls, group_id: int, db_source: FileSource) -> List[Student]:
+    def get_student_by_group_id(cls, group_id: int, db_source: DBSource) -> List[Student]:
         from data_model.student import Student
         return [Student.get_by_id(i['student_id'], db_source=db_source)
                 for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
 
     @classmethod
     def get_by_student_and_group_id(cls, group_id: int, student_id: int,
-                                    db_source: FileSource) -> List[StudentsForGroups]:
+                                    db_source: DBSource) -> List[StudentsForGroups]:
         res = []
         # Проходим циклом по списку словарей с данными про объекты,
         # в которых student_id и group_id, которые нам нужны

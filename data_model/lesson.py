@@ -3,14 +3,16 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
+import datetime
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class Lesson(AbstractModel):
 
-    def __init__(self, db_source: FileSource, start_time: int, end_time: int, day: int, teacher_id: int, group_id: int,
+    def __init__(self, db_source: DBSource, start_time: int, end_time: int, day: datetime.date, teacher_id: int,
+                 group_id: int,
                  subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
         """
             :param start_time: начало урока
@@ -45,8 +47,9 @@ class Lesson(AbstractModel):
     def get_end_time(self) -> int:
         return self.__end_time
 
-    def get_day(self) -> int:
-        return self.__day
+    def get_day(self) -> datetime.date:
+        return self.__day  # .strftime('%Y-%m-%d')
+    # При вставке в базу данных он сам преобразует дату в строку
 
     def get_teacher_id(self) -> int:
         return self.__teacher_id
@@ -64,7 +67,7 @@ class Lesson(AbstractModel):
         return self.__state
 
     @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Lesson])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Lesson])]:
         with open(file_location, encoding='utf-8') as file:
             lines = file.read().split('\n')[1:]
             lines = [i.split(';') for i in lines]
@@ -82,7 +85,7 @@ class Lesson(AbstractModel):
                     res.append(ParsedData(None, Lesson(db_source=db_source,
                                                        start_time=int(start_time),
                                                        end_time=int(end_time),
-                                                       day=int(day),
+                                                       day=datetime.datetime.strptime(day, "%Y-%m-%d").date(),
                                                        teacher_id=int(teacher_id),
                                                        group_id=int(group_id),
                                                        subject_id=int(subject_id),
@@ -103,7 +106,6 @@ class Lesson(AbstractModel):
     def __str__(self):
         return f"Урок с который начинается в {self.get_start_time()} и заканчивается в {self.get_end_time()}, " \
                f"id={self.get_main_id()}"
-
 
     def __dict__(self) -> dict:
         return {"start_time": self.get_start_time(),

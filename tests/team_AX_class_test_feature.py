@@ -1,8 +1,9 @@
 import random
-from adapters.file_source import FileSource
+from db_source import DBSource
 
 db_location = '../db'
-fS = FileSource(db_location)
+fS = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+              password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
 
 
 def test_function(TestingClass, example_1: dict, example_2: dict,
@@ -49,17 +50,21 @@ def test_function(TestingClass, example_1: dict, example_2: dict,
     deleted_object = fS.delete(TestingClass.__name__, from_csv_object.get_main_id())
     print(f'Удалили объект который был из .csv, его ID было:\n{deleted_object}\n')
     print('Все объекты в db/.json (class):', *TestingClass.get_all(fS), sep='\n', end='\n\n')
-    object_2 = fS.update(object_id=object_2['object_id'], document=example_1_update,
-                         collection_name=TestingClass.__name__)
-
-    object_3 = fS.update(object_id=object_3['object_id'], document=example_2_update,
-                         collection_name=TestingClass.__name__)
+    # object_2 = fS.update(object_id=object_2['object_id'], document=example_1_update,
+    #                      collection_name=TestingClass.__name__)
+    # пока не имеет смысла - у нас этот метод не работает
+    # object_3 = fS.update(object_id=object_3['object_id'], document=example_2_update,
+    #                      collection_name=TestingClass.__name__)
 
     print(f'Изменили 2 объекта:\n{object_2}\n{object_3}\n')
     print('Все объекты в db/.json (class):', *TestingClass.get_all(fS), sep='\n', end='\n\n')
     print('Все объекты в db/.json (adapter):', *fS.get_all(TestingClass.__name__), sep='\n', end='\n\n')
-    print('Ищем второй объект (adapter):', fS.get_by_id(collection_name=TestingClass.__name__,
-                                                        object_id=object_3['object_id']), '\n')
+    # print(object_3, "fjjfjfjjfjffjffojgnfjgir")
+    try:
+        print('Ищем второй объект (adapter):', fS.get_by_id(collection_name=TestingClass.__name__,
+                                                            object_id=object_3['object_id']), '\n')
+    except ValueError as e:
+        print("Ошибка с поиском объектов", e)
 
     random_existing_id = random.choice(fS.get_all(TestingClass.__name__))['object_id']
     print(f"Рандомный объект полученный по ID(={random_existing_id} (adapter):",

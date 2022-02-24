@@ -4,7 +4,7 @@ from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class TimeTable(AbstractModel):
@@ -13,7 +13,7 @@ class TimeTable(AbstractModel):
         Year - учебный год данного расписания
     """
 
-    def __init__(self, db_source: FileSource, time_table_year: Optional[int] = None,
+    def __init__(self, db_source: DBSource, time_table_year: Optional[int] = None,
                  object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__year = time_table_year
@@ -30,7 +30,7 @@ class TimeTable(AbstractModel):
                 "time_table_year": self.get_year()}
 
     @staticmethod
-    def parse(file_timetable: str, db_source: FileSource) -> List[(Optional[str], Optional[TimeTable])]:
+    def parse(file_timetable: str, db_source: DBSource) -> List[(Optional[str], Optional[TimeTable])]:
         f = open(file_timetable, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]

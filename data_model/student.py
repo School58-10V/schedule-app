@@ -7,7 +7,7 @@ from data_model.abstract_model import AbstractModel
 from data_model.students_for_groups import StudentsForGroups
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
     from data_model.group import Group
 
 
@@ -22,7 +22,7 @@ class Student(AbstractModel):
     """
 
     def __init__(
-            self, db_source: FileSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
+            self, db_source: DBSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
             ):
         super().__init__(db_source)
@@ -45,7 +45,7 @@ class Student(AbstractModel):
         return self.__bio
 
     @staticmethod
-    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[Student])]:
+    def parse(file_location, db_source: DBSource) -> List[(Optional[str], Optional[Student])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []

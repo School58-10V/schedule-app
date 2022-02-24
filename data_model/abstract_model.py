@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class AbstractModel(ABC):
@@ -12,12 +12,12 @@ class AbstractModel(ABC):
         Абстрактный класс сущности
     """
 
-    def __init__(self, db_source: FileSource):
+    def __init__(self, db_source: DBSource):
         self._db_source = db_source
 
     @classmethod
     def _get_collection_name(cls):
-        return cls.__name__
+        return cls.__name__ + 's'
 
     def save(self):
         if self.get_main_id() is None:
@@ -43,7 +43,7 @@ class AbstractModel(ABC):
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @classmethod
-    def get_all(cls, db_source: FileSource) -> List[AbstractModel]:
+    def get_all(cls, db_source: DBSource) -> List[AbstractModel]:
         """
         Возвращает все данные из сохранений в формате объектов соответствующих классов
 
@@ -53,7 +53,7 @@ class AbstractModel(ABC):
         return [cls(**obj, db_source=db_source) for obj in db_source.get_all(cls._get_collection_name())]
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: FileSource) -> AbstractModel:
+    def get_by_id(cls, element_id: int, db_source: DBSource) -> AbstractModel:
         """
         Возвращает запрошенный по element_id объект класса по данным из сохранений
 
