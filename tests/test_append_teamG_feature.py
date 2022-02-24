@@ -1,8 +1,9 @@
 from data_model.group import Group
 from data_model.student import Student
-from adapters.file_source import FileSource
+from db_source import DBSource
 
-db_source = FileSource('../db')
+db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+                     password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
 # Создаем студента и сохраняем его
 student = Student(db_source=db_source, date_of_birth='', full_name='Фио')
 student.save()
@@ -38,7 +39,6 @@ group.append_student(student)
 print("Стало:", *group.get_all_students())
 print("Стало,", *student.get_all_groups())
 print()
-
 
 # Удаляем группу у студента и студента из группы
 student.remove_group(group)

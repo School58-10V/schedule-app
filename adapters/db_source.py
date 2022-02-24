@@ -1,9 +1,11 @@
+import datetime
+from adapters.abstract_source import AbstractSource
 from typing import List
 import psycopg2
 from psycopg2 import errorcodes
 
 
-class DBSource:
+class DBSource(AbstractSource):
     """
         Адаптер для работы с базой данных
     """
@@ -85,6 +87,27 @@ class DBSource:
     def delete(self, collection_name: str, object_id: int) -> dict:
         pass
 
+    def __data_processing(self, document):
+        # Функция, которая преобразовывает данные моделей для запроса
+        # (для добавление этой модели в базу данных)
+        lst1 = []
+        lst2 = []
+        for i in document:
+            if i != 'object_id':
+                # id в базе данных не нужен, он генерируется сам
+                lst1.append(i)
+                if document[i] is None:
+                    # Для базы None записывается по-другому
+                    lst2.append('null')
+                elif type(document[i]) == str or type(document[i]) == datetime.date:
+                    # Дата и строки должны быть в ковычках
+                    lst2.append(f"'{document[i]}'")
+                else:
+                    # А остальное вроде как нет (интересно, что сюда кроме int попадет...)
+                    lst2.append(str(document[i]))
+        # Возвращаем две строки - названия колонок и соответствующие значения
+        return ", ".join(lst1), ", ".join(lst2)
+
     @classmethod
     def __format_tuple_to_dict(cls, data, desc):
         # data - список значений
@@ -105,5 +128,4 @@ class DBSource:
             else:
                 raise ValueError(f'Неизвестная ошибка во время выполнения запроса, '
                                  f'код ошибки: {errorcodes.lookup(e.pgcode)}. Запрос: {request}')
-
 

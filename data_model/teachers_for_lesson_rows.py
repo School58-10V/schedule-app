@@ -4,7 +4,7 @@ from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
     from data_model.lesson_row import LessonRow
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
     from data_model.teacher import Teacher
 
 
@@ -17,7 +17,7 @@ class TeachersForLessonRows(AbstractModel):
         object_id - Идентификационный номер учителя на ряд уроков
     """
 
-    def __init__(self, db_source: FileSource, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
+    def __init__(self, db_source: DBSource, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__teacher_id = teacher_id
         self.__lesson_row_id = lesson_row_id
@@ -69,7 +69,7 @@ class TeachersForLessonRows(AbstractModel):
         return 'TeachersForLessonRows'
 
     @classmethod
-    def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, db_source: FileSource) -> List[Teacher]:
+    def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, db_source: DBSource) -> List[Teacher]:
         """
         возвращает всех учителей, у которых есть определенный lesson_row_id
 
@@ -84,7 +84,7 @@ class TeachersForLessonRows(AbstractModel):
             ]
 
     @classmethod
-    def get_lesson_rows_by_teacher_id(cls, teacher_id: int, db_source: FileSource) -> List[LessonRow]:
+    def get_lesson_rows_by_teacher_id(cls, teacher_id: int, db_source: DBSource) -> List[LessonRow]:
         """
         возвращает всех учителей, у которых есть определенный teacher_id
 
@@ -100,7 +100,7 @@ class TeachersForLessonRows(AbstractModel):
         ]
 
     @classmethod
-    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, db_source: FileSource) -> list:
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, db_source: DBSource) -> list:
         """
         Возвращает список обьектов этого класса в котором у нас совподают идишник который мы передали
 

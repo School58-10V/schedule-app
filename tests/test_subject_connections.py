@@ -1,7 +1,8 @@
-from adapters.file_source import FileSource
+from adapters.db_source import DBSource
 from data_model.subject import Subject
 from data_model.teacher import Teacher
-db = FileSource(db_path='../db')
+db = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+              password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
 example_teacher = Teacher(fio='Name Surname', bio='математик', office_id=12, db_source=db).save()
 example_subject = Subject(subject_name='Алгебра', db_source=db).save()
 print(f"Добавляем связь с {example_teacher.__dict__()}")
