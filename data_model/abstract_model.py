@@ -17,7 +17,7 @@ class AbstractModel(ABC):
 
     @classmethod
     def _get_collection_name(cls):
-        return cls.__name__
+        return cls.__name__ + 's'
 
     def save(self):
         if self.get_main_id() is None:
