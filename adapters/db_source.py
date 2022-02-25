@@ -57,7 +57,6 @@ class DBSource(AbstractSource):
         self.__cursor_execute_wrapper(cursor, request)
         data = cursor.fetchall()
         desc = cursor.description
-
         return self.__format_tuple_to_dict(data, desc)
 
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
@@ -71,9 +70,6 @@ class DBSource(AbstractSource):
             raise ValueError(f'Объект с id {object_id} из {collection_name} не существует')
         # берем 0 индекс т.к. длина ответа всегда либо 0 (уже обработали), либо 1, т.е. смысла возвращать список нет.
         return self.__format_tuple_to_dict(data, desc)[0]
-
-    def check_unique_id(self, collection_name: str, object_id: int) -> bool:
-        pass
 
     def insert(self, collection_name: str, document: dict) -> dict:
         self.connect()
