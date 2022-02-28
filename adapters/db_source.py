@@ -19,44 +19,48 @@ class DBSource(AbstractSource):
         self.__conn = None
         self.__cursor = None
 
-    def connect(self):
-        try:
-            self.__conn = psycopg2.connect(**self.__connection_data)
-            self.__cursor = self.__conn.cursor()
-            # cursor_factory=DictCursor
-            # это можно добавить чтобы курсор работал с словарями вместо кортежей, но я не стал впиливать его сразу
-            print("Успешное подключение к базе!")
-        except Exception:
-            print("Невозможно подключиться к базе, проверьте данные!")
-            time.sleep(5)
-            self.connect()
+    def connect(self, retry_count: int = 3):
+        if self.__conn is None:
+            print("Активного подключения не существует, подключаемся...")
+            for i in range(retry_count):
+                try:
+                    self.__conn = psycopg2.connect(**self.__connection_data)
+                    self.__cursor = self.__conn.cursor()
+                    # cursor_factory=DictCursor
+                    # это можно добавить чтобы курсор работал с словарями вместо кортежей, но я не стал впиливать его сразу
+                    print("Успешное подключение к базе!")
+                    break
+                except psycopg2.Error:
+                    print(f"Невозможно подключиться к базе, проверьте данные! Попытка {i + 1}/{retry_count}")
+                    time.sleep(5)
+        else:
+            print("Используем существующее подключение!")
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
+        self.connect()
         pairs = query.items()
         request = f'SELECT * FROM "{collection_name}" WHERE '
-        for i in pairs:
-            request += f'{i[0]}={i[1]} and '
+        request += ' and '.join([f'{i[0]}=\'{i[1]}\'' for i in pairs])
         cursor = self.__conn.cursor()
-        print(request)
         self.__cursor_execute_wrapper(cursor, request, list(query.values()))
         data = cursor.fetchall()
         desc = cursor.description
-
         # if len(data) == 0:
         #     raise ValueError(f'Объект где {", ".join([str(i[0]) + "=" + str(i[1]) for i in pairs])} не существует.')
 
         return self.__format_tuple_to_dict(data, desc)
 
     def get_all(self, collection_name: str) -> List[dict]:
+        self.connect()
         request = f'SELECT * FROM "{collection_name}"'
         cursor = self.__conn.cursor()
         self.__cursor_execute_wrapper(cursor, request)
         data = cursor.fetchall()
         desc = cursor.description
-
         return self.__format_tuple_to_dict(data, desc)
 
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
+        self.connect()
         request = f'SELECT * FROM "{collection_name}" WHERE object_id={object_id}'
         cursor = self.__conn.cursor()
         self.__cursor_execute_wrapper(cursor, request)
@@ -67,10 +71,8 @@ class DBSource(AbstractSource):
         # берем 0 индекс т.к. длина ответа всегда либо 0 (уже обработали), либо 1, т.е. смысла возвращать список нет.
         return self.__format_tuple_to_dict(data, desc)[0]
 
-    def check_unique_id(self, collection_name: str, object_id: int) -> bool:
-        pass
-
     def insert(self, collection_name: str, document: dict) -> dict:
+        self.connect()
         try:
             self.__cursor.execute(f'SELECT * FROM "{collection_name}" LIMIT 0')
         except psycopg2.Error as e:
@@ -93,6 +95,7 @@ class DBSource(AbstractSource):
         return document
 
     def update(self, collection_name: str, document: dict):
+        self.connect()
         object_id = document.pop("object_id")
         collection = collection_name
         req_data = []
@@ -107,6 +110,7 @@ class DBSource(AbstractSource):
         return document
 
     def delete(self, collection_name: str, object_id: int):
+        self.connect()
         collection = collection_name
         if not collection_name.endswith("s"):
             collection += "s"
