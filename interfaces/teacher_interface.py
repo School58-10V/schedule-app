@@ -15,7 +15,7 @@ class TeachersInterface:
         pass
 
     @staticmethod
-    def clever_input(self, valid: list):
+    def clever_input(valid: list):
         user_input = input()
         while user_input not in valid:
             user_input = input()
