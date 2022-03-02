@@ -5,13 +5,15 @@ if TYPE_CHECKING:
 
 
 class TeachersInterface:
-    lst = []
 
     def __init__(self, db_source: DBSource):
         self.__db_source = db_source
         self.teacher_id = None
+        # Список, который хранит все методы для удобного вызова (его в общем, надо сюда)
+        self.lst = [self.__timetable, self.__replacement]
 
     def __check_input(self, string: str, message: str = None) -> str:
+        #  Метод, который проверяет, что ввод корректен (не пустой хотя бы)
         pass
 
     @staticmethod
@@ -23,11 +25,12 @@ class TeachersInterface:
         return user_input
 
     def __check_password(self) -> bool:
+        # Метод, который проверяет, что пароль совпадает с паролем в базе
         pass
 
     def run(self):
         login = input().strip()
-        # login = self.__check_input(login, 'Введите логин')
+        # login = self.__check_input(login, 'Введите логин') (Проверяем на правильность)
         password = input().strip()
         # password = self.__check_input(password, 'Введите пароль')
         if self.__check_password() is False:
@@ -53,7 +56,7 @@ class TeachersInterface:
                 else:
                     n += 1
                     print('Введите еще раз')
-            if n == 3:
+            if n == 3:  # Пользователь ввел неправельные данные уже три раза!!! Забанить его!!!
                 return False
         return True
 
@@ -75,4 +78,11 @@ class TeachersInterface:
         elif self.__timetable_method_flag == '1':
             pass
         elif self.__timetable_method_flag == 'exit':
+            pass
+
+    def __replacement(self):
+        self.__timetable_method_flag = self.clever_input(['0', '1'])
+        if self.__timetable_method_flag == '0':
+            pass
+        if self.__timetable_method_flag == '1':
             pass
