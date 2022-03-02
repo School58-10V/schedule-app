@@ -16,6 +16,7 @@ class TeachersInterface:
 
     @staticmethod
     def clever_input(valid: list):
+        valid.append('exit')
         user_input = input()
         while user_input not in valid:
             user_input = input()
@@ -62,5 +63,7 @@ class TeachersInterface:
             pass
         elif self.__timetable_method_flag == '1':
             pass
-        else:
+        elif self.__timetable_method_flag == '2':
+            pass
+        elif self.__timetable_method_flag == 'exit':
             pass
