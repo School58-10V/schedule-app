@@ -14,7 +14,8 @@ class TeachersInterface:
     def __check_input(self, string: str, message: str = None) -> str:
         pass
 
-    def clever_input(self, valid = list):
+    @staticmethod
+    def clever_input(self, valid: list):
         user_input = input()
         while user_input not in valid:
             user_input = input()
