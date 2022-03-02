@@ -67,3 +67,12 @@ class TeachersInterface:
             pass
         elif self.__timetable_method_flag == 'exit':
             pass
+
+    def __student_search(self):
+        self.__student_search_method_flag = self.clever_input(['0', '1'])
+        if self.__timetable_method_flag == '0':
+            pass
+        elif self.__timetable_method_flag == '1':
+            pass
+        elif self.__timetable_method_flag == 'exit':
+            pass
