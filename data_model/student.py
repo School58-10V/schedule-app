@@ -53,7 +53,7 @@ class Student(AbstractModel):
             for i in lines:
                 try:
                     full_name = i[0]
-                    date_of_birth = datetime.strptime(i[1], '%d.%m.%Y').date()
+                    date_of_birth = datetime.strptime(i[1], '%Y-%m-%d').date()
                     contacts = str(i[2])
                     bio = i[3]
 
