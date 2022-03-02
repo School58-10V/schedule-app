@@ -5,10 +5,11 @@ if TYPE_CHECKING:
 
 
 class TeachersInterface:
-    dct = []
+    lst = []
 
     def __init__(self, db_source: DBSource):
         self.__db_source = db_source
+        self.teacher_id = None
 
 
     def __check_input(self, string: str, message: str = None) -> str:
@@ -35,11 +36,16 @@ class TeachersInterface:
         while flag:
             string = input()
             try:
-                num = int(string)
-                self.dct[num]()
-            except IndexError:
-                n += 1
-                print('Введите еще раз')
+                num = int(string)  # Переводим
+                # Вызываем функцию, название которой лежит в списке (да, так оно вызываеться!!!!)
+                self.lst[num]()
+            except (IndexError, ValueError):  # Если неправильный ввод, то либо уыеличиваем счетчик
+                if string == 'Все':  # Или другое слово, которое означает конец использования
+                    print('Пока')
+                    n = 3
+                else:
+                    n += 1
+                    print('Введите еще раз')
             if n == 3:
                 return False
         return True
