@@ -86,3 +86,12 @@ class TeachersInterface:
             pass
         if self.__timetable_method_flag == '1':
             pass
+
+    def __my_classes(self):
+        self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
+        if self.__timetable_method_flag == 'day':
+            pass
+        elif self.__timetable_method_flag == 'week':
+            pass
+        elif self.__timetable_method_flag == 'exit':
+            pass
