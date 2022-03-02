@@ -5,6 +5,8 @@ if TYPE_CHECKING:
 
 
 class TeachersInterface:
+    dct = []
+
     def __init__(self, db_source: DBSource):
         self.__db_source = db_source
 
@@ -21,3 +23,22 @@ class TeachersInterface:
         # password = self.__check_input(password, 'Введите пароль')
         if self.__check_password() is False:
             return None
+        flag = True
+        while flag:
+            flag = self.__show_menu()
+
+    def __show_menu(self):
+        print('Меню:')  # У кого хорошо с фантазией? Кто сможет это красиво оформить?
+        flag = True
+        n = 0
+        while flag:
+            string = input()
+            try:
+                num = int(string)
+                self.dct[num]()
+            except IndexError:
+                n += 1
+                print('Введите еще раз')
+            if n == 3:
+                return False
+        return True
