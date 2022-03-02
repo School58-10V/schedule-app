@@ -18,6 +18,7 @@ class TeachersInterface:
 
     @staticmethod
     def clever_input(valid: list):
+        # Проверяет, что пользователь ввел то, что нужно (правильные значения передаются в аргументах)
         valid.append('exit')
         user_input = input()
         while user_input not in valid:
@@ -61,6 +62,7 @@ class TeachersInterface:
         return True
 
     def __timetable(self):
+        # Метод, который отвечает за расписание
         self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
         if self.__timetable_method_flag == '0':
             pass
@@ -72,6 +74,7 @@ class TeachersInterface:
             pass
 
     def __student_search(self):
+        # Метод, который отвечает за поиск студентов
         self.__student_search_method_flag = self.clever_input(['0', '1'])
         if self.__timetable_method_flag == '0':
             pass
@@ -81,6 +84,7 @@ class TeachersInterface:
             pass
 
     def __replacement(self):
+        # Метод, который отвечает за замены
         self.__timetable_method_flag = self.clever_input(['0', '1'])
         if self.__timetable_method_flag == '0':
             pass
