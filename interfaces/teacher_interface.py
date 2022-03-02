@@ -10,6 +10,7 @@ class TeachersInterface:
     def __init__(self, db_source: DBSource):
         self.__db_source = db_source
 
+
     def __check_input(self, string: str, message: str = None) -> str:
         pass
 
@@ -42,3 +43,12 @@ class TeachersInterface:
             if n == 3:
                 return False
         return True
+
+    def __timetable(self):
+        self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
+        if self.__timetable_method_flag == '0':
+            pass
+        elif self.__timetable_method_flag == '1':
+            pass
+        else:
+            pass
