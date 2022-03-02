@@ -11,9 +11,14 @@ class TeachersInterface:
         self.__db_source = db_source
         self.teacher_id = None
 
-
     def __check_input(self, string: str, message: str = None) -> str:
         pass
+
+    def clever_input(self, valid = list):
+        user_input = input()
+        while user_input not in valid:
+            user_input = input()
+        return user_input
 
     def __check_password(self) -> bool:
         pass
