@@ -10,7 +10,7 @@ class TeachersInterface:
         self.__db_source = db_source
         self.teacher_id = None
         # Список, который хранит все методы для удобного вызова (его в общем, надо сюда)
-        self.lst = [self.__timetable, self.__replacement, self.__timetable, self.__student_search]
+        self.lst = [self.__timetable, self.__replacement, self.__timetable, self.__student_search, self.__my_classes]
 
     def __check_input(self, string: str, message: str = None) -> str:
         #  Метод, который проверяет, что ввод корректен (не пустой хотя бы)
