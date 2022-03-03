@@ -1,6 +1,8 @@
 import datetime
+from typing import TYPE_CHECKING
 
-from adapters.abstract_source import AbstractSource
+if TYPE_CHECKING:
+    from adapters.abstract_source import AbstractSource
 
 
 class StudentInterface:
