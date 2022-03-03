@@ -53,7 +53,7 @@ class TeachersInterface:
         valid.append('exit')
         user_input = input().lower().strip()
         while user_input not in valid:
-            print('Ввод плохой, повторите пожалуйста!')
+            print(f"Неверный ввод! Варианты верного ввода: {valid}")
             user_input = input().lower().strip()
         return user_input
 
