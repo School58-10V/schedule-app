@@ -73,25 +73,25 @@ class TeachersInterface:
 
     def __student_search(self):
         self.__student_search_method_flag = self.clever_input(['0', '1'])
-        if self.__timetable_method_flag == '0':
+        if self.__student_method_flag == '0':
             pass
-        elif self.__timetable_method_flag == '1':
+        elif self.__student_method_flag == '1':
             pass
-        elif self.__timetable_method_flag == 'exit':
+        elif self.__student_method_flag == 'exit':
             pass
 
     def __replacement(self):
-        self.__timetable_method_flag = self.clever_input(['0', '1'])
-        if self.__timetable_method_flag == '0':
+        self.__replacement_method_flag = self.clever_input(['0', '1'])
+        if self.__replacement_method_flag == '0':
             pass
-        if self.__timetable_method_flag == '1':
+        if self.__replacement_method_flag == '1':
             pass
 
     def __my_classes(self):
-        self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
-        if self.__timetable_method_flag == 'day':
+        self.__my_classes_method_flag = self.clever_input(['0', '1', '2'])
+        if self.__my_classes_method_flag == 'day':
             pass
-        elif self.__timetable_method_flag == 'week':
+        elif self.__my_classes_method_flag == 'week':
             pass
-        elif self.__timetable_method_flag == 'exit':
+        elif self.__my_classes_method_flag == 'exit':
             pass
