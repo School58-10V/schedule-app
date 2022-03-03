@@ -7,9 +7,9 @@ if TYPE_CHECKING:
 
 class TeachersInterface:
 
-    def __init__(self, db_source: DBSource):
+    def __init__(self, db_source: DBSource, teacher_id: int):
         self.__db_source = db_source
-        self.teacher_id = None
+        self.__teacher_id = teacher_id
         # Список, который хранит все методы для удобного вызова (его в общем, надо сюда)
         self.__lst = [self.__timetable, self.__replacement, self.__student_search, self.__my_classes,
                       self.__teacher_search, self.__my_class, self.__holidays,
@@ -29,17 +29,17 @@ class TeachersInterface:
             user_input = input().lower().strip()
         return user_input
 
-    def __check_password(self, login: str, password: str) -> bool:
-        # Метод, который проверяет, что пароль совпадает с паролем в базе
-        pass
+    # def __check_password(self, login: str, password: str) -> bool:
+    #     # Метод, который проверяет, что пароль совпадает с паролем в базе
+    #     pass не нужен, тк у нас нет авторизации здесь
 
     def run(self):
-        login = input().strip()
-        # login = self.__check_input(login, 'Введите логин') (Проверяем на правильность)
-        password = input().strip()
-        # password = self.__check_input(password, 'Введите пароль')
-        if self.__check_password(login, password) is False:
-            return None
+        # login = input().strip()
+        # # login = self.__check_input(login, 'Введите логин') (Проверяем на правильность)
+        # password = input().strip()
+        # # password = self.__check_input(password, 'Введите пароль')
+        # if self.__check_password(login, password) is False:
+        #     return None
         flag = True
         while flag:
             flag = self.__show_menu()
