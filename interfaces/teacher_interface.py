@@ -99,14 +99,20 @@ class TeachersInterface:
             pass
 
     def __replacement(self):
-        # print(2, 3)
+        print("""Посмотреть замену:
+    0 - На сегодня
+    1 - На неделе
+(Выберите номер)""")
         # Метод, который отвечает за замены
         self.__replacement_method_flag = self.clever_input(['0', '1'])
         if self.__replacement_method_flag == '0':
+            print("Вы посмотрели расписание на сегодня")
             pass
         elif self.__replacement_method_flag == '1':
+            print("Вы посмотрели расписание на неделю")
             pass
-        elif self.__student_search_method_flag == 'exit':
+        elif self.__replacement_method_flag == 'exit':
+            print("Вы решили закончить просмотр, не начав")
             pass
 
     def __my_classes(self):
