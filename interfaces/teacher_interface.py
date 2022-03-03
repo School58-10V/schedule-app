@@ -125,14 +125,16 @@ class TeachersInterface:
             print("выход")
 
     def __student_search(self):
-        # Метод, который отвечает за поиск студентов
+        print("""Поиск ученика
+        0-где ученик сейчас
+        1-расписание ученика""")
         self.__student_search_method_flag = self.clever_input(['0', '1'])
         if self.__student_search_method_flag == '0':
-            pass
+            print('кабинет в котором сейчас ученик:')
         elif self.__student_search_method_flag == '1':
-            pass
+            print('расписание ученика:')
         elif self.__student_search_method_flag == 'exit':
-            pass
+            print('Вы решили закончить просмотр, не начав')
 
     def __replacement(self):
         print("""
