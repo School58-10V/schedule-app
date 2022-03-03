@@ -179,6 +179,9 @@ class TeachersInterface:
             pass
 
     def __holidays(self):
+        print("Посмотреть каникулы:"
+              "0: Посмотреть ближайшие каникулы"
+              "1: Посмотреть каникулы на определённый год")
         self.__holidays_method_flag = self.clever_input(['0', '1'])
         if self.__holidays_method_flag == '0':
             print("Вы посмотрели ближайшие каникулы")
@@ -188,6 +191,7 @@ class TeachersInterface:
             print("Вы вышли из каникул")
 
     def __next_lesson(self):
+        print("Посмотреть следующий урок")
         self.__next_lesson_method_flag = self.clever_input([''])  # Та же ситуация
         if self.__next_lesson_method_flag == 'exit':
             print("Вы вышли из следующего урока")
