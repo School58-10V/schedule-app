@@ -57,7 +57,6 @@ class DBSource(AbstractSource):
         self.__cursor_execute_wrapper(cursor, request)
         data = cursor.fetchall()
         desc = cursor.description
-
         return self.__format_tuple_to_dict(data, desc)
 
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
@@ -71,9 +70,6 @@ class DBSource(AbstractSource):
             raise ValueError(f'Объект с id {object_id} из {collection_name} не существует')
         # берем 0 индекс т.к. длина ответа всегда либо 0 (уже обработали), либо 1, т.е. смысла возвращать список нет.
         return self.__format_tuple_to_dict(data, desc)[0]
-
-    def check_unique_id(self, collection_name: str, object_id: int) -> bool:
-        pass
 
     def insert(self, collection_name: str, document: dict) -> dict:
         self.connect()
@@ -98,19 +94,20 @@ class DBSource(AbstractSource):
         self.__conn.commit()
         return document
 
-    def update(self, collection_name: str, data: dict):
+    def update(self, collection_name: str, document: dict):
         self.connect()
-        object_id = data.pop("object_id")
+        object_id = document.pop("object_id")
         collection = collection_name
+        req_data = []
         if not collection_name.endswith("s"):
             collection += "s"
-        for i in range(len(data)):
-            key = self.get_dict_key(data, i)
-            request = f'UPDATE "{collection}" SET {str(key)} = {str(data.get(key))} WHERE object_id = {str(object_id)}'
-            print(request)
-            self.__cursor.execute(request)
-            self.__conn.commit()
-        return data
+        for elem in document:
+            req_data.append(f"{elem} = {self.__wrap_string(document.get(elem))}")
+        print(req_data)
+        request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
+        self.__cursor.execute(request)
+        self.__conn.commit()
+        return document
 
     def delete(self, collection_name: str, object_id: int):
         self.connect()
@@ -126,13 +123,15 @@ class DBSource(AbstractSource):
             print("Что то пошло не так при удалении этого элемента, скорее всего виноваты внешние ключи.")
 
     @staticmethod
-    def get_dict_key(data: dict, iterator: int):
-        counter = -1
-        for key in data:
-            counter += 1
-            if counter == iterator:
-                return key
-        return None
+    def __wrap_string(value):
+        if value is None:
+            # Для базы None записывается по-другому
+            return 'null'
+        elif type(value) == str or type(value) == datetime.date:
+            # Дата и строки должны быть в ковычках
+            return f"'{value}'"
+        else:
+            return value
 
     def __data_processing(self, document):
         # Функция, которая преобразовывает данные моделей для запроса
