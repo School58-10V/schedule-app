@@ -197,10 +197,9 @@ class TeacherInterface:
         if self.__next_lesson_method_flag == 'exit':
             print("Вы вышли из следующего урока")
 
-
-#if __name__ == '__main__':
+# if __name__ == '__main__':
 #    from adapters.db_source import DBSource
-#db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+# db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
 #                     password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
-#test_intf = TeacherInterface(db_source, 1)
-#test_intf.run()
+# test_intf = TeacherInterface(db_source, 1)
+# test_intf.run()
