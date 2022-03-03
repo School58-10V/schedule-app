@@ -23,6 +23,16 @@ class TeachersInterface:
         self.__lst = [self.__timetable, self.__replacement, self.__student_search, self.__my_classes,
                       self.__teacher_search, self.__my_class, self.__holidays,
                       self.__next_lesson]  # убрал дубль self.__timetable
+        self.__days = {
+        1: "понедельник",
+        2: "вторник",
+        3: "среда",
+        4: "четверг",
+        5: "пятница",
+        6: "суббота",
+        7: "воскресенье",
+        0: "выход"
+        }
 
     def __check_input(self, string: str, message: str = None) -> str:
         #  Метод, который проверяет, что ввод корректен (не пустой хотя бы)
@@ -80,13 +90,30 @@ class TeachersInterface:
         # print(0, 1)  # для теста, чтобы как-то обозначить
         self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
         if self.__timetable_method_flag == '0':
-            pass
+            print("вы посмотрели расписание на неделю")
         elif self.__timetable_method_flag == '1':
-            pass
+            param = input('''на какой день вы хотите посмотреть расписание?
+                    1 - понедельник
+                    2 - вторник
+                    3 - среда
+                    4 - четверг
+                    5 - пятница
+                    6 - суббота
+                    7 - воскресенье
+                    0 - выход
+                  ''')
+            try:
+                param = int(param)
+            except (ValueError):
+                print("Попробуйте снова!")
+            if 0 < param <= 7:
+                print(f"вы посмотрели расписание на {self.__days[param]}")
+            elif param == 0:
+                print("выход")
         elif self.__timetable_method_flag == '2':
-            pass
+            print("расписаие на текущий день")
         elif self.__timetable_method_flag == 'exit':
-            pass
+            print("выход")
 
     def __student_search(self):
         # Метод, который отвечает за поиск студентов
