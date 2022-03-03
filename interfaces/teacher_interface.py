@@ -91,7 +91,8 @@ class TeacherInterface:
         # print(0, 1)  # для теста, чтобы как-то обозначить
         print("Вы смотрите расписание.\n"
               "0 - на неделю\n"
-              "1 - на сегодня\n")
+              "1 - на конкретный день\n"
+              "2 - на сегодня")
         self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
         if self.__timetable_method_flag == '0':
             print("вы посмотрели расписание на неделю")
