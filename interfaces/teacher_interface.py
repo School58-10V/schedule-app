@@ -118,11 +118,11 @@ class TeachersInterface:
     def __my_classes(self):
         self.__my_classes_method_flag = self.clever_input(['0', '1'])
         if self.__my_classes_method_flag == '0':
-            pass
+            print('классы сегодня')
         elif self.__my_classes_method_flag == '1':
-            pass
+            print('классы на неделю')
         elif self.__my_classes_method_flag == 'exit':
-            pass
+            print('Вы решили закончить просмотр, не начав')
 
     def __teacher_search(self):
         self.__teacher_search_method_flag = self.clever_input(['0'])
