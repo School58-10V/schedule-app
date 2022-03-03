@@ -135,16 +135,16 @@ class TeachersInterface:
     def __holidays(self):
         self.__holidays_method_flag = self.clever_input(['0', '1'])
         if self.__holidays_method_flag == '0':
-            pass
+            print("Вы посмотрели ближайшие каникулы")
         elif self.__holidays_method_flag == '1':
-            pass
+            print("Вы ввели год и посмотрели каникулы на этот год")
         elif self.__holidays_method_flag == 'exit':
-            pass
+            print("Вы вышли из каникул")
 
     def __next_lesson(self):
         self.__next_lesson_method_flag = self.clever_input([''])  # Та же ситуация
         if self.__next_lesson_method_flag == 'exit':
-            pass
+            print("Вы вышли из следующего урока")
 
 
 if __name__ == '__main__':
