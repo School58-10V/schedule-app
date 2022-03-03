@@ -1,29 +1,21 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from tabulate import tabulate
+
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
 
 
 class TeacherInterface:
-    __menu = '''
--------------------------------------------------------------
-| 1 |- Посмотреть расписание                                 |
--------------------------------------------------------------
-| 2  |- Узнать замену                                        |
--------------------------------------------------------------
-| 3 |- Найти ученика                                         |
--------------------------------------------------------------
-| 4 |- Посмотреть классы, которые я веду                     |
--------------------------------------------------------------
-| 5 |- Найти учителя                                         |
--------------------------------------------------------------
-| 6 |- Посмотреть информацию о моем классе                   |
--------------------------------------------------------------
-| 7 |- Посмотреть информацию о каникулах                     |
--------------------------------------------------------------
-| 8 |- Мой следующий урок                                    |
--------------------------------------------------------------'''
+    __menu = tabulate([(1, "Посмотреть раписание"),
+                       (2, "Узнать замену"),
+                       (3, "Найти ученика"),
+                       (4, "Посмотреть классы, которые я веду"),
+                       (5, "Найти учителя"),
+                       (6, "Посмотреть информацию о моем классе"),
+                       (7, "Посмотреть информацию о каникулах"),
+                       (8, "Мой следующий урок")], ['Выбор', 'Команда'], tablefmt='grid')
 
     def __init__(self, db_source: DBSource, teacher_id: int):
         self.__db_source = db_source
@@ -205,10 +197,10 @@ class TeacherInterface:
         if self.__next_lesson_method_flag == 'exit':
             print("Вы вышли из следующего урока")
 
-# if __name__ == '__main__':
-#     from adapters.db_source import DBSource
-#
-#     db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
-#                          password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
-#     test_intf = TeachersInterface(db_source, 1)
-#     test_intf.run()
+
+#if __name__ == '__main__':
+#    from adapters.db_source import DBSource
+#db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+#                     password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
+#test_intf = TeacherInterface(db_source, 1)
+#test_intf.run()
