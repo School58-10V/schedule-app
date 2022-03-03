@@ -159,10 +159,12 @@ class TeachersInterface:
             pass
 
     def __my_class(self):
+        print("""Смотрим информацию о вашем классе. Нажмите enter, чтобы продолжить""")
         self.__my_class_method_flag = self.clever_input([''])  # тут пустой список передавать нельзя,
         # т.к будет бесконечный цикл, пока пользователь не введет exit. Надо будет передавать либо пустую
         # строку и пользователя просить нажать enter, или что-то еще придумать
         if self.__my_class_method_flag == 'exit':
+            print("""Вы вышли из просмотра информации о вашем классе""")
             pass
 
     def __holidays(self):
