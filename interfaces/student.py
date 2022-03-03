@@ -58,19 +58,20 @@ class StudentInterface:
             option = int(input('Введите коректное число'))
 
         if option == 1:
-            return self.__get_schedule_for_today()
+            print(self.__get_schedule_for_today())
         elif option == 2:
-            return self.__get_schedule_for_week()
+            print(self.__get_schedule_for_week())
         elif option == 3:
             day = int(input('''
 Напишите день на котороый хотите посмотреть расписание
 Понедельник - 1
 Вторник - 2
  т.д.'''))
-            self.__get_schedule_for_day(day)
+            print(self.__get_schedule_for_day(day))
 
     def replacements(self):
-        v_replacements = input("Выбирите опцию: 1. Замена на сегоднишний день 2. Выбирите замену по предмету, дате, преподователю")
+        v_replacements = input(
+            "Выбирите опцию: 1. Замена на сегоднишний день 2. Выбирите замену по предмету, дате, преподователю")
         while True:
             if v_replacements in ["1", "2"]:
                 break
@@ -79,27 +80,33 @@ class StudentInterface:
         if v_replacements == "1":
             print(f"Замены на сегодня{self.__today_replacements()}")
         elif v_replacements == "2":
-            lesson = input("Выбирите предмет, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            lesson = input(
+                "Выбирите предмет, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
             while True:
                 if self.__check_lesson(lesson):
                     break
                 else:
                     print("Неверный предмет.")
-                    lesson = input("Выбирите предмет, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
-            teacher = input("Выбирите учителя, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+                    lesson = input(
+                        "Выбирите предмет, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            teacher = input(
+                "Выбирите учителя, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
             while True:
                 if self.__check_teacher(teacher):
                     break
                 else:
                     print("Неверный учитель.")
-                    teacher = input("Выбирите учителя, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
-            day = input("Выбирите день, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+                    teacher = input(
+                        "Выбирите учителя, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            day = input(
+                "Выбирите день, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
             while True:
                 if self.__check_day(day):
                     break
                 else:
                     print("Неверный день.")
-                    day = input("Выбирите день, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+                    day = input(
+                        "Выбирите день, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
             print(f"Замены на {day}: {self.__day_replacements(lesson, teacher, day)}")
 
     def holidays(self):
@@ -183,7 +190,6 @@ class StudentInterface:
     def __today_replacements(self):
         return "замены на сегоднешний день"
 
-
     def __check_lesson(self, lesson):
         return True
 
@@ -193,6 +199,17 @@ class StudentInterface:
     def __check_day(self, day):
         return True
 
+    def __get_schedule_for_today(self):
+        return 'расписание на сегодня'
 
-a = StudentInterface()
-a.main_loop()
+    def __get_schedule_for_week(self):
+        return 'расписание на эту неделю'
+
+    def __get_schedule_for_day(self, day):
+        return f'расписание на день {day}'
+
+    def __day_replacements(self, lesson, teacher, day):
+        return f'заменя для урока {lesson} учителя {teacher} дня {day}'
+
+
+
