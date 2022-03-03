@@ -18,6 +18,7 @@ class TeachersInterface:
 
     @staticmethod
     def clever_input(valid: list):
+        # Проверяет, что пользователь ввел то, что нужно (правильные значения передаются в аргументах)
         valid.append('exit')
         user_input = input()
         while user_input not in valid:
@@ -61,6 +62,7 @@ class TeachersInterface:
         return True
 
     def __timetable(self):
+        # Метод, который отвечает за расписание
         self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
         if self.__timetable_method_flag == '0':
             pass
@@ -72,26 +74,28 @@ class TeachersInterface:
             pass
 
     def __student_search(self):
+        # Метод, который отвечает за поиск студентов
         self.__student_search_method_flag = self.clever_input(['0', '1'])
-        if self.__student_method_flag == '0':
+        if self.__timetable_method_flag == '0':
             pass
-        elif self.__student_method_flag == '1':
+        elif self.__timetable_method_flag == '1':
             pass
-        elif self.__student_method_flag == 'exit':
+        elif self.__timetable_method_flag == 'exit':
             pass
 
     def __replacement(self):
-        self.__replacement_method_flag = self.clever_input(['0', '1'])
-        if self.__replacement_method_flag == '0':
+        # Метод, который отвечает за замены
+        self.__timetable_method_flag = self.clever_input(['0', '1'])
+        if self.__timetable_method_flag == '0':
             pass
-        if self.__replacement_method_flag == '1':
+        if self.__timetable_method_flag == '1':
             pass
 
     def __my_classes(self):
-        self.__my_classes_method_flag = self.clever_input(['0', '1', '2'])
-        if self.__my_classes_method_flag == 'day':
+        self.__timetable_method_flag = self.clever_input(['0', '1'])
+        if self.__timetable_method_flag == '0':
             pass
-        elif self.__my_classes_method_flag == 'week':
+        elif self.__timetable_method_flag == '1':
             pass
-        elif self.__my_classes_method_flag == 'exit':
+        elif self.__timetable_method_flag == 'exit':
             pass
