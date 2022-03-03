@@ -1,3 +1,6 @@
+import datetime
+
+
 class StudentInterface:
     def __init__(self):
         self.current_user = None
@@ -52,7 +55,24 @@ class StudentInterface:
     def replacements(self):
         pass
 
-    def free_days(self):
+    def holidays(self):
+        choice = int(input('Введите: 1 для выбора нужного года; 2 для показа ближайших каникул; 0 для выхода из команды.\n'))
+        while choice != 0:
+            if choice == 1:
+                year = int(input('Введите нужный год.\n'))
+                if not self.__check_year(year):
+                    while not self.__check_year(year):
+                        year = int(input('Неверный ввод. Попробуйте ввести год снова.\n'))
+                print(self.__get_holidays_for_year(year))
+                break
+            elif choice == 2:
+                print(self.__get_near_holidays())
+                break
+            else:
+                print('Неверный ввод. Попробуйте снова.\n')
+                choice = int(input(
+                    'Введите: 1 для выбора нужного года; 2 для показа ближайших каникул; 0 для выхода из команды.\n'))
+        self.main_loop()
         pass
 
     def my_next_lesson(self):
@@ -82,14 +102,21 @@ class StudentInterface:
         # возвращает фио учителя-классрука для ученика у которого такое имя
         return f'<классрук ученика {student_name}>'
 
+    def __check_year(self, year):  # проверка на наличие timetable на год
+        return True
     def __check_student_name(self, student_name):
         # проверяет существование ученика с таким именем
         return True
 
+    def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
+        return f'каникулы на {year} год'
     def __check_teacher_name(self, teacher_name):
         # проверяет существование учителя с таким именем
         return True
 
+    def __get_near_holidays(self):
+        day = datetime.date.today()
+        return f'следующие каникулы с {day}'
     def __get_teacher_classroom(self, teacher_name):
         # возвращает кабинет в котором обитает учитель с таким именем
         return f'кабинет номер 00000 учителя {teacher_name}'
