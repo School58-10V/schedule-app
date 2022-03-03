@@ -135,10 +135,12 @@ class TeachersInterface:
             pass
 
     def __replacement(self):
-        print("""Посмотреть замену:
-    0 - На сегодня
-    1 - На неделе
-(Выберите номер)""")
+        print("""
+        Посмотреть замену:
+        0 - На сегодня
+        1 - На неделе
+        (Выберите номер)
+        """)
         # Метод, который отвечает за замены
         self.__replacement_method_flag = self.clever_input(['0', '1'])
         if self.__replacement_method_flag == '0':
