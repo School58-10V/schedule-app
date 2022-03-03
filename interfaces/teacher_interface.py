@@ -33,15 +33,15 @@ class TeachersInterface:
                       self.__teacher_search, self.__my_class, self.__holidays,
                       self.__next_lesson]  # убрал дубль self.__timetable
         self.__days = {
-        1: "понедельник",
-        2: "вторник",
-        3: "среда",
-        4: "четверг",
-        5: "пятница",
-        6: "суббота",
-        7: "воскресенье",
-        0: "выход"
-        }
+            1: "понедельник",
+            2: "вторник",
+            3: "среда",
+            4: "четверг",
+            5: "пятница",
+            6: "суббота",
+            7: "воскресенье",
+            0: "выход"
+            }
 
     def __check_input(self, string: str, message: str = None) -> str:
         #  Метод, который проверяет, что ввод корректен (не пустой хотя бы)
@@ -113,7 +113,7 @@ class TeachersInterface:
                   ''')
             try:
                 param = int(param)
-            except (ValueError):
+            except ValueError:
                 print("Попробуйте снова!")
             if 0 < param <= 7:
                 print(f"вы посмотрели расписание на {self.__days[param]}")
@@ -199,7 +199,6 @@ class TeachersInterface:
         self.__next_lesson_method_flag = self.clever_input([''])  # Та же ситуация
         if self.__next_lesson_method_flag == 'exit':
             print("Вы вышли из следующего урока")
-
 
 # if __name__ == '__main__':
 #     from adapters.db_source import DBSource
