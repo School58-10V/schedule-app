@@ -1,4 +1,5 @@
 import datetime
+from tabulate import tabulate
 
 from adapters.abstract_source import AbstractSource
 
@@ -24,15 +25,14 @@ class StudentInterface:
     def main_loop(self):
         while True:
             print()
-            option = self.__smart_input('Выберете опцию:\n'
-                                        '1. Информация о учителе\n'
-                                        '2. Узнать классного руководителя ученика\n'
-                                        '3. Мое следующее занятие\n'
-                                        '4. Информация о каникулах\n'
-                                        '5. Информация о заменах\n'
-                                        '6. Расписание\n'
-                                        '0. Выйти из аккаунта\n'
-                                        'Ваша опция (используйте exit чтобы в любой момент выйти в главное меню): ')
+            print(tabulate([(1, "Информация о учителе"),
+                       (2, "Узнать классного руководителя ученика"),
+                       (3, "Мое следующее занятие"),
+                       (4, "Информация о каникулах"),
+                       (5, "Информация о заменах"),
+                       (6, "Расписание"),
+                       (0, "Выйти из аккаунта")], ['Опция', 'Команда'], tablefmt='grid'))
+            option = self.__smart_input('Ваша опция (используйте exit чтобы в любой момент выйти в главное меню): ')
             if option == '1':
                 self.__teacher_info()
             elif option == '2':
@@ -205,3 +205,4 @@ class StudentInterface:
             print('Возвращаюсь в главное меню...')
             self.main_loop()
         return res
+

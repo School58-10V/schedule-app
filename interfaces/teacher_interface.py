@@ -15,7 +15,7 @@ class TeacherInterface:
                        (5, "Найти учителя"),
                        (6, "Посмотреть информацию о моем классе"),
                        (7, "Посмотреть информацию о каникулах"),
-                       (8, "Мой следующий урок")], ['Выбор', 'Команда'], tablefmt='grid')
+                       (8, "Мой следующий урок")], ['Опция', 'Команда'], tablefmt='grid')
 
     def __init__(self, db_source: DBSource, teacher_id: int):
         self.__db_source = db_source
