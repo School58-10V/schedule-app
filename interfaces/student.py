@@ -39,7 +39,7 @@ class StudentInterface:
             elif option == '3':
                 self.my_next_lesson()
             elif option == '4':
-                self.free_days()
+                self.holidays()
             elif option == '5':
                 self.replacements()
             elif option == '6':
@@ -53,30 +53,61 @@ class StudentInterface:
         pass
 
     def replacements(self):
-        pass
-
-    def holidays(self):
-        choice = int(input('Введите: 1 для выбора нужного года; 2 для показа ближайших каникул; 0 для выхода из команды.\n'))
-        while choice != 0:
-            if choice == 1:
-                year = int(input('Введите нужный год.\n'))
-                if not self.__check_year(year):
-                    while not self.__check_year(year):
-                        year = int(input('Неверный ввод. Попробуйте ввести год снова.\n'))
-                print(self.__get_holidays_for_year(year))
-                break
-            elif choice == 2:
-                print(self.__get_near_holidays())
+        v_replacements = input("Выбирите опцию: 1. Замена на сегоднишний день 2. Выбирите замену по предмету, дате, преподователю")
+        while True:
+            if v_replacements in ["1", "2"]:
                 break
             else:
-                print('Неверный ввод. Попробуйте снова.\n')
-                choice = int(input(
-                    'Введите: 1 для выбора нужного года; 2 для показа ближайших каникул; 0 для выхода из команды.\n'))
-        self.main_loop()
-        pass
+                print("Неверная опция.")
+        if v_replacements == "1":
+            print(f"Замены на сегодня{self.__today_replacements()}")
+        elif v_replacements == "2":
+            lesson = input("Выбирите предмет, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            while True:
+                if self.__check_lesson(lesson):
+                    break
+                else:
+                    print("Неверный предмет.")
+                    lesson = input("Выбирите предмет, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            teacher = input("Выбирите учителя, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            while True:
+                if self.__check_teacher(teacher):
+                    break
+                else:
+                    print("Неверный учитель.")
+                    teacher = input("Выбирите учителя, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            day = input("Выбирите день, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            while True:
+                if self.__check_day(day):
+                    break
+                else:
+                    print("Неверный день.")
+                    day = input("Выбирите день, для которого ищется замена (Если этот пораметр вас не интересует запишите '-'):")
+            print(f"Замены на {day}: {self.__day_replacements(lesson, teacher, day)}")
+
+    def holidays(self):
+        try:
+            choice = int(input('1. Выбора нужного года\n'
+                               '2. Ближайшие каникулы\n'))
+        except ValueError:
+            print('Неверная опция!')
+            return
+
+        if choice == 1:
+            year = int(input('Введите нужный год.\n'))
+            if not self.__check_year(year):
+                while not self.__check_year(year):
+                    year = int(input('Неверный ввод. Попробуйте ввести год снова.\n'))
+            print(self.__get_holidays_for_year(year))
+        elif choice == 2:
+            print(self.__get_near_holidays())
+        else:
+            print('Неверная опция!')
 
     def my_next_lesson(self):
-        pass
+        current_datetime = datetime.datetime.now()
+        closest_lesson = self.__get_closest_lesson_for_current_student(current_datetime)
+        print(f'Ваш ближайший урок: {closest_lesson}')
 
     def get_class_teacher(self):
         student_name = input('Введите полное ФИО ученика по которому хотите получить информацию о классруке: ')
@@ -104,12 +135,14 @@ class StudentInterface:
 
     def __check_year(self, year):  # проверка на наличие timetable на год
         return True
+
     def __check_student_name(self, student_name):
         # проверяет существование ученика с таким именем
         return True
 
     def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
         return f'каникулы на {year} год'
+
     def __check_teacher_name(self, teacher_name):
         # проверяет существование учителя с таким именем
         return True
@@ -117,6 +150,7 @@ class StudentInterface:
     def __get_near_holidays(self):
         day = datetime.date.today()
         return f'следующие каникулы с {day}'
+
     def __get_teacher_classroom(self, teacher_name):
         # возвращает кабинет в котором обитает учитель с таким именем
         return f'кабинет номер 00000 учителя {teacher_name}'
@@ -124,6 +158,25 @@ class StudentInterface:
     def __get_teacher_schedule(self, teacher_name):
         # возвращает расписание учителя с таким именем в виде таблицы, т.е. уже отформатированное
         return f'<тестовое расписание учителя {teacher_name}>'
+
+    def __get_closest_lesson_for_current_student(self, current_datetime: datetime.datetime):
+        return f'<Ближайший урок от настоящего момента ({current_datetime.strftime("%b %d %Y %H:%M:%S")})>' \
+               f' - от учителя X, в кабинете N, время проведения: K'
+
+    def __today_replacements(self):
+        return "замены на сегоднешний день"
+
+    def __day_replacements(self, lesson, teacher, day):
+        return "замены на конкретный день"
+
+    def __check_lesson(self, lesson):
+        return True
+
+    def __check_teacher(self, teacher):
+        return True
+
+    def __check_day(self, day):
+        return True
 
 
 a = StudentInterface()
