@@ -110,19 +110,19 @@ class TeachersInterface:
 
     def __my_class(self):
         self.__my_class_method_flag = self.clever_input([])
-        if self.__timetable_method_flag == 'exit':
+        if self.__my_class_method_flag == 'exit':
             pass
 
     def __holidays(self):
         self.__holidays_method_flag = self.clever_input(['0', '1'])
-        if self.__timetable_method_flag == '0':
+        if self.__holidays_method_flag == '0':
             pass
-        elif self.__timetable_method_flag == '1':
+        elif self.__holidays_method_flag == '1':
             pass
-        elif self.__timetable_method_flag == 'exit':
+        elif self.__holidays_method_flag == 'exit':
             pass
 
     def __next_lesson(self):
         self.__next_lesson_method_flag = self.clever_input([])
-        if self.__timetable_method_flag == 'exit':
+        if self.__next_lesson_method_flag == 'exit':
             pass
