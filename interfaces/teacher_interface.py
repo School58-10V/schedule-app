@@ -11,9 +11,9 @@ class TeachersInterface:
         self.__db_source = db_source
         self.teacher_id = None
         # Список, который хранит все методы для удобного вызова (его в общем, надо сюда)
-        self.lst = [self.__timetable, self.__replacement, self.__student_search, self.__my_classes,
-                    self.__teacher_search, self.__my_class, self.__holidays,
-                    self.__next_lesson]  # убрал дубль self.__timetable
+        self.__lst = [self.__timetable, self.__replacement, self.__student_search, self.__my_classes,
+                      self.__teacher_search, self.__my_class, self.__holidays,
+                      self.__next_lesson]  # убрал дубль self.__timetable
 
     def __check_input(self, string: str, message: str = None) -> str:
         #  Метод, который проверяет, что ввод корректен (не пустой хотя бы)
@@ -23,9 +23,10 @@ class TeachersInterface:
     def clever_input(valid: list):
         # Проверяет, что пользователь ввел то, что нужно (правильные значения передаются в аргументах)
         valid.append('exit')
-        user_input = input()
+        user_input = input().lower().strip()
         while user_input not in valid:
-            user_input = input()
+            print('Ввод плохой, повторите пожалуйста!')
+            user_input = input().lower().strip()
         return user_input
 
     def __check_password(self, login: str, password: str) -> bool:
@@ -52,7 +53,7 @@ class TeachersInterface:
             try:
                 num = int(string)  # Переводим
                 # Вызываем функцию, название которой лежит в списке (да, так оно вызываеться!!!!)
-                self.lst[num]()
+                self.__lst[num]()
                 return True
             except (IndexError, ValueError):  # Если неправильный ввод, то либо увеличиваем счетчик
                 if string == 'exit':  # Или другое слово, которое означает конец использования
@@ -67,7 +68,7 @@ class TeachersInterface:
 
     def __timetable(self):
         # Метод, который отвечает за расписание
-        # print(0, 1) для теста, чтобы как-то обозначить
+        # print(0, 1)  # для теста, чтобы как-то обозначить
         self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
         if self.__timetable_method_flag == '0':
             pass
@@ -96,9 +97,6 @@ class TeachersInterface:
             pass
         elif self.__replacement_method_flag == '1':
             pass
-        # Есть еще предложение обрабатывать это сразу в методе
-        # clever_input и пусть он возвращает тогда то, что не обрабатывается в этих методах.
-        # Тогда метод просто не будет ничего делать, а метод clever_input будет сам прощаться с пользователем
         elif self.__student_search_method_flag == 'exit':
             pass
 
