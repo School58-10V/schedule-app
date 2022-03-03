@@ -6,7 +6,7 @@ from adapters.db_source import DBSource
 
 
 class Cli:
-    def __init__(self, db_source: DBSource, usr_id : int):
+    def __init__(self, db_source: DBSource, usr_id: int):
         self.__db_source = db_source
         self.__usr_interface = None
         self.__usr_id = usr_id
