@@ -1,8 +1,6 @@
 import datetime
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from adapters.abstract_source import AbstractSource
+from adapters.abstract_source import AbstractSource
 
 
 class StudentInterface:
@@ -26,15 +24,14 @@ class StudentInterface:
     def main_loop(self):
         while True:
             print()
-            option = self.__smart_input('Выберете опцию:\n'
-                           '1. Информация о учителе\n'
-                           '2. Узнать классного руководителя ученика\n'
-                           '3. Мое следующее занятие\n'
-                           '4. Информация о каникулах\n'
-                           '5. Информация о заменах\n'
-                           '6. Расписание\n'
-                           '0. Выйти из аккаунта\n'
-                           'Ваша опция (используйте exit чтобы в любой момент выйти в главное меню): ')
+            print(tabulate([(1, "Информация о учителе"),
+                       (2, "Узнать классного руководителя ученика"),
+                       (3, "Мое следующее занятие"),
+                       (4, "Информация о каникулах"),
+                       (5, "Информация о заменах"),
+                       (6, "Расписание"),
+                       (0, "Выйти из аккаунта")], ['Опция', 'Команда'], tablefmt='grid'))
+            option = self.__smart_input('Ваша опция (используйте exit чтобы в любой момент выйти в главное меню): ')
             if option == '1':
                 self.__teacher_info()
             elif option == '2':
@@ -55,8 +52,8 @@ class StudentInterface:
     def __schedule(self):
         while True:
             option = int(self.__smart_input('Напишите 1 - чтобы посмотреть расписание на сегодня\n'
-                               'Напишите 2 - чтобы посмотреть расписание на неделю\n'
-                               'Напишите 3 - чтобы посмотреть расписание на какой-либо день\n'))
+                                            'Напишите 2 - чтобы посмотреть расписание на неделю\n'
+                                            'Напишите 3 - чтобы посмотреть расписание на какой-либо день\n'))
             if option in [1, 2, 3]:
                 break
             else:
@@ -97,7 +94,7 @@ class StudentInterface:
     def __holidays(self):
         try:
             choice = int(self.__smart_input('1. Выбора нужного года\n'
-                               '2. Ближайшие каникулы\n'))
+                                            '2. Ближайшие каникулы\n'))
         except ValueError:
             self.__holidays()
             return
@@ -120,7 +117,8 @@ class StudentInterface:
         print(f'Ваш ближайший урок: {closest_lesson}')
 
     def __get_class_teacher(self):
-        student_name = self.__smart_input('Введите полное ФИО ученика по которому хотите получить информацию о классруке: ')
+        student_name = self.__smart_input(
+            'Введите полное ФИО ученика по которому хотите получить информацию о классруке: ')
         if not self.__check_student_name(student_name):
             print('Неверное имя ученика!')
             self.__get_class_teacher()
@@ -206,3 +204,4 @@ class StudentInterface:
             print('Возвращаюсь в главное меню...')
             self.main_loop()
         return res
+

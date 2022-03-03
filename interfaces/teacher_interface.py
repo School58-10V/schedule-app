@@ -1,29 +1,21 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from tabulate import tabulate
+
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
 
 
 class TeacherInterface:
-    __menu = '''
--------------------------------------------------------------
-| 1 |- Посмотреть расписание                                 |
--------------------------------------------------------------
-| 2  |- Узнать замену                                        |
--------------------------------------------------------------
-| 3 |- Найти ученика                                         |
--------------------------------------------------------------
-| 4 |- Посмотреть классы, которые я веду                     |
--------------------------------------------------------------
-| 5 |- Найти учителя                                         |
--------------------------------------------------------------
-| 6 |- Посмотреть информацию о моем классе                   |
--------------------------------------------------------------
-| 7 |- Посмотреть информацию о каникулах                     |
--------------------------------------------------------------
-| 8 |- Мой следующий урок                                    |
--------------------------------------------------------------'''
+    __menu = tabulate([(1, "Посмотреть раписание"),
+                       (2, "Узнать замену"),
+                       (3, "Найти ученика"),
+                       (4, "Посмотреть классы, которые я веду"),
+                       (5, "Найти учителя"),
+                       (6, "Посмотреть информацию о моем классе"),
+                       (7, "Посмотреть информацию о каникулах"),
+                       (8, "Мой следующий урок")], ['Опция', 'Команда'], tablefmt='grid')
 
     def __init__(self, db_source: DBSource, teacher_id: int):
         self.__db_source = db_source
@@ -98,12 +90,13 @@ class TeacherInterface:
         # Метод, который отвечает за расписание
         # print(0, 1)  # для теста, чтобы как-то обозначить
         print("Вы смотрите расписание.\n"
-              "0 - на неделю\n"
-              "1 - на сегодня\n")
-        self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
-        if self.__timetable_method_flag == '0':
+              "1 - на неделю\n"
+              "2 - на конкретный день\n"
+              "3 - на сегодня")
+        self.__timetable_method_flag = self.clever_input(['3', '1', '2'])
+        if self.__timetable_method_flag == '1':
             print("вы посмотрели расписание на неделю")
-        elif self.__timetable_method_flag == '1':
+        elif self.__timetable_method_flag == '2':
             param = input('''на какой день вы хотите посмотреть расписание?
                     1 - понедельник
                     2 - вторник
@@ -122,19 +115,19 @@ class TeacherInterface:
                 print(f"вы посмотрели расписание на {self.__days[param]}")
             elif param == 0:
                 print("выход")
-        elif self.__timetable_method_flag == '2':
+        elif self.__timetable_method_flag == '3':
             print("расписаие на текущий день")
         elif self.__timetable_method_flag == 'exit':
             print("выход")
 
     def __student_search(self):
         print("""Поиск ученика
-        0-где ученик сейчас
-        1-расписание ученика""")
-        self.__student_search_method_flag = self.clever_input(['0', '1'])
-        if self.__student_search_method_flag == '0':
+        1-где ученик сейчас
+        2-расписание ученика""")
+        self.__student_search_method_flag = self.clever_input(['2', '1'])
+        if self.__student_search_method_flag == '1':
             print('кабинет в котором сейчас ученик:')
-        elif self.__student_search_method_flag == '1':
+        elif self.__student_search_method_flag == '2':
             print('расписание ученика:')
         elif self.__student_search_method_flag == 'exit':
             print('Вы решили закончить просмотр, не начав')
@@ -142,16 +135,16 @@ class TeacherInterface:
     def __replacement(self):
         print("""
         Посмотреть замену:
-        0 - На сегодня
-        1 - На неделе
+        1 - На сегодня
+        2 - На неделе
         (Выберите номер)
         """)
         # Метод, который отвечает за замены
-        self.__replacement_method_flag = self.clever_input(['0', '1'])
-        if self.__replacement_method_flag == '0':
+        self.__replacement_method_flag = self.clever_input(['2', '1'])
+        if self.__replacement_method_flag == '1':
             print("Вы посмотрели замена на сегодня")
             pass
-        elif self.__replacement_method_flag == '1':
+        elif self.__replacement_method_flag == '2':
             print("Вы посмотрели замена на неделю")
             pass
         elif self.__replacement_method_flag == 'exit':
@@ -160,11 +153,11 @@ class TeacherInterface:
 
     def __my_classes(self):
         print("""Просмотреть классы:
-    0 - На сегодня
-    1 - На неделю
+    1 - На сегодня
+    2 - На неделю
     (Выберите вариант)""")
-        self.__my_classes_method_flag = self.clever_input(['0', '1'])
-        if self.__my_classes_method_flag == '0':
+        self.__my_classes_method_flag = self.clever_input(['2', '1'])
+        if self.__my_classes_method_flag == '2':
             print('классы сегодня')
         elif self.__my_classes_method_flag == '1':
             print('классы на неделю')
@@ -172,8 +165,8 @@ class TeacherInterface:
             print('Вы решили закончить просмотр, не начав')
 
     def __teacher_search(self):
-        self.__teacher_search_method_flag = self.clever_input(['0'])
-        if self.__teacher_search_method_flag == '0':
+        self.__teacher_search_method_flag = self.clever_input(['1'])
+        if self.__teacher_search_method_flag == '1':
             pass
         elif self.__teacher_search_method_flag == 'exit':
             pass
@@ -189,12 +182,12 @@ class TeacherInterface:
 
     def __holidays(self):
         print("Посмотреть каникулы:"
-              "0: Посмотреть ближайшие каникулы"
-              "1: Посмотреть каникулы на определённый год")
-        self.__holidays_method_flag = self.clever_input(['0', '1'])
-        if self.__holidays_method_flag == '0':
+              "1: Посмотреть ближайшие каникулы"
+              "2: Посмотреть каникулы на определённый год")
+        self.__holidays_method_flag = self.clever_input(['2', '1'])
+        if self.__holidays_method_flag == '1':
             print("Вы посмотрели ближайшие каникулы")
-        elif self.__holidays_method_flag == '1':
+        elif self.__holidays_method_flag == '2':
             print("Вы ввели год и посмотрели каникулы на этот год")
         elif self.__holidays_method_flag == 'exit':
             print("Вы вышли из каникул")
@@ -206,9 +199,8 @@ class TeacherInterface:
             print("Вы вышли из следующего урока")
 
 # if __name__ == '__main__':
-#     from adapters.db_source import DBSource
-#
-#     db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
-#                          password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
-#     test_intf = TeachersInterface(db_source, 1)
-#     test_intf.run()
+#    from adapters.db_source import DBSource
+# db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+#                     password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
+# test_intf = TeacherInterface(db_source, 1)
+# test_intf.run()
