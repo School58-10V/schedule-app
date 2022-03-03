@@ -8,21 +8,21 @@ if TYPE_CHECKING:
 class TeachersInterface:
     __menu = '''
 -------------------------------------------------------------
-| 0 |- Посмотреть расписание                                 |
+| 1 |- Посмотреть расписание                                 |
 -------------------------------------------------------------
-| 1  |- Узнать замену                                        |
+| 2  |- Узнать замену                                        |
 -------------------------------------------------------------
-| 2 |- Найти ученика                                         |
+| 3 |- Найти ученика                                         |
 -------------------------------------------------------------
-| 3 |- Посмотреть классы, которые я веду                     |
+| 4 |- Посмотреть классы, которые я веду                     |
 -------------------------------------------------------------
-| 4 |- Найти учителя                                         |
+| 5 |- Найти учителя                                         |
 -------------------------------------------------------------
-| 5 |- Посмотреть информацию о моем классе                   |
+| 6 |- Посмотреть информацию о моем классе                   |
 -------------------------------------------------------------
-| 6 |- Посмотреть информацию о каникулах                     |
+| 7 |- Посмотреть информацию о каникулах                     |
 -------------------------------------------------------------
-| 7 |- Мой следующий урок                                    |
+| 8 |- Мой следующий урок                                    |
 -------------------------------------------------------------'''
 
     def __init__(self, db_source: DBSource, teacher_id: int):
@@ -81,7 +81,7 @@ class TeachersInterface:
             try:
                 num = int(string)  # Переводим
                 # Вызываем функцию, название которой лежит в списке (да, так оно вызываеться!!!!)
-                self.__lst[num]()
+                self.__lst[num - 1]()
                 return True
             except (IndexError, ValueError):  # Если неправильный ввод, то либо увеличиваем счетчик
                 if string == 'exit':  # Или другое слово, которое означает конец использования
@@ -97,6 +97,9 @@ class TeachersInterface:
     def __timetable(self):
         # Метод, который отвечает за расписание
         # print(0, 1)  # для теста, чтобы как-то обозначить
+        print("Вы смотрите расписание.\n"
+              "0 - на неделю\n"
+              "1 - на сегодня\n")
         self.__timetable_method_flag = self.clever_input(['0', '1', '2'])
         if self.__timetable_method_flag == '0':
             print("вы посмотрели расписание на неделю")
@@ -146,10 +149,10 @@ class TeachersInterface:
         # Метод, который отвечает за замены
         self.__replacement_method_flag = self.clever_input(['0', '1'])
         if self.__replacement_method_flag == '0':
-            print("Вы посмотрели расписание на сегодня")
+            print("Вы посмотрели замена на сегодня")
             pass
         elif self.__replacement_method_flag == '1':
-            print("Вы посмотрели расписание на неделю")
+            print("Вы посмотрели замена на неделю")
             pass
         elif self.__replacement_method_flag == 'exit':
             print("Вы решили закончить просмотр, не начав")
@@ -202,10 +205,10 @@ class TeachersInterface:
         if self.__next_lesson_method_flag == 'exit':
             print("Вы вышли из следующего урока")
 
-# if __name__ == '__main__':
-#     from adapters.db_source import DBSource
-#
-#     db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
-#                          password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
-#     test_intf = TeachersInterface(db_source, 1)
-#     test_intf.run()
+if __name__ == '__main__':
+    from adapters.db_source import DBSource
+
+    db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+                         password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
+    test_intf = TeachersInterface(db_source, 1)
+    test_intf.run()
