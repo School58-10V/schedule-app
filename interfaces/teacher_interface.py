@@ -1,4 +1,4 @@
-from typing import Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
@@ -10,7 +10,8 @@ class TeachersInterface:
         self.__db_source = db_source
         self.teacher_id = None
         # Список, который хранит все методы для удобного вызова (его в общем, надо сюда)
-        self.lst = [self.__timetable, self.__replacement, self.__timetable, self.__student_search, self.__my_classes]
+        self.lst = [self.__timetable, self.__replacement, self.__timetable, self.__student_search, self.__my_classes,
+                    self.__teacher_search, self.__my_class, self.__holidays, self.__next_lesson]
 
     def __check_input(self, string: str, message: str = None) -> str:
         #  Метод, который проверяет, что ввод корректен (не пустой хотя бы)
@@ -51,7 +52,7 @@ class TeachersInterface:
                 # Вызываем функцию, название которой лежит в списке (да, так оно вызываеться!!!!)
                 self.lst[num]()
             except (IndexError, ValueError):  # Если неправильный ввод, то либо уыеличиваем счетчик
-                if string == 'Все':  # Или другое слово, которое означает конец использования
+                if string == 'exit':  # Или другое слово, которое означает конец использования
                     print('Пока')
                     n = 3
                 else:
@@ -86,7 +87,7 @@ class TeachersInterface:
     def __replacement(self):
         # Метод, который отвечает за замены
         self.__replacement_method_flag = self.clever_input(['0', '1'])
-        if self.__replacemente_method_flag == '0':
+        if self.__replacement_method_flag == '0':
             pass
         if self.__replacement_method_flag == '1':
             pass
@@ -98,4 +99,30 @@ class TeachersInterface:
         elif self.__my_classes_method_flag == '1':
             pass
         elif self.__my_classes_method_flag == 'exit':
+            pass
+
+    def __teacher_search(self):
+        self.__teacher_search_method_flag = self.clever_input(['0'])
+        if self.__teacher_search_method_flag == '0':
+            pass
+        elif self.__teacher_search_method_flag == 'exit':
+            pass
+
+    def __my_class(self):
+        self.__my_class_method_flag = self.clever_input([])
+        if self.__timetable_method_flag == 'exit':
+            pass
+
+    def __holidays(self):
+        self.__holidays_method_flag = self.clever_input(['0', '1'])
+        if self.__timetable_method_flag == '0':
+            pass
+        elif self.__timetable_method_flag == '1':
+            pass
+        elif self.__timetable_method_flag == 'exit':
+            pass
+
+    def __next_lesson(self):
+        self.__next_lesson_method_flag = self.clever_input([])
+        if self.__timetable_method_flag == 'exit':
             pass
