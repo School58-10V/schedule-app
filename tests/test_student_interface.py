@@ -1,4 +1,4 @@
-from interfaces.student import StudentInterface
+from interfaces.student_interface import StudentInterface
 
 a = StudentInterface()
 a.main_loop()

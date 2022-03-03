@@ -1,28 +1,29 @@
 import datetime
 
+from adapters.abstract_source import AbstractSource
+
 
 class StudentInterface:
-    def __init__(self):
-        self.current_user = None
+    def __init__(self, db_source: AbstractSource, student_id: int):
+        self.__current_user_id = student_id
+        self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
+        self.__db_source = db_source
 
     def __login(self):
         username = self.__smart_input('Ваше ФИО: ')
         if self.__check_student_name(username):
-            self.current_user = username
+            self.__current_user = username
             print(f'Успешно зашли под именем {username}!')
         else:
             print(f'Такого ученика не существует.')
 
     def __logout(self):
-        self.current_user = None
+        self.__current_user = None
         print('Вы успешно вышли!')
 
     def main_loop(self):
         while True:
             print()
-            if not self.current_user:
-                self.__login()
-                continue
             option = self.__smart_input('Выберете опцию:\n'
                            '1. Информация о учителе\n'
                            '2. Узнать классного руководителя ученика\n'
