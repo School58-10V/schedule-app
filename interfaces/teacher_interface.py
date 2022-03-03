@@ -6,6 +6,15 @@ if TYPE_CHECKING:
 
 
 class TeachersInterface:
+    __menu = '''    0 - Посмотреть расписание
+    1 - Узнать замену
+    2 - Найти ученика
+    3 - Посмотреть классы, которые я веду
+    4 - Найти учителя
+    5 - Посмотреть информацию о моем классе
+    6 - Посмотреть информацию о каникулах
+    7 - Мой следующий урок
+Введите номер операции, который вы хотели бы выполнить:'''
 
     def __init__(self, db_source: DBSource, teacher_id: int):
         self.__db_source = db_source
@@ -45,7 +54,7 @@ class TeachersInterface:
             flag = self.__show_menu()
 
     def __show_menu(self):
-        print('Меню:')  # У кого хорошо с фантазией? Кто сможет это красиво оформить?
+        print('Меню:', self.__menu, sep='\n')  # У кого хорошо с фантазией? Кто сможет это красиво оформить?
         flag = True
         n = 0
         while flag:
@@ -137,11 +146,11 @@ class TeachersInterface:
         if self.__next_lesson_method_flag == 'exit':
             pass
 
-#
-# if __name__ == '__main__':
-#     from adapters.db_source import DBSource
-#
-#     db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
-#                          password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
-#     test_intf = TeachersInterface(db_source)
-#     test_intf.run()
+
+if __name__ == '__main__':
+    from adapters.db_source import DBSource
+
+    db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+                         password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
+    test_intf = TeachersInterface(db_source, 1)
+    test_intf.run()
