@@ -1,7 +1,13 @@
 import datetime
+from typing import List
 
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
+from data_model.lesson_row import LessonRow
+from data_model.location import Location
+from data_model.students_for_groups import StudentsForGroups
+from data_model.teacher import Teacher
+from data_model.timetable import TimeTable
 
 
 class StudentInterface:
@@ -164,17 +170,45 @@ class StudentInterface:
         day = datetime.date.today()
         return f'следующие каникулы с {day}'
 
-    def __get_teacher_classroom(self, teacher_name):
+    def __get_teacher_classroom(self, teacher_name: str):
         # возвращает кабинет в котором обитает учитель с таким именем
-        return f'кабинет номер 00000 учителя {teacher_name}'
+        teacher = Teacher.get_by_name(teacher_name, self.__db_source)
+        if len(teacher) == 0:
+            raise ValueError(f'Учителя с именем {teacher_name} не существует!')
+        elif len(teacher) == 1:
+            teacher = teacher[0]
+        else:
+            raise ValueError(f'Больше 1 учителя с именем {teacher_name}!')
+        try:
+            office_number = Location.get_by_id(teacher.get_office_id(), self.__db_source)
+        except ValueError:
+            raise ValueError(f'Офиса с ид {teacher.get_office_id()} (указан у объекта Teacher) не существует! Такого быть не должно!')
+        return f'Учитель {teacher_name} обычно бывает в {office_number.get_num_of_class()}'
 
     def __get_teacher_schedule(self, teacher_name):
         # возвращает расписание учителя с таким именем в виде таблицы, т.е. уже отформатированное
         return f'<тестовое расписание учителя {teacher_name}>'
 
     def __get_closest_lesson_for_current_student(self, current_datetime: datetime.datetime):
-        return f'<Ближайший урок от настоящего момента ({current_datetime.strftime("%b %d %Y %H:%M:%S")})>' \
-               f' - от учителя X, в кабинете N, время проведения: K'
+        student_id = self.__student_id
+        student_groups = StudentsForGroups.get_group_by_student_id(student_id, self.__db_source)
+        lesson_rows_list: List[LessonRow] = []
+
+        today = current_datetime.weekday()  # number 0-6
+        current_timetable = TimeTable.get_by_year(current_datetime.year, self.__db_source)
+
+        for i in student_groups:
+            # надо бы переписать
+            # здесь добавляются лессон_ровс если они из этого года и этого дня недели
+            lesson_rows_list.append(*[j for j in i.get_lesson_rows() if j.get_day_of_the_week() == today and j.get_timetable_id() == current_timetable.get_main_id()])
+
+        lesson_rows_list.sort(key=lambda x: x.get_start_time())
+        first_lesson_row = lesson_rows_list[0]
+        room_obj = Location.get_by_id(first_lesson_row.get_room_id(), self.__db_source)
+        weekday_to_text = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+        return f'урок в {weekday_to_text[first_lesson_row.get_day_of_the_week()]} в ' \
+               f'{first_lesson_row.get_start_time() // 100}:{first_lesson_row.get_start_time() % 100} времени, ' \
+               f'кабинет {room_obj.get_num_of_class()}'
 
     def __get_today_replacements(self):
         # замены на сегодня для определенного ученика (который щас залогинен)

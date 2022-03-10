@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from adapters.abstract_source import AbstractSource
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
@@ -10,11 +12,10 @@ if TYPE_CHECKING:
 
 
 class LessonRow(AbstractModel):
-    def __init__(self, db_source: DBSource, day_of_the_week: str, group_id: int, subject_id: int, room_id: int,
+    def __init__(self, db_source: DBSource, day_of_the_week: int, group_id: int, subject_id: int, room_id: int,
                  start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
         """
-            # :param count_studying_hours: количество академических часов в занятии (его нет!!!!)
-            :param day_of_the_week: день недели
+            :param day_of_the_week: день недели (число от 0 до 6)
             :param db_source: Адаптер бд сорса
             :param start_time:  начальное время
             :param end_time: конечное время
@@ -25,7 +26,6 @@ class LessonRow(AbstractModel):
             :param object_id: айди самого класса ряд уроков
         """
         super().__init__(db_source)
-        # self.__count_studying_hours = count_studying_hours
         self.__day_of_the_week = day_of_the_week
         self.__start_time = start_time
         self.__end_time = end_time
@@ -35,7 +35,7 @@ class LessonRow(AbstractModel):
         self.__timetable_id = timetable_id
         self._object_id = object_id
 
-    def get_day_of_the_week(self) -> str:
+    def get_day_of_the_week(self) -> int:
         return self.__day_of_the_week
 
     def get_group_id(self) -> int:
@@ -67,11 +67,15 @@ class LessonRow(AbstractModel):
             "timetable_id": self.get_timetable_id(),
             "object_id": self.get_main_id()}
 
-    def __str__(self):
+
+    def __repr__(self):
         return f'LessonRow(day_of_the_week={self.get_day_of_the_week()}, group_id={self.get_group_id()}' \
                f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
                f', end_time={self.get_end_time()}), timetable_id={self.get_timetable_id()})' \
                f', object_id={self.get_main_id()})'
+
+    def __str__(self):
+        return f'Урок в день недели номер {self.get_day_of_the_week() + 1} который начинается в {self.get_start_time()}'
 
     @staticmethod
     def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[LessonRow])]:
@@ -139,3 +143,15 @@ class LessonRow(AbstractModel):
                                                                            db_source=self.get_db_source()):
             elem.delete()
         return self
+
+    @classmethod
+    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource):
+        """
+
+        :param group_id: идшник группы
+        :param db_source: дб_сорс
+        :return: список объектов LessonRow где group_id равен указаному
+        """
+        return [cls(**i) for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
+
+
