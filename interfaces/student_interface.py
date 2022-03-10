@@ -9,6 +9,8 @@ from data_model.students_for_groups import StudentsForGroups
 from data_model.teacher import Teacher
 from data_model.timetable import TimeTable
 
+from data_model.teacher import Teacher
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 class StudentInterface:
     def __init__(self, db_source: AbstractSource, student_id: int):
@@ -186,8 +188,25 @@ class StudentInterface:
         return f'Учитель {teacher_name} обычно бывает в {office_number.get_num_of_class()}'
 
     def __get_teacher_schedule(self, teacher_name):
+        teacher = Teacher.get_by_name(teacher_name, self.__db_source)
+        if len(teacher) == 0:
+            return f"Учителя с именем {teacher_name} не существует "
+
+        elif len(teacher) == 1:
+            teacher = teacher[0]
+            schedule = TeachersForLessonRows.get_lesson_rows_by_teacher_id(teacher.get_main_id(), self.__db_source)
+            dict_schedule = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: []}
+            for i in schedule:
+                if i.get_timetable_id() == int((datetime.date.today())[:4]):
+                    dict_schedule[i.get_day_of_the_week()].append(i)
+
+            columns = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+            tabulate_list = [(k, v) for k, v in dict_schedule.items()]
+            return tabulate(tabulate_list, headers=columns)
+
+        raise ValueError(f"Два учителя с именем {teacher_name}")
         # возвращает расписание учителя с таким именем в виде таблицы, т.е. уже отформатированное
-        return f'<тестовое расписание учителя {teacher_name}>'
+
 
     def __get_closest_lesson_for_current_student(self, current_datetime: datetime.datetime):
         student_id = self.__student_id
