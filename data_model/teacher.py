@@ -1,5 +1,6 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
+from adapters.abstract_source import AbstractSource
 from data_model.lesson_row import LessonRow
 from data_model.parsed_data import ParsedData
 
@@ -140,6 +141,10 @@ class Teacher(AbstractModel):
         for i in TeachersForSubjects.get_by_subject_and_teacher_id(subject_obj.get_main_id(), self.get_main_id(), self.get_db_source()):
             i.delete()
         return self
+
+    @classmethod
+    def get_by_name(cls, name: str, source: AbstractSource) -> List[Teacher]:
+        return [Teacher(**i) for i in source.get_by_query(cls._get_collection_name(), {'fio': name})]
 
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),

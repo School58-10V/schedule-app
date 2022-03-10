@@ -1,5 +1,7 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 from datetime import datetime
+
+from adapters.abstract_source import AbstractSource
 from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
@@ -53,7 +55,7 @@ class Student(AbstractModel):
             for i in lines:
                 try:
                     full_name = i[0]
-                    date_of_birth = datetime.strptime(i[1], '%d.%m.%Y').date()
+                    date_of_birth = datetime.strptime(i[1], '%Y-%m-%d').date()
                     contacts = str(i[2])
                     bio = i[3]
 
@@ -114,3 +116,8 @@ class Student(AbstractModel):
             # И все удаляем
             i.delete()
         return self
+
+    @classmethod
+    def get_by_name(cls, name: str, source: AbstractSource):
+        return [Student(**i) for i in source.get_by_query(cls._get_collection_name(), {'full_name': name})]
+
