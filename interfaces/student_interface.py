@@ -1,7 +1,4 @@
 import datetime
-
-import psycopg2
-from psycopg2.extras import DictCursor
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 
