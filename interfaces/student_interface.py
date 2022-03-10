@@ -73,7 +73,7 @@ class StudentInterface:
 Понедельник - 1
 Вторник - 2
  т.д.'''))
-            print(self.__get_schedule_for_day(day))
+            print(tabulate(self.__get_schedule_for_day(day), ["День недели", "Время начала", "Место проведения"], tablefmt="grid"))
 
     def __replacements(self):
         v_replacements = self.__smart_input(
@@ -151,6 +151,9 @@ class StudentInterface:
 
     def __check_student_name(self, student_name):
         # проверяет существование ученика с таким именем
+        db_result = self.__db_source.get_by_query("Students", {"full_name": student_name})
+        if len(db_result) == 0:
+            return False
         return True
 
     def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
@@ -196,7 +199,18 @@ class StudentInterface:
         return 'расписание на эту неделю'
 
     def __get_schedule_for_day(self, day):
-        return f'расписание на день {day}'
+        db_result = self.__db_source.get_by_query("LessonRows", {"day_of_the_week": day})
+        data = {"subj_names": [], "start_times": [], "locations": []}
+        for row in db_result:
+            data.get("subj_names").append(self.__db_source.get_by_id("Subjects", row.get("subject_id")).get("subject_name"))
+            data.get("start_times").append(row.get("start_time"))
+            t = self.__db_source.get_by_id("Locations", row.get("room_id"))
+            if t.get("link") is None:
+                data.get("locations").append(t.get("num_of_class"))
+            else:
+                data.get("locations").append(t.get("link"))
+
+        return data
 
     def __get_replacements_by_teacher(self, teacher):
         return f'заменя для учителя {teacher} на сегодня'
