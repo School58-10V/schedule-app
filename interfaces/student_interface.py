@@ -176,7 +176,7 @@ class StudentInterface:
         result = []
         for NoLR in data:
             result.append((NoLR['start_time'], NoLR['stop_time']))
-        return tabulate(result, ['Начало каникул', 'Конец каникул'], tablefmt='grid')
+        return tabulate(sorted(result), ['Начало каникул', 'Конец каникул'], tablefmt='grid')
 
     def __check_teacher_name(self, teacher_name):
         # проверяет существование учителя с таким именем
@@ -190,7 +190,7 @@ class StudentInterface:
         for NoLR in data:
             if NoLR['start_time'] >= today or NoLR['stop_time'] >= today:
                 result.append((NoLR['start_time'], NoLR['stop_time']))
-        return tabulate(result, ['Начало каникул', 'Конец каникул'], tablefmt='grid')
+        return tabulate(sorted(result), ['Начало каникул', 'Конец каникул'], tablefmt='grid')
 
     def __get_teacher_classroom(self, teacher_name):
         # возвращает кабинет в котором обитает учитель с таким именем
