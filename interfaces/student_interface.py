@@ -1,5 +1,7 @@
 import datetime
 
+import psycopg2
+from psycopg2.extras import DictCursor
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 
@@ -29,12 +31,12 @@ class StudentInterface:
         while True:
             print()
             print(tabulate([(1, "Информация о учителе"),
-                       (2, "Узнать классного руководителя ученика"),
-                       (3, "Мое следующее занятие"),
-                       (4, "Информация о каникулах"),
-                       (5, "Информация о заменах"),
-                       (6, "Расписание"),
-                       (0, "Выйти из аккаунта")], ['Опция', 'Команда'], tablefmt='grid'))
+                            (2, "Узнать классного руководителя ученика"),
+                            (3, "Мое следующее занятие"),
+                            (4, "Информация о каникулах"),
+                            (5, "Информация о заменах"),
+                            (6, "Расписание"),
+                            (0, "Выйти из аккаунта")], ['Опция', 'Команда'], tablefmt='grid'))
             option = self.__smart_input('Ваша опция (используйте exit чтобы в любой момент выйти в главное меню): ')
             if option == '1':
                 self.__teacher_info()
@@ -126,7 +128,8 @@ class StudentInterface:
         if not self.__check_student_name(student_name):
             print('Неверное имя ученика!')
             self.__get_class_teacher()
-        print(f'Информация об учителе: {self.__get_teacher_info_by_student(student_name)}')
+        print('Информация об учителе:\n'
+              f'{self.__get_teacher_info_by_student(student_name)}')
 
     def __teacher_info(self):
         teacher_name = self.__smart_input('Введите ФИО учителя в формате И. О. Фамилия: ')
@@ -144,7 +147,21 @@ class StudentInterface:
 
     def __get_teacher_info_by_student(self, student_name):
         # возвращает фио учителя-классрука для ученика у которого такое имя
-        return f'<классрук ученика {student_name}>'
+        student_id = self.__db_source.get_by_query('Students', {'full_name': student_name})[0]['object_id']
+        SFGs = self.__db_source.get_by_query('StudentsForGroups', {'student_id': student_id})
+        for SFG in SFGs:
+            grps = self.__db_source.get_by_query('Groups', {'object_id': SFG['group_id']})
+            for grp in grps:
+                LRs = self.__db_source.get_by_query('LessonRows', {'group_id': grp['object_id']})
+                for LR in LRs:
+                    TforLRs = self.__db_source.get_by_query('TeachersForLessonRows', {'lesson_row_id': LR['object_id']})
+                    for TforLR in TforLRs:
+                        teachers = self.__db_source.get_by_query('Teachers', {'object_id': TforLR['teacher_id']})
+        data = []
+        for teacher in teachers:
+            data.append((teacher['fio'], teacher['contacts'],
+                         self.__db_source.get_by_id('Locations', teacher['office_id'])['num_of_class']))
+        return tabulate(data, ['ФИО', 'Контакты', 'Кабинет'], tablefmt='grid')
 
     def __check_year(self, year):  # проверка на наличие timetable на год
         return True
@@ -154,15 +171,26 @@ class StudentInterface:
         return True
 
     def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
-        return f'каникулы на {year} год'
+        year_id = self.__db_source.get_by_query('TimeTables', {'time_table_year': year})[0]['object_id']
+        data = self.__db_source.get_by_query('NoLearningPeriods', {'timetable_id': year_id})
+        result = []
+        for NoLR in data:
+            result.append((NoLR['start_time'], NoLR['stop_time']))
+        return tabulate(result, ['Начало каникул', 'Конец каникул'], tablefmt='grid')
 
     def __check_teacher_name(self, teacher_name):
         # проверяет существование учителя с таким именем
         return True
 
     def __get_near_holidays(self):
-        day = datetime.date.today()
-        return f'следующие каникулы с {day}'
+        today = datetime.date.today()
+        year_id = self.__db_source.get_by_query('TimeTables', {'time_table_year': today.year})[0]['object_id']
+        data = self.__db_source.get_by_query('NoLearningPeriods', {'timetable_id': year_id})
+        result = []
+        for NoLR in data:
+            if NoLR['start_time'] >= today or NoLR['stop_time'] >= today:
+                result.append((NoLR['start_time'], NoLR['stop_time']))
+        return tabulate(result, ['Начало каникул', 'Конец каникул'], tablefmt='grid')
 
     def __get_teacher_classroom(self, teacher_name):
         # возвращает кабинет в котором обитает учитель с таким именем
@@ -208,4 +236,3 @@ class StudentInterface:
             print('Возвращаюсь в главное меню...')
             self.main_loop()
         return res
-
