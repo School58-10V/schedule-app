@@ -1,5 +1,6 @@
 import datetime
 
+from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 
 
@@ -8,6 +9,9 @@ class StudentInterface:
         self.__current_user_id = student_id
         self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
         self.__db_source = db_source
+        self.__student_id = 1010
+        self.__current_year = 2022
+        self.__current_day_of_week = 'mon'
 
     def __login(self):
         username = self.__smart_input('Ваше ФИО: ')
@@ -81,7 +85,7 @@ class StudentInterface:
             self.__replacements()
             return
         if v_replacements == "1":
-            print(f"Замены на сегодня: {self.__today_replacements()}")
+            print(f"Замены на сегодня: {self.__get_today_replacements()}")
         elif v_replacements == "2":
             while True:
                 teacher = self.__smart_input("Выбирите учителя, для которого ищется замена: ")
@@ -89,7 +93,7 @@ class StudentInterface:
                     break
                 else:
                     print("Неверный учитель.")
-            print(f"Замены на сегодня для учителя {teacher}: {self.__replacements_by_teacher(teacher)}")
+            print(f"Замены на сегодня для учителя {teacher}: {self.__get_replacements_by_teacher(teacher)}")
 
     def __holidays(self):
         try:
@@ -172,7 +176,7 @@ class StudentInterface:
         return f'<Ближайший урок от настоящего момента ({current_datetime.strftime("%b %d %Y %H:%M:%S")})>' \
                f' - от учителя X, в кабинете N, время проведения: K'
 
-    def __today_replacements(self):
+    def __get_today_replacements(self):
         # замены на сегодня для определенного ученика (который щас залогинен)
         return "замены на сегоднешний день"
 
@@ -194,7 +198,7 @@ class StudentInterface:
     def __get_schedule_for_day(self, day):
         return f'расписание на день {day}'
 
-    def __replacements_by_teacher(self, teacher):
+    def __get_replacements_by_teacher(self, teacher):
         return f'заменя для учителя {teacher} на сегодня'
 
     def __smart_input(self, input_text):

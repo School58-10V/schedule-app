@@ -1,12 +1,9 @@
 import time
-from typing import List
-from psycopg2.extras import DictCursor
 import datetime
 from adapters.abstract_source import AbstractSource
 from typing import List
 import psycopg2
 from psycopg2 import errorcodes
-
 
 
 class DBSource(AbstractSource):
