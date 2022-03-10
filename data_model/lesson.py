@@ -49,6 +49,7 @@ class Lesson(AbstractModel):
 
     def get_day(self) -> datetime.date:
         return self.__day  # .strftime('%Y-%m-%d')
+
     # При вставке в базу данных он сам преобразует дату в строку
 
     def get_teacher_id(self) -> int:
@@ -117,3 +118,9 @@ class Lesson(AbstractModel):
                 "notes": self.get_notes(),
                 "object_id": self.get_main_id(),
                 "state": self.get_state()}
+
+    def get_today_replacements(self, date: datetime.date, db_source: DBSource):
+        replacements = [Lesson.get_by_id(i['object_id'], db_source)
+                        for i in db_source.get_by_query(self._get_collection_name(),
+                                                        {"day": date})]
+        return replacements
