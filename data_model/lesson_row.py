@@ -108,6 +108,13 @@ class LessonRow(AbstractModel):
                 res.append(ParsedData(exception_text, None))
         return res
 
+    @classmethod
+    def get_all_by_day(cls, week_day: str, db_source: DBSource):
+        lessons = [LessonRow.get_by_id(i['object_id'], db_source)
+                   for i in db_source.get_by_query(cls._get_collection_name(),
+                                                   {"day_of_the_week": week_day})]
+        return lessons
+
     def get_teachers(self) -> List[Teacher]:
         """
             Возвращает список объектов Teacher используя db_source данный в __init__()

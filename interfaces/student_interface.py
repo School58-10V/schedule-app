@@ -2,6 +2,8 @@ import datetime
 
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
+from data_model.lesson_row import LessonRow
+from db_source import DBSource
 
 
 class StudentInterface:
@@ -189,8 +191,9 @@ class StudentInterface:
     def __check_day(self, day):
         return True
 
-    def __get_schedule_for_today(self):
-        return 'расписание на сегодня'
+    def __get_schedule_for_today(self, db_source: DBSource):
+        lesson_rows = LessonRow.get_all_by_day(week_day=datetime.date.today().weekday(), db_source=db_source)
+
 
     def __get_schedule_for_week(self):
         return 'расписание на эту неделю'
