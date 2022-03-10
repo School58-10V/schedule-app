@@ -2,11 +2,13 @@ import datetime
 
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
+from data_model.lesson import Lesson
 from data_model.lesson_row import LessonRow
 from db_source import DBSource
 
 
 class StudentInterface:
+    days = ['Понедельник', "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
     def __init__(self, db_source: AbstractSource, student_id: int):
         self.__current_user_id = student_id
         self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
@@ -192,7 +194,11 @@ class StudentInterface:
         return True
 
     def __get_schedule_for_today(self, db_source: DBSource):
-        lesson_rows = LessonRow.get_all_by_day(week_day=datetime.date.today().weekday(), db_source=db_source)
+        lesson_rows = LessonRow.get_all_by_day(week_day=self.days[datetime.date.today().weekday()],
+                                               db_source=db_source)
+        lesson = {i.get_start_time(): i for i in Lesson.replacements(datetime.date.today())}
+        lesson_rows_dct = {i.get_start_time(): i for i in lesson_rows if i.get_start_time() not in lesson else lesson[i]}
+        res = 'Расписание на сегодня'
 
 
     def __get_schedule_for_week(self):
