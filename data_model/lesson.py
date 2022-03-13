@@ -132,7 +132,8 @@ class Lesson(AbstractModel):
         replacements_today = [Lesson.get_by_id(i['object_id'], db_source)
                               for i in db_source.get_by_query(cls._get_collection_name(),
                                                               {"day": date})]
+        teacher_id = [(Teacher.get_by_name(teacher, db_source)[0])[0]]
         replacements = [replacements_today
                         for i in db_source.get_by_query(cls._get_collection_name(),
-                                                        {'teacher_id': teacher})]
+                                                        {'teacher_id': teacher_id})]
         return replacements
