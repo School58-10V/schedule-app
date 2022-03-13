@@ -9,7 +9,8 @@ from db_source import DBSource
 
 class StudentInterface:
     days = ['Понедельник', "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    def __init__(self, db_source: AbstractSource, student_id: int):
+
+    def __init__(self, db_source: DBSource, student_id: int):
         self.__current_user_id = student_id
         self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
         self.__db_source = db_source
@@ -33,12 +34,12 @@ class StudentInterface:
         while True:
             print()
             print(tabulate([(1, "Информация о учителе"),
-                       (2, "Узнать классного руководителя ученика"),
-                       (3, "Мое следующее занятие"),
-                       (4, "Информация о каникулах"),
-                       (5, "Информация о заменах"),
-                       (6, "Расписание"),
-                       (0, "Выйти из аккаунта")], ['Опция', 'Команда'], tablefmt='grid'))
+                            (2, "Узнать классного руководителя ученика"),
+                            (3, "Мое следующее занятие"),
+                            (4, "Информация о каникулах"),
+                            (5, "Информация о заменах"),
+                            (6, "Расписание"),
+                            (0, "Выйти из аккаунта")], ['Опция', 'Команда'], tablefmt='grid'))
             option = self.__smart_input('Ваша опция (используйте exit чтобы в любой момент выйти в главное меню): ')
             if option == '1':
                 self.__teacher_info()
@@ -193,19 +194,19 @@ class StudentInterface:
     def __check_day(self, day):
         return True
 
-    def __get_schedule_for_today(self, db_source: DBSource):
+    def __get_schedule_for_today(self):
         lesson_rows = LessonRow.get_all_by_day(week_day=self.days[datetime.date.today().weekday()],
-                                               db_source=db_source)
+                                               db_source=self.__db_source)
         lesson = {i.get_start_time(): i for i in Lesson.get_today_replacements(date=datetime.date.today(),
-                                                                               db_source=db_source)}
+                                                                               db_source=self.__db_source)}
         lesson_rows_dct = []
         for i in lesson_rows:
             lesson_rows_dct.append(i if i.get_start_time() not in lesson else lesson[i.get_start_time()])
         # lesson_rows_dct = {i.get_start_time(): i for i in lesson_rows if i.get_start_time() not in lesson else
         # lesson[i]}
         lesson_rows_dct.sort(key=lambda x: x.get_start_time())
-        res = 'Расписание на сегодня' + tabulate([(i.get_start_time(), i.get_end_time(), i.get) for i in lesson_rows_dct])
-
+        res = 'Расписание на сегодня' + tabulate(
+            [(i.get_start_time(), i.get_end_time(), i.get) for i in lesson_rows_dct])
 
     def __get_schedule_for_week(self):
         return 'расписание на эту неделю'
@@ -223,4 +224,3 @@ class StudentInterface:
             print('Возвращаюсь в главное меню...')
             self.main_loop()
         return res
-
