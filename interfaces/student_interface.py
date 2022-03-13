@@ -197,8 +197,13 @@ class StudentInterface:
         lesson_rows = LessonRow.get_all_by_day(week_day=self.days[datetime.date.today().weekday()],
                                                db_source=db_source)
         lesson = {i.get_start_time(): i for i in Lesson.replacements(datetime.date.today())}
-        lesson_rows_dct = {i.get_start_time(): i for i in lesson_rows if i.get_start_time() not in lesson else lesson[i]}
-        res = 'Расписание на сегодня'
+        lesson_rows_dct = []
+        for i in lesson_rows:
+            lesson_rows_dct.append(i if i.get_start_time() not in lesson else lesson[i.get_start_time()])
+        # lesson_rows_dct = {i.get_start_time(): i for i in lesson_rows if i.get_start_time() not in lesson else
+        # lesson[i]}
+        lesson_rows_dct.sort(key=lambda x: x.get_start_time())
+        res = 'Расписание на сегодня' + tabulate([(i.get_start_time(), i.get_end_time(), i.get) for i in lesson_rows_dct])
 
 
     def __get_schedule_for_week(self):
