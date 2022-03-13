@@ -196,7 +196,8 @@ class StudentInterface:
     def __get_schedule_for_today(self, db_source: DBSource):
         lesson_rows = LessonRow.get_all_by_day(week_day=self.days[datetime.date.today().weekday()],
                                                db_source=db_source)
-        lesson = {i.get_start_time(): i for i in Lesson.replacements(datetime.date.today())}
+        lesson = {i.get_start_time(): i for i in Lesson.get_today_replacements(date=datetime.date.today(),
+                                                                               db_source=db_source)}
         lesson_rows_dct = []
         for i in lesson_rows:
             lesson_rows_dct.append(i if i.get_start_time() not in lesson else lesson[i.get_start_time()])
