@@ -180,9 +180,8 @@ class StudentInterface:
         return f'<Ближайший урок от настоящего момента ({current_datetime.strftime("%b %d %Y %H:%M:%S")})>' \
                f' - от учителя X, в кабинете N, время проведения: K'
 
-    @staticmethod
-    def __get_today_replacements(db_source: DBSource):
-        replacements = Lesson.get_today_replacements(date=datetime.date.today(), db_source=db_source)
+    def __get_today_replacements(self):
+        replacements = Lesson.get_today_replacements(date=datetime.date.today(), db_source=self.__db_source)
         return "замены на сегодняшний день\n" + tabulate([i for i in replacements])
 
     def __check_lesson(self, lesson):
@@ -206,7 +205,7 @@ class StudentInterface:
         # lesson[i]}
         lesson_rows_dct.sort(key=lambda x: x.get_start_time())
         return 'Расписание на сегодня\n' + tabulate(
-            [(i.get_start_time(), i.get_end_time(), i.get) for i in lesson_rows_dct])
+            [(i.get_start_time(), i.get_end_time()) for i in lesson_rows_dct])
 
     def __get_schedule_for_week(self):
         return 'расписание на эту неделю'
