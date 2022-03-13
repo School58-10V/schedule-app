@@ -169,6 +169,7 @@ class DBSource(AbstractSource):
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 raise ValueError(f'Ошибка во время выполнения запроса, таблица не существует. Запрос: {request}')
             else:
+                print(e)
                 raise ValueError(f'Неизвестная ошибка во время выполнения запроса, '
                                  f'код ошибки: {errorcodes.lookup(e.pgcode)}. Запрос: {request}')
 
