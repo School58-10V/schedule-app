@@ -10,7 +10,7 @@ from db_source import DBSource
 class StudentInterface:
     days = ['Понедельник', "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
 
-    def __init__(self, db_source: AbstractSource, student_id: int):
+    def __init__(self, db_source: DBSource, student_id: int):
         self.__current_user_id = student_id
         self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
         self.__db_source = db_source
@@ -181,10 +181,9 @@ class StudentInterface:
         return f'<Ближайший урок от настоящего момента ({current_datetime.strftime("%b %d %Y %H:%M:%S")})>' \
                f' - от учителя X, в кабинете N, время проведения: K'
 
-    @staticmethod
-    def __get_today_replacements(db_source: DBSource):
-        replacements = Lesson.get_today_replacements(date=datetime.date.today(), db_source=db_source)
-        return "замены на сегодняшний день\n" + tabulate([i for i in replacements])
+    def __get_today_replacements(self):
+        # замены на сегодня для определенного ученика (который щас залогинен)
+        return "замены на сегоднешний день"
 
     def __check_lesson(self, lesson):
         return True
@@ -224,3 +223,4 @@ class StudentInterface:
             print('Возвращаюсь в главное меню...')
             self.main_loop()
         return res
+

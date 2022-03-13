@@ -119,8 +119,9 @@ class Lesson(AbstractModel):
                 "object_id": self.get_main_id(),
                 "state": self.get_state()}
 
-    def get_today_replacements(self, date: datetime.date, db_source: DBSource):
+    @classmethod
+    def get_today_replacements(cls, date: datetime.date, db_source: DBSource):
         replacements = [Lesson.get_by_id(i['object_id'], db_source)
-                        for i in db_source.get_by_query(self._get_collection_name(),
+                        for i in db_source.get_by_query(cls._get_collection_name(),
                                                         {"day": date})]
         return replacements

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
