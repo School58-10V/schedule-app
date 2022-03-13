@@ -8,7 +8,6 @@ from db_source import DBSource
 
 
 class StudentInterface:
-    days = ['Понедельник', "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
 
     def __init__(self, db_source: DBSource, student_id: int):
         self.__current_user_id = student_id
@@ -196,7 +195,7 @@ class StudentInterface:
         return True
 
     def __get_schedule_for_today(self):
-        lesson_rows = LessonRow.get_all_by_day(week_day=self.days[datetime.date.today().weekday()],
+        lesson_rows = LessonRow.get_all_by_day(week_day=datetime.date.today().weekday(),
                                                db_source=self.__db_source)
         lesson = {i.get_start_time(): i for i in Lesson.get_today_replacements(date=datetime.date.today(),
                                                                                db_source=self.__db_source)}

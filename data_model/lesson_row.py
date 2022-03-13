@@ -110,7 +110,7 @@ class LessonRow(AbstractModel):
         return res
 
     @classmethod
-    def get_all_by_day(cls, week_day: str, db_source: DBSource):
+    def get_all_by_day(cls, week_day: int, db_source: DBSource):
         lessons = [LessonRow.get_by_id(i['object_id'], db_source)
                    for i in db_source.get_by_query(cls._get_collection_name(),
                                                    {"day_of_the_week": week_day})]
