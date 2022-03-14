@@ -37,6 +37,9 @@ class Lesson(AbstractModel):
         self._object_id = object_id
         self.__state = state
 
+    def get_room_id(self) -> int:
+        pass
+
     def toggle_state(self):
         self.__state = not self.__state
 

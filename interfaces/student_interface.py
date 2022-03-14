@@ -227,8 +227,8 @@ class StudentInterface:
         return 'Расписание на сегодня\n' + tabulate(
             [(i.get_start_time(), i.get_end_time(),
               Subject.get_by_id(i.get_subject_id(),
-                                self.__db_source).get_subject_name())
-             for i in lesson_rows_dct])
+                                self.__db_source).get_subject_name(), i.get_room_id())
+             for i in lesson_rows_dct], ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
     def __get_schedule_for_week(self):
         return 'расписание на эту неделю'

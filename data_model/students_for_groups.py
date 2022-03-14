@@ -26,6 +26,10 @@ class StudentsForGroups(AbstractModel):
         self.__group_id = group_id
         self._object_id = object_id
 
+    @classmethod
+    def _get_collection_name(cls):
+        return cls.__name__
+
     def get_student_id(self) -> int:
         return self.__student_id
 

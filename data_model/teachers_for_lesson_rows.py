@@ -23,6 +23,10 @@ class TeachersForLessonRows(AbstractModel):
         self.__lesson_row_id = lesson_row_id
         self._object_id = object_id
 
+    @classmethod
+    def _get_collection_name(cls):
+        return cls.__name__
+
     def get_teacher_id(self) -> int:
         return self.__teacher_id
 
