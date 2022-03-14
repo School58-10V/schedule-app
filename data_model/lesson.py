@@ -126,10 +126,12 @@ class Lesson(AbstractModel):
                                                         {"day": date})]
         return replacements
 
-    def get_replacements_by_teacher(cls, date: datetime.datetoday(), db_source: DBSource, teacher: input()):
+    @classmethod
+    def get_replacements_by_teacher(cls, db_source: DBSource, teacher: str,
+                                    date: datetime.date = datetime.date.today()):
         replacements_today = [Lesson.get_by_id(i['object_id'], db_source)
                               for i in db_source.get_by_query(cls._get_collection_name(),
-                                                        {"day": date})]
+                                                              {"day": date})]
         replacements = [replacements_today
                         for i in db_source.get_by_query(cls._get_collection_name(),
                                                         {'teacher_id': teacher})]
