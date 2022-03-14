@@ -141,6 +141,8 @@ class LessonRow(AbstractModel):
         return self
 
     @classmethod
-    def get_by_day(cls, day: int, db_source: DBSource) -> LessonRow:
-        db_result = db_source.get_by_query("LessonRows", {"day_of_the_week": day})
-        return LessonRow(**db_result[0])
+    def get_by_day(cls, day: int, db_source: DBSource) -> List[LessonRow]:
+        lessons = [LessonRow.get_by_id(i['object_id'], db_source)
+                   for i in db_source.get_by_query(cls._get_collection_name(), {"day_of_the_week": day})]
+        return lessons
+

@@ -3,6 +3,9 @@ import datetime
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 from data_model.student import Student
+from data_model.lesson_row import LessonRow
+from data_model.subject import Subject
+from data_model.location import Location
 
 
 class StudentInterface:
@@ -89,7 +92,7 @@ class StudentInterface:
             print(f"Замены на сегодня: {self.__get_today_replacements()}")
         elif v_replacements == "2":
             while True:
-                teacher = self.__smart_input("Выбирите учителя, для которого ищется замена: ")
+                teacher = self.__smart_input("Выберите учителя, для которого ищется замена: ")
                 if self.__check_teacher(teacher):
                     break
                 else:
@@ -206,16 +209,16 @@ class StudentInterface:
         return 'расписание на эту неделю'
 
     def __get_schedule_for_day(self, day):
-        db_result = self.__db_source.get_by_query("LessonRows", {"day_of_the_week": day})
+        db_result = LessonRow.get_by_day(day, self.__db_source)
         data = {"subj_names": [], "start_times": [], "locations": []}
-        for row in db_result:
-            data.get("subj_names").append(self.__db_source.get_by_id("Subjects", row.get("subject_id")).get("subject_name"))
-            data.get("start_times").append(row.get("start_time"))
-            t = self.__db_source.get_by_id("Locations", row.get("room_id"))
-            if t.get("link") is None:
-                data.get("locations").append(t.get("num_of_class"))
+        for lesson_row in db_result:
+            data.get("subj_names").append(Subject.get_by_id(lesson_row.get_subject_id(), db_source=self.__db_source).get_subject_name())
+            data.get("start_times").append(lesson_row.get_start_time())
+            location = Location.get_by_id(lesson_row.get_room_id(), db_source=self.__db_source)
+            if location.get_link() is None:
+                data.get("locations").append(location.get_num_of_class())
             else:
-                data.get("locations").append(t.get("link"))
+                data.get("locations").append(location.get_link())
         return data
 
     def __get_replacements_by_teacher(self, teacher):
