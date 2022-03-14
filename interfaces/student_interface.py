@@ -209,7 +209,6 @@ class StudentInterface:
                 data.get("locations").append(t.get("num_of_class"))
             else:
                 data.get("locations").append(t.get("link"))
-
         return data
 
     def __get_replacements_by_teacher(self, teacher):
