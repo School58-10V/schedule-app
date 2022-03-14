@@ -10,6 +10,7 @@ from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.timetable import TimeTable
 from adapters.db_source import DBSource
+from data_model.location import Location
 
 
 class StudentInterface:
@@ -187,10 +188,13 @@ class StudentInterface:
 
     def __get_today_replacements(self):
         replacements = Lesson.get_today_replacements(date=datetime.date.today(), db_source=self.__db_source)
-        return "замены на сегодняшний день\n" + tabulate([(i.get_day(), i.get_group_id(),
+        return "замены на сегодняшний день\n" + tabulate([(i.get_day(), Location.get_by_id(element_id=i.get_room_id(),
+                                                                                           db_source=self.__db_source)
+                                                           .get_num_of_class(),
                                                            Teacher.get_by_id(element_id=i.get_teacher_id(),
-                                                                             db_source=DBSource).get_fio)
-                                                          for i in replacements], ["Дата", "Заменяющий учитель"],
+                                                                             db_source=self.__db_source).get_fio())
+                                                          for i in replacements],
+                                                         ["Дата", "Номер кабинета", "Заменяющий учитель"],
                                                          tablefmt='grid')
 
     def __check_lesson(self, lesson):
