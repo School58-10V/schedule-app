@@ -38,7 +38,7 @@ class Lesson(AbstractModel):
         self.__state = state
 
     def get_room_id(self) -> int:
-        pass
+        return 1  # Иначе возвращает ошибку, т к у нас в базе данных не может быть кабинет с id None
 
     def toggle_state(self):
         self.__state = not self.__state

@@ -4,6 +4,7 @@ from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 from data_model.lesson import Lesson
 from data_model.lesson_row import LessonRow
+from data_model.location import Location
 from data_model.student import Student
 from data_model.subject import Subject
 from data_model.teacher import Teacher
@@ -232,7 +233,8 @@ class StudentInterface:
         return 'Расписание на сегодня\n' + tabulate(
             [(i.get_start_time(), i.get_end_time(),
               Subject.get_by_id(i.get_subject_id(),
-                                self.__db_source).get_subject_name(), i.get_room_id())
+                                self.__db_source).get_subject_name(),
+              Location.get_by_id(i.get_room_id(), self.__db_source).get_num_of_class())
              for i in lesson_rows_dct], ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
     def __get_schedule_for_week(self):
