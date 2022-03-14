@@ -9,7 +9,7 @@ class StudentInterface:
         self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
         self.__db_source = db_source
         self.__student_id = 1010
-        self.__current_year = 2022
+        self.__current_year = datetime.date.year
         self.__current_day_of_week = 'mon'
 
     def __login(self):
@@ -161,7 +161,12 @@ class StudentInterface:
         return tabulate(data, ['ФИО', 'Контакты', 'Кабинет'], tablefmt='grid')
 
     def __check_year(self, year):  # проверка на наличие timetable на год
-        return True
+        data = [timetable['object_id'] for timetable in self.__db_source.get_by_query('TimeTables', {'time_table_year': year})]
+        if data:
+            return True
+        else:
+            return False
+
 
     def __check_student_name(self, student_name):
         # проверяет существование ученика с таким именем
