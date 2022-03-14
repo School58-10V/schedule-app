@@ -7,7 +7,7 @@ from data_model.lesson_row import LessonRow
 from data_model.student import Student
 from data_model.subject import Subject
 from data_model.timetable import TimeTable
-from db_source import DBSource
+from adapters.db_source import DBSource
 
 
 class StudentInterface:
@@ -185,7 +185,7 @@ class StudentInterface:
 
     def __get_today_replacements(self):
         replacements = Lesson.get_today_replacements(date=datetime.date.today(), db_source=self.__db_source)
-        return "замены на сегодняшний день\n" + tabulate([i for i in replacements])
+        return "замены на сегодняшний день\n" + tabulate([(i.get_day(), i.get_group_id()) for i in replacements])
 
     def __check_lesson(self, lesson):
         return True

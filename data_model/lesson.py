@@ -4,7 +4,7 @@ from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
 import datetime
-from teacher import Teacher
+from data_model.teacher import Teacher
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
