@@ -4,6 +4,9 @@ from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 from data_model.lesson import Lesson
 from data_model.lesson_row import LessonRow
+from data_model.student import Student
+from data_model.subject import Subject
+from data_model.timetable import TimeTable
 from db_source import DBSource
 
 
@@ -194,18 +197,38 @@ class StudentInterface:
         return True
 
     def __get_schedule_for_today(self):
+        # Узнаем, какой год нам надо смореть
+        timetable_id = TimeTable.get_by_year(self.__db_source)[0].get_main_id()
+        # Берем все уроки, которые проходят сегодня
         lesson_rows = LessonRow.get_all_by_day(week_day=datetime.date.today().weekday(),
                                                db_source=self.__db_source)
+        # Берем все замены, которые есть на сегодня
         lesson = {i.get_start_time(): i for i in Lesson.get_today_replacements(date=datetime.date.today(),
                                                                                db_source=self.__db_source)}
+        # Смотрим группы, которые есть у ученика
+        groups_id = [i.get_main_id() for i in Student.get_by_id(self.__current_user_id,
+                                                                self.__db_source).get_all_groups()]
         lesson_rows_dct = []
         for i in lesson_rows:
-            lesson_rows_dct.append(i if i.get_start_time() not in lesson else lesson[i.get_start_time()])
-        # lesson_rows_dct = {i.get_start_time(): i for i in lesson_rows if i.get_start_time() not in lesson else
-        # lesson[i]}
+            # Если уроки проходят в этом году и у групп, в которые входить пользователь
+            if i.get_timetable_id() == timetable_id and i.get_group_id() in groups_id:
+                # То смотрим, есть ли на это время замена
+                if i.get_start_time() not in lesson or \
+                        lesson[i.get_start_time()].get_group_id() not in groups_id:
+                    # Если нету, то добавляем этот урок
+                    lesson_rows_dct.append(i)
+                else:
+                    # Если есть, то добавляем вместо этого урока замену
+                    lesson_rows_dct.append(lesson[i.get_start_time()])
+        # Сортируем то расписание, которое у нас получилось по началу урока
         lesson_rows_dct.sort(key=lambda x: x.get_start_time())
+        # Возвращаем красивую табличку, где первый столбец - начало урока,
+        # второй столбец - конец, третий - название урока, которое берем из subjecta
         return 'Расписание на сегодня\n' + tabulate(
-            [(i.get_start_time(), i.get_end_time()) for i in lesson_rows_dct])
+            [(i.get_start_time(), i.get_end_time(),
+              Subject.get_by_id(i.get_subject_id(),
+                                self.__db_source).get_subject_name())
+             for i in lesson_rows_dct])
 
     def __get_schedule_for_week(self):
         return 'расписание на эту неделю'
