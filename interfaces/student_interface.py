@@ -4,10 +4,13 @@ from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 from data_model.lesson import Lesson
 from data_model.lesson_row import LessonRow
+from data_model.location import Location
 from data_model.student import Student
 from data_model.subject import Subject
+from data_model.teacher import Teacher
 from data_model.timetable import TimeTable
 from adapters.db_source import DBSource
+from data_model.location import Location
 
 
 class StudentInterface:
@@ -185,7 +188,14 @@ class StudentInterface:
 
     def __get_today_replacements(self):
         replacements = Lesson.get_today_replacements(date=datetime.date.today(), db_source=self.__db_source)
-        return "замены на сегодняшний день\n" + tabulate([(i.get_day(), i.get_group_id()) for i in replacements])
+        return "замены на сегодняшний день\n" + tabulate([(i.get_day(), Location.get_by_id(element_id=i.get_room_id(),
+                                                                                           db_source=self.__db_source)
+                                                           .get_num_of_class(),
+                                                           Teacher.get_by_id(element_id=i.get_teacher_id(),
+                                                                             db_source=self.__db_source).get_fio())
+                                                          for i in replacements],
+                                                         ["Дата", "Номер кабинета", "Заменяющий учитель"],
+                                                         tablefmt='grid')
 
     def __check_lesson(self, lesson):
         return True
@@ -227,8 +237,9 @@ class StudentInterface:
         return 'Расписание на сегодня\n' + tabulate(
             [(i.get_start_time(), i.get_end_time(),
               Subject.get_by_id(i.get_subject_id(),
-                                self.__db_source).get_subject_name())
-             for i in lesson_rows_dct])
+                                self.__db_source).get_subject_name(),
+              Location.get_by_id(i.get_room_id(), self.__db_source).get_num_of_class())
+             for i in lesson_rows_dct], ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
     def __get_schedule_for_week(self):
         return 'расписание на эту неделю'
