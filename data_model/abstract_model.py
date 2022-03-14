@@ -17,6 +17,8 @@ class AbstractModel(ABC):
 
     @classmethod
     def _get_collection_name(cls):
+        if cls.__name__[-1] == 's':
+            return cls.__name__
         return cls.__name__ + 's'
 
     def save(self):
