@@ -144,7 +144,10 @@ class StudentInterface:
 
     def __get_teacher_info_by_student(self, student_name):
         # возвращает фио учителя-классрука для ученика у которого такое имя
-        student_id = self.__db_source.get_by_query('Students', {'full_name': student_name})[0]['object_id']
+        try:
+            student_id = self.__db_source.get_by_query('Students', {'full_name': student_name})[0]['object_id']
+        except IndexError:
+            raise ValueError('Введено неправильное имя.')
         SFGs = self.__db_source.get_by_query('StudentsForGroups', {'student_id': student_id})
         for SFG in SFGs:
             grps = self.__db_source.get_by_query('Groups', {'object_id': SFG['group_id']})
