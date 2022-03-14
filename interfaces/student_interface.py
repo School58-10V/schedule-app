@@ -237,8 +237,8 @@ class StudentInterface:
         return f'расписание на день {day}'
 
     def __get_replacements_by_teacher(self, teacher):
-        name = input()
-        replasments = Lesson.get_replacements_by_teacher(date=datetime.date.today(), db_source=self.__db_source,teacher=name)
+        replasments = Lesson.get_replacements_by_teacher(date=datetime.date.today(), db_source=self.__db_source,
+                                                         teacher=teacher)
         return f'заменя для учителя {teacher} на сегодня\n' + replasments
 
     def __smart_input(self, input_text):
