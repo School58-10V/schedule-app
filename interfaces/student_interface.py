@@ -7,7 +7,7 @@ from data_model.lesson_row import LessonRow
 from data_model.student import Student
 from data_model.subject import Subject
 from data_model.timetable import TimeTable
-from db_source import DBSource
+from adapters.db_source import DBSource
 
 
 class StudentInterface:
