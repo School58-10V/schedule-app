@@ -139,3 +139,8 @@ class LessonRow(AbstractModel):
                                                                            db_source=self.get_db_source()):
             elem.delete()
         return self
+
+    @classmethod
+    def get_by_day(cls, day: int, db_source: DBSource) -> LessonRow:
+        db_result = db_source.get_by_query("LessonRows", {"day_of_the_week": day})
+        return LessonRow(**db_result[0])
