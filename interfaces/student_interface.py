@@ -241,7 +241,7 @@ class StudentInterface:
               Subject.get_by_id(i.get_subject_id(),
                                 self.__db_source).get_subject_name(),
               Location.get_by_id(i.get_room_id(), self.__db_source).get_num_of_class())
-             for i in lesson_rows_dct], ["Дата", "Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
+             for i in lesson_rows_dct], ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
     def __get_schedule_for_week(self):
         return 'расписание на эту неделю'

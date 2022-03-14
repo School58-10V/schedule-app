@@ -30,8 +30,8 @@ class DBSource(AbstractSource):
                 except psycopg2.Error:
                     print(f"Невозможно подключиться к базе, проверьте данные! Попытка {i + 1}/{retry_count}")
                     time.sleep(5)
-        else:
-            print("Используем существующее подключение!")
+        # else:
+        #     print("Используем существующее подключение!")
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         self.connect()
