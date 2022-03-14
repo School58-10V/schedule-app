@@ -2,6 +2,7 @@ import datetime
 
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
+from data_model.student import Student
 
 
 class StudentInterface:
@@ -151,10 +152,16 @@ class StudentInterface:
 
     def __check_student_name(self, student_name):
         # проверяет существование ученика с таким именем
-        db_result = self.__db_source.get_by_query("Students", {"full_name": student_name})
-        if len(db_result) == 0:
+        # db_result = self.__db_source.get_by_query("Students", {"full_name": student_name})
+        # if len(db_result) == 0:
+        #             return False
+        #         return True
+        try:
+            db_result = Student.get_by_name(student_name, self.__db_source)
+            if db_result is not None:
+                return True
+        except Exception:
             return False
-        return True
 
     def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
         return f'каникулы на {year} год'
