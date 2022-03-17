@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import datetime
 from typing import Optional, List, TYPE_CHECKING
+
+from adapters.abstract_source import AbstractSource
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 
@@ -30,6 +32,13 @@ class TimeTable(AbstractModel):
     def __dict__(self) -> dict:
         return {"object_id": self.get_main_id(),
                 "time_table_year": self.get_year()}
+
+    @classmethod
+    def get_by_year(cls, year: int, db_source: AbstractSource) -> TimeTable:
+        try:
+            return cls(db_source, **(db_source.get_by_query(cls._get_collection_name(), {'time_table_year': year})[0]))
+        except IndexError:
+            raise ValueError('ВНИМАНИЕ! У НАС 2 ОБЪЕКТА TIMETABLE С ОДИНАКОВЫМ ГОДОМ, ТАКОГО БЫТЬ НЕ ДОЛЖНО!!!')
 
     @staticmethod
     def parse(file_timetable: str, db_source: DBSource) -> List[(Optional[str], Optional[TimeTable])]:

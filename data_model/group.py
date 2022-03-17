@@ -3,6 +3,7 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
+from data_model.lesson_row import LessonRow
 from data_model.students_for_groups import StudentsForGroups
 from data_model.parsed_data import ParsedData
 from data_model.student import Student
@@ -103,6 +104,9 @@ class Group(AbstractModel):
 
         StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
         return self
+
+    def get_lesson_rows(self) -> List[LessonRow]:
+        return LessonRow.get_lesson_rows_by_group_id(self.get_main_id(), self.get_db_source())
 
     def remove_student(self, student: Student) -> Group:
         """

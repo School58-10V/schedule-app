@@ -9,7 +9,6 @@ from typing import Optional, List, TYPE_CHECKING
 
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.teachers_for_subjects import TeachersForSubjects
-from adapters.db_source import DBSource
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
