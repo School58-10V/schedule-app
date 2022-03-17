@@ -283,7 +283,7 @@ class StudentInterface:
             teacher = teacher[0]
         schedule = TeachersForLessonRows.get_lesson_rows_by_teacher_id(teacher.get_main_id(), self.__db_source)
         dict_schedule = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: []}
-        curr_year_id = TimeTable.get_by_year(datetime.date.today().year, self.__db_source).get_main_id()
+        curr_year_id = TimeTable.get_by_year(year=datetime.date.today().year, db_source=self.__db_source).get_main_id()
         for i in schedule:
             if i.get_timetable_id() == curr_year_id:
                 lesson_row_to_string = self.__lesson_row_to_string(i)
