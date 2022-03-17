@@ -34,7 +34,7 @@ class TimeTable(AbstractModel):
     @classmethod
     def get_by_year(cls, year: int, db_source: AbstractSource) -> TimeTable:
         try:
-            return cls(**(db_source.get_by_query(cls._get_collection_name(), {'time_table_year': year})[0]))
+            return cls(db_source, **(db_source.get_by_query(cls._get_collection_name(), {'time_table_year': year})[0]))
         except IndexError:
             raise ValueError('ВНИМАНИЕ! У НАС 2 ОБЪЕКТА TIMETABLE С ОДИНАКОВЫМ ГОДОМ, ТАКОГО БЫТЬ НЕ ДОЛЖНО!!!')
 
