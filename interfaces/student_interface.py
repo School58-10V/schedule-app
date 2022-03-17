@@ -70,14 +70,17 @@ class StudentInterface:
         if option == 1:
             print(self.__get_schedule_for_today())
         elif option == 2:
-            print(self.__get_schedule_for_week())
+            print(tabulate(self.__get_schedule_for_week(), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
         elif option == 3:
             day = int(self.__smart_input('''
 Напишите день на котороый хотите посмотреть расписание
-Понедельник - 1
-Вторник - 2
- т.д.'''))
-            print(tabulate(self.__get_schedule_for_day(day), ["День недели", "Время начала", "Место проведения"], tablefmt="grid"))
+Понедельник - 0
+Вторник - 1
+Среда - 2
+Четверг - 3
+Пятница - 4
+ '''))
+            print(tabulate(self.__get_schedule_for_day(day), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
 
     def __replacements(self):
         v_replacements = self.__smart_input(
@@ -207,7 +210,9 @@ class StudentInterface:
         return 'расписание на сегодня'
 
     def __get_schedule_for_week(self):
-        return 'расписание на эту неделю'
+        for i in range(0, 6):
+            print("\n")
+            return self.__get_schedule_for_day(i)
 
     def __get_schedule_for_day(self, day):
         db_result = LessonRow.get_by_day(day, self.__db_source)
