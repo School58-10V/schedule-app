@@ -163,8 +163,9 @@ class StudentInterface:
             db_result = Student.get_by_name(student_name, self.__db_source)
             if db_result is not None:
                 return True
-        except Exception:
-            return False
+        except Exception as e:
+            print(f'ошибка!!! {e}')
+        return False
 
     def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
         return f'каникулы на {year} год'
