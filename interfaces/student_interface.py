@@ -236,7 +236,7 @@ class StudentInterface:
         lesson_rows_dct.sort(key=lambda x: x.get_start_time())
         # Возвращаем красивую табличку, где первый столбец - начало урока,
         # второй столбец - конец, третий - название урока, которое берем из subjecta
-        return 'Расписание на сегодня\n' + tabulate(
+        return f'Расписание на сегодня: {datetime.date.today()}\n' + tabulate(
             [(i.get_start_time(), i.get_end_time(),
               Subject.get_by_id(i.get_subject_id(),
                                 self.__db_source).get_subject_name(),
@@ -252,7 +252,12 @@ class StudentInterface:
     def __get_replacements_by_teacher(self, teacher):
         replacements = Lesson.get_replacements_by_teacher(date=datetime.date.today(), db_source=self.__db_source,
                                                           teacher=teacher)
-        return f'заменя для учителя {teacher} на сегодня\n' + replacements
+        res = [(i.get_start_time(), i.get_end_time(),
+                Subject.get_by_id(i.get_subject_id(), db_source=self.__db_source).get_subject_name(),
+                Location.get_by_id(i.get_room_id(), db_source=self.__db_source).get_num_of_class())
+               for i in replacements]
+        return tabulate(res, ['Начало', "Конец", "Урок", "Кабинет"],
+                        tablefmt='grid')
 
     def __smart_input(self, input_text):
         res = input(input_text)
