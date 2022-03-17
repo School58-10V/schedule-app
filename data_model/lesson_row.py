@@ -159,7 +159,7 @@ class LessonRow(AbstractModel):
         :param db_source: дб_сорс
         :return: список объектов LessonRow где group_id равен указаному
         """
-        return [cls(**i) for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
+        return [cls(db_source, **i) for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
 
     @classmethod
     def get_by_day(cls, day: int, db_source: DBSource) -> List[LessonRow]:

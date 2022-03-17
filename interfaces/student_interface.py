@@ -27,6 +27,7 @@ class StudentInterface:
         self.__today = datetime.date.today()
         self.__current_year = self.__today.year
         self.__current_day_of_week = self.__today.weekday()  # передается от 0 до 6, нужно обсудить в каком формате у нас день недели в итоге
+
         self.__login()
 
     def __login(self):
@@ -55,7 +56,9 @@ class StudentInterface:
                             (5, "Информация о заменах"),
                             (6, "Расписание"),
                             (0, "Выйти из аккаунта")], ['Опция', 'Команда'], tablefmt='grid'))
-            option = self.__smart_input('Ваша опция (используйте exit чтобы в любой момент выйти в главное меню): ')
+            option = self.__smart_input(
+                'Ваша опция (используйте "exit" или "выйти" чтобы в любой момент выйти в главное меню): '
+            )
             if option == '1':
                 self.__teacher_info()
             elif option == '2':
@@ -87,17 +90,19 @@ class StudentInterface:
         if option == 1:
             print(self.__get_schedule_for_today())
         elif option == 2:
-            print(tabulate(self.__get_schedule_for_week(), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
+            print(tabulate(self.__get_schedule_for_week(), ["Предмет", "Время начала", "Место проведения"],
+                           tablefmt="grid"))
         elif option == 3:
             day = int(self.__smart_input('''
 Напишите день на котороый хотите посмотреть расписание
-Понедельник - 0
-Вторник - 1
-Среда - 2
-Четверг - 3
-Пятница - 4
+Понедельник - 1
+Вторник - 2
+Среда - 3
+Четверг - 4
+Пятница - 5
  '''))
-            print(tabulate(self.__get_schedule_for_day(day), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
+            print(tabulate(self.__get_schedule_for_day(day - 1), ["Предмет", "Время начала", "Место проведения"],
+                           tablefmt="grid"))
 
     def __replacements(self):
         v_replacements = self.__smart_input(
@@ -168,31 +173,26 @@ class StudentInterface:
             self.__teacher_info()
 
     def __get_teacher_info_by_student(self, student_name):
-        # возвращает фио учителя-классрука для ученика у которого такое имя
-        try:
-            student_id = self.__db_source.get_by_query('Students', {'full_name': student_name})[0]['object_id']
-        except IndexError:
-            raise ValueError('Введено неправильное имя.')
-        SFGs = self.__db_source.get_by_query('StudentsForGroups', {'student_id': student_id})
-        for SFG in SFGs:
-            grps = self.__db_source.get_by_query('Groups', {'object_id': SFG['group_id']})
-            for grp in grps:
-                LRs = self.__db_source.get_by_query('LessonRows', {'group_id': grp['object_id']})
-                for LR in LRs:
-                    TforLRs = self.__db_source.get_by_query('TeachersForLessonRows', {'lesson_row_id': LR['object_id']})
-                    for TforLR in TforLRs:
-                        teachers = self.__db_source.get_by_query('Teachers', {'object_id': TforLR['teacher_id']})
-        data = []
-        try:
-            for teacher in teachers:
-                data.append((teacher['fio'], teacher['contacts'],
-                             self.__db_source.get_by_id('Locations', teacher['office_id'])['num_of_class']))
-        except UnboundLocalError:
-            raise ValueError('У данного ученика нет классного руководителя.')
+        # TODO: пофиксить, если несколько учеников с одним фио это не будет работать
+        group_list = StudentsForGroups.get_group_by_student_id(
+            Student.get_by_name(student_name, self.__db_source)[0].get_main_id(), self.__db_source)
+        teacher_id = None
+        for i in group_list:
+            if not i.get_letter().isdigit():
+                teacher_id = i.get_teacher_id()
+                break
+
+        teacher_obj = Teacher.get_by_id(teacher_id, self.__db_source)
+        name = teacher_obj.get_fio()
+        contacts = teacher_obj.get_contacts()
+        classroom = Location.get_by_id(teacher_obj.get_office_id(), self.__db_source).get_num_of_class()
+
+        data = [[name, contacts, classroom]]
         return tabulate(data, ['ФИО', 'Контакты', 'Кабинет'], tablefmt='grid')
 
     def __check_year(self, year):
-        data = [timetable['object_id'] for timetable in self.__db_source.get_by_query('TimeTables', {'time_table_year': year})]
+        data = [timetable['object_id'] for timetable in
+                self.__db_source.get_by_query('TimeTables', {'time_table_year': year})]
         if data:
             return True
         else:
@@ -218,8 +218,7 @@ class StudentInterface:
         #         return True
         try:
             db_result = Student.get_by_name(student_name, self.__db_source)
-            if db_result is not None:
-                return True
+            return bool(db_result)
         except Exception as e:
             print(f'ошибка!!! {e}')
         return False
@@ -283,6 +282,8 @@ class StudentInterface:
             teacher = teacher[0]
         schedule = TeachersForLessonRows.get_lesson_rows_by_teacher_id(teacher.get_main_id(), self.__db_source)
         dict_schedule = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: []}
+
+        # получает
         curr_year_id = TimeTable.get_by_year(year=datetime.date.today().year, db_source=self.__db_source).get_main_id()
         for i in schedule:
             if i.get_timetable_id() == curr_year_id:
@@ -295,18 +296,20 @@ class StudentInterface:
         # возвращает расписание учителя с таким именем в виде таблицы, т.е. уже отформатированное
 
     def __get_closest_lesson_for_current_student(self, current_datetime: datetime.datetime):
-        student_id = self.__student_id
+        student_id = self.__current_user_id
         student_groups = StudentsForGroups.get_group_by_student_id(student_id, self.__db_source)
         lesson_rows_list: List[LessonRow] = []
 
         today = current_datetime.weekday()  # number 0-6
-        current_timetable = TimeTable.get_by_year(current_datetime.year, self.__db_source)
+        current_timetable = TimeTable.get_by_year(self.__db_source)
 
         for i in student_groups:
             # надо бы переписать
             # здесь добавляются лессон_ровс если они из этого года и этого дня недели
-            lesson_rows_list.append(*[j for j in i.get_lesson_rows() if
-                                      j.get_day_of_the_week() == today and j.get_timetable_id() == current_timetable.get_main_id()])
+            var = [j for j in i.get_lesson_rows() if
+                   j.get_day_of_the_week() == today and j.get_timetable_id() == current_timetable.get_main_id()]
+            if var:
+                lesson_rows_list.append(*var)
 
         lesson_rows_list.sort(key=lambda x: x.get_start_time())
         if len(lesson_rows_list) == 0:
@@ -338,7 +341,7 @@ class StudentInterface:
 
     def __get_schedule_for_today(self):
         # Узнаем, какой год нам надо смореть
-        timetable_id = TimeTable.get_by_year(self.__db_source)[0].get_main_id()
+        timetable_id = TimeTable.get_by_year(self.__db_source).get_main_id()
         # Берем все уроки, которые проходят сегодня
         lesson_rows = LessonRow.get_all_by_day(week_day=datetime.date.today().weekday(),
                                                db_source=self.__db_source)
@@ -364,12 +367,15 @@ class StudentInterface:
         lesson_rows_dct.sort(key=lambda x: x.get_start_time())
         # Возвращаем красивую табличку, где первый столбец - начало урока,
         # второй столбец - конец, третий - название урока, которое берем из subjecta
-        return f'Расписание на сегодня: {datetime.date.today()}\n' + tabulate(
-            [(i.get_start_time(), i.get_end_time(),
-              Subject.get_by_id(i.get_subject_id(),
-                                self.__db_source).get_subject_name(),
-              Location.get_by_id(i.get_room_id(), self.__db_source).get_num_of_class())
-             for i in lesson_rows_dct], ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
+        data = [(i.get_start_time(), i.get_end_time(),
+                 Subject.get_by_id(i.get_subject_id(),
+                                   self.__db_source).get_subject_name(),
+                 Location.get_by_id(i.get_room_id(), self.__db_source).get_num_of_class())
+                for i in lesson_rows_dct]
+        if not data:
+            return 'Сегодня уроков нет! Ура!'
+        return f'Расписание на сегодня: {datetime.date.today()}\n' + \
+               tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
     def __get_schedule_for_week(self):
         for i in range(0, 6):
@@ -380,7 +386,8 @@ class StudentInterface:
         db_result = LessonRow.get_by_day(day, self.__db_source)
         data = {"subj_names": [], "start_times": [], "locations": []}
         for lesson_row in db_result:
-            data.get("subj_names").append(Subject.get_by_id(lesson_row.get_subject_id(), db_source=self.__db_source).get_subject_name())
+            data.get("subj_names").append(
+                Subject.get_by_id(lesson_row.get_subject_id(), db_source=self.__db_source).get_subject_name())
             data.get("start_times").append(lesson_row.get_start_time())
             location = Location.get_by_id(lesson_row.get_room_id(), db_source=self.__db_source)
             if location.get_link() is None:
@@ -401,7 +408,7 @@ class StudentInterface:
 
     def __smart_input(self, input_text):
         res = input(input_text)
-        if res == 'exit':
+        if res == 'exit' or res == 'выйти':
             # бесконечная, поэтому игнорим то что дальше будет что-то возвращено
             print('Возвращаюсь в главное меню...')
             self.main_loop()
@@ -420,11 +427,3 @@ class StudentInterface:
         lesson_row_to_string = f'{subject.capitalize()} с {start_time} до {end_time} в каб. ' \
                                f'{room}\nс классом/группой {group}'
         return lesson_row_to_string
-
-    def __choice(self, object_list: List[Any]) -> Any:
-        """
-        спрашивает что именно хочет пользователь
-
-        :param object_list: список объектов (одинакового типа!!!)
-        :return: объект который выбрал пользователь
-        """
