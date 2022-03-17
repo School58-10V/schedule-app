@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import datetime
 from typing import Optional, List, TYPE_CHECKING
 
 from adapters.abstract_source import AbstractSource
@@ -59,3 +61,9 @@ class TimeTable(AbstractModel):
                 print(exception_text + '\n')
                 res.append(ParsedData(exception_text, None))
         return res
+
+    @classmethod
+    def get_by_year(cls, db_source: DBSource, year: int = datetime.date.today().year):
+        # Метод, который дает объект расписания по году
+        return [TimeTable.get_by_id(i['object_id'], db_source)
+                for i in db_source.get_by_query(cls._get_collection_name(), {'time_table_year': year})]

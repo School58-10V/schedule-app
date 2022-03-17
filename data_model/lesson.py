@@ -4,6 +4,7 @@ from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
 import datetime
+from data_model.teacher import Teacher
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
@@ -36,6 +37,9 @@ class Lesson(AbstractModel):
         self._object_id = object_id
         self.__state = state
 
+    def get_room_id(self) -> int:
+        return 1  # Иначе возвращает ошибку, т к у нас в базе данных не может быть кабинет с id None
+
     def toggle_state(self):
         self.__state = not self.__state
 
@@ -49,6 +53,7 @@ class Lesson(AbstractModel):
 
     def get_day(self) -> datetime.date:
         return self.__day  # .strftime('%Y-%m-%d')
+
     # При вставке в базу данных он сам преобразует дату в строку
 
     def get_teacher_id(self) -> int:
@@ -117,3 +122,25 @@ class Lesson(AbstractModel):
                 "notes": self.get_notes(),
                 "object_id": self.get_main_id(),
                 "state": self.get_state()}
+
+    @classmethod
+    def get_today_replacements(cls, db_source: DBSource, date: datetime.date = datetime.date.today()):
+        replacements = [Lesson.get_by_id(i['object_id'], db_source)
+                        for i in db_source.get_by_query(cls._get_collection_name(),
+                                                        {"day": date})]
+        return replacements
+
+    @classmethod
+    def get_replacements_by_teacher(cls, db_source: DBSource, teacher: str,
+                                    date: datetime.date = datetime.date.today()):
+        replacements_today = [Lesson.get_by_id(i['object_id'], db_source)
+                              for i in db_source.get_by_query(cls._get_collection_name(),
+                                                              {"day": date})]
+        teacher_info = Teacher.get_by_name(teacher, db_source)
+        teacher_id = teacher_info[0].get_main_id()
+        print(teacher_id)
+        # replacements = ', '.join([replacements_today
+        #                            for i in db_source.get_by_query(cls._get_collection_name(),
+        #                                                 {'teacher_id': teacher_id})])
+        res = [i for i in replacements_today if i.get_teacher_id() == teacher_id]
+        return res

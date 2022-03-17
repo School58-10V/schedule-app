@@ -30,9 +30,9 @@ class DBSource(AbstractSource):
                 except psycopg2.Error:
                     # print(f"Невозможно подключиться к базе, проверьте данные! Попытка {i + 1}/{retry_count}")
                     time.sleep(5)
-        else:
-            pass
-            # print("Используем существующее подключение!")
+        # else:
+        #     print("Используем существующее подключение!")
+
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         self.connect()
@@ -170,6 +170,7 @@ class DBSource(AbstractSource):
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 raise ValueError(f'Ошибка во время выполнения запроса, таблица не существует. Запрос: {request}')
             else:
+                print(e)
                 raise ValueError(f'Неизвестная ошибка во время выполнения запроса, '
                                  f'код ошибки: {errorcodes.lookup(e.pgcode)}. Запрос: {request}')
 

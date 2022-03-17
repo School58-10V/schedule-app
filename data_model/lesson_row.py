@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from adapters.abstract_source import AbstractSource
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 if TYPE_CHECKING:
+    from adapters.abstract_source import AbstractSource
     from data_model.teacher import Teacher
     from adapters.db_source import DBSource
 
@@ -111,6 +111,13 @@ class LessonRow(AbstractModel):
                 print(exception_text)
                 res.append(ParsedData(exception_text, None))
         return res
+
+    @classmethod
+    def get_all_by_day(cls, week_day: int, db_source: DBSource):
+        lessons = [LessonRow.get_by_id(i['object_id'], db_source)
+                   for i in db_source.get_by_query(cls._get_collection_name(),
+                                                   {"day_of_the_week": week_day})]
+        return lessons
 
     def get_teachers(self) -> List[Teacher]:
         """
