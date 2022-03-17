@@ -291,7 +291,7 @@ class StudentInterface:
                 dict_schedule[i.get_day_of_the_week() + 1].append(lesson_row_to_string)
 
             columns = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-            return tabulate(dict_schedule, headers=columns)
+            return tabulate(dict_schedule, headers=columns, tablefmt='grid')
 
         # возвращает расписание учителя с таким именем в виде таблицы, т.е. уже отформатированное
 
