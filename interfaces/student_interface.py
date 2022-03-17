@@ -256,8 +256,8 @@ class StudentInterface:
                 Subject.get_by_id(i.get_subject_id(), db_source=self.__db_source).get_subject_name(),
                 Location.get_by_id(i.get_room_id(), db_source=self.__db_source).get_num_of_class())
                for i in replacements]
-        return tabulate(res, ['Начало', "Конец", "Урок", "Кабинет"],
-                        tablefmt='grid')
+        return "\n" + tabulate(res, ['Начало', "Конец", "Урок", "Кабинет"],
+                               tablefmt='grid')
 
     def __smart_input(self, input_text):
         res = input(input_text)
