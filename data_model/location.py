@@ -93,3 +93,7 @@ class Location(AbstractModel):
                 'equipment': self.get_equipment(),
                 'link': self.get_link(),
                 'comment': self.get_comment()}
+
+    @classmethod
+    def get_by_id(cls, element_id: int, db_source: DBSource):
+        return Location(db_source=db_source, **db_source.get_by_id("Locations", element_id))

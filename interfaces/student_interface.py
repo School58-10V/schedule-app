@@ -1,6 +1,10 @@
 import datetime
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
+from data_model.student import Student
+from data_model.lesson_row import LessonRow
+from data_model.subject import Subject
+from data_model.location import Location
 
 
 class StudentInterface:
@@ -72,14 +76,17 @@ class StudentInterface:
         if option == 1:
             print(self.__get_schedule_for_today())
         elif option == 2:
-            print(self.__get_schedule_for_week())
+            print(tabulate(self.__get_schedule_for_week(), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
         elif option == 3:
             day = int(self.__smart_input('''
 Напишите день на котороый хотите посмотреть расписание
-Понедельник - 1
-Вторник - 2
- т.д.'''))
-            print(self.__get_schedule_for_day(day))
+Понедельник - 0
+Вторник - 1
+Среда - 2
+Четверг - 3
+Пятница - 4
+ '''))
+            print(tabulate(self.__get_schedule_for_day(day), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
 
     def __replacements(self):
         v_replacements = self.__smart_input(
@@ -193,11 +200,18 @@ class StudentInterface:
                 return object_id, student_name
 
     def __check_student_name(self, student_name):
-        data = [student for student in self.__db_source.get_by_query('Students', {'full_name': student_name})]
-        if data:
-            return True
-        else:
-            return False
+        # проверяет существование ученика с таким именем
+        # db_result = self.__db_source.get_by_query("Students", {"full_name": student_name})
+        # if len(db_result) == 0:
+        #             return False
+        #         return True
+        try:
+            db_result = Student.get_by_name(student_name, self.__db_source)
+            if db_result is not None:
+                return True
+        except Exception as e:
+            print(f'ошибка!!! {e}')
+        return False
 
     def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
         year_id = self.__db_source.get_by_query('TimeTables', {'time_table_year': year})[0]['object_id']
@@ -250,10 +264,22 @@ class StudentInterface:
         return 'расписание на сегодня'
 
     def __get_schedule_for_week(self):
-        return 'расписание на эту неделю'
+        for i in range(0, 6):
+            print("\n")
+            return self.__get_schedule_for_day(i)
 
     def __get_schedule_for_day(self, day):
-        return f'расписание на день {day}'
+        db_result = LessonRow.get_by_day(day, self.__db_source)
+        data = {"subj_names": [], "start_times": [], "locations": []}
+        for lesson_row in db_result:
+            data.get("subj_names").append(Subject.get_by_id(lesson_row.get_subject_id(), db_source=self.__db_source).get_subject_name())
+            data.get("start_times").append(lesson_row.get_start_time())
+            location = Location.get_by_id(lesson_row.get_room_id(), db_source=self.__db_source)
+            if location.get_link() is None:
+                data.get("locations").append(location.get_num_of_class())
+            else:
+                data.get("locations").append(location.get_link())
+        return data
 
     def __get_replacements_by_teacher(self, teacher):
         return f'заменя для учителя {teacher} на сегодня'

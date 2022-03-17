@@ -71,6 +71,5 @@ while str(number) not in ['1', '2', '3', '4', '5']:
 cursor.execute(dct[int(number)])
 records = cursor.fetchall()
 print(records)
-...
 cursor.close()
 conn.close()

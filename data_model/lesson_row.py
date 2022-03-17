@@ -139,3 +139,10 @@ class LessonRow(AbstractModel):
                                                                            db_source=self.get_db_source()):
             elem.delete()
         return self
+
+    @classmethod
+    def get_by_day(cls, day: int, db_source: DBSource) -> List[LessonRow]:
+        lessons = [LessonRow.get_by_id(i['object_id'], db_source)
+                   for i in db_source.get_by_query(cls._get_collection_name(), {"day_of_the_week": day})]
+        return lessons
+
