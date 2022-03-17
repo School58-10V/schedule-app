@@ -18,20 +18,21 @@ class DBSource(AbstractSource):
 
     def connect(self, retry_count: int = 3):
         if self.__conn is None:
-            print("Активного подключения не существует, подключаемся...")
+            # print("Активного подключения не существует, подключаемся...")
             for i in range(retry_count):
                 try:
                     self.__conn = psycopg2.connect(**self.__connection_data)
                     self.__cursor = self.__conn.cursor()
                     # cursor_factory=DictCursor
                     # это можно добавить чтобы курсор работал с словарями вместо кортежей, но я не стал впиливать его сразу
-                    print("Успешное подключение к базе!")
+                    # print("Успешное подключение к базе!")
                     break
                 except psycopg2.Error:
-                    print(f"Невозможно подключиться к базе, проверьте данные! Попытка {i + 1}/{retry_count}")
+                    # print(f"Невозможно подключиться к базе, проверьте данные! Попытка {i + 1}/{retry_count}")
                     time.sleep(5)
         else:
-            print("Используем существующее подключение!")
+            pass
+            # print("Используем существующее подключение!")
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         self.connect()

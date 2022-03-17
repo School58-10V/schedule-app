@@ -9,7 +9,6 @@ from typing import Optional, List, TYPE_CHECKING
 
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.teachers_for_subjects import TeachersForSubjects
-from adapters.db_source import DBSource
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
@@ -144,7 +143,7 @@ class Teacher(AbstractModel):
 
     @classmethod
     def get_by_name(cls, name: str, source: AbstractSource) -> List[Teacher]:
-        return [Teacher(**i) for i in source.get_by_query(cls._get_collection_name(), {'fio': name})]
+        return [Teacher(source, **i) for i in source.get_by_query(cls._get_collection_name(), {'fio': name})]
 
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),
