@@ -4,43 +4,47 @@ from typing import List, Any
 from tabulate import tabulate
 from adapters.abstract_source import AbstractSource
 from data_model.group import Group
+from data_model.student import Student
 from data_model.lesson_row import LessonRow
 from data_model.location import Location
 from data_model.students_for_groups import StudentsForGroups
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.timetable import TimeTable
-
 from data_model.teacher import Teacher
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 
+
 class StudentInterface:
     def __init__(self, db_source: AbstractSource, student_id: int):
-        self.__counter = 0
         self.__current_user_id = student_id
         self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
         self.__db_source = db_source
-        self.__student_id = 1010
-        self.__current_year = 2022
-        self.__current_day_of_week = 'mon'
+        self.__log = False
+        self.__today = datetime.date.today()
+        self.__current_year = self.__today.year
+        self.__current_day_of_week = self.__today.weekday()  # передается от 0 до 6, нужно обсудить в каком формате у нас день недели в итоге
+        self.__login()
 
     def __login(self):
         username = self.__smart_input('Ваше ФИО: ')
         if self.__check_student_name(username):
-            self.__current_user = username
+            self.__current_user_id, self.__current_user = self.__get_current_user_info(username)
             print(f'Успешно зашли под именем {username}!')
+            self.__log = True
+            self.main_loop()
         else:
             print(f'Такого ученика не существует.')
+            self.__login()
 
     def __logout(self):
         self.__current_user = None
+        self.__log = False
         print('Вы успешно вышли!')
 
     def main_loop(self):
-        self.__counter += 1
-
-        while True:
+        while self.__log:
             print()
             print(tabulate([(1, "Информация о учителе"),
                             (2, "Узнать классного руководителя ученика"),
@@ -64,6 +68,7 @@ class StudentInterface:
                 self.__schedule()
             elif option == '0':
                 self.__logout()
+                self.__log = False
             else:
                 print('Неверная опция!')
 
@@ -80,14 +85,17 @@ class StudentInterface:
         if option == 1:
             print(self.__get_schedule_for_today())
         elif option == 2:
-            print(self.__get_schedule_for_week())
+            print(tabulate(self.__get_schedule_for_week(), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
         elif option == 3:
             day = int(self.__smart_input('''
 Напишите день на котороый хотите посмотреть расписание
-Понедельник - 1
-Вторник - 2
- т.д.'''))
-            print(self.__get_schedule_for_day(day))
+Понедельник - 0
+Вторник - 1
+Среда - 2
+Четверг - 3
+Пятница - 4
+ '''))
+            print(tabulate(self.__get_schedule_for_day(day), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid"))
 
     def __replacements(self):
         v_replacements = self.__smart_input(
@@ -102,8 +110,8 @@ class StudentInterface:
             print(f"Замены на сегодня: {self.__get_today_replacements()}")
         elif v_replacements == "2":
             while True:
-                teacher = self.__smart_input("Выбирите учителя, для которого ищется замена: ")
-                if self.__check_teacher(teacher):
+                teacher = self.__smart_input("Наберите имя учителя, для которого ищется замена: ")
+                if self.__check_teacher_name(teacher):
                     break
                 else:
                     print("Неверный учитель.")
@@ -140,7 +148,8 @@ class StudentInterface:
         if not self.__check_student_name(student_name):
             print('Неверное имя ученика!')
             self.__get_class_teacher()
-        print(f'Информация об учителе: {self.__get_teacher_info_by_student(student_name)}')
+        print('Информация об учителе:\n'
+              f'{self.__get_teacher_info_by_student(student_name)}')
 
     def __teacher_info(self):
         teacher_name = self.__smart_input('Введите ФИО учителя в формате И. О. Фамилия: ')
@@ -158,25 +167,85 @@ class StudentInterface:
 
     def __get_teacher_info_by_student(self, student_name):
         # возвращает фио учителя-классрука для ученика у которого такое имя
-        return f'<классрук ученика {student_name}>'
+        try:
+            student_id = self.__db_source.get_by_query('Students', {'full_name': student_name})[0]['object_id']
+        except IndexError:
+            raise ValueError('Введено неправильное имя.')
+        SFGs = self.__db_source.get_by_query('StudentsForGroups', {'student_id': student_id})
+        for SFG in SFGs:
+            grps = self.__db_source.get_by_query('Groups', {'object_id': SFG['group_id']})
+            for grp in grps:
+                LRs = self.__db_source.get_by_query('LessonRows', {'group_id': grp['object_id']})
+                for LR in LRs:
+                    TforLRs = self.__db_source.get_by_query('TeachersForLessonRows', {'lesson_row_id': LR['object_id']})
+                    for TforLR in TforLRs:
+                        teachers = self.__db_source.get_by_query('Teachers', {'object_id': TforLR['teacher_id']})
+        data = []
+        try:
+            for teacher in teachers:
+                data.append((teacher['fio'], teacher['contacts'],
+                             self.__db_source.get_by_id('Locations', teacher['office_id'])['num_of_class']))
+        except UnboundLocalError:
+            raise ValueError('У данного ученика нет классного руководителя.')
+        return tabulate(data, ['ФИО', 'Контакты', 'Кабинет'], tablefmt='grid')
 
-    def __check_year(self, year):  # проверка на наличие timetable на год
-        return True
+    def __check_year(self, year):
+        data = [timetable['object_id'] for timetable in self.__db_source.get_by_query('TimeTables', {'time_table_year': year})]
+        if data:
+            return True
+        else:
+            return False
+
+    def __get_current_user_info(self, student_name):
+        data = [(student['object_id'], student['full_name'], student['date_of_birth']) for student in
+                self.__db_source.get_by_query('Students', {'full_name': student_name})]
+        if len(data) == 1:
+            return data[0][0], data[0][1]
+        else:
+            print('Найдено совпадение. Выберите ваш ID:')
+            print(tabulate(data, ['ID', 'ФИО', 'дата рождения'], tablefmt='grid'))
+            object_id = int(input())
+            if self.__db_source.get_by_id('Students', object_id):
+                return object_id, student_name
 
     def __check_student_name(self, student_name):
         # проверяет существование ученика с таким именем
-        return True
+        # db_result = self.__db_source.get_by_query("Students", {"full_name": student_name})
+        # if len(db_result) == 0:
+        #             return False
+        #         return True
+        try:
+            db_result = Student.get_by_name(student_name, self.__db_source)
+            if db_result is not None:
+                return True
+        except Exception as e:
+            print(f'ошибка!!! {e}')
+        return False
 
     def __get_holidays_for_year(self, year):  # вывод NoLearningPeriod, связ. с таймтеблом
-        return f'каникулы на {year} год'
+        year_id = self.__db_source.get_by_query('TimeTables', {'time_table_year': year})[0]['object_id']
+        data = self.__db_source.get_by_query('NoLearningPeriods', {'timetable_id': year_id})
+        result = []
+        for NoLR in data:
+            result.append((NoLR['start_time'], NoLR['stop_time']))
+        return tabulate(sorted(result), ['Начало каникул', 'Конец каникул'], tablefmt='grid')
 
     def __check_teacher_name(self, teacher_name):
-        # проверяет существование учителя с таким именем
-        return True
+        data = [teacher for teacher in self.__db_source.get_by_query('Teachers', {'fio': teacher_name})]
+        if data:
+            return True
+        else:
+            return False
 
     def __get_near_holidays(self):
-        day = datetime.date.today()
-        return f'следующие каникулы с {day}'
+        today = datetime.date.today()
+        year_id = self.__db_source.get_by_query('TimeTables', {'time_table_year': today.year})[0]['object_id']
+        data = self.__db_source.get_by_query('NoLearningPeriods', {'timetable_id': year_id})
+        result = []
+        for NoLR in data:
+            if NoLR['start_time'] >= today or NoLR['stop_time'] >= today:
+                result.append((NoLR['start_time'], NoLR['stop_time']))
+        return tabulate(sorted(result), ['Начало каникул', 'Конец каникул'], tablefmt='grid')
 
     def __get_teacher_classroom(self, teacher_name: str):
         # возвращает кабинет в котором обитает учитель с таким именем
@@ -250,23 +319,32 @@ class StudentInterface:
         # замены на сегодня для определенного ученика (который щас залогинен)
         return "замены на сегоднешний день"
 
-    def __check_lesson(self, lesson):
+    def __check_lesson(self, lesson):  # нигде не используется ??? непонятно, что конкретно чекать
         return True
 
-    def __check_teacher(self, teacher):
-        return True
-
-    def __check_day(self, day):
+    def __check_day(self, day):  # то же самое, что с предыдущим чеком
         return True
 
     def __get_schedule_for_today(self):
         return 'расписание на сегодня'
 
     def __get_schedule_for_week(self):
-        return 'расписание на эту неделю'
+        for i in range(0, 6):
+            print("\n")
+            return self.__get_schedule_for_day(i)
 
     def __get_schedule_for_day(self, day):
-        return f'расписание на день {day}'
+        db_result = LessonRow.get_by_day(day, self.__db_source)
+        data = {"subj_names": [], "start_times": [], "locations": []}
+        for lesson_row in db_result:
+            data.get("subj_names").append(Subject.get_by_id(lesson_row.get_subject_id(), db_source=self.__db_source).get_subject_name())
+            data.get("start_times").append(lesson_row.get_start_time())
+            location = Location.get_by_id(lesson_row.get_room_id(), db_source=self.__db_source)
+            if location.get_link() is None:
+                data.get("locations").append(location.get_num_of_class())
+            else:
+                data.get("locations").append(location.get_link())
+        return data
 
     def __get_replacements_by_teacher(self, teacher):
         return f'заменя для учителя {teacher} на сегодня'
@@ -300,5 +378,3 @@ class StudentInterface:
         :param object_list: список объектов (одинакового типа!!!)
         :return: объект который выбрал пользователь
         """
-
-
