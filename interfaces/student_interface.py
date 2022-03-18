@@ -30,16 +30,18 @@ class StudentInterface:
 
         self.__login()
 
-    def __login(self):
+    def __login(self, initial: bool = True):
         username = self.__smart_input('Ваше ФИО: ')
         if self.__check_student_name(username):
             self.__current_user_id, self.__current_user = self.__get_current_user_info(username)
             print(f'Успешно зашли под именем {username}!')
             self.__log = True
-            self.main_loop()
+            if initial:
+                input()
+                self.main_loop()
         else:
             print(f'Такого ученика не существует.')
-            self.__login()
+            self.__login(initial)
 
     def __logout(self):
         self.__current_user = None
@@ -74,8 +76,10 @@ class StudentInterface:
             elif option == '0':
                 self.__logout()
                 self.__log = False
+                self.__login(False)
             else:
                 print('Неверная опция!')
+            input()
 
     def __schedule(self):
         while True:
@@ -90,8 +94,7 @@ class StudentInterface:
         if option == 1:
             print(self.__get_schedule_for_today())
         elif option == 2:
-            print(tabulate(self.__get_schedule_for_week(), ["Предмет", "Время начала", "Место проведения"],
-                           tablefmt="grid"))
+            self.__get_schedule_for_week()
         elif option == 3:
             day = int(self.__smart_input('''
 Напишите день на котороый хотите посмотреть расписание
@@ -378,12 +381,22 @@ class StudentInterface:
                tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
     def __get_schedule_for_week(self):
+        week_dict = {0: "Понедельник",
+                     1: "Вторник",
+                     2: "Среда",
+                     3: "Четверг",
+                     4: "Пятница",
+                     5: "Суббота",
+                     6: "Воскресенье"}
+
         for i in range(0, 6):
-            print("\n")
-            return self.__get_schedule_for_day(i)
+            print(f"\n{week_dict[i]}\n")
+            print(tabulate(self.__get_schedule_for_day(i), ["Предмет", "Время начала", "Место проведения"],
+                           tablefmt="grid"))
+        return
 
     def __get_schedule_for_day(self, day):
-        db_result = LessonRow.get_by_day(day, self.__db_source)
+        db_result = LessonRow.get_by_day_and_student(day, self.__current_user_id, self.__db_source)
         data = {"subj_names": [], "start_times": [], "locations": []}
         for lesson_row in db_result:
             data.get("subj_names").append(

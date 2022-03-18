@@ -4,6 +4,7 @@ from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+from data_model.students_for_groups import StudentsForGroups
 
 if TYPE_CHECKING:
     from adapters.abstract_source import AbstractSource
@@ -166,5 +167,18 @@ class LessonRow(AbstractModel):
         lessons = [LessonRow.get_by_id(i['object_id'], db_source)
                    for i in db_source.get_by_query(cls._get_collection_name(), {"day_of_the_week": day})]
         return lessons
+
+    @classmethod
+    def get_by_day_and_student(cls, day: int, student_id: int, db_source: DBSource) -> List[LessonRow]:
+        group_ids = [i.get_main_id() for i in StudentsForGroups.get_group_by_student_id(student_id, db_source)]
+        lessons = []
+        for group_id in group_ids:
+            group_lessons = [LessonRow.get_by_id(i['object_id'], db_source)
+                       for i in db_source.get_by_query(cls._get_collection_name(),
+                                                       {"day_of_the_week": day,
+                                                        "group_id": group_id})]
+            for lesson in group_lessons:
+                lessons.append(lesson)
+        return sorted(lessons, key=lambda x: x.get_start_time())
 
 
