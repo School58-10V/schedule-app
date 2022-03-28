@@ -1,0 +1,38 @@
+{
+	"info": {
+		"_postman_id": "ec9292bf-8395-4a1c-bb1b-492e67d58881",
+		"name": "schedule_app_test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 11,\r\n    \"name\": \"Rajkumar SM\",\r\n    \"username\": \"stm1111\",\r\n    \"email\": \"user@testengineer.ru\",\r\n    \"address\": {\r\n      \"street\": \"Gagarina\",\r\n      \"suite\": \"31\",\r\n      \"city\": \"Moscow\",\r\n      \"zipcode\": \"600007\",\r\n      \"geo\": {\r\n        \"lat\": \"10.0000\",\r\n        \"lng\": \"80.0000\"\r\n      }\r\n    },\r\n    \"phone\": \"1-2345-6-7890\",\r\n    \"website\": \"testengineer.ru\",\r\n    \"company\": {\r\n      \"name\": \"testengineer.ru\",\r\n      \"catchPhrase\": \"website for QA engineers\",\r\n      \"bs\": \"real-time tutorials\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/users",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
