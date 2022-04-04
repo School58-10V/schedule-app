@@ -2,7 +2,7 @@ import json
 from flask import Flask, request
 
 from data_model.student import Student
-from db_source import DBSource
+from adapters.db_source import DBSource
 
 app = Flask(__name__)
 
