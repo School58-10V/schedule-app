@@ -1,4 +1,3 @@
-import json
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -13,12 +12,6 @@ def main_page():
 def hello_post():
     data = request.get_data().decode('utf8')
     return {"вы прислали": data}
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
