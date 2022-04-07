@@ -12,6 +12,7 @@ def main_page():
 def index():
     return '<h1>Hello world</h1>'
 
+
 @app.route("/user/<name>")
 def user(name):
     return '<h1>Hi, %s!</h1>' % name
