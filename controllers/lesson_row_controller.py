@@ -24,6 +24,22 @@ def create_lesson_row():
         .__dict__()
 
 
+@app.route("/api/v1/lesson_row/<object_id>", methods=["PUT"])
+def update_lesson_rows(object_id):
+    try:
+        LessonRow.get_by_id(object_id, db_source=dbf.get_db_source())
+    except ValueError:
+        return "", 404
+    return LessonRow(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
+        .save() \
+        .__dict__()
+
+
+@app.route("/api/v1/lesson_row/<object_id>", methods=["DELETE"])
+def delete_lesson_row(object_id):
+    return {"method": "post"}
+
+
 # here will be your code
 
 if __name__ == '__main__':
