@@ -6,6 +6,13 @@ from flask import Flask, request
 app = Flask(__name__)
 dbf = DBFactory()
 
+
+@app.route("/api/v1/location/<object_id>", methods=["DELETE"])
+def delete_location(object_id):
+    Location.get_by_id(object_id, db_source=dbf.get_db_source()).delete()
+    return 'ok', 200
+
+
 # here will be your code
 
 if __name__ == '__main__':
