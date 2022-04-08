@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "48e46e09-3bba-4f4c-b7d2-795feb4ca0e9",
+		"name": "Lesson_CRUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get_lessons",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_lesson_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson/{{object_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson",
+						"{{object_id}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_lesson",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"start_time\": 1,\n    \"end_time\": 1,\n    \"day\": 1,\n    \"teacher_id\": 1,\n    \"group_id\": 1,\n    \"subject_id\": 1,\n    \"notes\": \"some notes\",\n    \"object_id\": 1,\n    \"state\": \"OK\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update_lessons",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"start_time\": 1,\n    \"end_time\": 1,\n    \"day\": 1,\n    \"teacher_id\": 1,\n    \"group_id\": 1,\n    \"subject_id\": 1,\n    \"notes\": \"some notes\",\n    \"object_id\": 1,\n    \"state\": \"OK\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson/{{object_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson",
+						"{{object_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete_lesson",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson/{{object_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson",
+						"{{object_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "object_id",
+			"value": "1"
+		}
+	]
+}
