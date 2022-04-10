@@ -19,9 +19,7 @@ def get_teacher_by_id(object_id):
 
 @app.route("/api/v1/teacher", methods=["POST"])
 def create_teacher():
-    return Teacher(**request.get_json(), db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__()
+    return Teacher(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__()
 
 
 @app.route("/api/v1/teacher/<object_id>", methods=["PUT"])
@@ -37,7 +35,13 @@ def update_teacher(object_id):
 
 @app.route("/api/v1/teacher/<object_id>", methods=["DELETE"])
 def delete_teacher(object_id):
-    pass
+    try:
+        Teacher.get_by_id(object_id, db_source=dbf.get_db_source())
+    except ValueError:
+        return "", 404
+    return Teacher.get_by_id(object_id, dbf.get_db_source()) \
+        .delete() \
+        .__dict__()
 
 
 if __name__ == '__main__':
