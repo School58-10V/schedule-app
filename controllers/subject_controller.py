@@ -27,7 +27,7 @@ def create_subject():
 
 
 @app.route("/api/v1/subject/<object_id>", methods=["PUT"])
-def update_subjects(object_id):
+def update_subject(object_id):
     try:
         Subject.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
