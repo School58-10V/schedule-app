@@ -37,7 +37,8 @@ def update_groups(object_id):
 
 @app.route("/api/v1/group/<object_id>", methods=["DELETE"])
 def delete_group(object_id):
-    return {"method": "post"}
+    if request.method == 'DELETE':
+        return Group.get_by_id(object_id, db_source=dbf.get_db_source()).delete().__dict__()
 
 
 if __name__ == '__main__':
