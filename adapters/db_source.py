@@ -113,12 +113,12 @@ class DBSource(AbstractSource):
         if not collection_name.endswith("s"):
             collection += "s"
         try:
-            request = f'DELETE FROM {collection} WHERE object_id = {object_id}'
-
+            request = f'DELETE FROM "{collection}" WHERE object_id = {object_id}'
             self.__cursor.execute(request)
             self.__conn.commit()
         except Exception:
-            print("Что то пошло не так при удалении этого элемента, скорее всего виноваты внешние ключи.")
+            print("Что-то пошло не так при удалении этого элемента, скорее всего виноваты внешние ключи.")
+            self.__conn.commit()
 
     @staticmethod
     def __wrap_string(value):
