@@ -37,7 +37,15 @@ def update_lessons(object_id):
 
 @app.route("/api/v1/lesson/<object_id>", methods=["DELETE"])
 def delete_lesson(object_id):
-    return {"method": "post"}
+    try:
+        lesson = Lesson.get_by_id(object_id, dbf.get_db_source())
+        lesson = lesson.delete().__dict__()
+    except ValueError:
+        return "", 404
+    except psycopg2.Error as e:
+        print(e)
+        return errorcodes.lookup(e.pgcode), 409
+    return lesson
 
 
 if __name__ == '__main__':
