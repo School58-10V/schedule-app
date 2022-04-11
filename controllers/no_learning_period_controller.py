@@ -18,12 +18,12 @@ def get_no_learning_period():
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["GET"])
 def get_no_learning_period_by_id(object_id):
-    return json.dumps( NoLearningPeriod.get_by_id(object_id, dbf.get_db_source()), ensure_ascii=False, default=str)
+    return json.dumps(NoLearningPeriod.get_by_id(object_id, dbf.get_db_source()).__dict__(), ensure_ascii=False, default=str)
 
 
 @app.route("/api/v1/no-learning-period", methods=["POST"])
 def create_no_learning_period():
-    return  NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__()
+    return NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__()
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["PUT"])
@@ -32,7 +32,7 @@ def update_no_learning_period(object_id):
         NoLearningPeriod.get_by_id(object_id, dbf.get_db_source())
     except ValueError:
         return "", 404
-    return  NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source(), object_id=object_id).save().__dict__()
+    return NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source(), object_id=object_id).save().__dict__()
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["DELETE"])
