@@ -27,7 +27,7 @@ class Location(AbstractModel):
         self.__location_desc = location_desc
         self.__profile = profile
         self.__num_of_class = num_of_class
-        self.__equipment = equipment
+        self.__equipment = equipment  # строка
         self.__link = link
         self.__comment = comment
 

@@ -14,7 +14,10 @@ def get_lesson_rows():
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
 def get_group_by_id(object_id):
-    return json.dumps(LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__(), ensure_ascii=False)
+    try:
+        return json.dumps(LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__(), ensure_ascii=False)
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/lesson-row", methods=["POST"])
@@ -24,7 +27,7 @@ def create_lesson_row():
         .__dict__()
 
 
-@app.route("/api/v1/lesson_row/<object_id>", methods=["PUT"])
+@app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
 def update_lesson_rows(object_id):
     try:
         LessonRow.get_by_id(object_id, db_source=dbf.get_db_source())
@@ -35,7 +38,7 @@ def update_lesson_rows(object_id):
         .__dict__()
 
 
-@app.route("/api/v1/lesson_row/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
 def delete_lesson_row(object_id):
     return {"method": "post"}
 

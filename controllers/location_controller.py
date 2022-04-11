@@ -15,9 +15,6 @@ def delete_location(object_id):
 
 # here will be your code
 
-if __name__ == '__main__':
-    app.run()
-
 
 @app.route("/api/v1/location", methods=["GET"])
 def get_groups():
@@ -34,3 +31,6 @@ def create_group():
     return Location(**request.get_json(), db_source=dbf.get_db_source()) \
         .save() \
         .__dict__()
+
+if __name__ == '__main__':
+    app.run()
