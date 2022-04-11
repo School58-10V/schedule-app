@@ -8,7 +8,7 @@ dbf = DBFactory()
 
 @app.route("/api/v1/subject", methods=["GET"])
 def get_subjects():
-    return jsonify([i.__dict__() for i in Subject.get_all(dbf.get_db_source())], ensure_ascii=False)
+    return jsonify([i.__dict__() for i in Subject.get_all(dbf.get_db_source())])
 
 
 @app.route("/api/v1/subject/<object_id>", methods=["GET"])
@@ -18,7 +18,7 @@ def get_subject_by_id(object_id):
         Subject.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404
-    return jsonify(Subject.get_by_id(object_id, dbf.get_db_source()).__dict__(), ensure_ascii=False)
+    return jsonify(Subject.get_by_id(object_id, dbf.get_db_source()).__dict__())
 
 
 @app.route("/api/v1/subject", methods=["POST"])
