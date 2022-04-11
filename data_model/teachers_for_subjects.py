@@ -28,10 +28,6 @@ class TeachersForSubjects(AbstractModel):
     def get_teacher_id(self) -> int:
         return self.__teacher_id
 
-    @classmethod
-    def _get_collection_name(cls):
-        return cls.__name__
-
     def get_subject_id(self) -> int:
         return self.__subject_id
 
@@ -47,7 +43,7 @@ class TeachersForSubjects(AbstractModel):
 
     @classmethod
     def _get_collection_name(cls):
-        return "SubjectsAndTeachers"
+        return "TeachersForSubjects"
 
     @classmethod
     def get_teachers_by_subject_id(cls, subject_id: int, db_source: DBSource) -> List[Teacher]:
