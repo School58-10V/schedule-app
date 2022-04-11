@@ -20,7 +20,7 @@ class Location(AbstractModel):
 
     def __init__(self, db_source: DBSource, location_type: str, object_id: int = None,
                  location_desc: str = None, profile: str = None, num_of_class: int = None,
-                 equipment: list = None, link: str = 'Offline', comment: str = ''):
+                 equipment: str = None, link: str = 'Offline', comment: str = ''):
         super().__init__(db_source)
         self.__location_type = location_type
         self._object_id = object_id
@@ -40,7 +40,7 @@ class Location(AbstractModel):
     def get_num_of_class(self) -> int:
         return self.__num_of_class
 
-    def get_equipment(self) -> list:
+    def get_equipment(self) -> str:
         return self.__equipment
 
     def get_link(self) -> str:

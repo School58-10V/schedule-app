@@ -1,4 +1,8 @@
 import json
+
+import psycopg2
+from psycopg2 import errorcodes
+
 from data_model.lesson_row import LessonRow
 from services.db_source_factory import DBFactory
 from flask import Flask, request
@@ -13,7 +17,7 @@ def get_lesson_rows():
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
-def get_group_by_id(object_id):
+def get_lesson_row_by_id(object_id):
     try:
         return json.dumps(LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__(), ensure_ascii=False)
     except ValueError:
@@ -40,7 +44,16 @@ def update_lesson_rows(object_id):
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
 def delete_lesson_row(object_id):
-    return {"method": "post"}
+    print('tyt')
+    try:
+        lesson_row = LessonRow.get_by_id(object_id, dbf.get_db_source())
+        lesson_row = lesson_row.delete().__dict__()
+    except ValueError:
+        return "", 404
+    except psycopg2.Error as e:
+        print(e)
+        return errorcodes.lookup(e.pgcode), 409
+    return lesson_row
 
 
 # here will be your code
