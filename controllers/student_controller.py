@@ -13,7 +13,11 @@ def get_students():
 
 @app.route("/api/v1/student/<object_id>", methods=["GET"])
 def get_student_by_id(object_id):
-    return jsonify(Student.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    try:
+        result = jsonify(Student.get_by_id(object_id, dbf.get_db_source()).__dict__())
+        return result
+    except ValueError:
+        return "", 404
 
 @app.route("/api/v1/student", methods=["POST"])
 def create_student():

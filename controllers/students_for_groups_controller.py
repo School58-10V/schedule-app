@@ -15,7 +15,11 @@ def get_students_for_groups():
 
 @app.route("/api/v1/students-for-groups/<object_id>", methods=["GET"])
 def get_students_for_groups_by_id(object_id):
-    return jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()))
+    try:
+        result = jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()).__dict__())
+        return result
+    except ValueError:
+        return "", 404
 
 @app.route("/api/v1/students-for-groups", methods=["POST"])
 def create_students_for_groups():
