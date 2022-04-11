@@ -2,6 +2,8 @@ import json
 from data_model.location import Location
 from services.db_source_factory import DBFactory
 from flask import Flask, request
+import psycopg2
+from psycopg2 import errorcodes
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -31,6 +33,21 @@ def create_group():
     return Location(**request.get_json(), db_source=dbf.get_db_source()) \
         .save() \
         .__dict__()
+
+
+@app.route("/api/v1/location/<object_id>", methods=["DELETE"])
+def delete_lesson_row(object_id):
+    print('tyt')
+    try:
+        location = Location.get_by_id(object_id, dbf.get_db_source())
+        location = location.delete().__dict__()
+    except ValueError:
+        return "", 404
+    except psycopg2.Error as e:
+        print(e)
+        return errorcodes.lookup(e.pgcode), 409
+    return location
+
 
 if __name__ == '__main__':
     app.run()
