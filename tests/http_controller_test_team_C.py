@@ -2,7 +2,7 @@ import json
 from flask import Flask, request
 
 from data_model.student import Student
-from db_source import DBSource
+from adapters.db_source import DBSource
 
 app = Flask(__name__)
 
@@ -35,7 +35,9 @@ a = DBSource(user='schedule_app', password='VYRL!9XEB3yXQs4aPz_Q', host='postgre
 def get_name():
     if request.method == 'GET':
         return {i.get_main_id(): i.get_full_name() for i in Student.get_all(db_source=a)}
-    # if request.method
+    if request.method == 'POST':
+        return {"status": 200,
+                "text": 'OK!!!!'}
 
 
 

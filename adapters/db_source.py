@@ -92,9 +92,9 @@ class DBSource(AbstractSource):
         self.__conn.commit()
         return document
 
-    def update(self, collection_name: str, document: dict):
+    def update(self, collection_name: str, object_id: int, document: dict):
         self.connect()
-        object_id = document.pop("object_id")
+        document.pop("object_id")
         collection = collection_name
         req_data = []
         if not collection_name.endswith("s"):
