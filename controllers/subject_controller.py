@@ -13,12 +13,10 @@ def get_subjects():
 
 @app.route("/api/v1/subject/<object_id>", methods=["GET"])
 def get_subject_by_id(object_id):
-
     try:
-        Subject.get_by_id(object_id, db_source=dbf.get_db_source())
-    except ValueError:
-        return "", 404
-    return jsonify(Subject.get_by_id(object_id, dbf.get_db_source()).__dict__())
+        return jsonify(Subject.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except:
+        return '', 404
 
 
 @app.route("/api/v1/subject", methods=["POST"])

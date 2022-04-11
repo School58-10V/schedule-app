@@ -13,7 +13,10 @@ def get_teacher_for_lesson_rows():
 
 @app.route("/api/v1/teacher_for_lesson_rows/<object_id>", methods=["GET"])
 def get_teacher_for_lesson_rows_by_id(object_id):
-    return jsonify(TeachersForLessonRows.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    try:
+        return jsonify(TeachersForLessonRows.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except:
+        return '', 404
 
 
 if __name__ == '__main__':
