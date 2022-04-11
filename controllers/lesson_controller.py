@@ -1,4 +1,7 @@
 import json
+
+import psycopg2
+
 from data_model.lesson import Lesson
 from services.db_source_factory import DBFactory
 from flask import Flask, request
