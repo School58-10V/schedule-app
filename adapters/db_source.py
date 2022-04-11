@@ -112,13 +112,12 @@ class DBSource(AbstractSource):
         collection = collection_name
         if not collection_name.endswith("s"):
             collection += "s"
-        # try:
-        request = f'DELETE FROM {collection} WHERE object_id = {object_id}'
-        self.__cursor.execute(request)
-        self.__conn.commit()
-        # except psycopg2.Error as e:
-        #     print("Что то пошло не так при удалении этого элемента, скорее всего виноваты внешние ключи.")
-        #     raise ValueError(errorcodes.lookup(e.pgcode))
+        try:
+            request = f'DELETE FROM "{collection}" WHERE object_id = {object_id}'
+            self.__cursor.execute(request)
+            self.__conn.commit()
+        finally:
+            self.__conn.commit()
 
     @staticmethod
     def __wrap_string(value):
