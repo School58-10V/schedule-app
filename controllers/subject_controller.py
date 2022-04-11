@@ -1,3 +1,5 @@
+import psycopg2
+
 from data_model.subject import Subject
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify
@@ -41,8 +43,10 @@ def delete_subject(object_id):
         Subject.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404
-    return Subject.get_by_id(object_id, dbf.get_db_source()) \
-        .delete().__dict__()
+    try:
+        Subject.get_by_id(object_id, dbf.get_db_source()).delete().__dict__()
+    except psycopg2.errors.ForeignKeyViolation as error:
+        return error.pgerror, 400
 
 
 if __name__ == '__main__':
