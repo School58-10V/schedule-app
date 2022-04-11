@@ -16,6 +16,16 @@ def delete_location(object_id):
 
 
 # here will be your code
+@app.route("/api/v1/location/<object_id>")
+def update(object_id):
+    try:
+        Location.get_by_id(object_id, db_source=dbf.get_db_source())
+    except ValueError:
+        return "", 404
+    return Location(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
+        .save() \
+        .__dict__()
+
 
 
 @app.route("/api/v1/location", methods=["GET"])
