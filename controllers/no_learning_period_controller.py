@@ -44,9 +44,9 @@ def delete_no_learning_period(object_id):
         period = NoLearningPeriod.get_by_id(object_id, dbf.get_db_source())
         period = period.delete().__dict__()
     except ValueError:
-        return "", 404
+        return jsonify(""), 404
     except psycopg2.Error as e:
-        return errorcodes.lookup(e.pgcode), 409
+        return jsonify(errorcodes.lookup(e.pgcode)), 409
     return jsonify(period)
 
 
