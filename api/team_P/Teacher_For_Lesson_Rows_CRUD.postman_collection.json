@@ -1,0 +1,52 @@
+{
+	"info": {
+		"_postman_id": "2d4dee57-0c30-44d1-9fdf-71a99895d4f8",
+		"name": "Teacher_For_Lesson_Rows_CRUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get_Teacher_For_Lesson_Rows",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/teacher_for_lesson_rows",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"teacher_for_lesson_rows"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Teacher_For_Lesson_Rows_By_Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/teacher_for_lesson_rows/{{object_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"teacher_for_lesson_rows",
+						"{{object_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

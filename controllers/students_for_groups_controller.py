@@ -1,7 +1,6 @@
-import json
 import psycopg2
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from psycopg2 import errorcodes
 
 from data_model.students_for_groups import StudentsForGroups
@@ -12,11 +11,11 @@ dbf = DBFactory()
 
 @app.route("/api/v1/students-for-groups", methods=["GET"])
 def get_students_for_groups():
-    return json.dumps([i.__dict__() for i in StudentsForGroups.get_all(dbf.get_db_source())], ensure_ascii=False, default=str)
+    return jsonify([i.__dict__() for i in StudentsForGroups.get_all(dbf.get_db_source())])
 
 @app.route("/api/v1/students-for-groups/<object_id>", methods=["GET"])
 def get_students_for_groups_by_id(object_id):
-    return json.dumps(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()), ensure_ascii=False, default=str)
+    return jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()))
 
 @app.route("/api/v1/students-for-groups", methods=["POST"])
 def create_students_for_groups():
