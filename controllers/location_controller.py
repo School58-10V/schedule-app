@@ -1,7 +1,6 @@
-import json
 from data_model.location import Location
 from services.db_source_factory import DBFactory
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2 import errorcodes
 
@@ -27,15 +26,14 @@ def update(object_id):
         .__dict__()
 
 
-
 @app.route("/api/v1/location", methods=["GET"])
 def get_groups():
-    return json.dumps([i.__dict__() for i in Location.get_all(dbf.get_db_source())], ensure_ascii=False)
+    return jsonify([i.__dict__() for i in Location.get_all(dbf.get_db_source())])
 
 
 @app.route("/api/v1/location/<object_id>", methods=["GET"])
 def get_group_by_id(object_id):
-    return json.dumps(Location.get_by_id(object_id, dbf.get_db_source()).__dict__(), ensure_ascii=False)
+    return jsonify(Location.get_by_id(object_id, dbf.get_db_source()).__dict__())
 
 
 @app.route("/api/v1/location", methods=["POST"])
