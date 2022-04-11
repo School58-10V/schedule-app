@@ -1,6 +1,7 @@
 import json
 
 import psycopg2
+from psycopg2 import errorcodes
 
 from data_model.lesson import Lesson
 from services.db_source_factory import DBFactory
