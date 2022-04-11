@@ -116,8 +116,7 @@ class DBSource(AbstractSource):
             request = f'DELETE FROM "{collection}" WHERE object_id = {object_id}'
             self.__cursor.execute(request)
             self.__conn.commit()
-        except Exception:
-            print("Что-то пошло не так при удалении этого элемента, скорее всего виноваты внешние ключи.")
+        finally:
             self.__conn.commit()
 
     @staticmethod
