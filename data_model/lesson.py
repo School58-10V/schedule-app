@@ -115,7 +115,7 @@ class Lesson(AbstractModel):
     def __dict__(self) -> dict:
         return {"start_time": self.get_start_time(),
                 "end_time": self.get_end_time(),
-                "day": self.get_date(),
+                "date": self.get_date(),
                 "teacher_id": self.get_teacher_id(),
                 "group_id": self.get_group_id(),
                 "subject_id": self.get_subject_id(),
