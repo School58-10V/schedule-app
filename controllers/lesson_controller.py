@@ -3,7 +3,7 @@ from psycopg2 import errorcodes
 
 from data_model.lesson import Lesson
 from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, app
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -17,9 +17,10 @@ def get_lessons():
 @app.route("/api/v1/lesson/<object_id>", methods=["GET"])
 def get_lesson_by_id(object_id):
     try:
-        return jsonify(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__())
+        lesson_json = jsonify(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
         return '', 404
+    return lesson_json
 
 
 @app.route("/api/v1/lesson", methods=["POST"])
