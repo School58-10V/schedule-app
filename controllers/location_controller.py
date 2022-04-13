@@ -26,7 +26,10 @@ def get_locations():
 
 @app.route("/api/v1/location/<object_id>", methods=["GET"])
 def get_location_by_id(object_id):
-    return jsonify(Location.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    try:
+        return jsonify(Location.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/location", methods=["POST"])
