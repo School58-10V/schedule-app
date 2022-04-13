@@ -71,16 +71,17 @@ class DBSource(AbstractSource):
 
     def insert(self, collection_name: str, document: dict) -> dict:
         self.connect()
+        cursor = self.__conn.cursor()
         try:
-            self.__cursor.execute(f'SELECT * FROM "{collection_name}" LIMIT 0')
+            cursor.execute(f'SELECT * FROM "{collection_name}" LIMIT 0')
         except psycopg2.Error as e:
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 raise ValueError('Данной таблицы не существует.')
-        desc = [x[0] for x in self.__cursor.description]
+        desc = [x[0] for x in cursor.description]
         values = [f'\'{document[x]}\'' if x != 'object_id' else 'default' for x in desc]
-        request = f'INSERT INTO "{collection_name}" VALUES ({",".join(map(str, values))});'
+        request = f'INSERT INTO "{collection_name}" VALUES ({",".join(map(str, values))}) RETURNING *;'
         try:
-            self.__cursor.execute(request)
+            cursor.execute(request)
         except psycopg2.Error as e:
             if errorcodes.lookup(e.pgcode) == 'UNIQUE_VIOLATION':
                 raise ValueError('ID добавляемого объекта уже существует.')
@@ -88,9 +89,12 @@ class DBSource(AbstractSource):
                 raise ValueError('Один из ID связанных объектов недействителен.')
             elif errorcodes.lookup(e.pgcode) == 'INVALID_TEXT_REPRESENTATION':
                 raise TypeError('Ошибка в типах данных.')
-            raise ValueError(f"Неизвестная ошибка при добавлении новой записи в {collection_name}. Код ошибки: {errorcodes.lookup(e.pgcode)}")
+            raise ValueError(f"Неизвестная ошибка при добавлении новой записи в {collection_name}. "
+                             f"Код ошибки: {errorcodes.lookup(e.pgcode)}")
         self.__conn.commit()
-        return document
+        new_obj = cursor.fetchone()
+        new_doc = {desc[index]: new_obj[index] for index in range(len(desc))}
+        return new_doc
 
     def update(self, collection_name: str, object_id: int, document: dict):
         self.connect()
