@@ -325,7 +325,7 @@ class StudentInterface:
 
     def __get_today_replacements(self):
         replacements = Lesson.get_today_replacements(date=datetime.date.today(), db_source=self.__db_source)
-        return "замены на сегодняшний день\n" + tabulate([(i.get_day(), i.get_start_time(), i.get_end_time(),
+        return "замены на сегодняшний день\n" + tabulate([(i.get_date(), i.get_start_time(), i.get_end_time(),
                                                            Location.get_by_id(element_id=i.get_room_id(),
                                                                               db_source=self.__db_source)
                                                            .get_num_of_class(),

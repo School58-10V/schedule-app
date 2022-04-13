@@ -12,13 +12,13 @@ if TYPE_CHECKING:
 
 class Lesson(AbstractModel):
 
-    def __init__(self, db_source: DBSource, start_time: int, end_time: int, day: datetime.date, teacher_id: int,
+    def __init__(self, db_source: DBSource, start_time: int, end_time: int, date: datetime.date, teacher_id: int,
                  group_id: int,
                  subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
         """
             :param start_time: начало урока
             :param end_time: конец урока
-            :param day: дата
+            :param date: дата
             :param teacher_id: замена
             :param object_id: группа учеников
             :param subject_id: предмет
@@ -29,7 +29,7 @@ class Lesson(AbstractModel):
         super().__init__(db_source)
         self.__start_time = start_time
         self.__end_time = end_time
-        self.__day = day
+        self.__date = date
         self.__teacher_id = teacher_id
         self.__group_id = group_id
         self.__subject_id = subject_id
@@ -51,8 +51,8 @@ class Lesson(AbstractModel):
     def get_end_time(self) -> int:
         return self.__end_time
 
-    def get_day(self) -> datetime.date:
-        return self.__day  # .strftime('%Y-%m-%d')
+    def get_date(self) -> datetime.date:
+        return self.__date  # .strftime('%Y-%m-%d')
 
     # При вставке в базу данных он сам преобразует дату в строку
 
@@ -90,7 +90,7 @@ class Lesson(AbstractModel):
                     res.append(ParsedData(None, Lesson(db_source=db_source,
                                                        start_time=int(start_time),
                                                        end_time=int(end_time),
-                                                       day=datetime.datetime.strptime(day, "%Y-%m-%d").date(),
+                                                       date=datetime.datetime.strptime(day, "%Y-%m-%d").date(),
                                                        teacher_id=int(teacher_id),
                                                        group_id=int(group_id),
                                                        subject_id=int(subject_id),
@@ -115,7 +115,7 @@ class Lesson(AbstractModel):
     def __dict__(self) -> dict:
         return {"start_time": self.get_start_time(),
                 "end_time": self.get_end_time(),
-                "day": self.get_day(),
+                "day": self.get_date(),
                 "teacher_id": self.get_teacher_id(),
                 "group_id": self.get_group_id(),
                 "subject_id": self.get_subject_id(),
