@@ -24,15 +24,14 @@ class DBSource(AbstractSource):
                     self.__conn = psycopg2.connect(**self.__connection_data)
                     self.__cursor = self.__conn.cursor()
                     # cursor_factory=DictCursor
-                    # это можно добавить чтобы курсор работал с словарями вместо кортежей, но я не стал впиливать его сразу
-                    # print("Успешное подключение к базе!")
+                    # это можно добавить чтобы курсор работал с словарями вместо кортежей,
+                    # но я не стал впиливать его сразу print("Успешное подключение к базе!")
                     break
                 except psycopg2.Error:
                     # print(f"Невозможно подключиться к базе, проверьте данные! Попытка {i + 1}/{retry_count}")
                     time.sleep(5)
         # else:
         #     print("Используем существующее подключение!")
-
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         self.connect()
@@ -176,4 +175,3 @@ class DBSource(AbstractSource):
                 print(e)
                 raise ValueError(f'Неизвестная ошибка во время выполнения запроса, '
                                  f'код ошибки: {errorcodes.lookup(e.pgcode)}. Запрос: {request}')
-
