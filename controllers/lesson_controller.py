@@ -16,7 +16,10 @@ def get_lessons():
 
 @app.route("/api/v1/lesson/<object_id>", methods=["GET"])
 def get_lesson_by_id(object_id):
-    return jsonify(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    try:
+        return jsonify(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/lesson", methods=["POST"])
