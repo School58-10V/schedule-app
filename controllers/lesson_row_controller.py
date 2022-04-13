@@ -25,8 +25,7 @@ def get_lesson_row_by_id(object_id):
 @app.route("/api/v1/lesson-row", methods=["POST"])
 def create_lesson_row():
     return jsonify(LessonRow(**request.get_json(), db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__())
+                   .save().__dict__())
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
@@ -36,8 +35,7 @@ def update_lesson_rows(object_id):
     except ValueError:
         return "", 404
     return jsonify(LessonRow(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__())
+                   .save().__dict__())
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
@@ -49,7 +47,7 @@ def delete_lesson_row(object_id):
         return "", 404
     except psycopg2.Error as e:
         print(e)
-        return errorcodes.lookup(e.pgcode), 409
+        return jsonify(errorcodes.lookup(e.pgcode), 409)
     return jsonify(lesson_row)
 
 
