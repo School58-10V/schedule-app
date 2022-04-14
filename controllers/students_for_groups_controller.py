@@ -17,7 +17,7 @@ def get_students_for_groups_by_id(object_id):
     try:
         return jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
-        return jsonify(""), 404
+        return "", 404
 
 
 if __name__ == "__main__":

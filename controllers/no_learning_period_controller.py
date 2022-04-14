@@ -1,5 +1,4 @@
 import psycopg2
-
 from flask import Flask, request, jsonify
 from psycopg2 import errorcodes
 
@@ -21,7 +20,7 @@ def get_no_learning_period_by_id(object_id):
         result = jsonify(NoLearningPeriod.get_by_id(object_id, dbf.get_db_source()).__dict__())
         return result
     except ValueError:
-        return jsonify(""), 404
+        return "", 404
 
 
 @app.route("/api/v1/no-learning-period", methods=["POST"])
@@ -30,7 +29,7 @@ def create_no_learning_period():
         result = jsonify(NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__())
         return result
     except TypeError:
-        return jsonify(""), 400
+        return "", 400
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["PUT"])
 def update_no_learning_period(object_id):
@@ -39,9 +38,9 @@ def update_no_learning_period(object_id):
         result = NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source(), object_id=object_id).save().__dict__()
         return jsonify(result)
     except ValueError:
-        return jsonify(""), 404
+        return "", 404
     except TypeError:
-        return jsonify(""), 400
+        return "", 400
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["DELETE"])
@@ -50,7 +49,7 @@ def delete_no_learning_period(object_id):
         period = NoLearningPeriod.get_by_id(object_id, dbf.get_db_source())
         period = period.delete().__dict__()
     except ValueError:
-        return jsonify(""), 404
+        return "", 404
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
     return jsonify(period)

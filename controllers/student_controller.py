@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify
-from services.db_source_factory import DBFactory
 import psycopg2
-from data_model.student import Student
+from flask import Flask, request, jsonify
 from psycopg2 import errorcodes
+
+from data_model.student import Student
+from services.db_source_factory import DBFactory
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -19,7 +20,7 @@ def get_student_by_id(object_id):
         result = jsonify(Student.get_by_id(object_id, dbf.get_db_source()).__dict__())
         return result
     except ValueError:
-        return jsonify(""), 404
+        return "", 404
 
 
 @app.route("/api/v1/student", methods=["POST"])
@@ -28,7 +29,7 @@ def create_student():
         result = jsonify(Student(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__())
         return result
     except TypeError:
-        return jsonify(""), 400
+        return "", 400
 
 
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
@@ -38,9 +39,9 @@ def update_student(object_id):
         result = Student(**request.get_json(), db_source=dbf.get_db_source(), object_id=object_id).save().__dict__()
         return jsonify(result)
     except ValueError:
-        return jsonify(""), 404
+        return "", 404
     except TypeError:
-        return jsonify(""), 400
+        return "", 400
 
 
 @app.route("/api/v1/student/<object_id>", methods=["DELETE"])
@@ -50,7 +51,7 @@ def delete_student(object_id):
         student = student.delete().__dict__()
         return jsonify(student)
     except ValueError:
-        return jsonify(""), 404
+        return "", 404
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
 
