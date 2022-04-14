@@ -54,6 +54,7 @@ class DBSource(AbstractSource):
         self.__cursor_execute_wrapper(cursor, request)
         data = cursor.fetchall()
         desc = cursor.description
+        self.__conn.commit()
         return self.__format_tuple_to_dict(data, desc)
 
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
@@ -64,6 +65,7 @@ class DBSource(AbstractSource):
         data = cursor.fetchall()
         desc = cursor.description
         if len(data) == 0:
+            self.__conn.commit()
             raise ValueError(f'Объект с id {object_id} из {collection_name} не существует')
         # берем 0 индекс т.к. длина ответа всегда либо 0 (уже обработали), либо 1, т.е. смысла возвращать список нет.
         return self.__format_tuple_to_dict(data, desc)[0]
@@ -75,6 +77,7 @@ class DBSource(AbstractSource):
             cursor.execute(f'SELECT * FROM "{collection_name}" LIMIT 0')
         except psycopg2.Error as e:
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
+                self.__conn.commit()
                 raise ValueError('Данной таблицы не существует.')
         desc = [x[0] for x in cursor.description]
         values = [f'\'{document[x]}\'' if x != 'object_id' else 'default' for x in desc]
@@ -82,6 +85,7 @@ class DBSource(AbstractSource):
         try:
             cursor.execute(request)
         except psycopg2.Error as e:
+            self.__conn.commit()
             if errorcodes.lookup(e.pgcode) == 'UNIQUE_VIOLATION':
                 raise ValueError('ID добавляемого объекта уже существует.')
             elif errorcodes.lookup(e.pgcode) == 'FOREIGN_KEY_VIOLATION':
@@ -118,7 +122,6 @@ class DBSource(AbstractSource):
         try:
             request = f'DELETE FROM "{collection}" WHERE object_id = {object_id}'
             self.__cursor.execute(request)
-            self.__conn.commit()
         finally:
             self.__conn.commit()
 
