@@ -343,7 +343,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/students-for-groups/{{object_id}}",
+							"raw": "http://localhost:5000/api/v1/no-learning-period/{{object_id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -352,7 +352,7 @@
 							"path": [
 								"api",
 								"v1",
-								"students-for-groups",
+								"no-learning-period",
 								"{{object_id}}"
 							]
 						}
@@ -374,7 +374,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/students-for-groups",
+							"raw": "http://localhost:5000/api/v1/no-learning-period",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -383,7 +383,7 @@
 							"path": [
 								"api",
 								"v1",
-								"students-for-groups"
+								"no-learning-period"
 							]
 						}
 					},
