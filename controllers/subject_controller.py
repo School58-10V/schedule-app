@@ -31,25 +31,22 @@ def create_subject():
 
 @app.route("/api/v1/subject/<object_id>", methods=["PUT"])
 def update_subject(object_id):
-    subject = Subject.get_by_id(object_id, dbf.get_db_source()).__dict__()
     try:
-        subject
+        subject = Subject.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        subject.update(request.get_json())
+        return jsonify(Subject(**subject, db_source=dbf.get_db_source()).save().__dict__())
     except ValueError:
         return "", 404
     except TypeError:
         return "", 400
-    subject.update(request.get_json())
-    return jsonify(Subject(**(subject), db_source=dbf.get_db_source()).save().__dict__())
 
 
 @app.route("/api/v1/subject/<object_id>", methods=["DELETE"])
 def delete_subject(object_id):
     try:
-        Subject.get_by_id(object_id, db_source=dbf.get_db_source())
+        return Subject.get_by_id(object_id, dbf.get_db_source()).delete().__dict__()
     except ValueError:
         return "", 404
-    try:
-        return Subject.get_by_id(object_id, dbf.get_db_source()).delete().__dict__()
     except psycopg2.errors.ForeignKeyViolation as error:
         return error.pgerror, 400
 

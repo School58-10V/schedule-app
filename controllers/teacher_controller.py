@@ -31,25 +31,22 @@ def create_teacher():
 
 @app.route("/api/v1/teacher/<object_id>", methods=["PUT"])
 def update_teacher(object_id):
-    teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
     try:
-        teacher
+        teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        teacher.update(request.get_json())
+        return jsonify(Teacher(**teacher, db_source=dbf.get_db_source()).save().__dict__())
     except ValueError:
         return '', 404
     except TypeError:
         return '', 400
-    teacher.update(request.get_json())
-    return jsonify(Teacher(**(teacher), db_source=dbf.get_db_source()).save().__dict__())
 
 
 @app.route("/api/v1/teacher/<object_id>", methods=["DELETE"])
 def delete_teacher(object_id):
     try:
-        Teacher.get_by_id(object_id, db_source=dbf.get_db_source())
+        return Teacher.get_by_id(object_id, dbf.get_db_source()).delete().__dict__()
     except ValueError:
         return "", 404
-    try:
-        return Teacher.get_by_id(object_id, dbf.get_db_source()).delete().__dict__()
     except psycopg2.errors.ForeignKeyViolation as error:
         return error.pgerror, 400
 
