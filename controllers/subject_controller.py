@@ -28,13 +28,13 @@ def create_subject():
 
 @app.route("/api/v1/subject/<object_id>", methods=["PUT"])
 def update_subject(object_id):
+    subject = Subject.get_by_id(object_id, dbf.get_db_source()).__dict__()
     try:
-        Subject.get_by_id(object_id, db_source=dbf.get_db_source())
+        subject
     except ValueError:
         return "", 404
-    return Subject(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__()
+    subject.update(request.get_json())
+    return Subject(**(subject), db_source=dbf.get_db_source()).save().__dict__()
 
 
 @app.route("/api/v1/subject/<object_id>", methods=["DELETE"])
