@@ -17,7 +17,7 @@ def get_subjects():
 def get_subject_by_id(object_id):
     try:
         return jsonify(Subject.get_by_id(object_id, dbf.get_db_source()).__dict__())
-    except:
+    except ValueError:
         return '', 404
 
 
