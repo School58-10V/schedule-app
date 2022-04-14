@@ -39,7 +39,7 @@ def update_subject(object_id):
     except TypeError:
         return "", 400
     subject.update(request.get_json())
-    return Subject(**(subject), db_source=dbf.get_db_source()).save().__dict__()
+    return jsonify(Subject(**(subject), db_source=dbf.get_db_source()).save().__dict__())
 
 
 @app.route("/api/v1/subject/<object_id>", methods=["DELETE"])

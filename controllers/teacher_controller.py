@@ -39,7 +39,7 @@ def update_teacher(object_id):
     except TypeError:
         return '', 400
     teacher.update(request.get_json())
-    return Teacher(**(teacher), db_source=dbf.get_db_source()).save().__dict__()
+    return jsonify(Teacher(**(teacher), db_source=dbf.get_db_source()).save().__dict__())
 
 
 @app.route("/api/v1/teacher/<object_id>", methods=["DELETE"])
