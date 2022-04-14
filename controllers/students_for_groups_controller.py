@@ -9,17 +9,19 @@ from services.db_source_factory import DBFactory
 app = Flask(__name__)
 dbf = DBFactory()
 
+
 @app.route("/api/v1/students-for-groups", methods=["GET"])
 def get_students_for_groups():
     return jsonify([i.__dict__() for i in StudentsForGroups.get_all(dbf.get_db_source())])
 
+
 @app.route("/api/v1/students-for-groups/<object_id>", methods=["GET"])
 def get_students_for_groups_by_id(object_id):
     try:
-        result = jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()).__dict__())
-        return result
+        return jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
         return jsonify(""), 404
+
 
 @app.route("/api/v1/students-for-groups", methods=["POST"])
 def create_students_for_groups():
@@ -28,6 +30,7 @@ def create_students_for_groups():
         return result
     except TypeError:
         return jsonify(""), 400
+
 
 @app.route("/api/v1/students-for-groups/<object_id>", methods=["PUT"])
 def update_students_for_groups(object_id):
@@ -40,6 +43,7 @@ def update_students_for_groups(object_id):
     except TypeError:
         return jsonify(""), 400
 
+
 @app.route("/api/v1/students-for-groups/<object_id>", methods=["DELETE"])
 def delete_students_for_groups(object_id):
     try:
@@ -50,6 +54,7 @@ def delete_students_for_groups(object_id):
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
     return jsonify(sfg)
+
 
 if __name__ == "__main__":
     app.run()

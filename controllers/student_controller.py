@@ -7,9 +7,11 @@ from psycopg2 import errorcodes
 app = Flask(__name__)
 dbf = DBFactory()
 
+
 @app.route("/api/v1/student", methods=["GET"])
 def get_students():
     return jsonify([i.__dict__() for i in Student.get_all(dbf.get_db_source())])
+
 
 @app.route("/api/v1/student/<object_id>", methods=["GET"])
 def get_student_by_id(object_id):
@@ -19,6 +21,7 @@ def get_student_by_id(object_id):
     except ValueError:
         return jsonify(""), 404
 
+
 @app.route("/api/v1/student", methods=["POST"])
 def create_student():
     try:
@@ -26,6 +29,7 @@ def create_student():
         return result
     except TypeError:
         return jsonify(""), 400
+
 
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
 def update_student(object_id):
@@ -37,6 +41,7 @@ def update_student(object_id):
         return jsonify(""), 404
     except TypeError:
         return jsonify(""), 400
+
 
 @app.route("/api/v1/student/<object_id>", methods=["DELETE"])
 def delete_student(object_id):
