@@ -27,6 +27,18 @@ def get_all_lesson_rows():
     return global_dct
 
 
+@app.route('/api/v1/lesson-row/get/detailed')
+def get_all_detailed():
+    global_dct = {}
+    for i in LessonRow.get_all(dbf.get_db_source()):
+        local_dct = i.__dict__()
+        local_dct['teachers_id'] = [i.__dict__() for i in TeachersForLessonRows.
+                                    get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
+        global_dct[i.get_main_id()] = local_dct.copy()
+
+    return global_dct
+
+
 # @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
 # def get_lesson_row_by_id(object_id):
 #     try:
@@ -39,6 +51,17 @@ def get_lesson_row_by_id(object_id):
     try:
         dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
         dct['teachers_id'] = [i.get_main_id() for i in TeachersForLessonRows.
+                              get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
+        return jsonify(dct)
+    except ValueError:
+        return '', 404
+
+
+@app.route('/api/v1/lesson-row/get/detailed/<object_id>', methods=['GET'])
+def get_detailed_lesson_row_by_id(object_id):
+    try:
+        dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        dct['teachers_id'] = [i.__dict__() for i in TeachersForLessonRows.
                               get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
         return jsonify(dct)
     except ValueError:
