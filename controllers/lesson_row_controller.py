@@ -4,6 +4,7 @@ from psycopg2 import errorcodes
 from data_model.lesson_row import LessonRow
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -14,10 +15,32 @@ def get_lesson_rows():
     return jsonify([i.__dict__() for i in LessonRow.get_all(dbf.get_db_source())])
 
 
+@app.route("/api/v1/lesson-row-all", methods=["GET"])
+def get_all_lesson_rows():
+    global_dct = {}
+    for i in LessonRow.get_all(dbf.get_db_source()):
+        local_dct = i.__dict__()
+        local_dct['teachers_id'] = [i.get_main_id() for i in TeachersForLessonRows.
+                                    get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
+        global_dct[i.get_main_id()] = local_dct.copy()
+
+    return global_dct
+
+
+# @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
+# def get_lesson_row_by_id(object_id):
+#     try:
+#         return jsonify(LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__())
+#     except ValueError:
+#         return '', 404
+
 @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
 def get_lesson_row_by_id(object_id):
     try:
-        return jsonify(LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__())
+        dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        dct['teachers_id'] = [i.get_main_id() for i in TeachersForLessonRows.
+                              get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
+        return jsonify(dct)
     except ValueError:
         return '', 404
 
