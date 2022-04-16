@@ -26,14 +26,16 @@ def get_locations():
 
 @app.route("/api/v1/location/<object_id>", methods=["GET"])
 def get_location_by_id(object_id):
-    return jsonify(Location.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    try:
+        return jsonify(Location.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/location", methods=["POST"])
 def create_location():
-    return Location(**request.get_json(), db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__()
+    return jsonify(Location(**request.get_json(), db_source=dbf.get_db_source()) \
+                   .save().__dict__())
 
 
 @app.route("/api/v1/location/<object_id>", methods=["DELETE"])
@@ -45,7 +47,7 @@ def delete_location(object_id):
         return "", 404
     except psycopg2.Error as e:
         return errorcodes.lookup(e.pgcode), 409
-    return location
+    return jsonify(location)
 
 
 if __name__ == '__main__':
