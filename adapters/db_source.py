@@ -102,10 +102,13 @@ class DBSource(AbstractSource):
         for elem in document:
             req_data.append(f"{elem} = {self.__wrap_string(document.get(elem))}")
         print(req_data)
-        request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
-        self.__cursor.execute(request)
-        self.__conn.commit()
-        return document
+        try:
+            request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
+            self.__cursor.execute(request)
+            self.__conn.commit()
+            return document
+        finally:
+            self.__conn.commit()
 
     def delete(self, collection_name: str, object_id: int):
         self.connect()
