@@ -32,7 +32,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/v1/teacher/{{object_id}}",
+					"raw": "http://localhost:5000/api/v1/teacher/64",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -42,7 +42,7 @@
 						"api",
 						"v1",
 						"teacher",
-						"{{object_id}}"
+						"64"
 					]
 				}
 			},
@@ -115,7 +115,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/v1/teacher/{{object_id}}",
+					"raw": "http://localhost:5000/api/v1/teacher/64",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -125,7 +125,53 @@
 						"api",
 						"v1",
 						"teacher",
-						"{{object_id}}"
+						"64"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Subjects_By_Teacher_Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/teacher/get_subjects/11",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"teacher",
+						"get_subjects",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_Lesson_Rows_By_Teacher_Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/teacher/get_lesson_rows/13",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"teacher",
+						"get_lesson_rows",
+						"13"
 					]
 				}
 			},
