@@ -56,10 +56,10 @@ def delete_teacher(object_id):
 @app.route("/api/v1/teacher/get_subjects/<object_id>", methods=["GET"])
 def get_subjects(object_id):
     try:
-        subjects = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        subjects['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
+        dct = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        dct['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
             get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
-        return jsonify(subjects['subject_id'])
+        return jsonify(dct['subject_id'])
     except ValueError:
         return '', 404
 
@@ -67,10 +67,10 @@ def get_subjects(object_id):
 @app.route("/api/v1/teacher/get_lesson_rows/<object_id>", methods=["GET"])
 def get_lesson_rows(object_id):
     try:
-        lesson_rows = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        lesson_rows['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
+        dct = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        dct['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
             get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
-        return jsonify(lesson_rows['lesson_row_id'])
+        return jsonify(dct['lesson_row_id'])
     except ValueError:
         return '', 404
 
