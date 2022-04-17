@@ -3,6 +3,8 @@ import psycopg2
 from data_model.teacher import Teacher
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify
+from data_model.teachers_for_subjects import TeachersForSubjects
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -49,6 +51,28 @@ def delete_teacher(object_id):
         return "", 404
     except psycopg2.errors.ForeignKeyViolation as error:
         return error.pgerror, 400
+
+
+@app.route("/api/v1/teacher/get_subjects/<object_id>", methods=["GET"])
+def get_subjects(object_id):
+    try:
+        subjects = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        subjects['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
+            get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        return jsonify(subjects['subject_id'])
+    except ValueError:
+        return '', 404
+
+
+@app.route("/api/v1/teacher/get_lesson_rows/<object_id>", methods=["GET"])
+def get_lesson_rows(object_id):
+    try:
+        lesson_rows = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        lesson_rows['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
+            get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        return jsonify(lesson_rows['lesson_row_id'])
+    except ValueError:
+        return '', 404
 
 
 if __name__ == '__main__':
