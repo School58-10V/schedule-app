@@ -2,7 +2,9 @@ import psycopg2
 from flask import Flask, request, jsonify
 from psycopg2 import errorcodes
 
+from data_model.group import Group
 from data_model.student import Student
+from data_model.students_for_groups import StudentsForGroups
 from services.db_source_factory import DBFactory
 
 app = Flask(__name__)
@@ -17,10 +19,11 @@ def get_students():
 @app.route("/api/v1/student/<object_id>", methods=["GET"])
 def get_student_by_id(object_id):
     try:
-        result = jsonify(Student.get_by_id(object_id, dbf.get_db_source()).__dict__())
-        return result
+        result = {"Student": Student.get_by_id(object_id, dbf.get_db_source()).__dict__(),
+                  "Groups": [Group.get_by_id(sfg.get_main_id(),dbf.get_db_source()).__dict__() for sfg in StudentsForGroups.get_group_by_student_id(object_id, dbf.get_db_source())]}
     except ValueError:
         return "", 404
+    return jsonify(result)
 
 
 @app.route("/api/v1/student", methods=["POST"])
