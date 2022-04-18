@@ -15,9 +15,9 @@ def get_students():
     result = []
     for student in Student.get_all(dbf.get_db_source()):
         student_data = student.__dict__()
-        student_data["groups_id"] = [group.get_main_id() for group in StudentsForGroups.get_group_by_student_id(student.get_main_id(), dbf.get_db_source())]
+        student_data["groups"] = [group.get_main_id() for group in StudentsForGroups.get_group_by_student_id(student.get_main_id(), dbf.get_db_source())]
         result.append(student_data)
-    return jsonify(result)
+    return jsonify({"students": result})
 
 
 @app.route("/api/v1/student/get/detailed/<object_id>", methods=["GET"])
@@ -34,7 +34,7 @@ def get_student_by_id_detailed(object_id):
 def get_student_by_id(object_id):
     try:
         result = Student.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        result["groups_ids"] = [group_obj.get_main_id() for group_obj in StudentsForGroups.get_group_by_student_id(object_id, dbf.get_db_source())]
+        result["groups"] = [group_obj.get_main_id() for group_obj in StudentsForGroups.get_group_by_student_id(object_id, dbf.get_db_source())]
     except ValueError:
         return "", 404
     return jsonify(result)
