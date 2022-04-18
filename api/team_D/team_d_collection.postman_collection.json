@@ -148,6 +148,14 @@
 						"header": []
 					},
 					"response": []
+				},
+				{
+					"name": "Get_students_detailed",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
