@@ -16,11 +16,22 @@ def get_students():
     return jsonify([i.__dict__() for i in Student.get_all(dbf.get_db_source())])
 
 
+@app.route("/api/v1/name/get/detailed/<object_id>", methods=["GET"])
+def get_student_by_id_detailed(object_id):
+    try:
+        result = {"Student": Student.get_by_id(object_id, dbf.get_db_source()).__dict__(),
+                  "Groups": [group.__dict__() for group in StudentsForGroups.get_group_by_student_id(object_id, dbf.get_db_source())]}
+    except ValueError:
+        return "", 404
+    return jsonify(result)
+
+
 @app.route("/api/v1/student/<object_id>", methods=["GET"])
 def get_student_by_id(object_id):
     try:
         result = {"Student": Student.get_by_id(object_id, dbf.get_db_source()).__dict__(),
-                  "Groups": [Group.get_by_id(sfg.get_main_id(),dbf.get_db_source()).__dict__() for sfg in StudentsForGroups.get_group_by_student_id(object_id, dbf.get_db_source())]}
+                  "Groups": [group_obj.get_main_id() for group_obj in
+                             StudentsForGroups.get_group_by_student_id(object_id, dbf.get_db_source())]}
     except ValueError:
         return "", 404
     return jsonify(result)
