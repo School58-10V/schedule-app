@@ -3,7 +3,9 @@ from data_model.teacher import Teacher
 from interfaces.teacher_interface import TeacherInterface
 from interfaces.student_interface import StudentInterface
 from adapters.db_source import DBSource
+from flask import Flask, request
 
+app = Flask(__name__)
 
 class Cli:
     def __init__(self):
