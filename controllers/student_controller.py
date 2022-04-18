@@ -12,8 +12,12 @@ dbf = DBFactory()
 
 @app.route("/api/v1/student", methods=["GET"])
 def get_students():
-    return jsonify([i.__dict__() for i in Student.get_all(dbf.get_db_source())])
-# TODO: add stuff here
+    result = []
+    for student in Student.get_all(dbf.get_db_source()):
+        student_data = student.__dict__()
+        student_data["groups_id"] = [group.get_main_id() for group in StudentsForGroups.get_group_by_student_id(student.get_main_id(), dbf.get_db_source())]
+        result.append(student_data)
+    return jsonify(result)
 
 
 @app.route("/api/v1/student/get/detailed/<object_id>", methods=["GET"])
