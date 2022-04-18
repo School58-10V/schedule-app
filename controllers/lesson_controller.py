@@ -1,7 +1,9 @@
-import json
+import psycopg2
+from psycopg2 import errorcodes
+
 from data_model.lesson import Lesson
 from services.db_source_factory import DBFactory
-from flask import Flask, request
+from flask import Flask, request, jsonify, app
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -9,12 +11,16 @@ dbf = DBFactory()
 
 @app.route("/api/v1/lesson", methods=["GET"])
 def get_lessons():
-    return json.dumps([i.__dict__() for i in Lesson.get_all(dbf.get_db_source())], ensure_ascii=False)
+    return jsonify([i.__dict__() for i in Lesson.get_all(dbf.get_db_source())])
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["GET"])
 def get_lesson_by_id(object_id):
-    return json.dumps(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__(), ensure_ascii=False)
+    try:
+        lesson_json = jsonify(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except ValueError:
+        return '', 404
+    return lesson_json
 
 
 @app.route("/api/v1/lesson", methods=["POST"])
@@ -37,7 +43,15 @@ def update_lessons(object_id):
 
 @app.route("/api/v1/lesson/<object_id>", methods=["DELETE"])
 def delete_lesson(object_id):
-    return {"method": "post"}
+    try:
+        lesson = Lesson.get_by_id(object_id, dbf.get_db_source())
+        lesson = lesson.delete().__dict__()
+    except ValueError:
+        return "", 404
+    except psycopg2.Error as e:
+        print(e)
+        return errorcodes.lookup(e.pgcode), 409
+    return lesson
 
 
 if __name__ == '__main__':

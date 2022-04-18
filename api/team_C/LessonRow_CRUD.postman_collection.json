@@ -32,7 +32,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/v1/lesson-row/{{id}}",
+					"raw": "http://localhost:5000/api/v1/lesson-row/13",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -42,7 +42,7 @@
 						"api",
 						"v1",
 						"lesson-row",
-						"{{id}}"
+						"13"
 					]
 				}
 			},
@@ -55,7 +55,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"day_of_the_week\": 2,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 1,\r\n\"end_time\": 1,\r\n\"timetable_id\": 1}",
+					"raw": "{\"day_of_the_week\": 2,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 2121,\r\n\"end_time\": 1,\r\n\"timetable_id\": 1}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -85,7 +85,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"day_of_the_week\": 2,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 1,\r\n\"end_time\": 1,\r\n\"timetable_id\": 1}",
+					"raw": "{\"day_of_the_week\": 2,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 1,\r\n\"end_time\": 851,\r\n\"timetable_id\": 1}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -93,7 +93,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/v1/lesson-row/{{id}}",
+					"raw": "http://localhost:5000/api/v1/lesson-row/54",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -103,7 +103,7 @@
 						"api",
 						"v1",
 						"lesson-row",
-						"{{id}}"
+						"54"
 					]
 				}
 			},
@@ -115,7 +115,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/v1/lesson-row/{{id}}",
+					"raw": "http://localhost:5000/api/v1/lesson-row/54",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -125,7 +125,97 @@
 						"api",
 						"v1",
 						"lesson-row",
-						"{{id}}"
+						"54"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_LessonRow_with_Teachers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson-row",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson-row"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_LessonRow_by_id_with_Teachers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson-row/13",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson-row",
+						"13"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_detailed_LessonRow_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson-row/get/detailed/13",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson-row",
+						"get",
+						"detailed",
+						"13"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get_detailed_LessonRow",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/lesson-row/get/detailed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"lesson-row",
+						"get",
+						"detailed"
 					]
 				}
 			},

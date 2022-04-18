@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "48e46e09-3bba-4f4c-b7d2-795feb4ca0e9",
+		"_postman_id": "315ca93f-5924-44e3-a5f6-635a857a67d5",
 		"name": "Lesson_CRUD",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -32,7 +32,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/v1/lesson/{{object_id}}",
+					"raw": "http://localhost:5000/api/v1/lesson/10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -42,12 +42,12 @@
 						"api",
 						"v1",
 						"lesson",
-						"{{object_id}}"
+						"10"
 					],
 					"query": [
 						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -62,7 +62,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"start_time\": 1,\n    \"end_time\": 1,\n    \"day\": 1,\n    \"teacher_id\": 1,\n    \"group_id\": 1,\n    \"subject_id\": 1,\n    \"notes\": \"some notes\",\n    \"object_id\": 1,\n    \"state\": \"OK\"\n}",
+					"raw": "{\n        \"day\": \"Sun, 21 May 2006 00:00:00 GMT\",\n        \"end_time\": 945,\n        \"group_id\": 1,\n        \"notes\": \"yrok\",\n        \"start_time\": 900,\n        \"state\": true,\n        \"subject_id\": 1,\n        \"teacher_id\": 4\n}",
 					"options": {
 						"raw": {
 							"language": "json"

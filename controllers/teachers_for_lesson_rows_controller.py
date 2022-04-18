@@ -15,7 +15,7 @@ def get_teacher_for_lesson_rows():
 def get_teacher_for_lesson_rows_by_id(object_id):
     try:
         return jsonify(TeachersForLessonRows.get_by_id(object_id, dbf.get_db_source()).__dict__())
-    except:
+    except ValueError:
         return '', 404
 
 
