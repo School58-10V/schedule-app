@@ -28,7 +28,7 @@ def get_teachers_id_by_subject_id(object_id):
         return jsonify(TeachersForSubjects.get_teachers_by_subject_id(object_id, dbf.get_db_source()))
     except ValueError:
         return '', 404
-
+a
 
 @app.route("/api/v1/subject", methods=["POST"])
 def create_subject():
