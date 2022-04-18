@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-
 from data_model.students_for_groups import StudentsForGroups
 from services.db_source_factory import DBFactory
 
@@ -18,7 +17,7 @@ def get_students_for_groups_by_id(object_id):
         return jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
         return "", 404
-
+      
 
 if __name__ == "__main__":
     app.run()

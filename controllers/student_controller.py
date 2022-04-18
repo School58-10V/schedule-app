@@ -60,7 +60,6 @@ def create_student():
         return "", 400
 
 
-
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
 def update_student(object_id):
     try:
@@ -73,7 +72,6 @@ def update_student(object_id):
         return "", 400
 
 
-
 @app.route("/api/v1/student/<object_id>", methods=["DELETE"])
 def delete_student(object_id):
     try:
@@ -84,8 +82,7 @@ def delete_student(object_id):
         return "", 404
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
-
-
+      
 
 if __name__ == "__main__":
     app.run()

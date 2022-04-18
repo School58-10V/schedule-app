@@ -93,6 +93,6 @@ def delete_teacher(object_id):
     except psycopg2.errors.ForeignKeyViolation as error:
         return error.pgerror, 400
 
-
+      
 if __name__ == '__main__':
     app.run()

@@ -1,5 +1,4 @@
 import psycopg2
-
 from data_model.subject import Subject
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify
