@@ -62,9 +62,11 @@ class TeachersForSubjects(AbstractModel):
     @classmethod
     def get_subjects_by_teacher_id(cls, teacher_id: int, db_source: DBSource) -> List[Subject]:  # в качестве
         from data_model.subject import Subject
+
         return [
             Subject.get_by_id(i['subject_id'], db_source=db_source)
-            for i in db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})]
+            for i in db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
+        ]
 
 
     @classmethod

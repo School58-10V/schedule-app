@@ -37,6 +37,33 @@ def get_teacher_by_id(object_id):
         return '', 404
 
 
+@app.route("/api/v1/teachers/get/detailed", methods=["GET"])
+def get_detailed_teachers():
+    teachers = []
+    for i in Teacher.get_all(dbf.get_db_source()):
+        object_id = i.get_main_id()
+        teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        teacher['subject'] = [i.__dict__() for i in TeachersForSubjects.
+            get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        teacher['lesson_row'] = [i.__dict__() for i in TeachersForLessonRows.
+            get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        teachers.append(teacher)
+    return jsonify({"teachers": teachers})
+
+
+@app.route("/api/v1/teachers/get/detailed/<object_id>", methods=["GET"])
+def get_teacher_detailed_by_id(object_id):
+    try:
+        teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        teacher['subject_id'] = [i.__dict__() for i in TeachersForSubjects.
+            get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        teacher['lesson_row_id'] = [i.__dict__() for i in TeachersForLessonRows.
+            get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        return teacher
+    except ValueError:
+        return '', 404
+
+
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher():
     try:
