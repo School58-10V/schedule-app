@@ -20,14 +20,14 @@ class Location(AbstractModel):
 
     def __init__(self, db_source: DBSource, location_type: str, object_id: int = None,
                  location_desc: str = None, profile: str = None, num_of_class: int = None,
-                 equipment: list = None, link: str = 'Offline', comment: str = ''):
+                 equipment: str = None, link: str = 'Offline', comment: str = ''):
         super().__init__(db_source)
         self.__location_type = location_type
         self._object_id = object_id
         self.__location_desc = location_desc
         self.__profile = profile
         self.__num_of_class = num_of_class
-        self.__equipment = equipment
+        self.__equipment = equipment  # строка
         self.__link = link
         self.__comment = comment
 
@@ -40,7 +40,7 @@ class Location(AbstractModel):
     def get_num_of_class(self) -> int:
         return self.__num_of_class
 
-    def get_equipment(self) -> list:
+    def get_equipment(self) -> str:
         return self.__equipment
 
     def get_link(self) -> str:
@@ -93,10 +93,6 @@ class Location(AbstractModel):
                 'equipment': self.get_equipment(),
                 'link': self.get_link(),
                 'comment': self.get_comment()}
-
-    @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource):
-        return Location(db_source=db_source, **db_source.get_by_id("Locations", element_id))
 
     @classmethod
     def get_by_id(cls, element_id: int, db_source: DBSource):
