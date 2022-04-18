@@ -140,6 +140,22 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get_student_by_id_detailed",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get_students_detailed",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
