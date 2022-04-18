@@ -10,12 +10,12 @@ app = Flask(__name__)
 dbf = DBFactory()
 
 
+# @app.route("/api/v1/lesson-row", methods=["GET"])
+# def get_lesson_rows():
+#     return jsonify([i.__dict__() for i in LessonRow.get_all(dbf.get_db_source())])
+
+
 @app.route("/api/v1/lesson-row", methods=["GET"])
-def get_lesson_rows():
-    return jsonify([i.__dict__() for i in LessonRow.get_all(dbf.get_db_source())])
-
-
-@app.route("/api/v1/lesson-row-all", methods=["GET"])
 def get_all_lesson_rows():
     global_dct = {'lesson_rows': []}
     for i in LessonRow.get_all(dbf.get_db_source()):
@@ -32,7 +32,7 @@ def get_all_detailed():
     global_dct = {'lesson_rows': []}
     for i in LessonRow.get_all(dbf.get_db_source()):
         local_dct = i.__dict__()
-        local_dct['teachers_detailed'] = [i.__dict__() for i in TeachersForLessonRows.
+        local_dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
                                           get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
         global_dct['lesson_rows'].append(local_dct.copy())
 
@@ -61,7 +61,7 @@ def get_lesson_row_by_id(object_id):
 def get_detailed_lesson_row_by_id(object_id):
     try:
         dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        dct['teachers_detailed'] = [i.__dict__() for i in TeachersForLessonRows.
+        dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
                                     get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
         return jsonify(dct)
     except ValueError:
