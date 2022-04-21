@@ -73,7 +73,9 @@ def create_lesson_row():
     for i in teacher_id:
         TeachersForLessonRows(**{"lesson_row_id": lesson_row_id, "teacher_id": i},
                               db_source=dbf.get_db_source()).save().__dict__()
-    return jsonify(lesson_row.__dict__())
+    dct["object_id"] = lesson_row_id
+    dct['teachers'] = teacher_id
+    return jsonify(dct)
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
