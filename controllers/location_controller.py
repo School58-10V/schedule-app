@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union, Any
 
 from data_model.location import Location
 from services.db_source_factory import DBFactory
@@ -14,7 +14,7 @@ dbf = DBFactory()
 
 # here will be your code
 @app.route("/api/v1/location/<object_id>", methods=['PUT'])
-def update(object_id: int) -> Response:
+def update(object_id: int) -> Union[tuple[str, int], Response]:
     """
     Обновляем Location
     :param object_id: int
@@ -38,7 +38,7 @@ def get_locations() -> Response:
 
 
 @app.route("/api/v1/location/<object_id>", methods=["GET"])
-def get_location_by_id(object_id: int) -> Response:
+def get_location_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
     """
     Выдаём Location по заданному id
     :param object_id: int
@@ -61,7 +61,7 @@ def create_location() -> Response():
 
 
 @app.route("/api/v1/location/<object_id>", methods=["DELETE"])
-def delete_location(object_id: int) -> Response:
+def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], Response]:
     """
     Удаляем Location по заданному id
     :param object_id: int

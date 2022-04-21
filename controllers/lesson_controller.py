@@ -1,3 +1,5 @@
+from typing import Union, Any
+
 import psycopg2
 from psycopg2 import errorcodes
 
@@ -15,7 +17,7 @@ def get_lessons() -> Response:
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["GET"])
-def get_lesson_by_id(object_id: int):
+def get_lesson_by_id(object_id: int) -> Union[tuple[str, int], Response]:
     try:
         lesson_json = jsonify(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
@@ -31,7 +33,7 @@ def create_lesson() -> Response:
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["PUT"])
-def update_lessons(object_id: int):
+def update_lessons(object_id: int) -> Union[tuple[str, int], Response]:
     try:
         Lesson.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
@@ -42,7 +44,7 @@ def update_lessons(object_id: int):
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["DELETE"])
-def delete_lesson(object_id: int):
+def delete_lesson(object_id: int) -> Union[Union[tuple[str, int], tuple[Any, int]], Any]:
     try:
         lesson = Lesson.get_by_id(object_id, dbf.get_db_source())
         lesson = lesson.delete().__dict__()
