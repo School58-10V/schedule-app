@@ -76,7 +76,7 @@ def create_student():
             student.append_group(group)
     except ValueError:
         return '', 404
-    return jsonify(student.__dict__)
+    return jsonify(student.__dict__())
 
 
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
