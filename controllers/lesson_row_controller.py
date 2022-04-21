@@ -33,14 +33,6 @@ def get_all_detailed():
 
     return global_dct
 
-
-# @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
-# def get_lesson_row_by_id(object_id):
-#     try:
-#         return jsonify(LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__())
-#     except ValueError:
-#         return '', 404
-
 @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
 def get_lesson_row_by_id(object_id):
     try:
@@ -91,8 +83,6 @@ def delete_lesson_row(object_id):
         return jsonify(errorcodes.lookup(e.pgcode), 409)
     return jsonify(lesson_row)
 
-
-# here will be your code
 
 if __name__ == '__main__':
     app.run()
