@@ -104,6 +104,14 @@ class Student(AbstractModel):
         StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
         return self
 
+    def append_group_by_id(self, group_id: int) -> Student:
+        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source()):
+            if i.get_main_id() == group_id:
+                return self
+
+        StudentsForGroups(self._db_source, group_id=group_id, student_id=self.get_main_id()).save()
+        return self
+
     def remove_group(self, group: Group) -> Student:
         """
             Удаляем новую группу для этого студента, используя класс
