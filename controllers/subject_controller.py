@@ -1,9 +1,8 @@
 import psycopg2
-from flask import Flask, request, jsonify
-
 from data_model.subject import Subject
 from data_model.teachers_for_subjects import TeachersForSubjects
 from services.db_source_factory import DBFactory
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -44,7 +43,7 @@ def get_subject_by_id(object_id):
         return '', 404
 
 
-@app.route("/api/v1/student", methods=["POST"])
+@app.route("/api/v1/subjects", methods=["POST"])
 def create_subject():
     try:
         req :dict= request.get_json()
