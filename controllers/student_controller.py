@@ -68,9 +68,10 @@ def get_student_by_id(object_id):
 def create_student():
     try:
         dct = request.get_json()
-        student = Student(**request.get_json(), db_source=dbf.get_db_source()).save()
+        groups = dct.pop('groups')
+        student = Student(**dct, db_source=dbf.get_db_source()).save()
         # student = Student.get_by_id(element_id=dct['object_id'], db_source=dbf.get_db_source())
-        for i in dct['groups']:
+        for i in groups:
             group = Group.get_by_id(element_id=i, db_source=dbf.get_db_source())
             student.append_group(group)
     except ValueError:
