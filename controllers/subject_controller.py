@@ -1,8 +1,9 @@
 import psycopg2
+from flask import Flask, request, jsonify
+
 from data_model.subject import Subject
 from data_model.teachers_for_subjects import TeachersForSubjects
 from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -46,12 +47,16 @@ def get_subject_by_id(object_id):
 @app.route("/api/v1/subjects", methods=["POST"])
 def create_subject():
     try:
+        ids = []
         req :dict= request.get_json()
-        result = Subject(subject_name=req["subject_name"], db_source=dbf.get_db_source()).save()
+        subject = Subject(subject_name=req["subject_name"], db_source=dbf.get_db_source()).save()
         if "teachers" in req.keys():
             for elem in req["teachers"]:
-                TeachersForSubjects(subject_id=result.get_main_id(), teacher_id=int(elem), db_source=dbf.get_db_source()).save()
-        return jsonify(result.__dict__())
+                tfs = TeachersForSubjects(subject_id=subject.get_main_id(), teacher_id=int(elem), db_source=dbf.get_db_source()).save()
+                ids.append(tfs.get_main_id())
+        result = subject.__dict__()
+        result["linker_ids"] = ids
+        return jsonify(result)
     except TypeError as e:
         print(e)
         return "", 400
