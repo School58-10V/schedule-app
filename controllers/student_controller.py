@@ -19,7 +19,7 @@ def get_students():
         result.append(student_data)
     return jsonify({"students": result})
 
-@app.route("/api/v1/student/get/detailed", methods=["GET"])
+@app.route("/api/v1/student/detailed", methods=["GET"])
 def get_students_detailed():
     result = []
     for student in Student.get_all(dbf.get_db_source()):
@@ -29,7 +29,7 @@ def get_students_detailed():
         result.append(student_data)
     return jsonify({"students": result})
 
-@app.route("/api/v1/student/get/detailed/<object_id>", methods=["GET"])
+@app.route("/api/v1/student/detailed/<object_id>", methods=["GET"])
 def get_student_by_id_detailed(object_id):
     try:
         result = Student.get_by_id(object_id, dbf.get_db_source()).__dict__()
