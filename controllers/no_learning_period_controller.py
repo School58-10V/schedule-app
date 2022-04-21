@@ -31,6 +31,7 @@ def create_no_learning_period():
     except TypeError:
         return "", 400
 
+      
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["PUT"])
 def update_no_learning_period(object_id):
     try:

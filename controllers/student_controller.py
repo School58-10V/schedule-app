@@ -10,7 +10,7 @@ app = Flask(__name__)
 dbf = DBFactory()
 
 
-@app.route("/api/v1/student/get", methods=["GET"])
+@app.route("/api/v1/student", methods=["GET"])
 def get_students():
     result = []
     for student in Student.get_all(dbf.get_db_source()):
@@ -39,6 +39,7 @@ def get_student_by_id_detailed(object_id):
     return jsonify(result)
 
 
+
 @app.route("/api/v1/student/<object_id>", methods=["GET"])
 def get_student_by_id(object_id):
     try:
@@ -47,6 +48,7 @@ def get_student_by_id(object_id):
     except ValueError:
         return "", 404
     return jsonify(result)
+
 
 
 @app.route("/api/v1/student", methods=["POST"])
@@ -80,7 +82,7 @@ def delete_student(object_id):
         return "", 404
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
-
+      
 
 if __name__ == "__main__":
     app.run()
