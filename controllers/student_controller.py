@@ -55,27 +55,19 @@ def get_student_by_id(object_id):
     return jsonify(result)
 
 
-# @app.route("/api/v1/student", methods=["POST"])
-# def create_student():
-#     try:
-#         result = jsonify(Student(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__())
-#         return result
-#     except TypeError:
-#         return "", 400
-#
-
 @app.route("/api/v1/student", methods=["POST"])
 def create_student():
     try:
         dct = request.get_json()
         groups = dct.pop('groups')
         student = Student(**dct, db_source=dbf.get_db_source()).save()
-        # student = Student.get_by_id(element_id=dct['object_id'], db_source=dbf.get_db_source())
         for i in groups:
             student.append_group_by_id(i)
     except ValueError:
         return '', 404
-    return jsonify(student.__dict__())
+    dct['object_id'] = student.get_main_id()
+    dct['groups'] = groups
+    return jsonify(dct)
 
 
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
