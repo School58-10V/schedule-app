@@ -13,11 +13,18 @@ dbf = DBFactory()
 
 @app.route("/api/v1/lesson", methods=["GET"])
 def get_lessons() -> Response:
+    """
+    :return json:
+    """
     return jsonify([i.__dict__() for i in Lesson.get_all(dbf.get_db_source())])
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["GET"])
 def get_lesson_by_id(object_id: int) -> Union[tuple[str, int], Response]:
+    """
+    :param object_id: int:
+    :return json:
+    """
     try:
         lesson_json = jsonify(Lesson.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
@@ -27,13 +34,21 @@ def get_lesson_by_id(object_id: int) -> Union[tuple[str, int], Response]:
 
 @app.route("/api/v1/lesson", methods=["POST"])
 def create_lesson() -> Response:
-    return jsonify(Lesson(**request.get_json(), db_source=dbf.get_db_source())
+    """
+    :return json:
+    """
+    return jsonify(Lesson(**request.get_json
+    (), db_source=dbf.get_db_source())
                    .save()
                    .__dict__())
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["PUT"])
 def update_lessons(object_id: int) -> Union[tuple[str, int], Response]:
+    """
+    :param object_id: int:
+    :return json:
+    """
     try:
         Lesson.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
@@ -45,6 +60,10 @@ def update_lessons(object_id: int) -> Union[tuple[str, int], Response]:
 
 @app.route("/api/v1/lesson/<object_id>", methods=["DELETE"])
 def delete_lesson(object_id: int) -> Union[Union[tuple[str, int], tuple[Any, int]], Any]:
+    """
+    :param object_id: int:
+    :return json:
+    """
     try:
         lesson = Lesson.get_by_id(object_id, dbf.get_db_source())
         lesson = lesson.delete().__dict__()
