@@ -10,11 +10,6 @@ app = Flask(__name__)
 dbf = DBFactory()
 
 
-# @app.route("/api/v1/lesson-row", methods=["GET"])
-# def get_lesson_rows():
-#     return jsonify([i.__dict__() for i in LessonRow.get_all(dbf.get_db_source())])
-
-
 @app.route("/api/v1/lesson-row", methods=["GET"])
 def get_all_lesson_rows():
     global_dct = {'lesson_rows': []}

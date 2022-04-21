@@ -14,12 +14,11 @@ dbf = DBFactory()
 def get_teachers():
     teachers = []
     for i in Teacher.get_all(dbf.get_db_source()):
-        object_id = i.get_main_id()
-        teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
-        teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        teacher = i.__dict__()
+        teacher['subject_id'] = [j.get_main_id() for j in TeachersForSubjects.
+            get_subjects_by_teacher_id(i.get_main_id(), db_source=dbf.get_db_source())]
+        teacher['lesson_row_id'] = [j.get_main_id() for j in TeachersForLessonRows.
+            get_lesson_rows_by_teacher_id(i.get_main_id(), db_source=dbf.get_db_source())]
         teachers.append(teacher)
     return jsonify({"teachers": teachers})
 
