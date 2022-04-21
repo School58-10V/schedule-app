@@ -72,8 +72,7 @@ def create_student():
         student = Student(**dct, db_source=dbf.get_db_source()).save()
         # student = Student.get_by_id(element_id=dct['object_id'], db_source=dbf.get_db_source())
         for i in groups:
-            group = Group.get_by_id(element_id=i, db_source=dbf.get_db_source())
-            student.append_group(group)
+            student.append_group_by_id(i)
     except ValueError:
         return '', 404
     return jsonify(student.__dict__())
