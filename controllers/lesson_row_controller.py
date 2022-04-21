@@ -16,7 +16,7 @@ def get_all_lesson_rows():
     for i in LessonRow.get_all(dbf.get_db_source()):
         local_dct = i.__dict__()
         local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-                                 get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
+            get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
         global_dct['lesson_rows'].append(local_dct.copy())
 
     return global_dct
@@ -28,7 +28,7 @@ def get_all_detailed():
     for i in LessonRow.get_all(dbf.get_db_source()):
         local_dct = i.__dict__()
         local_dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-                                          get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
+            get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
         global_dct['lesson_rows'].append(local_dct.copy())
 
     return global_dct
@@ -46,7 +46,7 @@ def get_lesson_row_by_id(object_id):
     try:
         dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
         dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-                           get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
+            get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
         return jsonify(dct)
     except ValueError:
         return '', 404
@@ -57,7 +57,7 @@ def get_detailed_lesson_row_by_id(object_id):
     try:
         dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
         dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-                                    get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
+            get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
         return jsonify(dct)
     except ValueError:
         return '', 404
@@ -65,8 +65,15 @@ def get_detailed_lesson_row_by_id(object_id):
 
 @app.route("/api/v1/lesson-row", methods=["POST"])
 def create_lesson_row():
-    return jsonify(LessonRow(**request.get_json(), db_source=dbf.get_db_source()) \
-                   .save().__dict__())
+    dct = request.get_json()
+    teacher_id = dct["teachers"]
+    dct.pop('teachers')
+    lesson_row = LessonRow(**dct, db_source=dbf.get_db_source()).save()
+    lesson_row_id = lesson_row.get_main_id()
+    for i in teacher_id:
+        TeachersForLessonRows(**{"lesson_row_id": lesson_row_id, "teacher_id": i},
+                              db_source=dbf.get_db_source()).save().__dict__()
+    return jsonify(lesson_row.__dict__())
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
