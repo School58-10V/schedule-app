@@ -1,8 +1,9 @@
 import psycopg2
+from flask import Flask, request, jsonify
+
 from data_model.subject import Subject
 from data_model.teachers_for_subjects import TeachersForSubjects
 from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -43,12 +44,20 @@ def get_subject_by_id(object_id):
         return '', 404
 
 
-@app.route("/api/v1/subjects", methods=["POST"])
+@app.route("/api/v1/student", methods=["POST"])
 def create_subject():
     try:
-        return Subject(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__()
-    except TypeError:
-        return '', 400
+        req = request.get_json()
+        result = Subject(subject_name=req["subject_name"], db_source=dbf.get_db_source()).save()
+        for elem in req["teachers"]:
+            TeachersForSubjects(subject_id=result.get_main_id(), teacher_id=int(elem), db_source=dbf.get_db_source()).save()
+        return jsonify(result.__dict__())
+    except TypeError as e:
+        print(e)
+        return "", 400
+    except ValueError as e:
+        print(e)
+        return "", 400
 
 
 @app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
