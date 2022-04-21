@@ -20,13 +20,13 @@ dbf = DBFactory()
 def get_all_lesson_rows() -> Response:
     """
     Достаем все LessonRow
-    :return:
+    :return: Response
     """
     global_dct = {'lesson_rows': []}
     for i in LessonRow.get_all(dbf.get_db_source()):
         local_dct = i.__dict__()
         local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
+                                 get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
         global_dct['lesson_rows'].append(local_dct.copy())
 
     return jsonify(global_dct)
@@ -36,13 +36,13 @@ def get_all_lesson_rows() -> Response:
 def get_all_detailed() -> Response:
     """
     Достаем все LessonRow вместе с учителями
-    :return:
+    :return: Response
     """
     global_dct = {'lesson_rows': []}
     for i in LessonRow.get_all(dbf.get_db_source()):
         local_dct = i.__dict__()
         local_dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
+                                 get_teachers_by_lesson_row_id(i.get_main_id(), db_source=dbf.get_db_source())]
         global_dct['lesson_rows'].append(local_dct.copy())
 
     return jsonify(global_dct)
@@ -53,7 +53,7 @@ def get_lesson_row_by_id(object_id: int) -> Response:
     """
     Достаем LessonRow по id
     :param object_id: int
-    :return:
+    :return: Response
     """
     try:
         dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
@@ -69,7 +69,7 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Response:
     """
     Дастаем LessonRow по id вместе с учителями
     :param object_id: int
-    :return:
+    :return: Response
     """
     try:
         dct = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
@@ -84,7 +84,7 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Response:
 def create_lesson_row() -> Response:
     """
     Создаем LessonRow
-    :return:
+    :return: Response
     """
     return jsonify(LessonRow(**request.get_json(), db_source=dbf.get_db_source()) \
                    .save().__dict__())
@@ -95,7 +95,7 @@ def update_lesson_rows(object_id: int) -> Response:
     """
     Обновляем LessonRow по данному id
     :param object_id:
-    :return:
+    :return: Response
     """
     try:
         LessonRow.get_by_id(object_id, db_source=dbf.get_db_source())
@@ -110,7 +110,7 @@ def delete_lesson_row(object_id: int) -> Response:
     """
     Удаляем LessonRow по данному id
     :param object_id: int
-    :return:
+    :return: Response
     """
     try:
         lesson_row = LessonRow.get_by_id(object_id, dbf.get_db_source())

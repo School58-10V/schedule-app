@@ -24,7 +24,7 @@ def get_lesson_by_id(object_id: int):
 
 
 @app.route("/api/v1/lesson", methods=["POST"])
-def create_lesson():
+def create_lesson() -> Response:
     return jsonify(Lesson(**request.get_json(), db_source=dbf.get_db_source())
                    .save()
                    .__dict__())
