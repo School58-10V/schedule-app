@@ -54,12 +54,13 @@ def get_student_by_id(object_id):
 @app.route("/api/v1/student", methods=["POST"])
 def create_student():
     try:
-        req = request.get_json()
+        req :dict= request.get_json()
         result = Student(full_name=req["full_name"], date_of_birth=req["date_of_birth"],
                                  contacts=req["contacts"], bio=req["bio"],
                                  db_source=dbf.get_db_source()).save()
-        for elem in req["groups"]:
-            StudentsForGroups(student_id=result.get_main_id(), group_id=int(elem), db_source=dbf.get_db_source()).save()
+        if "groups" in req.keys():
+            for elem in req["groups"]:
+                StudentsForGroups(student_id=result.get_main_id(), group_id=int(elem), db_source=dbf.get_db_source()).save()
         return jsonify(result.__dict__())
     except TypeError as e:
         print(e)

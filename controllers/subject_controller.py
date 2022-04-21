@@ -47,10 +47,11 @@ def get_subject_by_id(object_id):
 @app.route("/api/v1/student", methods=["POST"])
 def create_subject():
     try:
-        req = request.get_json()
+        req :dict= request.get_json()
         result = Subject(subject_name=req["subject_name"], db_source=dbf.get_db_source()).save()
-        for elem in req["teachers"]:
-            TeachersForSubjects(subject_id=result.get_main_id(), teacher_id=int(elem), db_source=dbf.get_db_source()).save()
+        if "teachers" in req.keys():
+            for elem in req["teachers"]:
+                TeachersForSubjects(subject_id=result.get_main_id(), teacher_id=int(elem), db_source=dbf.get_db_source()).save()
         return jsonify(result.__dict__())
     except TypeError as e:
         print(e)
