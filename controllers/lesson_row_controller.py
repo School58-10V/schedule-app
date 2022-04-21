@@ -91,7 +91,7 @@ def create_lesson_row() -> Response:
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
-def update_lesson_rows(object_id: int) -> Union[tuple[str, int], Response]:
+def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
     """
     Обновляем LessonRow по данному id
     :param object_id:
@@ -106,7 +106,7 @@ def update_lesson_rows(object_id: int) -> Union[tuple[str, int], Response]:
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
-def delete_lesson_row(object_id: int) -> Union[tuple[str, int], Response]:
+def delete_lesson_row(object_id: int) -> Union[Response, tuple[str, int]]:
     """
     Удаляем LessonRow по данному id
     :param object_id: int
