@@ -73,13 +73,34 @@ def create_student():
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
 def update_student(object_id):
     try:
-        Student.get_by_id(object_id, dbf.get_db_source())
-        result = Student(**request.get_json(), db_source=dbf.get_db_source(), object_id=object_id).save().__dict__()
-        return jsonify(result)
+        Student.get_by_id(object_id, db_source=dbf.get_db_source())
+        dct = request.get_json()
+        groups = []
+        if 'groups' in dct:
+            groups = dct.pop('groups')
+        result = Student(**dct, db_source=dbf.get_db_source(), object_id=object_id).save()
+        if groups:
+            for i in result.get_all_groups():
+                result.remove_group(i)
+        for i in groups:
+            result.append_group_by_id(group_id=i)
+        dct['groups'] = groups
+        return jsonify(dct)
     except ValueError:
         return "", 404
     except TypeError:
         return "", 400
+
+
+# def update_student(object_id):
+#     try:
+#         Student.get_by_id(object_id, dbf.get_db_source())
+#         result = Student(**request.get_json(), db_source=dbf.get_db_source(), object_id=object_id).save().__dict__()
+#         return jsonify(result)
+#     except ValueError:
+#         return "", 404
+#     except TypeError:
+#         return "", 400
 
 
 @app.route("/api/v1/student/<object_id>", methods=["DELETE"])
