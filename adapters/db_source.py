@@ -105,7 +105,7 @@ class DBSource(AbstractSource):
         print(req_data)
         try:
             request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
-            self.__cursor.execute(request)
+            cursor.execute(request)
             self.__conn.commit()
             return document
         finally:

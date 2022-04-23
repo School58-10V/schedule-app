@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union
 
 import psycopg2
 from psycopg2 import errorcodes
