@@ -72,13 +72,11 @@ def create_lesson_row():
         for i in teacher_id:
             TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i,
                                   db_source=dbf.get_db_source()).save()
-    except ValueError:
-        return '', 404
+        dct["object_id"] = lesson_row.get_main_id()
+        dct['teachers'] = teacher_id
+        return jsonify(dct)
     except TypeError:
-        return '', 404
-    dct["object_id"] = lesson_row.get_main_id()
-    dct['teachers'] = teacher_id
-    return jsonify(dct)
+        return '', 400
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
@@ -87,7 +85,7 @@ def update_lesson_rows(object_id):
         LessonRow.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404
-    return jsonify(LessonRow(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
+    return jsonify(LessonRow(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source())
                    .save().__dict__())
 
 
