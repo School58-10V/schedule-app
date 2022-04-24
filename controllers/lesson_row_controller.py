@@ -65,15 +65,18 @@ def get_detailed_lesson_row_by_id(object_id):
 
 @app.route("/api/v1/lesson-row", methods=["POST"])
 def create_lesson_row():
-    dct = request.get_json()
-    teacher_id = dct["teachers"]
-    dct.pop('teachers')
-    lesson_row = LessonRow(**dct, db_source=dbf.get_db_source()).save()
-    lesson_row_id = lesson_row.get_main_id()
-    for i in teacher_id:
-        TeachersForLessonRows(**{"lesson_row_id": lesson_row_id, "teacher_id": i},
-                              db_source=dbf.get_db_source()).save().__dict__()
-    dct["object_id"] = lesson_row_id
+    try:
+        dct = request.get_json()
+        teacher_id = dct.pop('teachers')
+        lesson_row = LessonRow(**dct, db_source=dbf.get_db_source()).save()
+        for i in teacher_id:
+            TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i,
+                                  db_source=dbf.get_db_source()).save()
+    except ValueError:
+        return '', 404
+    except TypeError:
+        return '', 404
+    dct["object_id"] = lesson_row.get_main_id()
     dct['teachers'] = teacher_id
     return jsonify(dct)
 
