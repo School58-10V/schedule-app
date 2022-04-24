@@ -1,10 +1,11 @@
 import psycopg2
 
 from data_model.teacher import Teacher
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
 from data_model.teachers_for_subjects import TeachersForSubjects
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+
+from services.db_source_factory import DBFactory
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -66,7 +67,22 @@ def get_teacher_detailed_by_id(object_id):
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher():
     try:
-        return Teacher(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__()
+        subject_id = request.get_json()['subject_id']
+        lesson_row_id = request.get_json()['lesson_row_id']
+        dct = request.get_json()
+        del dct['subject_id']
+        del dct['lesson_row_id']
+
+        new_teacher = Teacher(**dct, db_source=dbf.get_db_source()).save()
+
+        for i in subject_id:
+            TeachersForSubjects(teacher_id=new_teacher.get_main_id(), subject_id=i, db_source=dbf.get_db_source()).save()
+
+        for i in lesson_row_id:
+            TeachersForLessonRows(teacher_id=new_teacher.get_main_id(), lesson_row_id=i, db_source=dbf.get_db_source()).save()
+
+        return Teacher.get_by_id(element_id=new_teacher.__dict__()['object_id'], db_source=dbf.get_db_source())
+
     except TypeError:
         return '', 400
 
