@@ -85,8 +85,22 @@ def update_lesson_rows(object_id):
         LessonRow.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404
-    return jsonify(LessonRow(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source())
-                   .save().__dict__())
+    dct = request.get_json()
+    new_teachers_id = dct.pop("teachers")
+    #
+    lesson_row_by_id = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
+    lesson_row_by_id['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
+                                    get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
+    old_teachers_id = lesson_row_by_id.pop("teachers")
+    for i in range(len(new_teachers_id)):
+        tflr = TeachersForLessonRows.get_by_lesson_row_and_teacher_id(teacher_id=old_teachers_id[i],
+                                                                      lesson_row_id=object_id,
+                                                                      db_source=dbf.get_db_source())
+
+
+    lesson_row = LessonRow(**dct, object_id=object_id, db_source=dbf.get_db_source()).save().__dict__()
+    lesson_row['teachers'] = new_teachers_id
+    return lesson_row
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
@@ -100,6 +114,11 @@ def delete_lesson_row(object_id):
         print(e)
         return jsonify(errorcodes.lookup(e.pgcode), 409)
     return jsonify(lesson_row)
+
+
+@app.route("/api/v1/teacher_for_lesson_rows", methods=["GET"])
+def get_teacher_for_lesson_rows():
+    return jsonify([i.__dict__() for i in TeachersForLessonRows.get_all(dbf.get_db_source())])
 
 
 # here will be your code
