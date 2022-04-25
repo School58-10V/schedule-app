@@ -1,8 +1,10 @@
 import psycopg2
+from flask import Flask, request, jsonify
+
 from data_model.subject import Subject
+from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
 from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -46,17 +48,55 @@ def get_subject_by_id(object_id):
 @app.route("/api/v1/subjects", methods=["POST"])
 def create_subject():
     try:
-        return Subject(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__()
-    except TypeError:
-        return '', 400
+        ids = []
+        req: dict = request.get_json()
+        subject = Subject(subject_name=req["subject_name"], db_source=dbf.get_db_source()).save()
+        if "teachers" in req.keys():
+            for elem in req["teachers"]:
+                tfs = TeachersForSubjects(subject_id=subject.get_main_id(), teacher_id=int(elem),
+                                          db_source=dbf.get_db_source()).save()
+                ids.append(tfs.get_main_id())
+        result = subject.__dict__()
+        result["linker_ids"] = ids
+        return jsonify(result)
+    except TypeError as e:
+        print(e)
+        return "", 400
+    except ValueError as e:
+        print(e)
+        return "", 400
 
 
 @app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
 def update_subject(object_id):
     try:
-        subject = Subject.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        subject.update(request.get_json())
-        return jsonify(Subject(**subject, db_source=dbf.get_db_source()).save().__dict__())
+        req: dict = request.get_json()
+        subject: Subject = Subject.get_by_id(object_id, dbf.get_db_source())
+
+        # чистим все поля (искл те которые надо будет добавить) а потом добавляем те которые надо добавить
+        saved = []
+        if req.get('teachers'):
+            for teacher_obj in subject.get_teachers():
+                if teacher_obj not in req['teachers']:
+                    subject.remove_teacher(teacher_obj)
+                else:
+                    saved.append(teacher_obj)
+            for teacher_id in req['teachers']:
+                if teacher_id in saved:
+                    continue
+                subject.append_teacher(Teacher.get_by_id(teacher_id, dbf.get_db_source()))
+
+        new_subject = subject.__dict__()
+        if req.get('teachers'):
+            req_teachers = req.pop('teachers')
+        else:
+            req_teachers = None
+
+        new_subject.update(req)
+        new_subject = Subject(**new_subject, db_source=dbf.get_db_source()).save()
+        new_subject_dict = new_subject.__dict__()
+        new_subject_dict['teachers'] = req_teachers if req_teachers else [i.get_main_id() for i in new_subject.get_teachers()]
+        return jsonify(new_subject_dict)
     except ValueError:
         return "", 404
     except TypeError:
@@ -84,4 +124,4 @@ def delete_subject(object_id):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

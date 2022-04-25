@@ -1,21 +1,19 @@
 import psycopg2
 from psycopg2 import errorcodes
-from psycopg2.extras import DictCursor
 
 
-for object_id in range(50, 52):
-    conn = psycopg2.connect(dbname='schedule_app', user='giglionda',
-                            password='fu9FvALTYwcyvwr!JeHc', host='postgresql.aakapustin.ru')
-    cursor = conn.cursor(cursor_factory=DictCursor)
+for object_id in range(52, 59):
+    conn = psycopg2.connect(host="postgresql.aakapustin.ru",
+                 password="VYRL!9XEB3yXQs4aPz_Q",
+                 user="schedule_app")
+    cursor = conn.cursor()
     try:
-        request = f'DELETE FROM "TimeTables" WHERE object_id = {object_id}'
+        request = f'DELETE FROM "Students" WHERE object_id = {object_id}'
         cursor.execute(request)
         conn.commit()
         print('Удалил', object_id)
-        cursor.close()
-        conn.close()
     except psycopg2.Error as e:
         print(f"Неизвестная ошибка . Код ошибки: {errorcodes.lookup(e.pgcode)}")
+    finally:
         cursor.close()
         conn.close()
-        continue
