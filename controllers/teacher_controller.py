@@ -32,7 +32,7 @@ def get_teacher_by_id(object_id):
             get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
         teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
             get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
-        return teacher
+        return jsonify(teacher)
     except ValueError:
         return '', 404
 
@@ -67,11 +67,9 @@ def get_teacher_detailed_by_id(object_id):
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher():
     try:
-        subject_id = request.get_json()['subject_id']
-        lesson_row_id = request.get_json()['lesson_row_id']
         dct = request.get_json()
-        del dct['subject_id']
-        del dct['lesson_row_id']
+        subject_id = dct.pop('subject_id')
+        lesson_row_id = dct.pop('lesson_row_id')
 
         new_teacher = Teacher(**dct, db_source=dbf.get_db_source()).save()
 
@@ -81,7 +79,11 @@ def create_teacher():
         for i in lesson_row_id:
             TeachersForLessonRows(teacher_id=new_teacher.get_main_id(), lesson_row_id=i, db_source=dbf.get_db_source()).save()
 
-        return Teacher.get_by_id(element_id=new_teacher.__dict__()['object_id'], db_source=dbf.get_db_source())
+        new_teacher_dct = new_teacher.__dict__()
+        new_teacher_dct['subject_id'] = subject_id
+        new_teacher_dct['lesson_row_id'] = lesson_row_id
+
+        return jsonify(new_teacher_dct)
 
     except TypeError:
         return '', 400
@@ -90,22 +92,26 @@ def create_teacher():
 @app.route("/api/v1/teachers/<object_id>", methods=["PUT"])
 def update_teacher(object_id):
     try:
-        teacher = Teacher.get_by_id(object_id, dbf.get_db_source())
+        teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
+        teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
+            get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
+            get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
 
         for i in request.get_json()['subject_id']:
-            TeachersForSubjects(teacher_id=teacher.get_main_id(), subject_id=i,
-                                db_source=dbf.get_db_source()).save()
+            if i not in teacher['subject_id']:
+                TeachersForSubjects(teacher_id=object_id, subject_id=i,
+                                    db_source=dbf.get_db_source()).save()
 
         for i in request.get_json()['lesson_row_id']:
-            TeachersForLessonRows(teacher_id=teacher.get_main_id(), lesson_row_id=i,
-                                  db_source=dbf.get_db_source()).save()
+            if i not in teacher['lesson_row_id']:
+                TeachersForLessonRows(teacher_id=object_id, lesson_row_id=i,
+                                      db_source=dbf.get_db_source()).save()
 
-        return Teacher.get_by_id(object_id, dbf.get_db_source())
+        return jsonify(Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__())
 
     except ValueError:
-        return '', 404
-    except TypeError:
-        return '', 400
+        return "", 404
 
 
 @app.route("/api/v1/teachers/<object_id>", methods=["DELETE"])
