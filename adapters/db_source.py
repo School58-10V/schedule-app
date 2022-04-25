@@ -102,10 +102,9 @@ class DBSource(AbstractSource):
             collection += "s"
         for elem in document:
             req_data.append(f"{elem} = {self.__wrap_string(document.get(elem))}")
-        print(req_data)
         try:
             request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
-            self.__cursor.execute(request)
+            cursor.execute(request)
             self.__conn.commit()
             return document
         finally:
@@ -174,6 +173,7 @@ class DBSource(AbstractSource):
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 raise ValueError(f'Ошибка во время выполнения запроса, таблица не существует. Запрос: {request}')
             else:
+                # why print here??
                 print(e)
                 raise ValueError(f'Неизвестная ошибка во время выполнения запроса, '
                                  f'код ошибки: {errorcodes.lookup(e.pgcode)}. Запрос: {request}')
