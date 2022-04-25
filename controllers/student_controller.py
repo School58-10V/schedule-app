@@ -71,7 +71,7 @@ def create_student():
             student.append_group_by_id(i)
     except ValueError:
         return '', 404
-    dct['object_id'] = student.get_main_id()
+    dct = student.__dict__()
     dct['groups'] = groups
     return jsonify(dct)
 
@@ -90,6 +90,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
                 result.remove_group(i)
         for i in groups:
             result.append_group_by_id(group_id=i)
+        dct = result.__dict__()
         dct['groups'] = groups
         return jsonify(dct)
     except ValueError:
