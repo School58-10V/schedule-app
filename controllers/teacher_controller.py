@@ -90,9 +90,18 @@ def create_teacher():
 @app.route("/api/v1/teachers/<object_id>", methods=["PUT"])
 def update_teacher(object_id):
     try:
-        teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        teacher.update(request.get_json())
-        return jsonify(Teacher(**teacher, db_source=dbf.get_db_source()).save().__dict__())
+        teacher = Teacher.get_by_id(object_id, dbf.get_db_source())
+
+        for i in request.get_json()['subject_id']:
+            TeachersForSubjects(teacher_id=teacher.get_main_id(), subject_id=i,
+                                db_source=dbf.get_db_source()).save()
+
+        for i in request.get_json()['lesson_row_id']:
+            TeachersForLessonRows(teacher_id=teacher.get_main_id(), lesson_row_id=i,
+                                  db_source=dbf.get_db_source()).save()
+
+        return Teacher.get_by_id(object_id, dbf.get_db_source())
+
     except ValueError:
         return '', 404
     except TypeError:
