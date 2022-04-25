@@ -85,8 +85,8 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
         if 'groups' in dct:
             groups = dct.pop('groups')
         result = Student(**dct, db_source=dbf.get_db_source(), object_id=object_id).save()
-        if groups:
-            for i in result.get_all_groups():
+        for i in result.get_all_groups():
+            if i.get_main_id() not in groups:
                 result.remove_group(i)
         for i in groups:
             result.append_group_by_id(group_id=i)
