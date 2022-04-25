@@ -63,8 +63,13 @@ def create_subject():
 @app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
 def update_subject(object_id):
     try:
-        subject = Subject.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        subject.update(request.get_json())
+        req :dict= request.get_json()
+        subject = Subject.get_by_id(object_id, dbf.get_db_source())
+        if "teachers" in req.keys():
+            for elem in req["teachers"]:
+                TeachersForSubjects(subject_id=subject.get_main_id(), teacher_id=int(elem),
+                                    db_source=dbf.get_db_source()).save()
+        subject.__dict__().update(req)
         return jsonify(Subject(**subject, db_source=dbf.get_db_source()).save().__dict__())
     except ValueError:
         return "", 404
@@ -93,4 +98,4 @@ def delete_subject(object_id):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
