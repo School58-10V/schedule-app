@@ -87,14 +87,13 @@ def update_lesson_rows(object_id):
         return "", 404
     dct = request.get_json()
     new_teachers_id = dct.pop("teachers")
-    #
     lesson_row_by_id = LessonRow.get_by_id(object_id, dbf.get_db_source()).__dict__()
     lesson_row_by_id['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
                                     get_teachers_by_lesson_row_id(object_id, db_source=dbf.get_db_source())]
     old_teachers_id = lesson_row_by_id.pop("teachers")
     teachers_to_create = list((set(new_teachers_id) - set(old_teachers_id)))
     teachers_to_delete = list((set(old_teachers_id) - set(new_teachers_id)))
-    print(teachers_to_create, teachers_to_delete)
+
     for i in range(len(teachers_to_delete)):
         tflr = TeachersForLessonRows.get_by_lesson_row_and_teacher_id(teacher_id=teachers_to_delete[i],
                                                                       lesson_row_id=object_id,
@@ -102,9 +101,9 @@ def update_lesson_rows(object_id):
         for j in tflr:
             j.delete()
 
-
-
-
+    for i in teachers_to_create:
+        TeachersForLessonRows(lesson_row_id=object_id, teacher_id=i,
+                              db_source=dbf.get_db_source()).save()
 
     lesson_row = LessonRow(**dct, object_id=object_id, db_source=dbf.get_db_source()).save().__dict__()
     lesson_row['teachers'] = new_teachers_id
