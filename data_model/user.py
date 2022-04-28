@@ -45,4 +45,3 @@ class User(AbstractModel):
 
     def compare_hash(self, password: str) -> bool:
         return self.__password_hash == hashlib.sha256(password.encode()).hexdigest()
-
