@@ -1,5 +1,4 @@
 import jwt
-
 from flask import Flask, request, jsonify
 from jwt import DecodeError
 
@@ -12,6 +11,7 @@ PRIVATE_KEY = open('schedule-key.pem').read()
 PUBLIC_KEY = open('schedule-public.pem').read()
 
 
+# Генерирует токен по информации о пользователе и возвращает его
 @app.route('/login', methods=['POST'])
 def login():
     username, password = request.json.get('username'), request.json.get('password')
@@ -27,6 +27,10 @@ def test():
     return jsonify({'yay': True}), 200
 
 
+# Вызывается при каждом реквесте (кроме реквеста к /login)
+# Проверяет совпадение информации о пользователе с информацие из токена
+# Выбрасывает ошибку 400 когда токен некорректен
+# Выбрасывает ошибку 401 когда данные не соответствуют
 @app.before_request
 def before_request():
     if request.url_rule.rule == '/login':
