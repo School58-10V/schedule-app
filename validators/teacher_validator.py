@@ -7,12 +7,12 @@ class TeacherValidate:
         self.request = request
         self.method = method
 
-    def validate(self, request, method):
+    def validate(self):
         f = True
         given_keys = set()
         keys = {'bio', 'contacts', 'fio', 'office_id'}
 
-        for i in request.keys():
+        for i in self.request.keys():
             given_keys.add(i)
 
         if 'lesson_row_id' in given_keys:
@@ -21,9 +21,9 @@ class TeacherValidate:
         if 'subject_id' in given_keys:
             given_keys.remove('subject_id')
 
-        if method == 'PUT':
+        if self.method == 'PUT':
             if 'object_id' in given_keys:
-                if type(request['object_id']) != int:
+                if type(self.request['object_id']) != int:
                     f = False
             else:
                 f = False
@@ -31,16 +31,16 @@ class TeacherValidate:
         if given_keys != keys:
             f = False
 
-        for i in request.keys():
+        for i in self.request.keys():
             if i == 'bio' or i == 'fio':
-                if type(request[i]) != str:
+                if type(self.request[i]) != str:
                     f = False
             if i == 'contacts':
-                if type(request[i]) != str and type(request[i]) != bool:
+                if type(self.request[i]) != str and type(self.request[i]) != bool:
                     f = False
             if i == 'lesson_row_id' or i == 'subject_id':
-                if type(request[i]) == list:
-                    for g in request[i]:
+                if type(self.request[i]) == list:
+                    for g in self.request[i]:
                         if type(g) != int:
                             f = False
             else:
