@@ -19,4 +19,4 @@ def get_teacher_for_subjects_by_id(object_id):
 
 
 if __name__ == '__main__':
-    app.run("127.0.0.1", 9000, debug=True)
+    app.run()
