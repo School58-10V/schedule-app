@@ -23,13 +23,13 @@ class User(AbstractModel):
             :param name: имя пользователя
         """
 
-    def get_login(self):
+    def get_login(self) -> str:
         return self.__login
 
-    def get_password_hash(self):
+    def get_password_hash(self) -> str:
         return self.__password_hash
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
     def __str__(self):
@@ -42,3 +42,5 @@ class User(AbstractModel):
 
     def password_to_hash(self):
         self.__password_hash = hashlib.sha256(self.get_password_hash()).hexdigest()
+
+
