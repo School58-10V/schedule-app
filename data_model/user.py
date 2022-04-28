@@ -3,7 +3,7 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 from data_model.abstract_model import AbstractModel
 from typing import List, Optional, TYPE_CHECKING
 from data_model.parsed_data import ParsedData
-import datetime
+import hashlib
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
@@ -39,3 +39,6 @@ class User(AbstractModel):
         return {"name": self.get_name(),
                 "login": self.get_login(),
                 "hash_password": self.get_password_hash()}
+
+    def password_to_hash(self):
+        self.__password_hash = hashlib.sha256(self.get_password_hash()).hexdigest()
