@@ -27,6 +27,7 @@ def get_teachers():
 @app.route("/api/v1/teachers/<object_id>", methods=["GET"])
 def get_teacher_by_id(object_id):
     try:
+
         teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
         teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
             get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
