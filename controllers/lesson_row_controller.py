@@ -123,11 +123,6 @@ def delete_lesson_row(object_id):
     return jsonify(lesson_row)
 
 
-@app.route("/api/v1/teacher_for_lesson_rows", methods=["GET"])
-def get_teacher_for_lesson_rows():
-    return jsonify([i.__dict__() for i in TeachersForLessonRows.get_all(dbf.get_db_source())])
-
-
 # here will be your code
 
 if __name__ == '__main__':
