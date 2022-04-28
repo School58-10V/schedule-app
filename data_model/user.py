@@ -40,7 +40,9 @@ class User(AbstractModel):
                 "login": self.get_login(),
                 "hash_password": self.get_password_hash()}
 
-    def password_to_hash(self):
+    def compare_hash(self):
         self.__password_hash = hashlib.sha256(self.get_password_hash()).hexdigest()
 
+    def password_to_hash(self, password) -> bool:
+        return self.__password_hash == hashlib.sha256(password).hexdigest()
 
