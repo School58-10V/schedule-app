@@ -1,15 +1,15 @@
-from typing import TYPE_CHECKING, Union, Any
+from __future__ import annotations
 
+from typing import TYPE_CHECKING, Union, Any
 from data_model.location import Location
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 import psycopg2
 from psycopg2 import errorcodes
 if TYPE_CHECKING:
     from flask import Response
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 # here will be your code
@@ -75,7 +75,3 @@ def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], R
     except psycopg2.Error as e:
         return errorcodes.lookup(e.pgcode), 409
     return jsonify(location)
-
-
-if __name__ == '__main__':
-    app.run()

@@ -4,11 +4,10 @@ import psycopg2
 from psycopg2 import errorcodes
 
 from data_model.lesson import Lesson
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify, Response
+from flask import request, jsonify, Response
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/lesson", methods=["GET"])
@@ -73,7 +72,3 @@ def delete_lesson(object_id: int) -> Union[Union[tuple[str, int], tuple[Any, int
         print(e)
         return errorcodes.lookup(e.pgcode), 409
     return lesson
-
-
-if __name__ == '__main__':
-    app.run()

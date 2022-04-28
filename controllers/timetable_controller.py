@@ -1,11 +1,10 @@
 import psycopg2
 
 from data_model.timetable import TimeTable
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/timetable", methods=["GET"])
@@ -46,7 +45,3 @@ def delete_timetable(object_id):
         return "", 404
     except psycopg2.errors.ForeignKeyViolation as error:
         return error.pgerror, 400
-
-
-if __name__ == '__main__':
-    app.run("127.0.0.1", 8000)

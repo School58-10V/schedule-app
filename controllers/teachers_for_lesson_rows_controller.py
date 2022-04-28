@@ -1,9 +1,8 @@
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
-from services.db_source_factory import DBFactory
-from flask import Flask, jsonify
+from flask import jsonify
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/teacher_for_lesson_rows", methods=["GET"])
@@ -17,7 +16,3 @@ def get_teacher_for_lesson_rows_by_id(object_id):
         return jsonify(TeachersForLessonRows.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
         return '', 404
-
-
-if __name__ == '__main__':
-    app.run()

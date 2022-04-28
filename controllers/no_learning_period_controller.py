@@ -1,12 +1,11 @@
 import psycopg2
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 from psycopg2 import errorcodes
 
 from data_model.no_learning_period import NoLearningPeriod
-from services.db_source_factory import DBFactory
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/no-learning-period", methods=["GET"])
@@ -54,7 +53,3 @@ def delete_no_learning_period(object_id):
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
     return jsonify(period)
-
-
-if __name__ == "__main__":
-    app.run()
