@@ -14,7 +14,7 @@ class User(AbstractModel):
     def __init__(self, db_source: DBSource, name: str, login: str, password_hash: str = None):
         super().__init__(db_source)
         self.__login = login
-        self.__password_hash = password_hash
+        self.__password_hash = password_hash.encode()
         self.__name = name
         """
             :param db_source: ссылка на бд
@@ -26,7 +26,7 @@ class User(AbstractModel):
     def get_login(self) -> str:
         return self.__login
 
-    def get_password_hash(self) -> str:
+    def get_password_hash(self) -> bytes:
         return self.__password_hash
 
     def get_name(self) -> str:
@@ -43,6 +43,6 @@ class User(AbstractModel):
     def password_to_hash(self):
         self.__password_hash = hashlib.sha256(self.get_password_hash()).hexdigest()
 
-    def compare_hash(self, password) -> bool:
-        return self.__password_hash == hashlib.sha256(password).hexdigest()
+    def compare_hash(self, password: str) -> bool:
+        return self.__password_hash == hashlib.sha256(password.encode()).hexdigest()
 
