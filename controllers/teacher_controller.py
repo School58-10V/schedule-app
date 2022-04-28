@@ -1,10 +1,11 @@
 import psycopg2
 
 from data_model.teacher import Teacher
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
 from data_model.teachers_for_subjects import TeachersForSubjects
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+
+from services.db_source_factory import DBFactory
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -31,7 +32,7 @@ def get_teacher_by_id(object_id):
             get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
         teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
             get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
-        return teacher
+        return jsonify(teacher)
     except ValueError:
         return '', 404
 
@@ -66,7 +67,24 @@ def get_teacher_detailed_by_id(object_id):
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher():
     try:
-        return Teacher(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__()
+        dct = request.get_json()
+        subject_id = dct.pop('subject_id')
+        lesson_row_id = dct.pop('lesson_row_id')
+
+        new_teacher = Teacher(**dct, db_source=dbf.get_db_source()).save()
+
+        for i in subject_id:
+            TeachersForSubjects(teacher_id=new_teacher.get_main_id(), subject_id=i, db_source=dbf.get_db_source()).save()
+
+        for i in lesson_row_id:
+            TeachersForLessonRows(teacher_id=new_teacher.get_main_id(), lesson_row_id=i, db_source=dbf.get_db_source()).save()
+
+        new_teacher_dct = new_teacher.__dict__()
+        new_teacher_dct['subject_id'] = subject_id
+        new_teacher_dct['lesson_row_id'] = lesson_row_id
+
+        return jsonify(new_teacher_dct)
+
     except TypeError:
         return '', 400
 
@@ -75,12 +93,25 @@ def create_teacher():
 def update_teacher(object_id):
     try:
         teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
-        teacher.update(request.get_json())
-        return jsonify(Teacher(**teacher, db_source=dbf.get_db_source()).save().__dict__())
+        teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
+            get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+        teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
+            get_lesson_rows_by_teacher_id(object_id, db_source=dbf.get_db_source())]
+
+        for i in request.get_json()['subject_id']:
+            if i not in teacher['subject_id']:
+                TeachersForSubjects(teacher_id=object_id, subject_id=i,
+                                    db_source=dbf.get_db_source()).save()
+
+        for i in request.get_json()['lesson_row_id']:
+            if i not in teacher['lesson_row_id']:
+                TeachersForLessonRows(teacher_id=object_id, lesson_row_id=i,
+                                      db_source=dbf.get_db_source()).save()
+
+        return jsonify(Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__())
+
     except ValueError:
-        return '', 404
-    except TypeError:
-        return '', 400
+        return "", 404
 
 
 @app.route("/api/v1/teachers/<object_id>", methods=["DELETE"])
