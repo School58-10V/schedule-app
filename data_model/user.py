@@ -11,11 +11,11 @@ if TYPE_CHECKING:
 
 class User(AbstractModel):
 
-    def __init__(self, db_source: DBSource, login: str, password_hash: str, name: str):
+    def __init__(self, db_source: DBSource, name: str, login: str, password_hash: str = None):
         super().__init__(db_source)
-        self.login = login
-        self.password_hash = password_hash
-        self.name = name
+        self.__login = login
+        self.__password_hash = password_hash
+        self.__name = name
         """
             :param db_source: ссылка на бд
             :param login: логин
@@ -23,3 +23,19 @@ class User(AbstractModel):
             :param name: имя пользователя
         """
 
+    def get_login(self):
+        return self.__login
+
+    def get_password_hash(self):
+        return self.__password_hash
+
+    def get_name(self):
+        return self.__name
+
+    def __str__(self):
+        return f"Пользователь {self.get_name()} с логином {self.get_login()}"
+
+    def __dict__(self) -> dict:
+        return {"name": self.get_name(),
+                "login": self.get_login(),
+                "hash_password": self.get_password_hash()}
