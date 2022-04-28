@@ -8,3 +8,18 @@ import datetime
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
 
+
+class User(AbstractModel):
+
+    def __init__(self, db_source: DBSource, login: str, password_hash: str, name: str):
+        super().__init__(db_source)
+        self.login = login
+        self.password_hash = password_hash
+        self.name = name
+        """
+            :param db_source: ссылка на бд
+            :param login: логин
+            :param password_hash: пароль
+            :param name: имя пользователя
+        """
+
