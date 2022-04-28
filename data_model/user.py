@@ -23,6 +23,10 @@ class User(AbstractModel):
             :param name: имя пользователя
         """
 
+    @classmethod
+    def get_by_login(cls, login: str):
+        pass
+
     def get_login(self) -> str:
         return self.__login
 
