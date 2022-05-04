@@ -64,3 +64,9 @@ class User(AbstractModel):
             self._db_source.update(self._get_collection_name(), self.get_main_id(),
                                    self.__dict__(), foreign_key='login')
         return self
+
+    def delete(self):
+        if self.get_main_id() is not None:
+            self._db_source.delete(self._get_collection_name(), self.get_main_id(), foreign_key='login')
+            self.__login = None
+        return self
