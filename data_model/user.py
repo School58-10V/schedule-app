@@ -24,8 +24,12 @@ class User(AbstractModel):
         """
 
     @classmethod
-    def get_by_login(cls, login: str):
-        pass
+    def get_by_login(cls, login: str, db_source: DBSource) -> User:
+        data = db_source.get_by_query(collection_name=cls._get_collection_name(), query={'login': login})
+        # Надо написать метод в адапторе, чтобы лазить в базу и там эти ошибки выдавать. Пока здесь
+        if len(data) == 0:
+            raise ValueError()
+        return User(**data[0], db_source=db_source)
 
     def get_login(self) -> str:
         return self.__login
