@@ -21,7 +21,8 @@ class SubjectValidate:
                     if type(self.request['object_id']) != int or type(self.request['subject_name']) != str:
                         raise ValueError
                 if set(self.request.keys()) == {'object_id', 'subject_name', 'teachers'}:
-                    if type(self.request['object_id']) != int or type(self.request['subject_name']) != str or type(self.request['teachers']) == list:
+                    if type(self.request['object_id']) != int or type(self.request['subject_name']) != str or \
+                            type(self.request['teachers']) == list:
                         raise ValueError
                     for teacher_id in self.request['teachers']:
                         if type(teacher_id) != int:
