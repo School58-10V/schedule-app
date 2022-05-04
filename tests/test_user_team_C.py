@@ -1,10 +1,14 @@
 from data_model.user import User
 from services.db_source_factory import DBFactory
 
-db_source = DBFactory()
-new_user = User(db_source=db_source.get_db_source(), login='login', name='name', password_hash='password')
+db_source = DBFactory(options="-c search_path=dbo,auth")
+new_user = User(db_source=db_source.get_db_source(), login='login', name='name',
+                hash_password='password')
 print(new_user.get_password_hash())
 new_user.password_to_hash()
 print(new_user.get_password_hash())
 print(new_user.compare_hash('password'))
 print(new_user.compare_hash('false_password'))
+new_user.save()
+new_user1 = User.get_by_login(login='login', db_source=db_source.get_db_source())
+print(new_user1.__dict__())

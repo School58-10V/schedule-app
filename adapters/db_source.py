@@ -1,7 +1,8 @@
+from __future__ import annotations
 import time
 import datetime
 from adapters.abstract_source import AbstractSource
-from typing import List
+from typing import List, Optional
 import psycopg2
 from psycopg2 import errorcodes
 
@@ -11,8 +12,9 @@ class DBSource(AbstractSource):
         Адаптер для работы с базой данных
     """
 
-    def __init__(self, host, user, password, dbname='schedule_app'):
-        self.__connection_data = {"host": host, "user": user, "password": password, "dbname": dbname}
+    def __init__(self, host, user, password, dbname='schedule_app', options="-c search_path=dbo,public"):
+        self.__connection_data = {"host": host, "user": user, "password": password,
+                                  "dbname": dbname, "options": options}
         self.__conn = None
 
     def connect(self, retry_count: int = 3):
@@ -72,6 +74,7 @@ class DBSource(AbstractSource):
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 self.__conn.commit()
                 raise ValueError('Данной таблицы не существует.')
+
         desc = [x[0] for x in cursor.description]
         values = [f'\'{document[x]}\'' if x != 'object_id' else 'default' for x in desc]
         request = f'INSERT INTO "{collection_name}" VALUES ({",".join(map(str, values))}) RETURNING *;'
@@ -92,10 +95,11 @@ class DBSource(AbstractSource):
         new_doc = {desc[index]: new_obj[index] for index in range(len(desc))}
         return new_doc
 
-    def update(self, collection_name: str, object_id: int, document: dict):
+    def update(self, collection_name: str, object_id: Optional[int, str], document: dict,
+               foreign_key: str = 'object_id'):
         self.connect()
         cursor = self.__conn.cursor()
-        document.pop("object_id")
+        document.pop(foreign_key)
         collection = collection_name
         req_data = []
         if not collection_name.endswith("s"):
@@ -103,7 +107,7 @@ class DBSource(AbstractSource):
         for elem in document:
             req_data.append(f"{elem} = {self.__wrap_string(document.get(elem))}")
         try:
-            request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
+            request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE {foreign_key} = {str(object_id)}'
             cursor.execute(request)
             self.__conn.commit()
             return document

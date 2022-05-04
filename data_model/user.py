@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
 class User(AbstractModel):
 
-    def __init__(self, name: str, login: str, password_hash: str, db_source: DBSource):
+    def __init__(self, name: str, login: str, hash_password: str, db_source: DBSource):
         super().__init__(db_source)
         self.__login = login
-        self.__password_hash = password_hash
+        self.__password_hash = hash_password
         self.__name = name
         """
             :param db_source: ссылка на бд
@@ -24,11 +24,11 @@ class User(AbstractModel):
         """
 
     @classmethod
-    def get_by_login(cls, login: str, db_source: DBSource) -> User:
+    def get_by_login(cls, login: str, db_source: DBSource) -> Optional[User]:
         data = db_source.get_by_query(collection_name=cls._get_collection_name(), query={'login': login})
         # Надо написать метод в адапторе, чтобы лазить в базу и там эти ошибки выдавать. Пока здесь
         if len(data) == 0:
-            raise ValueError()
+            return None
         return User(**data[0], db_source=db_source)
 
     def get_login(self) -> str:
@@ -39,6 +39,9 @@ class User(AbstractModel):
 
     def get_name(self) -> str:
         return self.__name
+
+    def get_main_id(self):
+        return self.get_login()
 
     def __str__(self):
         return f"Пользователь {self.get_name()} с логином {self.get_login()}"
@@ -53,3 +56,11 @@ class User(AbstractModel):
 
     def compare_hash(self, password: str) -> bool:
         return self.__password_hash == hashlib.sha256(password.encode()).hexdigest()
+
+    def save(self):
+        if not self.get_by_login(login=self.get_login(), db_source=self.get_db_source()):
+            result = self._db_source.insert(self._get_collection_name(), self.__dict__())
+        else:
+            self._db_source.update(self._get_collection_name(), self.get_main_id(),
+                                   self.__dict__(), foreign_key='login')
+        return self
