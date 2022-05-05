@@ -6,6 +6,7 @@ class TeacherValidate:
 
     def validate(self):
         try:
+
             if self.method == 'POST':
                 if 'fio' in self.request.keys():
                     for key in self.request.keys():
@@ -21,6 +22,9 @@ class TeacherValidate:
                             for i in self.request[key]:
                                 if type(i) != int:
                                     raise ValueError
+                else:
+                    raise ValueError
+
             if self.method == 'PUT':
                 if {'fio', 'object_id'} in set(self.request.keys()):
                     for key in self.request.keys():
@@ -36,5 +40,8 @@ class TeacherValidate:
                             for i in self.request[key]:
                                 if type(i) != int:
                                     raise ValueError
+                else:
+                    raise ValueError
+
         except ValueError:
             return '', 400

@@ -6,6 +6,7 @@ class GroupValidate:
 
     def validate(self):
         try:
+
             if self.method == 'POST':
                 if set(self.request.keys()) == {'teacher_id', 'class_letter', 'grade', 'profile_name'}:
                     if type(self.request['teacher_id']) != int:
@@ -16,6 +17,9 @@ class GroupValidate:
                         raise ValueError
                     if type('profile_name') != str:
                         raise ValueError
+                else:
+                    raise ValueError
+
             if self.method == 'PUT':
                 if set(self.request.keys()) == {'teacher_id', 'class_letter', 'grade', 'profile_name', 'object_id'}:
                     if type(self.request['teacher_id']) != int:
@@ -28,5 +32,8 @@ class GroupValidate:
                         raise ValueError
                     if type(self.request['object_id']) != int:
                         raise ValueError
+                else:
+                    raise ValueError
+
         except ValueError:
             return '', 400

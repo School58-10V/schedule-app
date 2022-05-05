@@ -6,6 +6,7 @@ class LessonValidate:
 
     def validate(self):
         try:
+
             if self.method == 'POST':
                 if set(self.request.keys()) == {"start_time", "end_time", "notes", "state", "teacher_id", "group_id",
                                                 "subject_id", "date"}:
@@ -25,6 +26,8 @@ class LessonValidate:
                         raise ValueError
                     if type(self.request["date"]) != int:
                         raise ValueError
+                else:
+                    raise ValueError
 
             if self.method == 'PUT':
                 if set(self.request.keys()) == {"start_time", "end_time", "notes", "state", "teacher_id", "group_id",
@@ -47,6 +50,8 @@ class LessonValidate:
                         raise ValueError
                     if type(self.request["object_id"]) != int:
                         raise ValueError
+                else:
+                    raise ValueError
 
         except ValueError:
             return '', 400

@@ -6,6 +6,7 @@ class LocationValidate:
 
     def validate(self):
         try:
+
             if self.method == 'POST':
                 if {'location_type', 'num_of_class'} in set(self.request.keys()):
                     for key in self.request.keys():
@@ -19,6 +20,9 @@ class LocationValidate:
                         if key == 'num_of_class':
                             if type(self.request[key]) != int:
                                 raise ValueError
+                else:
+                    raise ValueError
+
             if self.method == 'PUT':
                 if {'location_type', 'num_of_class', 'object_id'} in set(self.request.keys()):
                     for key in self.request.keys():
@@ -32,5 +36,8 @@ class LocationValidate:
                         if key == 'num_of_class' or key == 'object_id':
                             if type(self.request[key]) != int:
                                 raise ValueError
+                else:
+                    raise ValueError
+
         except ValueError:
             return '', 400

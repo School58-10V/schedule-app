@@ -6,6 +6,7 @@ class StudentValidate:
 
     def validate(self):
         try:
+
             if self.method == 'POST':
                 if {'full_name', 'date_of_birth'} in set(self.request.keys()):
                     for key in self.request.keys():
@@ -17,6 +18,9 @@ class StudentValidate:
                         if key == 'date_of_birth':
                             if type(self.request[key]) != int:
                                 raise ValueError
+                else:
+                    raise ValueError
+
             if self.method == 'POST':
                 if {'full_name', 'date_of_birth', 'object_id'} in set(self.request.keys()):
                     for key in self.request.keys():
@@ -28,5 +32,8 @@ class StudentValidate:
                         if key == 'date_of_birth' or key == 'object_id':
                             if type(self.request[key]) != int:
                                 raise ValueError
+                else:
+                    raise ValueError
+
         except ValueError:
             return '', 400
