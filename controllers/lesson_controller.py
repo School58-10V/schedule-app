@@ -1,4 +1,4 @@
-from typing import Union, Any
+from typing import Union, Any, Tuple
 
 import psycopg2
 from psycopg2 import errorcodes
@@ -19,7 +19,7 @@ def get_lessons() -> Response:
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["GET"])
-def get_lesson_by_id(object_id: int) -> Union[tuple[str, int], Response]:
+def get_lesson_by_id(object_id: int) -> Union[Tuple[str, int], Response]:
     """
     :param object_id: int:
     :return json:
@@ -43,7 +43,7 @@ def create_lesson() -> Response:
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["PUT"])
-def update_lessons(object_id: int) -> Union[tuple[str, int], Response]:
+def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
     """
     :param object_id: int:
     :return json:
@@ -58,7 +58,7 @@ def update_lessons(object_id: int) -> Union[tuple[str, int], Response]:
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["DELETE"])
-def delete_lesson(object_id: int) -> Union[Union[tuple[str, int], tuple[Any, int]], Any]:
+def delete_lesson(object_id: int) -> Union[Union[Tuple[str, int], Tuple[Any, int]], Any]:
     """
     :param object_id: int:
     :return json:
