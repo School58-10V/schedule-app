@@ -7,16 +7,37 @@ class LessonRowValidate:
     def validate(self):
         try:
             if self.method == 'POST':
-                if set(self.request.keys()) == {'start_time', 'end_time', 'group_id', 'room_id',
-                                                'timetable_id', 'day_of_the_week'}:
+                if {'start_time', 'end_time', 'group_id', 'room_id', 'timetable_id', 'day_of_the_week'} \
+                        in set(self.request.keys()):
                     for key in self.request.keys():
-                        if type(self.request[key]) != int:
+                        if key not in {'start_time', 'end_time', 'group_id', 'room_id',
+                                       'timetable_id', 'day_of_the_week', 'teachers'}:
                             raise ValueError
-            if self.method == 'POST':
-                if set(self.request.keys()) == {'start_time', 'end_time', 'group_id', 'room_id',
-                                                'timetable_id', 'day_of_the_week', 'object_id'}:
+                        if key != 'teachers':
+                            if type(self.request[key]) != int:
+                                raise ValueError
+                        if key == 'teacher':
+                            if type(self.request[key]) != list:
+                                raise ValueError
+                            for i in self.request[key]:
+                                if type(i) != int:
+                                    raise ValueError
+            if self.method == 'PUT':
+                if {'start_time', 'end_time', 'group_id', 'room_id', 'timetable_id',
+                    'day_of_the_week', 'object_id'} \
+                        in set(self.request.keys()):
                     for key in self.request.keys():
-                        if type(self.request[key]) != int:
+                        if key not in {'start_time', 'end_time', 'group_id', 'room_id',
+                                       'timetable_id', 'day_of_the_week', 'teachers', 'object_id'}:
                             raise ValueError
+                        if key != 'teachers':
+                            if type(self.request[key]) != int:
+                                raise ValueError
+                        if key == 'teacher':
+                            if type(self.request[key]) != list:
+                                raise ValueError
+                            for i in self.request[key]:
+                                if type(i) != int:
+                                    raise ValueError
         except ValueError:
             return '', 400
