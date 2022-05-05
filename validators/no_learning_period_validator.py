@@ -8,19 +8,14 @@ class NoLearningPeriodValidate:
         try:
 
             if self.method == 'POST':
-                if set(self.request.keys()) == {'timetable_id', 'start_time', 'stop_time'}:
-                    for key in self.request.keys():
-                        if type(self.request[key]) != int:
-                            raise ValueError
-                else:
+                if set(self.request.keys()) != {'timetable_id', 'start_time', 'stop_time'}:
+                    raise ValueError
+            if self.method == 'PUT':
+                if set(self.request.keys()) != {'timetable_id', 'start_time', 'stop_time', 'object_id'}:
                     raise ValueError
 
-            if self.method == 'PUT':
-                if set(self.request.keys()) == {'timetable_id', 'start_time', 'stop_time', 'object_id'}:
-                    for key in self.request.keys():
-                        if type(self.request[key]) != int:
-                            raise ValueError
-                else:
+            for key in self.request.keys():
+                if type(self.request[key]) != int:
                     raise ValueError
 
         except ValueError:
