@@ -1,4 +1,4 @@
-class LessonValidate:
+class LessonValidator:
 
     def __init__(self, request: dict, method: str):
         self.request = request

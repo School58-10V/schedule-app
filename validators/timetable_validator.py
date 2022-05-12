@@ -1,4 +1,4 @@
-class TimeTableValidate:
+class TimeTableValidator:
 
     def __init__(self, request: dict, method: str):
         self.request = request
