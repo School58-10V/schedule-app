@@ -18,7 +18,7 @@ class DBFactory:
         return DBSource(host=host, password=password, user=user)
 
     def set_db_source(self,
-                             host,
-                             password,
-                             user):
+                      host,
+                      password,
+                      user):
         self.__dbs = DBSource(host=host, password=password, user=user)

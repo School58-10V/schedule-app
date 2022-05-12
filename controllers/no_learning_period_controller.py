@@ -10,7 +10,7 @@ dbf = app.config["db_factory"]
 
 @app.route("/api/v1/no-learning-period", methods=["GET"])
 def get_no_learning_period():
-    return jsonify([i.__dict__() for i in NoLearningPeriod.get_all(dbf.get_db_source())], ensure_ascii=False, default=str)
+    return jsonify([i.__dict__() for i in NoLearningPeriod.get_all(dbf.get_db_source())])
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["GET"])
