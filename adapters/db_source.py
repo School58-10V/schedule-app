@@ -95,11 +95,10 @@ class DBSource(AbstractSource):
         new_doc = {desc[index]: new_obj[index] for index in range(len(desc))}
         return new_doc
 
-    def update(self, collection_name: str, object_id: Optional[int, str], document: dict,
-               foreign_key: str = 'object_id'):
+    def update(self, collection_name: str, object_id: Optional[int, str], document: dict) -> dict:
         self.connect()
         cursor = self.__conn.cursor()
-        document.pop(foreign_key)
+        document.pop('object_id')
         collection = collection_name
         req_data = []
         if not collection_name.endswith("s"):
@@ -107,14 +106,14 @@ class DBSource(AbstractSource):
         for elem in document:
             req_data.append(f"{elem} = {self.__wrap_string(document.get(elem))}")
         try:
-            request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE {foreign_key} = {str(object_id)}'
+            request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
             cursor.execute(request)
             self.__conn.commit()
             return document
         finally:
             self.__conn.commit()
 
-    def delete(self, collection_name: str, object_id: Optional[int, str], foreign_key: str = 'object_id'):
+    def delete(self, collection_name: str, object_id: Optional[int, str]):
         self.connect()
         cursor = self.__conn.cursor()
 
@@ -122,7 +121,7 @@ class DBSource(AbstractSource):
         if not collection_name.endswith("s"):
             collection += "s"
         try:
-            request = f'DELETE FROM "{collection}" WHERE {foreign_key} = {object_id}'
+            request = f'DELETE FROM "{collection}" WHERE object_id = {object_id}'
             cursor.execute(request)
         finally:
             self.__conn.commit()

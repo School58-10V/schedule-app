@@ -11,11 +11,18 @@ if TYPE_CHECKING:
 
 class User(AbstractModel):
 
-    def __init__(self, name: str, login: str, hash_password: str, db_source: DBSource):
+    def __init__(self, name: str, login: str, hash_password: Optional[str],
+                 password: Optional[str], db_source: DBSource):
         super().__init__(db_source)
         self.__login = login
-        self.__password_hash = hash_password
+        if hash_password is None and password is not None:
+            self.__password_hash = hashlib.sha256(password.encode()).hexdigest()
+        elif password is None and hash_password is not None:
+            self.__password_hash = hash_password
+        else:
+            raise ValueError('Ошибка создания: должен присутствовать password ИЛИ hash_password')
         self.__name = name
+        self.__object_id = None
         """
             :param db_source: ссылка на бд
             :param login: логин
@@ -26,9 +33,10 @@ class User(AbstractModel):
     @classmethod
     def get_by_login(cls, login: str, db_source: DBSource) -> Optional[User]:
         data = db_source.get_by_query(collection_name=cls._get_collection_name(), query={'login': login})
-        # Надо написать метод в адапторе, чтобы лазить в базу и там эти ошибки выдавать. Пока здесь
         if len(data) == 0:
-            return None
+            raise ValueError('No data was given')
+        if len(data) > 1:
+            raise ValueError('Too big data')
         return User(**data[0], db_source=db_source)
 
     def get_login(self) -> str:
@@ -40,8 +48,8 @@ class User(AbstractModel):
     def get_name(self) -> str:
         return self.__name
 
-    def get_main_id(self):
-        return self.get_login()
+    def get_main_id(self) -> int:
+        return self.__object_id
 
     def __str__(self):
         return f"Пользователь {self.get_name()} с логином {self.get_login()}"
@@ -49,24 +57,8 @@ class User(AbstractModel):
     def __dict__(self) -> dict:
         return {"name": self.get_name(),
                 "login": self.get_login(),
-                "hash_password": self.get_password_hash()}
-
-    def password_to_hash(self):
-        self.__password_hash = hashlib.sha256(self.get_password_hash().encode()).hexdigest()
+                "hash_password": self.get_password_hash(),
+                'object_id': self.get_main_id()}
 
     def compare_hash(self, password: str) -> bool:
         return self.__password_hash == hashlib.sha256(password.encode()).hexdigest()
-
-    def save(self):
-        if not self.get_by_login(login=self.get_login(), db_source=self.get_db_source()):
-            result = self._db_source.insert(self._get_collection_name(), self.__dict__())
-        else:
-            self._db_source.update(self._get_collection_name(), f"'{self.get_main_id()}'",
-                                   self.__dict__(), foreign_key='login')
-        return self
-
-    def delete(self):
-        if self.get_main_id() is not None:
-            self._db_source.delete(self._get_collection_name(), f"'{self.get_main_id()}'", foreign_key='login')
-            self.__login = None
-        return self
