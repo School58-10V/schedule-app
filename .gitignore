@@ -133,4 +133,4 @@ dmypy.json
 db
 *.idea
 .venv
-keys
+keys/
