@@ -9,17 +9,19 @@ from services.db_source_factory import DBFactory
 app = Flask(__name__)
 dbf = DBFactory()
 
-PRIVATE_KEY = open('keys/schedule-key.pem').read()
-PUBLIC_KEY = open('keys/schedule-public.pem').read()
+# TODO: тоже заимплементить конфиг (убрать точки со слешами)
+PRIVATE_KEY = open('../keys/schedule-key.pem').read()
+PUBLIC_KEY = open('../keys/schedule-public.pem').read()
 
 USERNAME, PASSWORD = 'test_user', 'test_password'
 
 # устаревает через 2 недели
-TOKEN_EXP_TIME = datetime.timedelta(days=14)
+# TODO: потом заимплементить вынос в конфиг
+TOKEN_EXP_TIME = datetime.timedelta(seconds=30)
 
 
 # Генерирует токен по информации о пользователе и возвращает его
-@app.route('/login', methods=['POST'])
+@app.route('/api/v1/login', methods=['POST'])
 def login():
     username, password = request.json.get('username'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
@@ -34,11 +36,6 @@ def login():
     return jsonify({'token': encoded_data})
 
 
-@app.route('/test', methods=['POST', 'GET'])
-def test():
-    return jsonify({'yay': True}), 200
-
-
 # Вызывается при каждом реквесте (кроме реквеста к /login)
 # проверяет совпадение информации о пользователе с информацией из токена
 # выбрасывает ошибку 400 когда токен некорректен
@@ -46,7 +43,7 @@ def test():
 @app.before_request
 def before_request():
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule.rule == '/login' or request.method.lower() == 'get':
+    if request.url_rule.rule == '/api/v1/login' or request.method.lower() == 'get':
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
