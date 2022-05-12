@@ -5,7 +5,6 @@ class TeacherValidate:
         self.method = method
 
     def validate(self):
-        try:
 
             if self.method == 'POST':
                 if 'fio' in self.request.keys():
@@ -42,6 +41,3 @@ class TeacherValidate:
                                     raise ValueError
                 else:
                     raise ValueError
-
-        except ValueError:
-            return '', 400

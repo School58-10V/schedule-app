@@ -5,7 +5,6 @@ class StudentValidate:
         self.method = method
 
     def validate(self):
-        try:
 
             if self.method == 'POST':
                 if {'full_name', 'date_of_birth'} in set(self.request.keys()):
@@ -34,6 +33,3 @@ class StudentValidate:
                                 raise ValueError
                 else:
                     raise ValueError
-
-        except ValueError:
-            return '', 400

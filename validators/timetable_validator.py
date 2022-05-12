@@ -5,7 +5,6 @@ class TimeTableValidate:
         self.method = method
 
     def validate(self):
-        try:
 
             if self.method == 'POST':
                 if self.request.keys() == ['time_table_year']:
@@ -20,6 +19,3 @@ class TimeTableValidate:
                         raise ValueError
                 else:
                     ValueError
-
-        except ValueError:
-            return '', 400

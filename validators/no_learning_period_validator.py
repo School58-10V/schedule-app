@@ -5,7 +5,6 @@ class NoLearningPeriodValidate:
         self.method = method
 
     def validate(self):
-        try:
 
             if self.method == 'POST':
                 if set(self.request.keys()) != {'timetable_id', 'start_time', 'stop_time'}:
@@ -17,6 +16,3 @@ class NoLearningPeriodValidate:
             for key in self.request.keys():
                 if type(self.request[key]) != int:
                     raise ValueError
-
-        except ValueError:
-            return '', 400
