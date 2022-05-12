@@ -36,7 +36,7 @@ class User(AbstractModel):
         if len(data) == 0:
             raise ValueError('No data was given')
         if len(data) > 1:
-            raise ValueError('Too big data')
+            raise ValueError('Too many results')
         return User(**data[0], db_source=db_source)
 
     def get_login(self) -> str:
