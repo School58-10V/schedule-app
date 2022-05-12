@@ -1,6 +1,6 @@
 class LocationValidator:
 
-    def __init__(self, request: dict, method: str):
+    def __init__(request: dict, method: str):
         self.request = request
         self.method = method
 

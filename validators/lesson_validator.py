@@ -1,41 +1,37 @@
 class LessonValidator:
 
-    def __init__(self, request: dict, method: str):
-        self.request = request
-        self.method = method
+    def validate(self, request: dict, method: str):
 
-    def validate(self):
-
-        if self.method == 'POST':
-            if set(self.request.keys()) == {"start_time", "end_time", "notes", "state", "teacher_id", "group_id",
-                                            "subject_id", "date"}:
-                for key in self.request.keys():
+        if method == 'POST':
+            if set(request.keys()) == {"start_time", "end_time", "notes", "state", "teacher_id", "group_id",
+                                       "subject_id", "date"}:
+                for key in request.keys():
                     if key == 'start_time' or key == 'end_time' or key == 'teacher_id' or \
                             key == 'group_id' or key == 'subject_id' or key == 'date':
-                        if type(self.request[key]) != int:
+                        if type(request[key]) != int:
                             raise ValueError
                     if key == 'state':
-                        if type(self.request[key]) != bool:
+                        if type(request[key]) != bool:
                             raise ValueError
                     if key == 'notes':
-                        if type(self.request[key]) != str:
+                        if type(request[key]) != str:
                             raise ValueError
             else:
                 raise ValueError
 
-        if self.method == 'PUT':
-            if set(self.request.keys()) == {"start_time", "end_time", "notes", "state", "teacher_id", "group_id",
-                                            "subject_id", "date", "object_id"}:
-                for key in self.request.keys():
+        if method == 'PUT':
+            if set(request.keys()) == {"start_time", "end_time", "notes", "state", "teacher_id", "group_id",
+                                       "subject_id", "date", "object_id"}:
+                for key in request.keys():
                     if key == 'start_time' or key == 'end_time' or key == 'teacher_id' or \
                             key == 'group_id' or key == 'subject_id' or key == 'date' or key == 'object_id':
-                        if type(self.request[key]) != int:
+                        if type(request[key]) != int:
                             raise ValueError
                     if key == 'state':
-                        if type(self.request[key]) != bool:
+                        if type(request[key]) != bool:
                             raise ValueError
                     if key == 'notes':
-                        if type(self.request[key]) != str:
+                        if type(request[key]) != str:
                             raise ValueError
             else:
                 raise ValueError

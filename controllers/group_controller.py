@@ -1,6 +1,7 @@
 from data_model.group import Group
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify
+from validators.group_validator import GroupValidator
 
 app = Flask(__name__)
 dbf = DBFactory()
@@ -18,6 +19,8 @@ def get_group_by_id(object_id):
 
 @app.route("/api/v1/group", methods=["POST"])
 def create_group():
+    request_validator = GroupValidator()
+    request_validator.validate(request.get_json(), 'POST')
     return Group(**request.get_json(), db_source=dbf.get_db_source()) \
         .save() \
         .__dict__()
@@ -26,6 +29,8 @@ def create_group():
 @app.route("/api/v1/group/<object_id>", methods=["PUT"])
 def update_groups(object_id):
     try:
+        group_validator = GroupValidator()
+        group_validator.validate(request.get_json(), 'PUT')
         Group.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404
