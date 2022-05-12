@@ -1,6 +1,8 @@
+import datetime
+
 import jwt
 from flask import Flask, request, jsonify
-from jwt import DecodeError
+from jwt import DecodeError, ExpiredSignatureError
 
 from services.db_source_factory import DBFactory
 
@@ -13,6 +15,7 @@ PUBLIC_KEY = open('schedule-public.pem').read()
 USERNAME, PASSWORD = 'test_user', 'test_password'
 
 # устаревает через 2 недели
+TOKEN_EXP_TIME = datetime.timedelta(days=14)
 
 
 # Генерирует токен по информации о пользователе и возвращает его
@@ -20,7 +23,10 @@ USERNAME, PASSWORD = 'test_user', 'test_password'
 def login():
     username, password = request.json.get('username'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
-    data = {'username': username, 'user_ip': user_ip, 'user_agent': user_agent}
+    data = {
+        'username': username, 'user_ip': user_ip,
+        'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
+    }
     if not (username == USERNAME and password == PASSWORD):
         return jsonify(""), 401
 
@@ -48,6 +54,9 @@ def before_request():
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
     except DecodeError:
         return '', 400
+    except ExpiredSignatureError:
+        # ошибка:
+        return '', 401
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
         return '', 401
 
