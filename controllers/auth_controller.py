@@ -9,8 +9,8 @@ from services.db_source_factory import DBFactory
 app = Flask(__name__)
 dbf = DBFactory()
 
-PRIVATE_KEY = open('schedule-key.pem').read()
-PUBLIC_KEY = open('schedule-public.pem').read()
+PRIVATE_KEY = open('keys/schedule-key.pem').read()
+PUBLIC_KEY = open('keys/schedule-public.pem').read()
 
 USERNAME, PASSWORD = 'test_user', 'test_password'
 
