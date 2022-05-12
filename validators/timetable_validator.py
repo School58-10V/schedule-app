@@ -18,4 +18,4 @@ class TimeTableValidate:
                     if type(self.request['time_table_year']) != int or type(self.request['object_id']) != int:
                         raise ValueError
                 else:
-                    ValueError
+                    raise ValueError
