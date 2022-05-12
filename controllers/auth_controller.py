@@ -16,7 +16,7 @@ PUBLIC_KEY = open('schedule-public.pem').read()
 def login():
     username, password = request.json.get('username'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
-    data = {'username': username, 'password': password, 'user_ip': user_ip, 'user_agent': user_agent}
+    data = {'username': username, 'user_ip': user_ip, 'user_agent': user_agent}
 
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
     return jsonify({'ok': True, 'token': encoded_data})
