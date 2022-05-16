@@ -68,9 +68,9 @@ def get_teacher_detailed_by_id(object_id):
 
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher():
+    request_validator = TeacherValidator()
     try:
         dct = request.get_json()
-        request_validator = TeacherValidator()
         request_validator.validate(dct, 'POST')
 
         subject_id = dct.pop('subject_id')
@@ -92,6 +92,8 @@ def create_teacher():
 
     except TypeError:
         return '', 400
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/teachers/<object_id>", methods=["PUT"])

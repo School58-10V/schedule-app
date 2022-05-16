@@ -87,10 +87,10 @@ def create_lesson_row() -> Response:
     Создаем LessonRow
     :return: Response
     """
+    request_validator = LessonRowValidator()
     try:
-        request_validator = LessonRowValidator()
-        request_validator.validate(request.get_json(), 'POST')
         dct = request.get_json()
+        request_validator.validate(dct, 'POST')
         teacher_id = dct.pop('teachers')
         lesson_row = LessonRow(**dct, db_source=dbf.get_db_source()).save()
         for i in teacher_id:
@@ -111,13 +111,13 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
     :param object_id:
     :return: Response
     """
+    request_validator = LessonRowValidator()
+    dct = request.get_json()
     try:
-        request_validator = LessonRowValidator()
-        request_validator.validate(request.get_json(), 'PUT')
+        request_validator.validate(dct, 'PUT')
         LessonRow.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404
-    dct = request.get_json()
     new_teachers_id = dct.pop("teachers")
     lesson_row_by_id = LessonRow.get_by_id(object_id, dbf.get_db_source())
     lesson_row_by_id_dct = lesson_row_by_id.__dict__()

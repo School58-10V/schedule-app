@@ -66,9 +66,9 @@ def get_student_by_id(object_id):
 
 @app.route("/api/v1/student", methods=["POST"])
 def create_student():
+    request_validator = StudentValidator()
     try:
         dct = request.get_json()
-        request_validator = StudentValidator()
         request_validator.validate(dct, 'POST')
 
         groups = dct.pop('groups')
@@ -84,11 +84,11 @@ def create_student():
 
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
 def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
+    request_validator = StudentValidator()
     try:
         Student.get_by_id(object_id, db_source=dbf.get_db_source())
         dct = request.get_json()
 
-        request_validator = StudentValidator()
         request_validator.validate(dct, 'PUT')
 
         groups = []

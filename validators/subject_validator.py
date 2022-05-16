@@ -2,29 +2,26 @@ class SubjectValidator:
 
     def validate(self, request: dict, method: str):
 
-        if method == 'POST':
-            if request.keys() == ['subject_name']:
-                if type(request['subject_name']) != str:
-                    raise ValueError
-            if request.keys() == ['subject_name', 'teachers']:
-                if type(request['subject_name']) != str or type(request['teachers']) != list:
-                    raise ValueError
-                for teacher_id in request['teachers']:
-                    if type(teacher_id) != int:
-                        raise ValueError
-            else:
-                raise ValueError
+        required_keys = {'subject_name'}
+        allowed_keys = {'subject_name', 'teachers'}
 
         if method == 'PUT':
-            if set(request.keys()) == {'object_id', 'subject_name'}:
-                if type(request['object_id']) != int or type(request['subject_name']) != str:
+            required_keys.add('object_id')
+            allowed_keys.add('object_id')
+
+        for key in required_keys:
+            if key not in request.keys():
+                raise ValueError
+
+        for key in request.keys():
+            if key not in allowed_keys:
+                raise ValueError
+            if key == 'subject_name':
+                if type(request[key]) != str:
                     raise ValueError
-            if set(request.keys()) == {'object_id', 'subject_name', 'teachers'}:
-                if type(request['object_id']) != int or type(request['subject_name']) != str or \
-                        type(request['teachers']) == list:
+            if key == 'teachers':
+                if type(request[key]) != list:
                     raise ValueError
-                for teacher_id in request['teachers']:
+                for teacher_id in request[key]:
                     if type(teacher_id) != int:
                         raise ValueError
-            else:
-                raise ValueError

@@ -21,8 +21,8 @@ def update(object_id: int) -> Union[tuple[str, int], Response]:
     :param object_id: int
     :return: Response
     """
+    request_validator = LocationValidator()
     try:
-        request_validator = LocationValidator()
         request_validator.validate(request.get_json(), 'PUT')
         Location.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
@@ -60,9 +60,12 @@ def create_location() -> Response():
     :return: Response
     """
     request_validator = LocationValidator()
-    request_validator.validate(request.get_json(), 'POST')
-    return jsonify(Location(**request.get_json(), db_source=dbf.get_db_source()) \
-                   .save().__dict__())
+    try:
+        request_validator.validate(request.get_json(), 'POST')
+        return jsonify(Location(**request.get_json(), db_source=dbf.get_db_source()) \
+                       .save().__dict__())
+    except ValueError:
+        return '', 400
 
 
 @app.route("/api/v1/location/<object_id>", methods=["DELETE"])

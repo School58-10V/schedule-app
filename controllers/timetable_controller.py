@@ -22,25 +22,28 @@ def get_timetable_by_id(object_id):
 @app.route("/api/v1/timetable", methods=["POST"])
 def create_timetable():
     request_validator = TimeTableValidator()
-    request_validator.validate(request.get_json(), 'POST')
-    return jsonify(TimeTable(**request.get_json(), db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__()
-                   )
+    try:
+        request_validator.validate(request.get_json(), 'POST')
+        return jsonify(TimeTable(**request.get_json(), db_source=dbf.get_db_source()) \
+                       .save() \
+                       .__dict__()
+                       )
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/timetable/<object_id>", methods=["PUT"])
 def update_timetable(object_id):
+    request_validator = TimeTableValidator()
     try:
-        request_validator = TimeTableValidator()
         request_validator.validate(request.get_json(), 'PUT')
         TimeTable.get_by_id(object_id, db_source=dbf.get_db_source())
+        return jsonify(TimeTable(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
+                       .save() \
+                       .__dict__()
+                       )
     except ValueError:
-        return "", 404
-    return jsonify(TimeTable(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__()
-                   )
+        return '', 404
 
 
 @app.route("/api/v1/timetable/<object_id>", methods=["DELETE"])

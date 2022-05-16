@@ -20,23 +20,26 @@ def get_group_by_id(object_id):
 @app.route("/api/v1/group", methods=["POST"])
 def create_group():
     request_validator = GroupValidator()
-    request_validator.validate(request.get_json(), 'POST')
-    return Group(**request.get_json(), db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__()
+    try:
+        request_validator.validate(request.get_json(), 'POST')
+        return Group(**request.get_json(), db_source=dbf.get_db_source()) \
+            .save() \
+            .__dict__()
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/group/<object_id>", methods=["PUT"])
 def update_groups(object_id):
+    group_validator = GroupValidator()
     try:
-        group_validator = GroupValidator()
         group_validator.validate(request.get_json(), 'PUT')
         Group.get_by_id(object_id, db_source=dbf.get_db_source())
+        return Group(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
+            .save() \
+            .__dict__()
     except ValueError:
         return "", 404
-    return Group(**request.get_json(), object_id=object_id, db_source=dbf.get_db_source()) \
-        .save() \
-        .__dict__()
 
 
 @app.route("/api/v1/group/<object_id>", methods=["DELETE"])

@@ -48,8 +48,8 @@ def get_subject_by_id(object_id):
 
 @app.route("/api/v1/subjects", methods=["POST"])
 def create_subject():
+    request_validator = SubjectValidator()
     try:
-        request_validator = SubjectValidator()
         request_validator.validate(request.get_json(), 'POST')
         ids = []
         req: dict = request.get_json()
@@ -72,8 +72,8 @@ def create_subject():
 
 @app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
 def update_subject(object_id):
+    request_validator = SubjectValidator()
     try:
-        request_validator = SubjectValidator()
         request_validator.validate(request.get_json(), 'PUT')
 
         req: dict = request.get_json()
