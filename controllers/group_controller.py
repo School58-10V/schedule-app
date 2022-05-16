@@ -12,7 +12,10 @@ def get_groups():
 
 @app.route("/api/v1/group/<object_id>", methods=["GET"])
 def get_group_by_id(object_id):
-    return jsonify(Group.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    try:
+        return jsonify(Group.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/group", methods=["POST"])
