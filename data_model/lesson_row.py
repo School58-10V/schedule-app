@@ -141,13 +141,6 @@ class LessonRow(AbstractModel):
         instance.save()
         return self
 
-    def append_teacher_by_id(self, teacher_id: int) -> LessonRow:
-        for i in TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source()):
-            if i.get_main_id() == teacher_id:
-                return self
-        TeachersForLessonRows(self._db_source, teacher_id=teacher_id, lesson_row_id=self.get_main_id()).save()
-        return self
-
     def remove_teacher(self, teacher: Teacher) -> LessonRow:
         """
             Удаляем связь из TeachersForLessonRows, передавая Teacher.get_main_id() в параметр id

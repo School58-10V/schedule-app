@@ -1,13 +1,12 @@
 import psycopg2
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
-from services.db_source_factory import DBFactory
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/subjects", methods=["GET"])
@@ -121,7 +120,3 @@ def delete_subject(object_id):
         return "", 404
     except psycopg2.errors.ForeignKeyViolation as error:
         return error.pgerror, 400
-
-
-if __name__ == '__main__':
-    app.run(debug=True)

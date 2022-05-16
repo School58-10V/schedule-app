@@ -1,9 +1,8 @@
-from flask import Flask, jsonify
+from flask import jsonify
 from data_model.students_for_groups import StudentsForGroups
-from services.db_source_factory import DBFactory
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/students-for-groups", methods=["GET"])
@@ -17,7 +16,4 @@ def get_students_for_groups_by_id(object_id):
         return jsonify(StudentsForGroups.get_by_id(object_id, dbf.get_db_source()).__dict__())
     except ValueError:
         return "", 404
-      
 
-if __name__ == "__main__":
-    app.run()

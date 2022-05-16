@@ -1,9 +1,8 @@
 from data_model.group import Group
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/group", methods=["GET"])
@@ -13,7 +12,10 @@ def get_groups():
 
 @app.route("/api/v1/group/<object_id>", methods=["GET"])
 def get_group_by_id(object_id):
-    return jsonify(Group.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    try:
+        return jsonify(Group.get_by_id(object_id, dbf.get_db_source()).__dict__())
+    except ValueError:
+        return '', 404
 
 
 @app.route("/api/v1/group", methods=["POST"])
@@ -38,7 +40,3 @@ def update_groups(object_id):
 def delete_group(object_id):
     if request.method == 'DELETE':
         return Group.get_by_id(object_id, db_source=dbf.get_db_source()).delete().__dict__()
-
-
-if __name__ == '__main__':
-    app.run()

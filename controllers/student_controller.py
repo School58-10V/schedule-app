@@ -6,15 +6,14 @@ if TYPE_CHECKING:
     from flask import Response
 
 import psycopg2
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 from psycopg2 import errorcodes
 
 from data_model.student import Student
 from data_model.students_for_groups import StudentsForGroups
-from services.db_source_factory import DBFactory
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/student", methods=["GET"])
@@ -28,7 +27,6 @@ def get_students():
     return jsonify({"students": result})
 
 
-
 @app.route("/api/v1/student/detailed", methods=["GET"])
 def get_students_detailed():
     result = []
@@ -38,7 +36,6 @@ def get_students_detailed():
                                   StudentsForGroups.get_group_by_student_id(student.get_main_id(), dbf.get_db_source())]
         result.append(student_data)
     return jsonify({"students": result})
-
 
 
 @app.route("/api/v1/student/get/detailed/<object_id>", methods=["GET"])
@@ -111,7 +108,3 @@ def delete_student(object_id):
         return "", 404
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
-
-
-if __name__ == "__main__":
-    app.run()

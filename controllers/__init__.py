@@ -1,0 +1,9 @@
+import controllers.group_controller
+import controllers.teacher_controller
+import controllers.lesson_controller
+import controllers.subject_controller
+import controllers.lesson_row_controller
+import controllers.location_controller
+import controllers.no_learning_period_controller
+import controllers.student_controller
+import controllers.timetable_controller

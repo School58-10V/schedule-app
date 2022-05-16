@@ -5,15 +5,14 @@ import psycopg2
 from psycopg2 import errorcodes
 
 from data_model.lesson_row import LessonRow
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 if TYPE_CHECKING:
     from flask import Response
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/lesson-row", methods=["GET"])
@@ -153,12 +152,3 @@ def delete_lesson_row(object_id: int) -> Union[Response, tuple[str, int]]:
         print(e)
         return jsonify(errorcodes.lookup(e.pgcode), 409)
     return jsonify(lesson_row)
-
-
-@app.route("/api/v1/teacher_for_lesson_rows", methods=["GET"])
-def get_teacher_for_lesson_rows():
-    return jsonify([i.__dict__() for i in TeachersForLessonRows.get_all(dbf.get_db_source())])
-
-
-if __name__ == '__main__':
-    app.run()

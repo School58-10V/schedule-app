@@ -4,11 +4,10 @@ from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
-from services.db_source_factory import DBFactory
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+dbf = app.config["db_factory"]
 
 
 @app.route("/api/v1/teachers", methods=["GET"])
@@ -17,9 +16,9 @@ def get_teachers():
     for i in Teacher.get_all(dbf.get_db_source()):
         teacher = i.__dict__()
         teacher['subject_id'] = [j.get_main_id() for j in TeachersForSubjects.
-            get_subjects_by_teacher_id(i.get_main_id(), db_source=dbf.get_db_source())]
+                                    get_subjects_by_teacher_id(i.get_main_id(), db_source=dbf.get_db_source())]
         teacher['lesson_row_id'] = [j.get_main_id() for j in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(i.get_main_id(), db_source=dbf.get_db_source())]
+                                    get_lesson_rows_by_teacher_id(i.get_main_id(), db_source=dbf.get_db_source())]
         teachers.append(teacher)
     return jsonify({"teachers": teachers})
 
@@ -122,7 +121,3 @@ def delete_teacher(object_id):
         return "", 404
     except psycopg2.errors.ForeignKeyViolation as error:
         return error.pgerror, 400
-
-      
-if __name__ == '__main__':
-    app.run()
