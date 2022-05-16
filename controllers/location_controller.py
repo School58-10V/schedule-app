@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from flask import Response
 
 from schedule_app import app
-dbf = app.config["db_factory"]
+
 
 
 # here will be your code
@@ -21,11 +21,11 @@ def update(object_id: int) -> Union[tuple[str, int], Response]:
     :return: Response
     """
     try:
-        Location.get_by_id(object_id, db_source=dbf.get_db_source())
+        Location.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
     return jsonify(Location(**request.get_json(), object_id=object_id,
-                            db_source=dbf.get_db_source()).save().__dict__())
+                            db_source=app.config.get("schedule_db_source")).save().__dict__())
 
 
 @app.route("/api/v1/location", methods=["GET"])
@@ -34,7 +34,7 @@ def get_locations() -> Response:
         Выдаём все Locations
         :return: Response
         """
-    return jsonify([i.__dict__() for i in Location.get_all(dbf.get_db_source())])
+    return jsonify([i.__dict__() for i in Location.get_all(app.config.get("schedule_db_source"))])
 
 
 @app.route("/api/v1/location/<object_id>", methods=["GET"])
@@ -45,7 +45,7 @@ def get_location_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
     :return: Response
     """
     try:
-        return jsonify(Location.get_by_id(object_id, dbf.get_db_source()).__dict__())
+        return jsonify(Location.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
     except ValueError:
         return '', 404
 
@@ -56,7 +56,7 @@ def create_location() -> Response():
     Создаём Location по заданным аргументам
     :return: Response
     """
-    return jsonify(Location(**request.get_json(), db_source=dbf.get_db_source()) \
+    return jsonify(Location(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
                    .save().__dict__())
 
 
@@ -68,7 +68,7 @@ def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], R
     :return: Response
     """
     try:
-        location = Location.get_by_id(object_id, dbf.get_db_source())
+        location = Location.get_by_id(object_id, app.config.get("schedule_db_source"))
         location = location.delete().__dict__()
     except ValueError:
         return "", 404

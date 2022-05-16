@@ -4,35 +4,53 @@ import jwt
 from flask import Flask, request, jsonify
 from jwt import DecodeError, ExpiredSignatureError
 
+from data_model.user import User
 from services.db_source_factory import DBFactory
 
-app = Flask(__name__)
-dbf = DBFactory()
+from schedule_app import app
+
 
 # TODO: тоже заимплементить конфиг (убрать точки со слешами)
-PRIVATE_KEY = open('../keys/schedule-key.pem').read()
-PUBLIC_KEY = open('../keys/schedule-public.pem').read()
+PRIVATE_KEY = open('./keys/schedule-key.pem').read()
+PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
-USERNAME, PASSWORD = 'test_user', 'test_password'
 
 # устаревает через 2 недели
 # TODO: потом заимплементить вынос в конфиг
-TOKEN_EXP_TIME = datetime.timedelta(seconds=30)
+TOKEN_EXP_TIME = datetime.timedelta(days=14)
 
 
 # Генерирует токен по информации о пользователе и возвращает его
 @app.route('/api/v1/login', methods=['POST'])
-def login():
-    username, password = request.json.get('username'), request.json.get('password')
+def do_login():
+    login, password = request.json.get('login'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     data = {
-        'username': username, 'user_ip': user_ip,
+        'login': login, 'user_ip': user_ip,
         'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
-    }
-    if not (username == USERNAME and password == PASSWORD):
+        }
+    try:
+        user = User.get_by_login(login=login, db_source=app.config.get('auth_db_source'))
+    except ValueError:
+        return '', 401
+    if not user.compare_hash(password):
         return jsonify(""), 401
 
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
+    return jsonify({'token': encoded_data})
+
+
+@app.route('/api/v1/register', methods=['POST'])
+def register():
+    login, fullname, password = request.json.get('login'), request.json.get('fullname'), request.json.get('password')
+    user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
+    data = {
+        'login': login, 'user_ip': user_ip,
+        'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
+        }
+    encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
+    user = User(login=login, password=password, name=fullname, db_source=app.config.get('auth_db_source'))
+    user.save()
     return jsonify({'token': encoded_data})
 
 
@@ -43,7 +61,9 @@ def login():
 @app.before_request
 def before_request():
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule.rule == '/api/v1/login' or request.method.lower() == 'get':
+    if request.url_rule.rule == '/api/v1/login' or\
+            request.url_rule.rule == '/api/v1/register' or\
+            request.method.lower() == 'get':
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')

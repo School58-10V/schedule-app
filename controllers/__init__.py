@@ -7,3 +7,5 @@ import controllers.location_controller
 import controllers.no_learning_period_controller
 import controllers.student_controller
 import controllers.timetable_controller
+import controllers.auth_controller
+import controllers.auth_controller
