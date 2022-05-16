@@ -3,7 +3,9 @@ from typing import Optional
 
 
 class Configuration:
-    @classmethod
-    def configuration(cls, path: Optional[str] = './config.json'):
+    def __init__(self, path: Optional[str] = './config.json'):
         with open(path) as file:
-            return json.load(file)
+            self.__cfg = json.load(file)
+
+    def get_configuration(self):
+        return self.__cfg
