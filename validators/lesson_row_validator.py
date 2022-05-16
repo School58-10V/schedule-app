@@ -12,7 +12,7 @@ class LessonRowValidator:
                     if key != 'teachers':
                         if type(request[key]) != int:
                             raise ValueError
-                    if key == 'teacher':
+                    if key == 'teachers':
                         if type(request[key]) != list:
                             raise ValueError
                         for i in request[key]:
