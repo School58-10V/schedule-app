@@ -14,4 +14,4 @@ print(new_user1.__dict__())
 print(User.get_all(db_source=db_source.get_db_source()))
 new_user1.delete()
 print(new_user1)
-
+# надо
