@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
+from validators.subject_validator import SubjectValidator
 from services.db_source_factory import DBFactory
 
 app = Flask(__name__)
@@ -48,6 +49,8 @@ def get_subject_by_id(object_id):
 @app.route("/api/v1/subjects", methods=["POST"])
 def create_subject():
     try:
+        request_validator = SubjectValidator()
+        request_validator.validate(request.get_json(), 'POST')
         ids = []
         req: dict = request.get_json()
         subject = Subject(subject_name=req["subject_name"], db_source=dbf.get_db_source()).save()
@@ -70,6 +73,9 @@ def create_subject():
 @app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
 def update_subject(object_id):
     try:
+        request_validator = SubjectValidator()
+        request_validator.validate(request.get_json(), 'PUT')
+
         req: dict = request.get_json()
         subject: Subject = Subject.get_by_id(object_id, dbf.get_db_source())
 

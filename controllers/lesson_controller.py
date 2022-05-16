@@ -4,6 +4,7 @@ import psycopg2
 from psycopg2 import errorcodes
 
 from data_model.lesson import Lesson
+from validators.lesson_validator import LessonValidator
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify, Response
 
@@ -37,6 +38,8 @@ def create_lesson() -> Response:
     """
     :return json:
     """
+    request_validator = LessonValidator()
+    request_validator.validate(request.get_json(), 'POST')
     return jsonify(Lesson(**request.get_json
     (), db_source=dbf.get_db_source())
                    .save()
@@ -50,6 +53,8 @@ def update_lessons(object_id: int) -> Union[tuple[str, int], Response]:
     :return json:
     """
     try:
+        request_validator = LessonValidator()
+        request_validator.validate(request.get_json(), 'PUT')
         Lesson.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404

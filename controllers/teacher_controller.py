@@ -3,6 +3,7 @@ import psycopg2
 from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+from validators.teacher_validator import TeacherValidator
 
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify
@@ -69,6 +70,9 @@ def get_teacher_detailed_by_id(object_id):
 def create_teacher():
     try:
         dct = request.get_json()
+        request_validator = TeacherValidator()
+        request_validator.validate(dct, 'POST')
+
         subject_id = dct.pop('subject_id')
         lesson_row_id = dct.pop('lesson_row_id')
 
@@ -93,6 +97,9 @@ def create_teacher():
 @app.route("/api/v1/teachers/<object_id>", methods=["PUT"])
 def update_teacher(object_id):
     try:
+        request_validator = TeacherValidator()
+        request_validator.validate(request.get_json(), 'PUT')
+
         teacher = Teacher.get_by_id(object_id, dbf.get_db_source()).__dict__()
         teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
             get_subjects_by_teacher_id(object_id, db_source=dbf.get_db_source())]

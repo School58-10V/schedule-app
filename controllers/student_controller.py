@@ -11,6 +11,7 @@ from psycopg2 import errorcodes
 
 from data_model.student import Student
 from data_model.students_for_groups import StudentsForGroups
+from validators.student_validator import StudentValidator
 from services.db_source_factory import DBFactory
 
 app = Flask(__name__)
@@ -67,6 +68,9 @@ def get_student_by_id(object_id):
 def create_student():
     try:
         dct = request.get_json()
+        request_validator = StudentValidator()
+        request_validator.validate(dct, 'POST')
+
         groups = dct.pop('groups')
         student = Student(**dct, db_source=dbf.get_db_source()).save()
         for i in groups:
@@ -83,6 +87,10 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
     try:
         Student.get_by_id(object_id, db_source=dbf.get_db_source())
         dct = request.get_json()
+
+        request_validator = StudentValidator()
+        request_validator.validate(dct, 'PUT')
+
         groups = []
         if 'groups' in dct:
             groups = dct.pop('groups')
