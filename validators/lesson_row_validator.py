@@ -5,7 +5,6 @@ class LessonRowValidate:
         self.method = method
 
     def validate(self):
-        try:
 
             if self.method == 'POST':
                 if {'start_time', 'end_time', 'group_id', 'room_id', 'timetable_id', 'day_of_the_week'} \
@@ -17,7 +16,7 @@ class LessonRowValidate:
                         if key != 'teachers':
                             if type(self.request[key]) != int:
                                 raise ValueError
-                        if key == 'teacher':
+                        if key == 'teachers':
                             if type(self.request[key]) != list:
                                 raise ValueError
                             for i in self.request[key]:
@@ -37,7 +36,7 @@ class LessonRowValidate:
                         if key != 'teachers':
                             if type(self.request[key]) != int:
                                 raise ValueError
-                        if key == 'teacher':
+                        if key == 'teachers':
                             if type(self.request[key]) != list:
                                 raise ValueError
                             for i in self.request[key]:
@@ -46,5 +45,3 @@ class LessonRowValidate:
                 else:
                     raise ValueError
 
-        except ValueError:
-            return '', 400

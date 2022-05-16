@@ -5,7 +5,7 @@ class LessonValidate:
         self.method = method
 
     def validate(self):
-        try:
+
 
             if self.method == 'POST':
                 if set(self.request.keys()) == {"start_time", "end_time", "notes", "state", "teacher_id", "group_id",
@@ -41,5 +41,3 @@ class LessonValidate:
                 else:
                     raise ValueError
 
-        except ValueError:
-            return '', 400

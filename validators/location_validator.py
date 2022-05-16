@@ -5,7 +5,7 @@ class LocationValidate:
         self.method = method
 
     def validate(self):
-        try:
+
 
             if self.method == 'POST':
                 if {'location_type', 'num_of_class'} in set(self.request.keys()):
@@ -39,5 +39,3 @@ class LocationValidate:
                 else:
                     raise ValueError
 
-        except ValueError:
-            return '', 400

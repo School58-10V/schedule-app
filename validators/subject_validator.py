@@ -5,7 +5,7 @@ class SubjectValidate:
         self.method = method
 
     def validate(self):
-        try:
+
 
             if self.method == 'POST':
                 if self.request.keys() == ['subject_name']:
@@ -34,5 +34,3 @@ class SubjectValidate:
                 else:
                     raise ValueError
 
-        except ValueError:
-            return '', 400
