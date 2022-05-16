@@ -10,16 +10,15 @@ from flask import request, jsonify
 from schedule_app import app
 
 
-
 @app.route("/api/v1/teachers", methods=["GET"])
 def get_teachers():
     teachers = []
     for i in Teacher.get_all(app.config.get("schedule_db_source")):
         teacher = i.__dict__()
         teacher['subject_id'] = [j.get_main_id() for j in TeachersForSubjects.
-                                    get_subjects_by_teacher_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+            get_subjects_by_teacher_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
         teacher['lesson_row_id'] = [j.get_main_id() for j in TeachersForLessonRows.
-                                    get_lesson_rows_by_teacher_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+            get_lesson_rows_by_teacher_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
         teachers.append(teacher)
     return jsonify({"teachers": teachers})
 
@@ -78,10 +77,12 @@ def create_teacher():
         new_teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
 
         for i in subject_id:
-            TeachersForSubjects(teacher_id=new_teacher.get_main_id(), subject_id=i, db_source=app.config.get("schedule_db_source")).save()
+            TeachersForSubjects(teacher_id=new_teacher.get_main_id(), subject_id=i,
+                                db_source=app.config.get("schedule_db_source")).save()
 
         for i in lesson_row_id:
-            TeachersForLessonRows(teacher_id=new_teacher.get_main_id(), lesson_row_id=i, db_source=app.config.get("schedule_db_source")).save()
+            TeachersForLessonRows(teacher_id=new_teacher.get_main_id(), lesson_row_id=i,
+                                  db_source=app.config.get("schedule_db_source")).save()
 
         new_teacher_dct = new_teacher.__dict__()
         new_teacher_dct['subject_id'] = subject_id
