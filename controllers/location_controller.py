@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Union, Any
 
 from data_model.location import Location
+from validators.location_validator import LocationValidator
 from services.db_source_factory import DBFactory
 from flask import Flask, request, jsonify
 import psycopg2
@@ -21,6 +22,8 @@ def update(object_id: int) -> Union[tuple[str, int], Response]:
     :return: Response
     """
     try:
+        request_validator = LocationValidator()
+        request_validator.validate(request.get_json(), 'PUT')
         Location.get_by_id(object_id, db_source=dbf.get_db_source())
     except ValueError:
         return "", 404
@@ -56,6 +59,8 @@ def create_location() -> Response():
     Создаём Location по заданным аргументам
     :return: Response
     """
+    request_validator = LocationValidator()
+    request_validator.validate(request.get_json(), 'POST')
     return jsonify(Location(**request.get_json(), db_source=dbf.get_db_source()) \
                    .save().__dict__())
 

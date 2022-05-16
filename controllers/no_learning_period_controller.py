@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from psycopg2 import errorcodes
 
 from data_model.no_learning_period import NoLearningPeriod
+from validators.no_learning_period_validator import NoLearningPeriodValidator
 from services.db_source_factory import DBFactory
 
 app = Flask(__name__)
@@ -26,6 +27,8 @@ def get_no_learning_period_by_id(object_id):
 @app.route("/api/v1/no-learning-period", methods=["POST"])
 def create_no_learning_period():
     try:
+        request_validator = NoLearningPeriodValidator()
+        request_validator.validate(request.get_json(), 'POST')
         result = jsonify(NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source()).save().__dict__())
         return result
     except TypeError:
@@ -35,6 +38,8 @@ def create_no_learning_period():
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["PUT"])
 def update_no_learning_period(object_id):
     try:
+        request_validator = NoLearningPeriodValidator()
+        request_validator.validate(request.get_json(), 'PUT')
         NoLearningPeriod.get_by_id(object_id, dbf.get_db_source())
         result = NoLearningPeriod(**request.get_json(), db_source=dbf.get_db_source(), object_id=object_id).save().__dict__()
         return jsonify(result)
