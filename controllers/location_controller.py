@@ -5,11 +5,11 @@ from data_model.location import Location
 from flask import request, jsonify
 import psycopg2
 from psycopg2 import errorcodes
+
 if TYPE_CHECKING:
     from flask import Response
 
 from schedule_app import app
-
 
 
 # here will be your code

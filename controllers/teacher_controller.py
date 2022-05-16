@@ -16,9 +16,11 @@ def get_teachers():
     for i in Teacher.get_all(app.config.get("schedule_db_source")):
         teacher = i.__dict__()
         teacher['subject_id'] = [j.get_main_id() for j in TeachersForSubjects.
-            get_subjects_by_teacher_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+                                 get_subjects_by_teacher_id(i.get_main_id(),
+                                                            db_source=app.config.get("schedule_db_source"))]
         teacher['lesson_row_id'] = [j.get_main_id() for j in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+                                 get_lesson_rows_by_teacher_id(i.get_main_id(),
+                                                               db_source=app.config.get("schedule_db_source"))]
         teachers.append(teacher)
     return jsonify({"teachers": teachers})
 
@@ -29,9 +31,11 @@ def get_teacher_by_id(object_id):
 
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                                 get_subjects_by_teacher_id(object_id,
+                                                            db_source=app.config.get("schedule_db_source"))]
         teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                                    get_lesson_rows_by_teacher_id(object_id,
+                                                                  db_source=app.config.get("schedule_db_source"))]
         return jsonify(teacher)
     except ValueError:
         return '', 404
@@ -44,9 +48,11 @@ def get_detailed_teachers():
         object_id = i.get_main_id()
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject'] = [i.__dict__() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                              get_subjects_by_teacher_id(object_id,
+                                                         db_source=app.config.get("schedule_db_source"))]
         teacher['lesson_row'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                                 get_lesson_rows_by_teacher_id(object_id,
+                                                               db_source=app.config.get("schedule_db_source"))]
         teachers.append(teacher)
     return jsonify({"teachers": teachers})
 
@@ -56,9 +62,11 @@ def get_teacher_detailed_by_id(object_id):
     try:
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.__dict__() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                                 get_subjects_by_teacher_id(object_id,
+                                                            db_source=app.config.get("schedule_db_source"))]
         teacher['lesson_row_id'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                                    get_lesson_rows_by_teacher_id(object_id,
+                                                                  db_source=app.config.get("schedule_db_source"))]
         return teacher
     except ValueError:
         return '', 404
@@ -104,9 +112,10 @@ def update_teacher(object_id):
 
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                                 get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
         teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
+                                    get_lesson_rows_by_teacher_id(object_id,
+                                                                  db_source=app.config.get("schedule_db_source"))]
 
         for i in request.get_json()['subject_id']:
             if i not in teacher['subject_id']:

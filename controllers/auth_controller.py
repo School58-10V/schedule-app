@@ -77,6 +77,3 @@ def before_request():
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
         return '', 401
 
-
-if __name__ == '__main__':
-    app.run()
