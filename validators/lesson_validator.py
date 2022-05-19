@@ -17,12 +17,12 @@ class LessonValidator:
             if key not in allowed_keys:
                 raise ValueError
             if key == 'start_time' or key == 'end_time' or key == 'teacher_id' or \
-                    key == 'group_id' or key == 'subject_id' or key == 'date':
+                    key == 'group_id' or key == 'subject_id':
                 if type(request[key]) != int:
                     raise ValueError
             if key == 'state':
                 if type(request[key]) != bool:
                     raise ValueError
-            if key == 'notes':
+            if key == 'notes' or key == 'date':
                 if type(request[key]) != str:
                     raise ValueError
