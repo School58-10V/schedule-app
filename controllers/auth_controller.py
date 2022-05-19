@@ -67,7 +67,7 @@ def before_request():
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
     except DecodeError:
-        return '', 400
+        return '', 401
     except ExpiredSignatureError:
         # ошибка:
         return '', 401
