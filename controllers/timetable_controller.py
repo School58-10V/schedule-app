@@ -2,9 +2,11 @@ import psycopg2
 
 from data_model.timetable import TimeTable
 from flask import request, jsonify
+from validators.timetable_validator import TimeTableValidator
 
 from schedule_app import app
 
+validator = TimeTableValidator()
 
 @app.route("/api/v1/timetable", methods=["GET"])
 def get_timetable():
@@ -18,12 +20,19 @@ def get_timetable_by_id(object_id):
 
 @app.route("/api/v1/timetable", methods=["POST"])
 def create_timetable():
-    return jsonify(TimeTable(**request.get_json(),
-                             db_source=app.config.get("schedule_db_source")).save().__dict__())
-
+    try:
+        validator.validate(request.get_json(), "POST")
+        return jsonify(TimeTable(**request.get_json(),
+                                 db_source=app.config.get("schedule_db_source")).save().__dict__())
+    except:
+        return "", 401
 
 @app.route("/api/v1/timetable/<object_id>", methods=["PUT"])
 def update_timetable(object_id):
+    try:
+        validator.validate(request.get_json(), "PUT")
+    except:
+        return "", 401
     try:
         TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:

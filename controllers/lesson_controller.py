@@ -1,13 +1,13 @@
 from typing import Union, Any, Tuple
-
 import psycopg2
+from validators.lesson_validator import LessonValidator
 from psycopg2 import errorcodes
-
 from data_model.lesson import Lesson
 from flask import request, jsonify, Response
 
 from schedule_app import app
 
+validator = LessonValidator()
 
 @app.route("/api/v1/lesson", methods=["GET"])
 def get_lessons() -> Response:
@@ -31,13 +31,17 @@ def get_lesson_by_id(object_id: int) -> Union[Tuple[str, int], Response]:
 
 
 @app.route("/api/v1/lesson", methods=["POST"])
-def create_lesson() -> Response:
+def create_lesson() -> Union[Tuple[str, int], Response]:
     """
     :return json:
     """
-    return jsonify(Lesson(**request.get_json(), db_source=app.config.get("schedule_db_source"))
-                   .save()
-                   .__dict__())
+    try:
+        validator.validate(request.get_json(), "POST")
+        return jsonify(Lesson(**request.get_json(), db_source=app.config.get("schedule_db_source"))
+                       .save()
+                       .__dict__())
+    except ValueError:
+        return "", 401
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["PUT"])
@@ -46,6 +50,10 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
     :param object_id: int:
     :return json:
     """
+    try:
+        validator.validate(request.get_json(), "PUT")
+    except ValueError:
+        return "", 401
     try:
         Lesson.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:

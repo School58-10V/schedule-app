@@ -1,8 +1,9 @@
 from data_model.group import Group
 from flask import request, jsonify
-
 from schedule_app import app
+from validators.group_validator import GroupValidator
 
+validator = GroupValidator()
 
 @app.route("/api/v1/group", methods=["GET"])
 def get_groups():
@@ -19,20 +20,29 @@ def get_group_by_id(object_id):
 
 @app.route("/api/v1/group", methods=["POST"])
 def create_group():
-    return Group(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
-        .save() \
-        .__dict__()
+    try:
+        validator.validate(request.get_json(), "POST")
+        return Group(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
+            .save() \
+            .__dict__()
+    except ValueError:
+        return "", 401
 
 
 @app.route("/api/v1/group/<object_id>", methods=["PUT"])
 def update_groups(object_id):
     try:
+        validator.validate(request.get_json(), "PUT")
+    except ValueError:
+        return "", 401
+    try:
         Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        return Group(**request.get_json(), object_id=object_id, db_source=app.config.get("schedule_db_source")) \
+            .save() \
+            .__dict__()
     except ValueError:
         return "", 404
-    return Group(**request.get_json(), object_id=object_id, db_source=app.config.get("schedule_db_source")) \
-        .save() \
-        .__dict__()
+
 
 
 @app.route("/api/v1/group/<object_id>", methods=["DELETE"])

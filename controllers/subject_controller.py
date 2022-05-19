@@ -1,12 +1,13 @@
 import psycopg2
 from flask import request, jsonify
-
+from validators.subject_validator import SubjectValidator
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
 
 from schedule_app import app
 
+validator = SubjectValidator()
 
 @app.route("/api/v1/subjects", methods=["GET"])
 def get_subjects():
@@ -46,9 +47,13 @@ def get_subject_by_id(object_id):
 
 @app.route("/api/v1/subjects", methods=["POST"])
 def create_subject():
+    ids = []
+    req: dict = request.get_json()
     try:
-        ids = []
-        req: dict = request.get_json()
+        validator.validate(req, "POST")
+    except:
+        return "", 401
+    try:
         subject = Subject(subject_name=req["subject_name"], db_source=app.config.get("schedule_db_source")).save()
         if "teachers" in req.keys():
             for elem in req["teachers"]:

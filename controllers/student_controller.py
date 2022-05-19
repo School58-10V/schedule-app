@@ -1,18 +1,18 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union
+import psycopg2
+from flask import request, jsonify
+from psycopg2 import errorcodes
+from data_model.student import Student
+from data_model.students_for_groups import StudentsForGroups
+from validators.student_validator import StudentValidator
 
 if TYPE_CHECKING:
     from flask import Response
 
-import psycopg2
-from flask import request, jsonify
-from psycopg2 import errorcodes
-
-from data_model.student import Student
-from data_model.students_for_groups import StudentsForGroups
-
 from schedule_app import app
 
+validator = StudentValidator()
 
 @app.route("/api/v1/student", methods=["GET"])
 def get_students():
@@ -62,8 +62,12 @@ def get_student_by_id(object_id):
 
 @app.route("/api/v1/student", methods=["POST"])
 def create_student():
+    dct = request.get_json()
     try:
-        dct = request.get_json()
+        validator.validate(dct, "POST")
+    except ValueError:
+        return '', 401
+    try:
         groups = dct.pop('groups')
         student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
         for i in groups:
@@ -77,9 +81,13 @@ def create_student():
 
 @app.route("/api/v1/student/<object_id>", methods=["PUT"])
 def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
+    dct = request.get_json()
+    try:
+        validator.validate(dct, "PUT")
+    except ValueError:
+        return "", 401
     try:
         Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
-        dct = request.get_json()
         groups = []
         if 'groups' in dct:
             groups = dct.pop('groups')

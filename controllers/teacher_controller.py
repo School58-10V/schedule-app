@@ -4,11 +4,11 @@ from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from validators.teacher_validator import TeacherValidator
-
 from flask import request, jsonify
 
 from schedule_app import app
 
+validator = TeacherValidator()
 
 @app.route("/api/v1/teachers", methods=["GET"])
 def get_teachers():
@@ -74,11 +74,12 @@ def get_teacher_detailed_by_id(object_id):
 
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher():
-    request_validator = TeacherValidator()
+    dct = request.get_json()
     try:
-        dct = request.get_json()
-        request_validator.validate(dct, 'POST')
-
+        validator.validate(dct, "POST")
+    except:
+        return '', 401
+    try:
         subject_id = dct.pop('subject_id')
         lesson_row_id = dct.pop('lesson_row_id')
 

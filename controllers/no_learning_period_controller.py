@@ -1,11 +1,11 @@
 import psycopg2
 from flask import request, jsonify
 from psycopg2 import errorcodes
-
 from data_model.no_learning_period import NoLearningPeriod
-
+from validators.no_learning_period_validator import NoLearningPeriodValidator
 from schedule_app import app
 
+validator = NoLearningPeriodValidator()
 
 @app.route("/api/v1/no-learning-period", methods=["GET"])
 def get_no_learning_period():
@@ -24,15 +24,19 @@ def get_no_learning_period_by_id(object_id):
 @app.route("/api/v1/no-learning-period", methods=["POST"])
 def create_no_learning_period():
     try:
-        result = jsonify(
+        validator.validate(request.get_json(), "POST")
+        return jsonify(
             NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source")).save().__dict__())
-        return result
-    except TypeError:
-        return "", 400
+    except ValueError:
+        return "", 401
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["PUT"])
 def update_no_learning_period(object_id):
+    try:
+        validator.validate(request.get_json(), "PUT")
+    except ValueError:
+        return "", 401
     try:
         NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
         result = NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source"),

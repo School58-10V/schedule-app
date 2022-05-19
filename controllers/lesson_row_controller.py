@@ -1,13 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union
-
+from validators.lesson_row_validator import LessonRowValidator
 import psycopg2
 from psycopg2 import errorcodes
-
 from data_model.lesson_row import LessonRow
-
 from flask import request, jsonify
-
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 
@@ -16,6 +13,7 @@ if TYPE_CHECKING:
 
 from schedule_app import app
 
+validator = LessonRowValidator()
 
 @app.route("/api/v1/lesson-row", methods=["GET"])
 def get_all_lesson_rows() -> Response:
@@ -33,7 +31,7 @@ def get_all_lesson_rows() -> Response:
     return jsonify(global_dct)
 
 
-@app.route('/api/v1/lesson-row/detailed')
+@app.route('/api/v1/lesson-row/detailed', methods=["GET"])
 def get_all_detailed() -> Response:
     """
     Достаем все LessonRow вместе с учителями
@@ -89,6 +87,7 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
     """
     try:
         dct = request.get_json()
+        validator.validate(dct, "POST")
         teacher_id = dct.pop('teachers')
         lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()
         for i in teacher_id:
@@ -99,6 +98,8 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
         return jsonify(dct)
     except TypeError:
         return '', 400
+    except ValueError:
+        return '', 401
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
@@ -111,6 +112,10 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
     dct = request.get_json()
     try:
         LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+    except ValueError:
+        return "", 404
+    try:
+        validator.validate(dct, "PUT")
     except ValueError:
         return "", 404
     new_teachers_id = dct.pop("teachers")

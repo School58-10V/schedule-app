@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+from validators.location_validator import LocationValidator
 from typing import TYPE_CHECKING, Union, Any
 from data_model.location import Location
 from flask import request, jsonify
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 from schedule_app import app
 
+validator = LocationValidator()
 
 # here will be your code
 @app.route("/api/v1/location/<object_id>", methods=['PUT'])
@@ -20,6 +21,10 @@ def update(object_id: int) -> Union[tuple[str, int], Response]:
     :param object_id: int
     :return: Response
     """
+    try:
+        validator.validate(request.get_json(), "PUT")
+    except ValueError:
+        return "", 401
     try:
         Location.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
@@ -56,8 +61,12 @@ def create_location() -> Response():
     Создаём Location по заданным аргументам
     :return: Response
     """
-    return jsonify(Location(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
-                   .save().__dict__())
+    try:
+        validator.validate(request.get_json(), "POST")
+        return jsonify(Location(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
+                       .save().__dict__())
+    except ValueError:
+        return "", 401
 
 
 @app.route("/api/v1/location/<object_id>", methods=["DELETE"])
