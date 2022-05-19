@@ -1,11 +1,8 @@
 import datetime
-
 import jwt
-from flask import Flask, request, jsonify
+from flask import request, jsonify
 from jwt import DecodeError, ExpiredSignatureError
-
 from data_model.user import User
-from services.db_source_factory import DBFactory
 
 from schedule_app import app
 

@@ -41,7 +41,7 @@ def create_lesson() -> Union[Tuple[str, int], Response]:
                        .save()
                        .__dict__())
     except ValueError:
-        return "", 401
+        return "", 400
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["PUT"])
@@ -53,7 +53,7 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
-        return "", 401
+        return "", 400
     try:
         Lesson.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:

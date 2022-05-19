@@ -78,7 +78,7 @@ def create_teacher():
     try:
         validator.validate(dct, "POST")
     except:
-        return '', 401
+        return '', 400
     try:
         subject_id = dct.pop('subject_id')
         lesson_row_id = dct.pop('lesson_row_id')
@@ -108,9 +108,10 @@ def create_teacher():
 @app.route("/api/v1/teachers/<object_id>", methods=["PUT"])
 def update_teacher(object_id):
     try:
-        request_validator = TeacherValidator()
-        request_validator.validate(request.get_json(), 'PUT')
-
+        validator.validate(request.get_json(), "PUT")
+    except:
+        return "", 400
+    try:
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
                                  get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]

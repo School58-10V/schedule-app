@@ -52,7 +52,7 @@ def create_subject():
     try:
         validator.validate(req, "POST")
     except:
-        return "", 401
+        return "", 400
     try:
         subject = Subject(subject_name=req["subject_name"], db_source=app.config.get("schedule_db_source")).save()
         if "teachers" in req.keys():
@@ -73,10 +73,14 @@ def create_subject():
 
 @app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
 def update_subject(object_id):
+    req: dict = request.get_json()
     try:
-        req: dict = request.get_json()
-        subject: Subject = Subject.get_by_id(object_id, app.config.get("schedule_db_source"))
+        validator.validate(req, "PUT")
+    except:
+        return "", 400
+    try:
 
+        subject: Subject = Subject.get_by_id(object_id, app.config.get("schedule_db_source"))
         # чистим все поля (искл те которые надо будет добавить) а потом добавляем те которые надо добавить
         saved = []
         if req.get('teachers'):

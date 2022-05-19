@@ -28,7 +28,7 @@ def create_no_learning_period():
         return jsonify(
             NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source")).save().__dict__())
     except ValueError:
-        return "", 401
+        return "", 400
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["PUT"])
@@ -36,7 +36,7 @@ def update_no_learning_period(object_id):
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
-        return "", 401
+        return "", 400
     try:
         NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
         result = NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source"),

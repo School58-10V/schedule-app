@@ -24,7 +24,7 @@ def update(object_id: int) -> Union[tuple[str, int], Response]:
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
-        return "", 401
+        return "", 400
     try:
         Location.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
@@ -66,7 +66,7 @@ def create_location() -> Response():
         return jsonify(Location(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
                        .save().__dict__())
     except ValueError:
-        return "", 401
+        return "", 400
 
 
 @app.route("/api/v1/location/<object_id>", methods=["DELETE"])

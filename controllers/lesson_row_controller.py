@@ -85,9 +85,12 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
     Создаем LessonRow
     :return: Response
     """
+    dct = request.get_json()
     try:
-        dct = request.get_json()
         validator.validate(dct, "POST")
+    except:
+        return '', 400
+    try:
         teacher_id = dct.pop('teachers')
         lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()
         for i in teacher_id:
@@ -117,7 +120,7 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
     try:
         validator.validate(dct, "PUT")
     except ValueError:
-        return "", 404
+        return "", 400
     new_teachers_id = dct.pop("teachers")
     lesson_row_by_id = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
     lesson_row_by_id_dct = lesson_row_by_id.__dict__()

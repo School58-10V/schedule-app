@@ -25,14 +25,14 @@ def create_timetable():
         return jsonify(TimeTable(**request.get_json(),
                                  db_source=app.config.get("schedule_db_source")).save().__dict__())
     except:
-        return "", 401
+        return "", 400
 
 @app.route("/api/v1/timetable/<object_id>", methods=["PUT"])
 def update_timetable(object_id):
     try:
         validator.validate(request.get_json(), "PUT")
     except:
-        return "", 401
+        return "", 400
     try:
         TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:

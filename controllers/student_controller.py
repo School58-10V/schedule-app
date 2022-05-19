@@ -14,7 +14,7 @@ from schedule_app import app
 
 validator = StudentValidator()
 
-@app.route("/api/v1/student", methods=["GET"])
+@app.route("/api/v1/students", methods=["GET"])
 def get_students():
     result = []
     for student in Student.get_all(app.config.get("schedule_db_source")):
@@ -26,7 +26,7 @@ def get_students():
     return jsonify({"students": result})
 
 
-@app.route("/api/v1/student/detailed", methods=["GET"])
+@app.route("/api/v1/students/detailed", methods=["GET"])
 def get_students_detailed():
     result = []
     for student in Student.get_all(app.config.get("schedule_db_source")):
@@ -38,7 +38,7 @@ def get_students_detailed():
     return jsonify({"students": result})
 
 
-@app.route("/api/v1/student/get/detailed/<object_id>", methods=["GET"])
+@app.route("/api/v1/students/get/detailed/<object_id>", methods=["GET"])
 def get_student_by_id_detailed(object_id):
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
@@ -49,7 +49,7 @@ def get_student_by_id_detailed(object_id):
     return jsonify(result)
 
 
-@app.route("/api/v1/student/<object_id>", methods=["GET"])
+@app.route("/api/v1/students/<object_id>", methods=["GET"])
 def get_student_by_id(object_id):
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
@@ -60,13 +60,13 @@ def get_student_by_id(object_id):
     return jsonify(result)
 
 
-@app.route("/api/v1/student", methods=["POST"])
+@app.route("/api/v1/students", methods=["POST"])
 def create_student():
     dct = request.get_json()
     try:
         validator.validate(dct, "POST")
     except ValueError:
-        return '', 401
+        return '', 400
     try:
         groups = dct.pop('groups')
         student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
@@ -79,13 +79,13 @@ def create_student():
     return jsonify(dct)
 
 
-@app.route("/api/v1/student/<object_id>", methods=["PUT"])
+@app.route("/api/v1/students/<object_id>", methods=["PUT"])
 def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
     dct = request.get_json()
     try:
         validator.validate(dct, "PUT")
     except ValueError:
-        return "", 401
+        return "", 400
     try:
         Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
         groups = []
@@ -106,7 +106,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
         return "", 400
 
 
-@app.route("/api/v1/student/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/students/<object_id>", methods=["DELETE"])
 def delete_student(object_id):
     try:
         student = Student.get_by_id(object_id, app.config.get("schedule_db_source"))

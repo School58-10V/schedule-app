@@ -26,7 +26,7 @@ def create_group():
             .save() \
             .__dict__()
     except ValueError:
-        return "", 401
+        return "", 400
 
 
 @app.route("/api/v1/group/<object_id>", methods=["PUT"])
@@ -34,7 +34,7 @@ def update_groups(object_id):
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
-        return "", 401
+        return "", 400
     try:
         Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
         return Group(**request.get_json(), object_id=object_id, db_source=app.config.get("schedule_db_source")) \
