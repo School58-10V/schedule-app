@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Tuple
 import psycopg2
-from flask import request, jsonify
+from flask import request, jsonify, Response
 from psycopg2 import errorcodes
 from data_model.student import Student
 from data_model.students_for_groups import StudentsForGroups
@@ -14,8 +14,9 @@ from schedule_app import app
 
 validator = StudentValidator()
 
+
 @app.route("/api/v1/students", methods=["GET"])
-def get_students():
+def get_students() -> Response:
     result = []
     for student in Student.get_all(app.config.get("schedule_db_source")):
         student_data = student.__dict__()
@@ -27,7 +28,7 @@ def get_students():
 
 
 @app.route("/api/v1/students/detailed", methods=["GET"])
-def get_students_detailed():
+def get_students_detailed() -> Response:
     result = []
     for student in Student.get_all(app.config.get("schedule_db_source")):
         student_data = student.__dict__()
@@ -39,7 +40,7 @@ def get_students_detailed():
 
 
 @app.route("/api/v1/students/get/detailed/<object_id>", methods=["GET"])
-def get_student_by_id_detailed(object_id):
+def get_student_by_id_detailed(object_id: int) -> tuple[str, int] | Response:
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         result["groups"] = [group.__dict__() for group in
@@ -50,7 +51,7 @@ def get_student_by_id_detailed(object_id):
 
 
 @app.route("/api/v1/students/<object_id>", methods=["GET"])
-def get_student_by_id(object_id):
+def get_student_by_id(object_id: int) -> tuple[str, int] | Response:
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         result["groups"] = [group_obj.get_main_id() for group_obj in
@@ -61,7 +62,7 @@ def get_student_by_id(object_id):
 
 
 @app.route("/api/v1/students", methods=["POST"])
-def create_student():
+def create_student() -> tuple[str, int] | Response:
     dct = request.get_json()
     try:
         validator.validate(dct, "POST")
@@ -107,7 +108,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
 
 
 @app.route("/api/v1/students/<object_id>", methods=["DELETE"])
-def delete_student(object_id):
+def delete_student(object_id: int) -> Response | tuple[str, int] | tuple[Response, int]:
     try:
         student = Student.get_by_id(object_id, app.config.get("schedule_db_source"))
         student = student.delete().__dict__()
