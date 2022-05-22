@@ -70,9 +70,9 @@ class LessonRow(AbstractModel):
 
     def __repr__(self):
         return f'LessonRow(day_of_the_week={self.get_day_of_the_week()}, group_id={self.get_group_id()}' \
-               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
-               f', end_time={self.get_end_time()}), timetable_id={self.get_timetable_id()})' \
-               f', object_id={self.get_main_id()})'
+               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), ' \
+               f' start_time={self.get_start_time()}), end_time={self.get_end_time()}), ' \
+               f' timetable_id={self.get_timetable_id()}), object_id={self.get_main_id()})'
 
     def __str__(self):
         return f'Урок в день недели номер {self.get_day_of_the_week() + 1} который начинается в {self.get_start_time()}'
@@ -94,7 +94,7 @@ class LessonRow(AbstractModel):
                 timetable_id = i[6]
 
                 res.append(ParsedData(None, LessonRow(db_source=db_source,
-                                                      day_of_the_week=day_of_the_week,
+                                                      day_of_the_week=int(day_of_the_week),
                                                       group_id=int(group_id),
                                                       subject_id=int(subject_id),
                                                       room_id=int(room_id),
@@ -173,11 +173,9 @@ class LessonRow(AbstractModel):
         lessons = []
         for group_id in group_ids:
             group_lessons = [LessonRow.get_by_id(i['object_id'], db_source)
-                       for i in db_source.get_by_query(cls._get_collection_name(),
-                                                       {"day_of_the_week": day,
-                                                        "group_id": group_id})]
+                             for i in db_source.get_by_query(cls._get_collection_name(),
+                                                             {"day_of_the_week": day,
+                                                              "group_id": group_id})]
             for lesson in group_lessons:
                 lessons.append(lesson)
         return sorted(lessons, key=lambda x: x.get_start_time())
-
-
