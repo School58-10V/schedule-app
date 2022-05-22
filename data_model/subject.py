@@ -79,5 +79,5 @@ class Subject(AbstractModel):
                 "subject_name": self.get_subject_name()}
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource):
+    def get_by_id(cls, element_id: int, db_source: DBSource) -> Subject:
         return Subject(db_source=db_source, **db_source.get_by_id("Subjects", element_id))

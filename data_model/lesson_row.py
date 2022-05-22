@@ -68,7 +68,6 @@ class LessonRow(AbstractModel):
             "timetable_id": self.get_timetable_id(),
             "object_id": self.get_main_id()}
 
-
     def __repr__(self):
         return f'LessonRow(day_of_the_week={self.get_day_of_the_week()}, group_id={self.get_group_id()}' \
                f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
@@ -153,7 +152,7 @@ class LessonRow(AbstractModel):
         return self
 
     @classmethod
-    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource):
+    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List:
         """
 
         :param group_id: идшник группы

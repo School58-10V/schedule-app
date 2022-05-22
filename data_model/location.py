@@ -95,5 +95,5 @@ class Location(AbstractModel):
                 'comment': self.get_comment()}
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource):
+    def get_by_id(cls, element_id: int, db_source: DBSource) -> Location:
         return Location(db_source=db_source, **db_source.get_by_id("Locations", element_id))
