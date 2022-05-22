@@ -20,5 +20,6 @@ class StudentValidator:
                 if type(request[key]) != str:
                     raise ValueError
             if key == 'date_of_birth':
-                if type(request[key]) != int:
+                if type(request[key]) != str:
                     raise ValueError
+
