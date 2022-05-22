@@ -91,7 +91,7 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
     except:
         return '', 400
     try:
-        teacher_id = dct.pop('teachers')
+        teacher_id = dct.get('teachers', [])
         lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()
         for i in teacher_id:
             TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i,
@@ -118,10 +118,10 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
     except ValueError:
         return "", 404
     try:
-        validator.validate(dct, "PUT")
+        validator.validate(dct, method="PUT")
     except ValueError:
         return "", 400
-    new_teachers_id = dct.pop("teachers")
+    new_teachers_id = dct.get('teachers', [])
     lesson_row_by_id = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
     lesson_row_by_id_dct = lesson_row_by_id.__dict__()
     lesson_row_by_id_dct['teachers'] = [i.get_main_id() for i in lesson_row_by_id.get_teachers()]
