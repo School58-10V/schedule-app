@@ -80,11 +80,11 @@ class Location(AbstractModel):
 
         return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Location(location_type={self.get_location_type()}, num_of_class={self.get_location_desc()}, ' \
                f'link={self.get_link()}, comment={self.get_comment()})'
 
-    def __dict__(self):
+    def __dict__(self) -> dict:
         return {'location_type': self.get_location_type(),
                 'object_id': self.get_main_id(),
                 'location_desc': self.get_location_desc(),

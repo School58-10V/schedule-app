@@ -71,7 +71,7 @@ class Subject(AbstractModel):
                 res.append(ParsedData(exception_text, None))
         return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Subject(subject_name: {self.get_subject_name()})'
 
     def __dict__(self) -> dict:
