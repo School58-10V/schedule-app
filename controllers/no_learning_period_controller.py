@@ -7,6 +7,7 @@ from schedule_app import app
 
 validator = NoLearningPeriodValidator()
 
+
 @app.route("/api/v1/no-learning-period", methods=["GET"])
 def get_no_learning_period():
     return jsonify([i.__dict__() for i in NoLearningPeriod.get_all(app.config.get("schedule_db_source"))])

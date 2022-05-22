@@ -13,6 +13,7 @@ from schedule_app import app
 
 validator = LocationValidator()
 
+
 # here will be your code
 @app.route("/api/v1/location/<object_id>", methods=['PUT'])
 def update(object_id: int) -> Union[tuple[str, int], Response]:

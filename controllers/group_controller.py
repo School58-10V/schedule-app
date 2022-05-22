@@ -5,6 +5,7 @@ from validators.group_validator import GroupValidator
 
 validator = GroupValidator()
 
+
 @app.route("/api/v1/group", methods=["GET"])
 def get_groups():
     return jsonify([i.__dict__() for i in Group.get_all(app.config.get("schedule_db_source"))])
@@ -42,7 +43,6 @@ def update_groups(object_id):
             .__dict__()
     except ValueError:
         return "", 404
-
 
 
 @app.route("/api/v1/group/<object_id>", methods=["DELETE"])

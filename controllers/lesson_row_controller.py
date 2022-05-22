@@ -15,6 +15,7 @@ from schedule_app import app
 
 validator = LessonRowValidator()
 
+
 @app.route("/api/v1/lesson-row", methods=["GET"])
 def get_all_lesson_rows() -> Response:
     """

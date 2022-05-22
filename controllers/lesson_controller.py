@@ -9,6 +9,7 @@ from schedule_app import app
 
 validator = LessonValidator()
 
+
 @app.route("/api/v1/lesson", methods=["GET"])
 def get_lessons() -> Response:
     """
