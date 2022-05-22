@@ -5,10 +5,6 @@ class StudentValidator:
         required_keys = {'full_name', 'date_of_birth'}
         allowed_keys = {'full_name', 'date_of_birth', 'contacts', 'bio'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
-
         for key in required_keys:
             if key not in request.keys():
                 raise ValueError
@@ -20,5 +16,6 @@ class StudentValidator:
                 if type(request[key]) != str:
                     raise ValueError
             if key == 'date_of_birth':
-                if type(request[key]) != int:
+                if type(request[key]) != str:
                     raise ValueError
+
