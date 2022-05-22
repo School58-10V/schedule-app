@@ -58,6 +58,8 @@ def register():
 @app.before_request
 def before_request():
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
+    if request.url_rule is None:
+        return '', 404
     if request.url_rule.rule == '/api/v1/login' or\
             request.url_rule.rule == '/api/v1/register' or\
             request.method.lower() == 'get':
