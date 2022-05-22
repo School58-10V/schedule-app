@@ -1,4 +1,7 @@
-class LocationValidator:
+import validators.abstract_validator
+
+
+class LocationValidator(validators.abstract_validator.AbstractValidator):
 
     def validate(self, request: dict, method: str):
 
@@ -23,3 +26,7 @@ class LocationValidator:
             if key == 'num_of_class':
                 if type(request[key]) != int:
                     raise ValueError
+
+    @staticmethod
+    def get_name():
+        return "location"

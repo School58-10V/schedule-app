@@ -1,4 +1,7 @@
-class LessonValidator:
+import validators.abstract_validator
+
+
+class LessonValidator(validators.abstract_validator.AbstractValidator):
 
     def validate(self, request: dict, method: str):
 
@@ -26,3 +29,7 @@ class LessonValidator:
             if key == 'notes' or key == 'date':
                 if type(request[key]) != str:
                     raise ValueError
+
+    @staticmethod
+    def get_name():
+        return "lesson"

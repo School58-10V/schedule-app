@@ -1,4 +1,7 @@
-class StudentValidator:
+import validators.abstract_validator
+
+
+class StudentValidator(validators.abstract_validator.AbstractValidator):
 
     def validate(self, request: dict, method: str):
 
@@ -22,3 +25,7 @@ class StudentValidator:
             if key == 'date_of_birth':
                 if type(request[key]) != int:
                     raise ValueError
+
+    @staticmethod
+    def get_name():
+        return "student"

@@ -1,4 +1,7 @@
-class TeacherValidator:
+import validators.abstract_validator
+
+
+class TeacherValidator(validators.abstract_validator.AbstractValidator):
 
     def validate(self, request: dict, method: str):
 
@@ -26,3 +29,7 @@ class TeacherValidator:
                 for i in request[key]:
                     if type(i) != int:
                         raise ValueError
+
+    @staticmethod
+    def get_name():
+        return "teacher"

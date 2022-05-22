@@ -1,4 +1,7 @@
-class TimeTableValidator:
+import validators.abstract_validator
+
+
+class TimeTableValidator(validators.abstract_validator.AbstractValidator):
 
     def validate(self, request: dict, method: str):
 
@@ -19,3 +22,7 @@ class TimeTableValidator:
             if key == 'time_table_year':
                 if type(request[key]) != int:
                     raise ValueError
+
+    @staticmethod
+    def get_name():
+        return "timetable"
