@@ -1,5 +1,7 @@
+from typing import Union, Any
+
 import psycopg2
-from flask import request, jsonify
+from flask import request, jsonify, Response
 from validators.subject_validator import SubjectValidator
 from data_model.subject import Subject
 from data_model.teacher import Teacher
@@ -9,8 +11,9 @@ from schedule_app import app
 
 validator = SubjectValidator()
 
+
 @app.route("/api/v1/subjects", methods=["GET"])
-def get_subjects():
+def get_subjects() -> Response:
     result = []
     for i in Subject.get_all(app.config.get("schedule_db_source")):
         subj = i.__dict__()
@@ -23,7 +26,7 @@ def get_subjects():
 
 
 @app.route("/api/v1/subject/detailed", methods=["GET"])
-def get_subjects_detailed():
+def get_subjects_detailed() -> Response:
     result = []
     for i in Subject.get_all(app.config.get("schedule_db_source")):
         subj = i.__dict__()
@@ -36,7 +39,7 @@ def get_subjects_detailed():
 
 
 @app.route("/api/v1/subjects/<object_id>", methods=["GET"])
-def get_subject_by_id(object_id):
+def get_subject_by_id(object_id) -> Union[Response, tuple[str, int]]:
     try:
         return jsonify('teachers', [i.__dict__()['object_id'] for i in
                                     TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
@@ -46,7 +49,7 @@ def get_subject_by_id(object_id):
 
 
 @app.route("/api/v1/subjects", methods=["POST"])
-def create_subject():
+def create_subject() -> Union[tuple[str, int], Response]:
     ids = []
     req: dict = request.get_json()
     try:
@@ -72,7 +75,7 @@ def create_subject():
 
 
 @app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
-def update_subject(object_id):
+def update_subject(object_id) -> Union[tuple[str, int], Response]:
     req: dict = request.get_json()
     try:
         validator.validate(req, "PUT")
@@ -113,7 +116,7 @@ def update_subject(object_id):
 
 
 @app.route("/api/v1/subject/detailed/<object_id>", methods=["GET"])
-def get_teachers_by_subject_id(object_id):
+def get_teachers_by_subject_id(object_id) -> Union[Response, tuple[str, int]]:
     try:
         return jsonify('teachers',
                        [i.__dict__() for i in
@@ -124,7 +127,7 @@ def get_teachers_by_subject_id(object_id):
 
 
 @app.route("/api/v1/subjects/<object_id>", methods=["DELETE"])
-def delete_subject(object_id):
+def delete_subject(object_id) -> Union[dict, tuple[str, int], tuple[Any, int]]:
     try:
         return Subject.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__()
     except ValueError:

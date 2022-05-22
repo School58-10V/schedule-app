@@ -5,10 +5,6 @@ class LocationValidator:
         required_keys = {'location_type', 'num_of_class'}
         allowed_keys = {'location_type', 'num_of_class', 'location_desc', 'profile', 'link', 'comment', 'equipment'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
-
         for key in required_keys:
             if key not in request.keys():
                 raise ValueError
