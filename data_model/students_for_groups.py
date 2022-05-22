@@ -61,7 +61,7 @@ class StudentsForGroups(AbstractModel):
     #
     #        return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f''
 
     def __dict__(self) -> dict:
