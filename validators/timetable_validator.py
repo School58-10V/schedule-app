@@ -5,10 +5,6 @@ class TimeTableValidator:
         required_keys = {'time_table_year'}
         allowed_keys = {'time_table_year'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
-
         for key in required_keys:
             if key not in request.keys():
                 raise ValueError
