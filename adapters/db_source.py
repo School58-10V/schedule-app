@@ -2,7 +2,7 @@ from __future__ import annotations
 import time
 import datetime
 from adapters.abstract_source import AbstractSource
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import psycopg2
 from psycopg2 import errorcodes
 
@@ -127,7 +127,7 @@ class DBSource(AbstractSource):
             self.__conn.commit()
 
     @staticmethod
-    def __wrap_string(value):
+    def __wrap_string(value: Optional[str]) -> str:
         if value is None:
             # Для базы None записывается по-другому
             return 'null'
@@ -137,7 +137,7 @@ class DBSource(AbstractSource):
         else:
             return value
 
-    def __data_processing(self, document):
+    def __data_processing(self, document: dict) -> tuple[str, str]:
         # Функция, которая преобразовывает данные моделей для запроса
         # (для добавление этой модели в базу данных)
         lst1 = []
@@ -159,7 +159,7 @@ class DBSource(AbstractSource):
         return ", ".join(lst1), ", ".join(lst2)
 
     @classmethod
-    def __format_tuple_to_dict(cls, data, desc):
+    def __format_tuple_to_dict(cls, data: list, desc: list) -> list[dict]:
         # data - список значений
         # desc - список имен полей
         # используя data и desc, полученных из cursor, мы их соединяем и получаем словарь с данными
@@ -169,7 +169,7 @@ class DBSource(AbstractSource):
         return to_return
 
     @classmethod
-    def __cursor_execute_wrapper(cls, cursor, request, params=None):
+    def __cursor_execute_wrapper(cls, cursor: any, request: str, params=None):
         try:
             cursor.execute(request, params)
         except psycopg2.Error as e:
