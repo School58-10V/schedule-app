@@ -60,7 +60,7 @@ def register() -> Response:
 @app.before_request
 def before_request() -> Optional[Tuple[str, int]]:
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.method.lower() == 'get' or request.url_rule.rule == '/api/v1/login' or \
+    if request.method.lower() == 'get' or request.url_rule.rule == '/api/v1/login' or\
             request.url_rule.rule == '/api/v1/register':
         return
     request_token = request.headers.get('Authorization')

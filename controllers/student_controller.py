@@ -69,7 +69,7 @@ def create_student() -> tuple[str, int] | Response:
     except ValueError:
         return '', 400
     try:
-        groups = dct.pop('groups')
+        groups = dct.get('groups', [])
         student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
         for i in groups:
             student.append_group_by_id(i)

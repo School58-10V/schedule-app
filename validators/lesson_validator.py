@@ -5,10 +5,6 @@ class LessonValidator:
         required_keys = {'start_time', 'end_time', 'notes', 'state', 'teacher_id', 'group_id', 'subject_id', 'date'}
         allowed_keys = {'start_time', 'end_time', 'notes', 'state', 'teacher_id', 'group_id', 'subject_id', 'date'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
-
         for key in required_keys:
             if key not in request.keys():
                 raise ValueError
