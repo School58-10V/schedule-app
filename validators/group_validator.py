@@ -5,10 +5,6 @@ class GroupValidator:
         required_keys = {'teacher_id', 'class_letter', 'grade', 'profile_name'}
         allowed_keys = {'teacher_id', 'class_letter', 'grade', 'profile_name'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
-
         for key in required_keys:
             if key not in request.keys():
                 raise ValueError
