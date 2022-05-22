@@ -116,30 +116,15 @@ def create_teacher() -> Union[tuple[str, int], Response]:
 def update_teacher(object_id: int) -> Union[tuple[str, int], Response]:
     try:
         validator.validate(request.get_json(), "PUT")
-    except:
+    except ValueError:
         return "", 400
     try:
-        teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
-        teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
-        teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id,
-                                          db_source=app.config.get("schedule_db_source"))]
-
-        for i in request.get_json().get('subject_id', []):
-            if i not in teacher['subject_id']:
-                TeachersForSubjects(teacher_id=object_id, subject_id=i,
-                                    db_source=app.config.get("schedule_db_source")).save()
-
-        for i in request.get_json().get('lesson_row_id', []):
-            if i not in teacher['lesson_row_id']:
-                TeachersForLessonRows(teacher_id=object_id, lesson_row_id=i,
-                                      db_source=app.config.get("schedule_db_source")).save()
-
-        return jsonify(Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
-
+        Teacher.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
+    return jsonify(Teacher(**request.get_json(), object_id=object_id, db_source=app.config.get("schedule_db_source"))
+                   .save()
+                   .__dict__())
 
 
 @app.route("/api/v1/teachers/<object_id>", methods=["DELETE"])
