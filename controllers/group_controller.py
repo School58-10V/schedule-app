@@ -1,9 +1,10 @@
-from data_model.group import Group
 from flask import request, jsonify
-from schedule_app import app
-from validators.group_validator import GroupValidator
 
-validator = GroupValidator()
+from data_model.group import Group
+from schedule_app import app
+from services.validator_factory import ValFactory
+
+validator = ValFactory().get_appropriate_validator("group")
 
 
 @app.route("/api/v1/group", methods=["GET"])

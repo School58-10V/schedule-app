@@ -1,4 +1,7 @@
-class GroupValidator:
+import validators.abstract_validator
+
+
+class GroupValidator(validators.abstract_validator.AbstractValidator):
 
     def validate(self, request: dict, method: str):
 
@@ -22,3 +25,7 @@ class GroupValidator:
             if key == 'class_letter' or key == 'profile_name':
                 if type(request[key]) != str:
                     raise ValueError
+
+    @staticmethod
+    def get_name():
+        return "group"

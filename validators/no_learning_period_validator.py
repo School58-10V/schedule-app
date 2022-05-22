@@ -1,4 +1,7 @@
-class NoLearningPeriodValidator:
+import validators.abstract_validator
+
+
+class NoLearningPeriodValidator(validators.abstract_validator.AbstractValidator):
 
     def validate(self, request: dict, method: str):
 
@@ -18,3 +21,7 @@ class NoLearningPeriodValidator:
                 raise ValueError
             if type(request[key]) != int:
                 raise ValueError
+
+    @staticmethod
+    def get_name():
+        return "nolearningperiod"
