@@ -91,7 +91,9 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
     except:
         return '', 400
     try:
-        teacher_id = dct.get('teachers', [])
+        teacher_id = []
+        if 'teachers' in dct:
+            teacher_id = dct.pop('teachers')
         lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()
         for i in teacher_id:
             TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i,
@@ -121,7 +123,9 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
         validator.validate(dct, method="PUT")
     except ValueError:
         return "", 400
-    new_teachers_id = dct.get('teachers', [])
+    new_teachers_id = []
+    if 'teachers' in dct:
+        new_teachers_id = dct.pop('teachers')
     lesson_row_by_id = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
     lesson_row_by_id_dct = lesson_row_by_id.__dict__()
     lesson_row_by_id_dct['teachers'] = [i.get_main_id() for i in lesson_row_by_id.get_teachers()]
@@ -142,7 +146,7 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
 
     lesson_row = LessonRow(**dct, object_id=object_id, db_source=app.config.get("schedule_db_source")).save().__dict__()
     lesson_row['teachers'] = new_teachers_id
-    return lesson_row
+    return jsonify(lesson_row)
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])

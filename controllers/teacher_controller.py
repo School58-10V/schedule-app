@@ -87,8 +87,13 @@ def create_teacher() -> Union[tuple[str, int], Response]:
     except:
         return '', 400
     try:
-        subject_id = dct.get('subject_id', [])
-        lesson_row_id = dct.get('lesson_row_id', [])
+        subject_id = []
+        if 'subject_id' in dct:
+            subject_id = dct.pop('subject_id')
+        lesson_row_id = []
+        if 'lesson_row_id' in dct:
+            subject_id = dct.pop('lesson_row_id')
+        # lesson_row_id = dct.get('lesson_row_id', [])
 
         new_teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
 
@@ -108,7 +113,7 @@ def create_teacher() -> Union[tuple[str, int], Response]:
 
     except TypeError:
         return '', 400
-    except ValueError:
+    except ValueError as e:
         return '', 404
 
 

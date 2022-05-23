@@ -41,9 +41,11 @@ def get_subjects_detailed() -> Response:
 @app.route("/api/v1/subjects/<object_id>", methods=["GET"])
 def get_subject_by_id(object_id) -> Union[Response, tuple[str, int]]:
     try:
-        return jsonify('teachers', [i.__dict__()['object_id'] for i in
-                                    TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
-                                        "schedule_db_source"))])
+        dct = Subject.get_by_id(db_source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
+        dct['teachers'] = [i.__dict__()['object_id'] for i in
+                           TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
+                               "schedule_db_source"))]
+        return jsonify(dct)
     except ValueError:
         return '', 404
 
@@ -98,7 +100,7 @@ def update_subject(object_id) -> Union[tuple[str, int], Response]:
                 subject.append_teacher(Teacher.get_by_id(teacher_id, app.config.get("schedule_db_source")))
 
         new_subject = subject.__dict__()
-        if req.get('teachers'):
+        if 'teachers' in req:
             req_teachers = req.pop('teachers')
         else:
             req_teachers = None
@@ -109,7 +111,7 @@ def update_subject(object_id) -> Union[tuple[str, int], Response]:
         new_subject_dict['teachers'] = req_teachers if req_teachers else [i.get_main_id() for i in
                                                                           new_subject.get_teachers()]
         return jsonify(new_subject_dict)
-    except ValueError:
+    except ValueError as e:
         return "", 404
     except TypeError:
         return "", 400
