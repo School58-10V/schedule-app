@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Union, Any, TYPE_CHECKING
+from typing import Union, Any, TYPE_CHECKING, Tuple
 
 import psycopg2
 
@@ -26,7 +26,7 @@ def get_timetable_by_id(object_id: int) -> Response:
 
 
 @app.route("/api/v1/timetable", methods=["POST"])
-def create_timetable() -> Union[Response, tuple[str, int]]:
+def create_timetable() -> Union[Response, Tuple[str, int]]:
     try:
         validator.validate(request.get_json(), "POST")
         return jsonify(TimeTable(**request.get_json(),
@@ -36,7 +36,7 @@ def create_timetable() -> Union[Response, tuple[str, int]]:
 
 
 @app.route("/api/v1/timetable/<object_id>", methods=["PUT"])
-def update_timetable(object_id: int) -> Union[tuple[str, int], Response]:
+def update_timetable(object_id: int) -> Union[Tuple[str, int], Response]:
     try:
         validator.validate(request.get_json(), "PUT")
     except:
@@ -50,7 +50,7 @@ def update_timetable(object_id: int) -> Union[tuple[str, int], Response]:
 
 
 @app.route("/api/v1/timetable/<object_id>", methods=["DELETE"])
-def delete_timetable(object_id: int) -> Union[Response, tuple[str, int], tuple[Any, int]]:
+def delete_timetable(object_id: int) -> Union[Response, Tuple[str, int], Tuple[Any, int]]:
     try:
         return jsonify(
             TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source")).delete().__dict__())

@@ -40,7 +40,7 @@ class DBSource(AbstractSource):
         data = cursor.fetchall()
         desc = cursor.description
 
-        return self.__format_tuple_to_dict(data, desc)
+        return self.__format_Tuple_to_dict(data, desc)
 
     def get_all(self, collection_name: str) -> List[dict]:
         self.connect()
@@ -50,7 +50,7 @@ class DBSource(AbstractSource):
         data = cursor.fetchall()
         desc = cursor.description
         self.__conn.commit()
-        return self.__format_tuple_to_dict(data, desc)
+        return self.__format_Tuple_to_dict(data, desc)
 
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
         self.connect()
@@ -63,7 +63,7 @@ class DBSource(AbstractSource):
             self.__conn.commit()
             raise ValueError(f'Объект с id {object_id} из {collection_name} не существует')
         # берем 0 индекс т.к. длина ответа всегда либо 0 (уже обработали), либо 1, т.е. смысла возвращать список нет.
-        return self.__format_tuple_to_dict(data, desc)[0]
+        return self.__format_Tuple_to_dict(data, desc)[0]
 
     def insert(self, collection_name: str, document: dict) -> dict:
         self.connect()
@@ -137,7 +137,7 @@ class DBSource(AbstractSource):
         else:
             return value
 
-    def __data_processing(self, document: dict) -> tuple[str, str]:
+    def __data_processing(self, document: dict) -> Tuple[str, str]:
         # Функция, которая преобразовывает данные моделей для запроса
         # (для добавление этой модели в базу данных)
         lst1 = []
@@ -159,7 +159,7 @@ class DBSource(AbstractSource):
         return ", ".join(lst1), ", ".join(lst2)
 
     @classmethod
-    def __format_tuple_to_dict(cls, data: list, desc: list) -> list[dict]:
+    def __format_Tuple_to_dict(cls, data: list, desc: list) -> list[dict]:
         # data - список значений
         # desc - список имен полей
         # используя data и desc, полученных из cursor, мы их соединяем и получаем словарь с данными

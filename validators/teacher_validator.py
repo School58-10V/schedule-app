@@ -5,6 +5,10 @@ class TeacherValidator:
         required_keys = {'fio'}
         allowed_keys = {'fio', 'bio', 'contacts', 'office_id', 'subject_id', 'lesson_row_id'}
 
+        if method == 'PUT':
+            required_keys.add('object_id')
+            allowed_keys.add('object_id')
+
         for key in required_keys:
             if key not in request.keys():
                 print(key, request.keys(), key in request.keys())

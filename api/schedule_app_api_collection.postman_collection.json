@@ -1,10 +1,695 @@
 {
 	"info": {
-		"_postman_id": "d9b658bb-27eb-4935-b359-8268638b297e",
+		"_postman_id": "fb1e0682-8569-4e24-9f1e-4257d79941af",
 		"name": "schedule_app_api_collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Location_CRUD",
+			"item": [
+				{
+					"name": "Get_Location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/location",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Location_By_id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/location/0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"location",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post_Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"location_type\": \"класс\",\r\n\"location_desc\": \"\",\r\n\"profile\": \"Информатический\",\r\n\"num_of_class\": 1,\r\n\"equipment\": \"\",\r\n\"link\": \"Offline\",\r\n\"comment\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/location",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put_Location",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"location_type\": \"класс\",\r\n\"location_desc\": \"\",\r\n\"profile\": \"Информатический\",\r\n\"num_of_class\": 1,\r\n\"link\": \"Offline\",\r\n\"equipment\": \"text\",\r\n\"comment\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/location/49",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"location",
+								"49"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Location",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/location/49",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"location",
+								"49"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subject_CRUD",
+			"item": [
+				{
+					"name": "Get_subjects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/subjects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_subject_by_id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/subjects/43",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"43"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create_subject",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject_name\": \"Physics\",\r\n    \"teachers\": [\r\n        13\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/subjects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update_subjects",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject_name\": \"тест\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/subjects/46",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"46"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_subject",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/subjects/46",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"46"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teacher_CRUD",
+			"item": [
+				{
+					"name": "Get_Teacher",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/teachers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"teachers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Teacher_By_Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/teachers/11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"teachers",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create_Teacher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fio\": \"Антон Антонович Тест\",\r\n    \"bio\": \"yep\",\r\n    \"contacts\": \"555\",\r\n    \"office_id\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/teachers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"teachers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update_Teacher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDE2ODE3fQ.kJyeMcO4Lf-ZsfVlriJffCUWEyuYPQrlzVNJU1b_rVAUfVdzxUlWXoHehnswMM5jXSO5dVCCfWvcZKHFWPF-dfcmg3tZqRLAr9UJ_nUOI1tc6VqdT3tX-fGQUZsYon1HUhwYKcHEOEwEwvLw9aDFoPRmGT8xQDKCe-byC9UmSayfPZzteOOj7CeoPkaGz4O0eQYewhUZmgm-tNuvWle2iF6m4EzkBZFNhGEIpF7BmzDYioi54D78exUMe3A3XAGFraNojbmJ-BtzrDilM_1HLU-9mhSYbf8l8hZzUG4ynsqOXdz-_KE1sw_JFUMm6Tfm06zHz7b6Xgb801-q-VzTfA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bio\": \"yep\",\r\n    \"contacts\": \"565\",\r\n    \"fio\": \"Антон Антонович Тест 123\",\r\n    \"office_id\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/teachers/76",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"teachers",
+								"76"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Teacher",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDE2ODE3fQ.kJyeMcO4Lf-ZsfVlriJffCUWEyuYPQrlzVNJU1b_rVAUfVdzxUlWXoHehnswMM5jXSO5dVCCfWvcZKHFWPF-dfcmg3tZqRLAr9UJ_nUOI1tc6VqdT3tX-fGQUZsYon1HUhwYKcHEOEwEwvLw9aDFoPRmGT8xQDKCe-byC9UmSayfPZzteOOj7CeoPkaGz4O0eQYewhUZmgm-tNuvWle2iF6m4EzkBZFNhGEIpF7BmzDYioi54D78exUMe3A3XAGFraNojbmJ-BtzrDilM_1HLU-9mhSYbf8l8hZzUG4ynsqOXdz-_KE1sw_JFUMm6Tfm06zHz7b6Xgb801-q-VzTfA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/teachers/75",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"teachers",
+								"75"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Subjects_By_Teacher_Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/teachers/get/detailed/73",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"teachers",
+								"get",
+								"detailed",
+								"73"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Lesson_Rows_By_Teacher_Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/teachers/get/detailed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"teachers",
+								"get",
+								"detailed"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TimeTable_CRUD",
+			"item": [
+				{
+					"name": "Get_Timetable",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/timetable",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"timetable"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Timetable_by_id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/timetable/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"timetable",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create_Timetable",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDE2ODE3fQ.kJyeMcO4Lf-ZsfVlriJffCUWEyuYPQrlzVNJU1b_rVAUfVdzxUlWXoHehnswMM5jXSO5dVCCfWvcZKHFWPF-dfcmg3tZqRLAr9UJ_nUOI1tc6VqdT3tX-fGQUZsYon1HUhwYKcHEOEwEwvLw9aDFoPRmGT8xQDKCe-byC9UmSayfPZzteOOj7CeoPkaGz4O0eQYewhUZmgm-tNuvWle2iF6m4EzkBZFNhGEIpF7BmzDYioi54D78exUMe3A3XAGFraNojbmJ-BtzrDilM_1HLU-9mhSYbf8l8hZzUG4ynsqOXdz-_KE1sw_JFUMm6Tfm06zHz7b6Xgb801-q-VzTfA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"time_table_year\": 1920\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/timetable",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"timetable"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update_Timetable",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDE2ODE3fQ.kJyeMcO4Lf-ZsfVlriJffCUWEyuYPQrlzVNJU1b_rVAUfVdzxUlWXoHehnswMM5jXSO5dVCCfWvcZKHFWPF-dfcmg3tZqRLAr9UJ_nUOI1tc6VqdT3tX-fGQUZsYon1HUhwYKcHEOEwEwvLw9aDFoPRmGT8xQDKCe-byC9UmSayfPZzteOOj7CeoPkaGz4O0eQYewhUZmgm-tNuvWle2iF6m4EzkBZFNhGEIpF7BmzDYioi54D78exUMe3A3XAGFraNojbmJ-BtzrDilM_1HLU-9mhSYbf8l8hZzUG4ynsqOXdz-_KE1sw_JFUMm6Tfm06zHz7b6Xgb801-q-VzTfA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"time_table_year\": 2047\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/timetable/58",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"timetable",
+								"58"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Timetable",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDE2ODE3fQ.kJyeMcO4Lf-ZsfVlriJffCUWEyuYPQrlzVNJU1b_rVAUfVdzxUlWXoHehnswMM5jXSO5dVCCfWvcZKHFWPF-dfcmg3tZqRLAr9UJ_nUOI1tc6VqdT3tX-fGQUZsYon1HUhwYKcHEOEwEwvLw9aDFoPRmGT8xQDKCe-byC9UmSayfPZzteOOj7CeoPkaGz4O0eQYewhUZmgm-tNuvWle2iF6m4EzkBZFNhGEIpF7BmzDYioi54D78exUMe3A3XAGFraNojbmJ-BtzrDilM_1HLU-9mhSYbf8l8hZzUG4ynsqOXdz-_KE1sw_JFUMm6Tfm06zHz7b6Xgb801-q-VzTfA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/timetable/58",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"timetable",
+								"58"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Group_CRUD",
 			"item": [
@@ -35,7 +720,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/api/v1/group/{{id}}",
+							"raw": "http://localhost:5000/api/v1/group/35",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -45,7 +730,7 @@
 								"api",
 								"v1",
 								"group",
-								"{{id}}"
+								"35"
 							]
 						}
 					},
@@ -55,7 +740,22 @@
 					"name": "Create_Group",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"class_letter\": \"N\",\r\n    \"grade\": 11,\r\n    \"profile_name\": \"физмат\",\r\n    \"teacher_id\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:5000/api/v1/group",
 							"protocol": "http",
@@ -76,9 +776,35 @@
 					"name": "Update_Group",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"class_letter\": \"N\",\r\n    \"grade\": 11,\r\n    \"profile_name\": \"физмат\",\r\n    \"teacher_id\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": ""
+							"raw": "http://localhost:5000/api/v1/group/36",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"group",
+								"36"
+							]
 						}
 					},
 					"response": []
@@ -87,9 +813,98 @@
 					"name": "Delete_Group",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": ""
+							"raw": "http://localhost:5000/api/v1/group/36",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"group",
+								"36"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User_CRUD",
+			"item": [
+				{
+					"name": "Get_key_by_login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"login\": \"new_login\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"login"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"login\": \"kot\", \"fullname\": \"Boris Borisovich Borisov\", \"password\": \"kot\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"register"
+							]
 						}
 					},
 					"response": []
@@ -126,7 +941,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson/56",
+							"raw": "http://localhost:5000/api/v1/lesson/55",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -136,7 +951,7 @@
 								"api",
 								"v1",
 								"lesson",
-								"56"
+								"55"
 							],
 							"query": [
 								{
@@ -153,10 +968,16 @@
 					"name": "create_lesson",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"date\": \"Sun, 21 May 2006 00:00:00 GMT\",\n        \"end_time\": 945,\n        \"group_id\": 1,\n        \"notes\": \"yrok\",\n        \"start_time\": 900,\n        \"state\": true,\n        \"subject_id\": 1,\n        \"teacher_id\": 4\n}",
+							"raw": "{\n        \"date\": \"Sun, 21 May 2006 00:00:00 GMT\",\n        \"end_time\": 945,\n        \"group_id\": 1,\n        \"notes\": \"yrok\",\n        \"start_time\": 900,\n        \"state\": true,\n        \"subject_id\": 2,\n        \"teacher_id\": 4\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -183,10 +1004,16 @@
 					"name": "update_lessons",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"date\": \"Sun, 21 May 2006 00:00:00 GMT\",\n        \"end_time\": 950,\n        \"group_id\": 1,\n        \"notes\": \"yrok\",\n        \"start_time\": 900,\n        \"state\": true,\n        \"subject_id\": 1,\n        \"teacher_id\": 4\n}",
+							"raw": "{\n        \"date\": \"Sun, 21 May 2006 00:00:00 GMT\",\n        \"end_time\": 951,\n        \"group_id\": 1,\n        \"notes\": \"yrok\",\n        \"start_time\": 900,\n        \"state\": true,\n        \"subject_id\": 1,\n        \"teacher_id\": 4\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -194,7 +1021,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson/56",
+							"raw": "http://localhost:5000/api/v1/lesson/60",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -204,7 +1031,7 @@
 								"api",
 								"v1",
 								"lesson",
-								"56"
+								"60"
 							]
 						}
 					},
@@ -214,9 +1041,19 @@
 					"name": "delete_lesson",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson/56",
+							"raw": "http://localhost:5000/api/v1/lesson/60",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -226,7 +1063,365 @@
 								"api",
 								"v1",
 								"lesson",
-								"56"
+								"60"
+							],
+							"query": [
+								{
+									"key": "object_id",
+									"value": "945",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NoLearningPeriod_CRUD",
+			"item": [
+				{
+					"name": "Get_No_Learning_Period",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/no-learning-period",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"no-learning-period"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_No_Learning_Period_By_Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/no-learning-period/29",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"no-learning-period",
+								"29"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post_No_Learning_Period",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"start_time\": \"Wed, 11 Feb 2012 00:00:11 GMT\",\r\n    \"stop_time\": \"Fri, 20 Jan 2012 00:00:00 GMT\",\r\n    \"timetable_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/no-learning-period",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"no-learning-period"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put_No_Learning_Period",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"start_time\": \"Wed, 02 Feb 2012 00:00:11 GMT\",\r\n    \"stop_time\": \"Fri, 31 Jan 2012 00:00:00 GMT\",\r\n    \"timetable_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/no-learning-period/34",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"no-learning-period",
+								"34"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_No_Learning_Period",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/no-learning-period/34",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"no-learning-period",
+								"34"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Student_CRUD",
+			"item": [
+				{
+					"name": "Get_Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"students"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Student_by_id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/students/122",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"students",
+								"122"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Students_detailed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/students/detailed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"students",
+								"detailed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Student_By_id_Detailed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/students/get/detailed/122",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"students",
+								"get",
+								"detailed",
+								"122"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create_Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"full_name\":\"Мария2\",\"date_of_birth\":\"2005-06-21\",\"contacts\":\"@DragonMadness\",\"bio\":\"да с кем я разговариваю???\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update_Student",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"full_name\": \"Мария3\",\r\n    \"date_of_birth\": \"2005-06-21\",\r\n    \"contacts\": \"@DragonMadness\",\r\n    \"bio\": \"да кто здесь\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/students/69",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"students",
+								"69"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Student",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/students/69",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"students",
+								"69"
 							]
 						}
 					},
@@ -351,7 +1546,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson-row/get/detailed/13",
+							"raw": "http://localhost:5000/api/v1/lesson-row/detailed/104",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -361,9 +1556,8 @@
 								"api",
 								"v1",
 								"lesson-row",
-								"get",
 								"detailed",
-								"13"
+								"104"
 							]
 						}
 					},
@@ -373,7 +1567,13 @@
 					"name": "Post_Lesson_Row",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\"day_of_the_week\": 2,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 2121,\r\n\"end_time\": 1,\r\n\"timetable_id\": 1}",
@@ -403,10 +1603,16 @@
 					"name": "Put_Lesson_Row",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"day_of_the_week\": 2,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 1,\r\n\"end_time\": 851,\r\n\"timetable_id\": 1}",
+							"raw": "{\"day_of_the_week\": 3,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 1,\r\n\"end_time\": 851,\r\n\"timetable_id\": 1}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -414,7 +1620,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson-row/54",
+							"raw": "http://localhost:5000/api/v1/lesson-row/112",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -424,7 +1630,7 @@
 								"api",
 								"v1",
 								"lesson-row",
-								"54"
+								"112"
 							]
 						}
 					},
@@ -434,9 +1640,15 @@
 					"name": "Delete_Lesson_Row",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDIzMTIxfQ.cN_JzSyqhK4J4SmZaoBtYVQ7wNC8O46QcILTCVFpj4-xZOgKzsxZprjdjUDgh0_XMfowg4Z5XeMH4rmoCDs7ABrxVSamENJpiVDwrnuGoXNmavm17TmCgKZWQBpmwyMXymsevQcoo7o8HCScmY6eoVPDbIn2M924llkAk0DnI6k1GVHQWnjghyeUGFLOQDPZNzoSM9a-8RfACszNLpXPhrdoUngE7FWXTJRkHOfCp5jsJr0xVRF2uLrJnzhwrl-bx6THBTGQZ7nYkdCp-Am_ym0kKM6odsQ9Y1Nb3yRKlnsAVZZR9J9tzG_po49vPsDB882tug-oVGFsXqxXwelTOQ",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson-row/54",
+							"raw": "http://localhost:5000/api/v1/lesson-row/112",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -446,1064 +1658,7 @@
 								"api",
 								"v1",
 								"lesson-row",
-								"54"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Location_CRUD",
-			"item": [
-				{
-					"name": "Get_Location",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/location",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"location"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Location_By_id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/location/0",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"location",
-								"0"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post_Location",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\"location_type\": \"класс\",\r\n\"location_desc\": \"\",\r\n\"profile\": \"Информатический\",\r\n\"num_of_class\": 1,\r\n\"equipment\": \"\",\r\n\"link\": \"Offline\",\r\n\"comment\": \"\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/location",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"location"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Put_Location",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\"location_type\": \"класс\",\r\n\"location_desc\": \"\",\r\n\"profile\": \"Информатический\",\r\n\"num_of_class\": 1,\r\n\"link\": \"Offline\",\r\n\"equipment\": \"text\",\r\n\"comment\": \"\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/location/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"location",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete_Location",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/location/41",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"location",
-								"41"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "NoLearningPeriod_CRUD",
-			"item": [
-				{
-					"name": "Get_No_Learning_Period",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/no-learning-period",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"no-learning-period"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_No_Learning_Period_By_Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/no-learning-period/30",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"no-learning-period",
-								"30"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Post_No_Learning_Period",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"start_time\": \"Wed, 01 Feb 2012 00:00:00 GMT\",\r\n    \"stop_time\": \"Fri, 20 Jan 2012 00:00:00 GMT\",\r\n    \"timetable_id\": 1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/no-learning-period",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"no-learning-period"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Put_No_Learning_Period",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"start_time\": \"Wed, 02 Feb 2012 00:00:00 GMT\",\r\n    \"stop_time\": \"Fri, 20 Jan 2012 00:00:00 GMT\",\r\n    \"timetable_id\": 1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/no-learning-period/30",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"no-learning-period",
-								"30"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete_No_Learning_Period",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/no-learning-period/30",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"no-learning-period",
-								"30"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Student_CRUD",
-			"item": [
-				{
-					"name": "Get_Students",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/student",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"student"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "1",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Student_by_id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/student/122",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"student",
-								"122"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Students_detailed",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/student/detailed",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"student",
-								"detailed"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Student_By_id_Detailed",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/student/detailed/122",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"student",
-								"detailed",
-								"122"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create_Student",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"full_name\":\"Пиюренко Василий Олегович\",\"date_of_birth\":\"2005-06-21\",\"contacts\":\"@DragonMadness\",\"bio\":\"да с кем я разговариваю???\"}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/student",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"student"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update_Student",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"full_name\": \"Пиюренко Василий Олегович\",\r\n    \"date_of_birth\": \"2005-06-21\",\r\n    \"contacts\": \"@DragonMadness\",\r\n    \"bio\": \"да кто здесь емае\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/student/{{object_id}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"student",
-								"{{object_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete_Student",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/student/{{object_id}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"student",
-								"{{object_id}}"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Subject_CRUD",
-			"item": [
-				{
-					"name": "Get_subjects",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/subjects",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"subjects"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "1",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_subject_by_id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/subject/29",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"subject",
-								"29"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create_subject",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"subject_name\": \"Physics\",\r\n    \"teachers\": [\r\n        13\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/subjects",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"subjects"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update_subjects",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"subject_name\": \"тест\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/subjects/29",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"subjects",
-								"29"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "1",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete_subject",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/subject/s108473956",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"subject",
-								"s108473956"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Teacher_CRUD",
-			"item": [
-				{
-					"name": "Get_Teacher",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/teachers",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"teachers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Teacher_By_Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/teachers/64",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"teachers",
-								"64"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create_Teacher",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"fio\": \"Антон Антонович Тест\",\r\n    \"bio\": \"yep\",\r\n    \"contacts\": \"555\",\r\n    \"office_id\": 12\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/teachers",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"teachers"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update_Teacher",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"fio\": \"Антон Антонович Тест2\"\r\n\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/teacher/{{object_id}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"teacher",
-								"{{object_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete_Teacher",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/teacher/64",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"teacher",
-								"64"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Subjects_By_Teacher_Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/teacher/get_subjects/11",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"teacher",
-								"get_subjects",
-								"11"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Lesson_Rows_By_Teacher_Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/teacher/get_lesson_rows/13",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"teacher",
-								"get_lesson_rows",
-								"13"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "TimeTable_CRUD",
-			"item": [
-				{
-					"name": "Get_Timetable",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/timetable",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"timetable"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "1",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_Timetable_by_id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/timetable/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"timetable",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create_Timetable",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n        \"time_table_year\": 1920\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/timetable",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"timetable"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update_Timetable",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/timetable/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"timetable",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete_Timetable",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/timetable/111",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"timetable",
-								"111"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-				{
-			"name": "User_CRUD",
-			"item": [
-				{
-					"name": "Get_User",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/user",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"user"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "1",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get_User_by_id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/user/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"user",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create_User",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/user",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update_User",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1/user/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"user",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete_User",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/api/v1/user/111",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1",
-								"user",
-								"111"
+								"112"
 							]
 						}
 					},
