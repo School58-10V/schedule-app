@@ -2,29 +2,15 @@ import validators.abstract_validator
 
 
 class GroupValidator(validators.abstract_validator.AbstractValidator):
-
-    def validate(self, request: dict, method: str):
-
+    def __init__(self):
         required_keys = {'teacher_id', 'class_letter', 'grade', 'profile_name'}
         allowed_keys = {'teacher_id', 'class_letter', 'grade', 'profile_name'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
+        keys_types = {
+            'teacher_id': int, 'grade': int, 'class_letter': str, 'profile_name': str
+        }
 
-        for key in required_keys:
-            if key not in request.keys():
-                raise ValueError
-
-        for key in request.keys():
-            if key not in allowed_keys:
-                raise ValueError
-            if key == 'teacher_id' or key == 'grade':
-                if type(request[key]) != int:
-                    raise ValueError
-            if key == 'class_letter' or key == 'profile_name':
-                if type(request[key]) != str:
-                    raise ValueError
+        super(GroupValidator, self).__init__(required_keys, allowed_keys, keys_types)
 
     @staticmethod
     def get_name():

@@ -2,26 +2,13 @@ import validators.abstract_validator
 
 
 class TimeTableValidator(validators.abstract_validator.AbstractValidator):
-
-    def validate(self, request: dict, method: str):
-
+    def __init__(self):
         required_keys = {'time_table_year'}
         allowed_keys = {'time_table_year'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
+        keys_types = {'time_table_year': int}
 
-        for key in required_keys:
-            if key not in request.keys():
-                raise ValueError
-
-        for key in request.keys():
-            if key not in allowed_keys:
-                raise ValueError
-            if key == 'time_table_year':
-                if type(request[key]) != int:
-                    raise ValueError
+        super(TimeTableValidator, self).__init__(required_keys, allowed_keys, keys_types)
 
     @staticmethod
     def get_name():
