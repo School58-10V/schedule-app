@@ -85,14 +85,14 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
     :return: Response
     """
     try:
-        transform.check_availability(object_id)
-    except ValueError:
-        return "", 404
-    try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
         return "", 400
-    return transform.update_lesson_rows_transform(object_id, request.get_json())
+    try:
+        transform.check_availability(object_id)
+        return transform.update_lesson_rows_transform(object_id, request.get_json())
+    except ValueError:
+        return "", 404
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])

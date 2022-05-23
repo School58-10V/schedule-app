@@ -6,6 +6,7 @@ from services.transformation_services.group_transformation_service import GroupT
 transform = GroupTransformationService()
 validator = GroupValidator()
 
+
 @app.route("/api/v1/group", methods=["GET"])
 def get_groups():
     return jsonify(transform.get_groups_transform())
@@ -40,7 +41,6 @@ def update_groups(object_id):
         return "", 404
 
 
-
 @app.route("/api/v1/group/<object_id>", methods=["DELETE"])
 def delete_group(object_id):
-        return transform.delete_group_transform(object_id)
+    return transform.delete_group_transform(object_id)
