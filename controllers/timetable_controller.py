@@ -20,7 +20,7 @@ def get_timetable() -> Response:
     return jsonify([i.__dict__() for i in TimeTable.get_all(app.config.get("schedule_db_source"))])
 
 
-@app.route("/api/v1/timetable/<object_id>", methods=["GET"])
+@app.route("/api/v1/timetable/<int:object_id>", methods=["GET"])
 def get_timetable_by_id(object_id: int) -> Response:
     return jsonify(TimeTable.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
 
@@ -35,8 +35,10 @@ def create_timetable() -> Union[Response, Tuple[str, int]]:
         return "", 400
 
 
-@app.route("/api/v1/timetable/<object_id>", methods=["PUT"])
+@app.route("/api/v1/timetable/<int:object_id>", methods=["PUT"])
 def update_timetable(object_id: int) -> Union[Tuple[str, int], Response]:
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         validator.validate(request.get_json(), "PUT")
     except:
@@ -45,11 +47,11 @@ def update_timetable(object_id: int) -> Union[Tuple[str, int], Response]:
         TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
-    return jsonify(TimeTable(**request.get_json(), object_id=object_id,
+    return jsonify(TimeTable(**request.get_json(),
                              db_source=app.config.get("schedule_db_source")).save().__dict__())
 
 
-@app.route("/api/v1/timetable/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/timetable/<int:object_id>", methods=["DELETE"])
 def delete_timetable(object_id: int) -> Union[Response, Tuple[str, int], Tuple[Any, int]]:
     try:
         return jsonify(

@@ -3,6 +3,9 @@ from typing import Union, Any, TYPE_CHECKING, Tuple
 
 import psycopg2
 
+from data_model.lesson_row import LessonRow
+from data_model.subject import Subject
+
 if TYPE_CHECKING:
     from flask import Response
 
@@ -32,8 +35,8 @@ def get_teachers() -> Response:
     return jsonify({"teachers": teachers})
 
 
-@app.route("/api/v1/teachers/<object_id>", methods=["GET"])
-def get_teacher_by_id(object_id) -> Union[Response, Tuple[str, int]]:
+@app.route("/api/v1/teachers/<int:object_id>", methods=["GET"])
+def get_teacher_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
 
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
@@ -64,8 +67,8 @@ def get_detailed_teachers() -> Response:
     return jsonify({"teachers": teachers})
 
 
-@app.route("/api/v1/teachers/get/detailed/<object_id>", methods=["GET"])
-def get_teacher_detailed_by_id(object_id) -> Union[Response, Tuple[str, int]]:
+@app.route("/api/v1/teachers/get/detailed/<int:object_id>", methods=["GET"])
+def get_teacher_detailed_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.__dict__() for i in TeachersForSubjects.
@@ -93,7 +96,6 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
         lesson_row_id = []
         if 'lesson_row_id' in dct:
             subject_id = dct.pop('lesson_row_id')
-        # lesson_row_id = dct.get('lesson_row_id', [])
 
         new_teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
 
@@ -117,22 +119,51 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
         return '', 404
 
 
-@app.route("/api/v1/teachers/<object_id>", methods=["PUT"])
+@app.route("/api/v1/teachers/<int:object_id>", methods=["PUT"])
 def update_teacher(object_id: int) -> Union[Tuple[str, int], Response]:
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
         return "", 400
+    dct = request.get_json()
     try:
         Teacher.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
-    return jsonify(Teacher(**request.get_json(), object_id=object_id, db_source=app.config.get("schedule_db_source"))
-                   .save()
-                   .__dict__())
+    lesson_row_id = []
+    if 'lesson_row_id' in dct:
+        lesson_row_id += dct.pop('lesson_row_id')
+    subject_id = []
+    if 'subject_id' in dct:
+        subject_id += dct.pop('subject_id')
+    teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
+
+    for i in teacher.get_lesson_rows():
+        if i.get_main_id() not in lesson_row_id:
+            teacher.remove_lesson_row(i)
+
+    for i in teacher.get_subjects():
+        if i.get_main_id() not in subject_id:
+            teacher.remove_subject(i)
+
+    try:
+        for i in lesson_row_id:
+            teacher.append_lesson_row(LessonRow.get_by_id(i, db_source=app.config.get("schedule_db_source")))
+
+        for i in subject_id:
+            teacher.append_subject(Subject.get_by_id(i, db_source=app.config.get("schedule_db_source")))
+    except ValueError:
+        return '', 400
+
+    dct = teacher.__dict__()
+    dct['subject_id'] = subject_id
+    dct['lesson_row_id'] = lesson_row_id
+    return jsonify(dct)
 
 
-@app.route("/api/v1/teachers/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/teachers/<int:object_id>", methods=["DELETE"])
 def delete_teacher(object_id: int) -> Union[Response, Tuple[str, int], Tuple[Any, int]]:
     try:
         return jsonify(Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__())
