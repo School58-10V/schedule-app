@@ -35,6 +35,9 @@ def create_no_learning_period():
 def update_no_learning_period(object_id):
     try:
         validator.validate(request.get_json(), "PUT")
+    except ValueError:
+        return "", 400
+    try:
         return jsonify(transform.update_no_learning_period_transform(object_id, request.get_json()))
     except ValueError:
         return "", 404
