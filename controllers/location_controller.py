@@ -1,6 +1,6 @@
 from __future__ import annotations
 from validators.location_validator import LocationValidator
-from typing import TYPE_CHECKING, Union, Any
+from typing import TYPE_CHECKING, Union, Any, Tuple
 from data_model.location import Location
 from flask import request, jsonify
 import psycopg2
@@ -15,7 +15,7 @@ validator = LocationValidator()
 
 # here will be your code
 @app.route("/api/v1/location/<object_id>", methods=['PUT'])
-def update(object_id: int) -> Union[tuple[str, int], Response]:
+def update(object_id: int) -> Union[Tuple[str, int], Response]:
     """
     Обновляем Location
     :param object_id: int
@@ -43,7 +43,7 @@ def get_locations() -> Response:
 
 
 @app.route("/api/v1/location/<object_id>", methods=["GET"])
-def get_location_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
+def get_location_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Выдаём Location по заданному id
     :param object_id: int
@@ -70,7 +70,7 @@ def create_location() -> Response():
 
 
 @app.route("/api/v1/location/<object_id>", methods=["DELETE"])
-def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], Response]:
+def delete_location(object_id: int) -> Union[Tuple[str, int], Tuple[Any, int], Response]:
     """
     Удаляем Location по заданному id
     :param object_id: int

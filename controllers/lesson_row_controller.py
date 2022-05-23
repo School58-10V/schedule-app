@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, Tuple
 from validators.lesson_row_validator import LessonRowValidator
 import psycopg2
 from psycopg2 import errorcodes
@@ -47,7 +47,7 @@ def get_all_detailed() -> Response:
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
-def get_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
+def get_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Достаем LessonRow по id
     :param object_id: int
@@ -63,7 +63,7 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
 
 
 @app.route('/api/v1/lesson-row/detailed/<object_id>', methods=['GET'])
-def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
+def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Дастаем LessonRow по id вместе с учителями
     :param object_id: int
@@ -80,7 +80,7 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, 
 
 
 @app.route("/api/v1/lesson-row", methods=["POST"])
-def create_lesson_row() -> Union[Response, tuple[str, int]]:
+def create_lesson_row() -> Union[Response, Tuple[str, int]]:
     """
     Создаем LessonRow
     :return: Response
@@ -108,7 +108,7 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
-def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
+def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Обновляем LessonRow по данному id
     :param object_id:
@@ -150,7 +150,7 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
-def delete_lesson_row(object_id: int) -> Union[Response, tuple[str, int]]:
+def delete_lesson_row(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Удаляем LessonRow по данному id
     :param object_id: int

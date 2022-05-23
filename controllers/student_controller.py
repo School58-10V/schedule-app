@@ -40,7 +40,7 @@ def get_students_detailed() -> Response:
 
 
 @app.route("/api/v1/students/get/detailed/<object_id>", methods=["GET"])
-def get_student_by_id_detailed(object_id: int) -> tuple[str, int] | Response:
+def get_student_by_id_detailed(object_id: int) -> Tuple[str, int] | Response:
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         result["groups"] = [group.__dict__() for group in
@@ -51,7 +51,7 @@ def get_student_by_id_detailed(object_id: int) -> tuple[str, int] | Response:
 
 
 @app.route("/api/v1/students/<object_id>", methods=["GET"])
-def get_student_by_id(object_id: int) -> tuple[str, int] | Response:
+def get_student_by_id(object_id: int) -> Tuple[str, int] | Response:
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         result["groups"] = [group_obj.get_main_id() for group_obj in
@@ -62,7 +62,7 @@ def get_student_by_id(object_id: int) -> tuple[str, int] | Response:
 
 
 @app.route("/api/v1/students", methods=["POST"])
-def create_student() -> tuple[str, int] | Response:
+def create_student() -> Tuple[str, int] | Response:
     dct = request.get_json()
     try:
         validator.validate(dct, "POST")
@@ -83,7 +83,7 @@ def create_student() -> tuple[str, int] | Response:
 
 
 @app.route("/api/v1/students/<object_id>", methods=["PUT"])
-def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
+def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
     try:
         validator.validate(dct, "PUT")
@@ -110,7 +110,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
 
 
 @app.route("/api/v1/students/<object_id>", methods=["DELETE"])
-def delete_student(object_id: int) -> Response | tuple[str, int] | tuple[Response, int]:
+def delete_student(object_id: int) -> Response | Tuple[str, int] | Tuple[Response, int]:
     try:
         student = Student.get_by_id(object_id, app.config.get("schedule_db_source"))
         student = student.delete().__dict__()

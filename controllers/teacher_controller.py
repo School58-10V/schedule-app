@@ -33,7 +33,7 @@ def get_teachers() -> Response:
 
 
 @app.route("/api/v1/teachers/<object_id>", methods=["GET"])
-def get_teacher_by_id(object_id) -> Union[Response, tuple[str, int]]:
+def get_teacher_by_id(object_id) -> Union[Response, Tuple[str, int]]:
     try:
 
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
@@ -80,7 +80,7 @@ def get_teacher_detailed_by_id(object_id) -> Union[Response, Tuple[str, int]]:
 
 
 @app.route("/api/v1/teachers", methods=["POST"])
-def create_teacher() -> Union[tuple[str, int], Response]:
+def create_teacher() -> Union[Tuple[str, int], Response]:
     dct = request.get_json()
     try:
         validator.validate(dct, "POST")
@@ -118,7 +118,7 @@ def create_teacher() -> Union[tuple[str, int], Response]:
 
 
 @app.route("/api/v1/teachers/<object_id>", methods=["PUT"])
-def update_teacher(object_id: int) -> Union[tuple[str, int], Response]:
+def update_teacher(object_id: int) -> Union[Tuple[str, int], Response]:
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
@@ -133,7 +133,7 @@ def update_teacher(object_id: int) -> Union[tuple[str, int], Response]:
 
 
 @app.route("/api/v1/teachers/<object_id>", methods=["DELETE"])
-def delete_teacher(object_id: int) -> Union[Response, tuple[str, int], tuple[Any, int]]:
+def delete_teacher(object_id: int) -> Union[Response, Tuple[str, int], Tuple[Any, int]]:
     try:
         return jsonify(Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__())
     except ValueError:
