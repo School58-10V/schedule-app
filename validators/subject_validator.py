@@ -5,6 +5,10 @@ class SubjectValidator:
         required_keys = {'subject_name'}
         allowed_keys = {'subject_name', 'teachers'}
 
+        if method == 'PUT':
+            required_keys.add('object_id')
+            allowed_keys.add('object_id')
+
         for key in required_keys:
             if key not in request.keys():
                 raise ValueError

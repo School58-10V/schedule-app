@@ -38,6 +38,8 @@ def get_subjects_detailed() -> Response:
     return jsonify({'subjects': result})
 
 
+@app.route("/api/v1/subjects/<object_id>", methods=["GET"])
+def get_subject_by_id(object_id) -> Union[Response, Tuple[str, int]]:
 @app.route("/api/v1/subjects/<int:object_id>", methods=["GET"])
 def get_subject_by_id(object_id) -> Union[Response, Tuple[str, int]]:
     try:
@@ -76,6 +78,8 @@ def create_subject() -> Union[Tuple[str, int], Response]:
         return "", 400
 
 
+@app.route("/api/v1/subjects/<object_id>", methods=["PUT"])
+def update_subject(object_id) -> Union[Tuple[str, int], Response]:
 @app.route("/api/v1/subjects/<int:object_id>", methods=["PUT"])
 def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
     req: dict = request.get_json()
@@ -118,6 +122,8 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
         return "", 400
 
 
+@app.route("/api/v1/subject/detailed/<object_id>", methods=["GET"])
+def get_teachers_by_subject_id(object_id) -> Union[Response, Tuple[str, int]]:
 @app.route("/api/v1/subject/detailed/<int:object_id>", methods=["GET"])
 def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
@@ -129,6 +135,8 @@ def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int
         return '', 404
 
 
+@app.route("/api/v1/subjects/<object_id>", methods=["DELETE"])
+def delete_subject(object_id) -> Union[dict, Tuple[str, int], Tuple[Any, int]]:
 @app.route("/api/v1/subjects/<int:object_id>", methods=["DELETE"])
 def delete_subject(object_id) -> Union[dict, Tuple[str, int], Tuple[Any, int]]:
     try:
