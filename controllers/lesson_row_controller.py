@@ -15,6 +15,7 @@ from schedule_app import app
 
 validator = LessonRowValidator()
 
+
 @app.route("/api/v1/lesson-row", methods=["GET"])
 def get_all_lesson_rows() -> Response:
     """
@@ -46,13 +47,15 @@ def get_all_detailed() -> Response:
     return jsonify(global_dct)
 
 
-@app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
+@app.route("/api/v1/lesson-row/<int:object_id>", methods=["GET"])
 def get_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Достаем LessonRow по id
     :param object_id: int
     :return: Response
     """
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
@@ -62,13 +65,15 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
         return '', 404
 
 
-@app.route('/api/v1/lesson-row/detailed/<object_id>', methods=['GET'])
+@app.route('/api/v1/lesson-row/detailed/<int:object_id>', methods=['GET'])
 def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Дастаем LessonRow по id вместе с учителями
     :param object_id: int
     :return: Response
     """
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
@@ -107,13 +112,15 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
         return '', 401
 
 
-@app.route("/api/v1/lesson-row/<object_id>", methods=["PUT"])
+@app.route("/api/v1/lesson-row/<int:object_id>", methods=["PUT"])
 def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Обновляем LessonRow по данному id
     :param object_id:
     :return: Response
     """
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     dct = request.get_json()
     try:
         LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
@@ -149,13 +156,15 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
     return jsonify(lesson_row)
 
 
-@app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/lesson-row/<int:object_id>", methods=["DELETE"])
 def delete_lesson_row(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Удаляем LessonRow по данному id
     :param object_id: int
     :return: Response
     """
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         lesson_row = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
         lesson_row = lesson_row.delete().__dict__()

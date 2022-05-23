@@ -7,13 +7,16 @@ from schedule_app import app
 
 validator = NoLearningPeriodValidator()
 
+
 @app.route("/api/v1/no-learning-period", methods=["GET"])
 def get_no_learning_period():
     return jsonify([i.__dict__() for i in NoLearningPeriod.get_all(app.config.get("schedule_db_source"))])
 
 
-@app.route("/api/v1/no-learning-period/<object_id>", methods=["GET"])
+@app.route("/api/v1/no-learning-period/<int:object_id>", methods=["GET"])
 def get_no_learning_period_by_id(object_id):
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         result = jsonify(NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
         return result
@@ -31,8 +34,10 @@ def create_no_learning_period():
         return "", 400
 
 
-@app.route("/api/v1/no-learning-period/<object_id>", methods=["PUT"])
+@app.route("/api/v1/no-learning-period/<int:object_id>", methods=["PUT"])
 def update_no_learning_period(object_id):
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
@@ -48,8 +53,10 @@ def update_no_learning_period(object_id):
         return "", 400
 
 
-@app.route("/api/v1/no-learning-period/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/no-learning-period/<int:object_id>", methods=["DELETE"])
 def delete_no_learning_period(object_id):
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         period = NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
         period = period.delete().__dict__()
