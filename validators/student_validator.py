@@ -9,7 +9,3 @@ class StudentValidator(validators.abstract_validator.AbstractValidator):
         keys_types = {'full_name': str, 'date_of_birth': int, 'contacts': str, 'bio': str}
 
         super(StudentValidator, self).__init__(required_keys, allowed_keys, keys_types)
-
-    @staticmethod
-    def get_name():
-        return "student"

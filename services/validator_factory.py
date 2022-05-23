@@ -22,7 +22,6 @@ class ValFactory:
         self.validators.append(TeacherValidator.get_name())
         self.validators.append(TimeTableValidator.get_name())
 
-
     def get_appropriate_validator(self, name):
         for validator_name in self.validators:
             if validator_name == name:

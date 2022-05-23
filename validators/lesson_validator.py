@@ -13,6 +13,3 @@ class LessonValidator(validators.abstract_validator.AbstractValidator):
 
         super(LessonValidator, self).__init__(required_keys, allowed_keys, keys_types)
 
-    @staticmethod
-    def get_name():
-        return "lesson"

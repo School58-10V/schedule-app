@@ -9,7 +9,3 @@ class NoLearningPeriodValidator(validators.abstract_validator.AbstractValidator)
         keys_types = {'timetable_id': int, 'start_time': int, 'stop_time': int}
 
         super(NoLearningPeriodValidator, self).__init__(required_keys, allowed_keys, keys_types)
-
-    @staticmethod
-    def get_name():
-        return "nolearningperiod"

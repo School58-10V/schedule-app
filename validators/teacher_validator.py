@@ -10,7 +10,3 @@ class TeacherValidator(validators.abstract_validator.AbstractValidator):
                       'subject_id': int, 'lesson_row_id': 'list[int]'}
 
         super(TeacherValidator, self).__init__(required_keys, allowed_keys, keys_types)
-
-    @staticmethod
-    def get_name():
-        return "teacher"

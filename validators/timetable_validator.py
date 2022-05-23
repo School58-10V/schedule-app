@@ -9,7 +9,3 @@ class TimeTableValidator(validators.abstract_validator.AbstractValidator):
         keys_types = {'time_table_year': int}
 
         super(TimeTableValidator, self).__init__(required_keys, allowed_keys, keys_types)
-
-    @staticmethod
-    def get_name():
-        return "timetable"

@@ -7,7 +7,7 @@ from flask import request, jsonify, Response
 
 from schedule_app import app
 
-validator = LessonValidator()
+validator = LessonValidator('LessonValidator')
 
 
 @app.route("/api/v1/lesson", methods=["GET"])

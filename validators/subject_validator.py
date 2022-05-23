@@ -9,7 +9,3 @@ class SubjectValidator(validators.abstract_validator.AbstractValidator):
         keys_types = {'subject_name': str, 'teachers': 'list[int]'}
 
         super(SubjectValidator, self).__init__(required_keys, allowed_keys, keys_types)
-
-    @staticmethod
-    def get_name():
-        return "subject"

@@ -36,7 +36,6 @@ class AbstractValidator(ABC):
                 return False
         return True
 
-    @staticmethod
-    @abstractmethod
-    def get_name():
-        pass
+    @classmethod
+    def get_name(cls):
+        return cls.__name__

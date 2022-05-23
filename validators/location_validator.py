@@ -10,7 +10,3 @@ class LocationValidator(validators.abstract_validator.AbstractValidator):
                       'profile': str, 'link': str, 'comment': str, 'equipment': str}
 
         super(LocationValidator, self).__init__(required_keys, allowed_keys, keys_types)
-
-    @staticmethod
-    def get_name():
-        return "location"
