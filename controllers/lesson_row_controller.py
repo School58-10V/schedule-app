@@ -1,11 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union
-from validators.lesson_row_validator import LessonRowValidator
 import psycopg2
 from psycopg2 import errorcodes
-from data_model.lesson_row import LessonRow
 from flask import request, jsonify
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+from validators.lesson_row_validator import LessonRowValidator
+from services.transformation_services.lesson_row_transformation_service import LessonRowTransformationService
 
 
 if TYPE_CHECKING:
@@ -14,6 +13,7 @@ if TYPE_CHECKING:
 from schedule_app import app
 
 validator = LessonRowValidator()
+transform = LessonRowTransformationService()
 
 @app.route("/api/v1/lesson-row", methods=["GET"])
 def get_all_lesson_rows() -> Response:
@@ -21,14 +21,7 @@ def get_all_lesson_rows() -> Response:
     Достаем все LessonRow
     :return: Response
     """
-    global_dct = {'lesson_rows': []}
-    for i in LessonRow.get_all(app.config.get("schedule_db_source")):
-        local_dct = i.__dict__()
-        local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-                                 get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
-        global_dct['lesson_rows'].append(local_dct.copy())
-
-    return jsonify(global_dct)
+    return jsonify(transform.get_all_lesson_rows_transform())
 
 
 @app.route('/api/v1/lesson-row/detailed', methods=["GET"])
@@ -37,13 +30,7 @@ def get_all_detailed() -> Response:
     Достаем все LessonRow вместе с учителями
     :return: Response
     """
-    global_dct = {'lesson_rows': []}
-    for i in LessonRow.get_all(app.config.get("schedule_db_source")):
-        local_dct = i.__dict__()
-        local_dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
-        global_dct['lesson_rows'].append(local_dct.copy())
-    return jsonify(global_dct)
+    return jsonify(transform.get_all_detailed_transform())
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
@@ -54,10 +41,7 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
     :return: Response
     """
     try:
-        dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
-        dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
-        return jsonify(dct)
+        return jsonify(transform.get_lesson_row_by_id_transform(object_id))
     except ValueError:
         return '', 404
 
@@ -70,11 +54,7 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, 
     :return: Response
     """
     try:
-        dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
-        dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
-
-        return jsonify(dct)
+        return jsonify(transform.get_detailed_lesson_row_by_id_transform(object_id))
     except ValueError:
         return '', 404
 
@@ -85,20 +65,12 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
     Создаем LessonRow
     :return: Response
     """
-    dct = request.get_json()
     try:
-        validator.validate(dct, "POST")
-    except:
+        validator.validate(request.get_json(), "POST")
+    except ValueError:
         return '', 400
     try:
-        teacher_id = dct.pop('teachers')
-        lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()
-        for i in teacher_id:
-            TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i,
-                                  db_source=app.config.get("schedule_db_source")).save()
-        dct["object_id"] = lesson_row.get_main_id()
-        dct['teachers'] = teacher_id
-        return jsonify(dct)
+        return jsonify(transform.create_lesson_row_transform(request.get_json()))
     except TypeError:
         return '', 400
     except ValueError:
@@ -112,37 +84,15 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
     :param object_id:
     :return: Response
     """
-    dct = request.get_json()
     try:
-        LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        transform.check_availability(object_id)
     except ValueError:
         return "", 404
     try:
-        validator.validate(dct, "PUT")
+        validator.validate(request.get_json(), "PUT")
     except ValueError:
         return "", 400
-    new_teachers_id = dct.pop("teachers")
-    lesson_row_by_id = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
-    lesson_row_by_id_dct = lesson_row_by_id.__dict__()
-    lesson_row_by_id_dct['teachers'] = [i.get_main_id() for i in lesson_row_by_id.get_teachers()]
-    old_teachers_id = lesson_row_by_id_dct.pop("teachers")
-    teachers_to_create = list((set(new_teachers_id) - set(old_teachers_id)))
-    teachers_to_delete = list((set(old_teachers_id) - set(new_teachers_id)))
-
-    for i in range(len(teachers_to_delete)):
-        tflr = TeachersForLessonRows.get_by_lesson_row_and_teacher_id(teacher_id=teachers_to_delete[i],
-                                                                      lesson_row_id=object_id,
-                                                                      db_source=app.config.get("schedule_db_source"))
-        for j in tflr:
-            j.delete()
-
-    for i in teachers_to_create:
-        TeachersForLessonRows(lesson_row_id=object_id, teacher_id=i,
-                              db_source=app.config.get("schedule_db_source")).save()
-
-    lesson_row = LessonRow(**dct, object_id=object_id, db_source=app.config.get("schedule_db_source")).save().__dict__()
-    lesson_row['teachers'] = new_teachers_id
-    return lesson_row
+    return transform.update_lesson_rows_transform(object_id, request.get_json())
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["DELETE"])
@@ -153,11 +103,9 @@ def delete_lesson_row(object_id: int) -> Union[Response, tuple[str, int]]:
     :return: Response
     """
     try:
-        lesson_row = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
-        lesson_row = lesson_row.delete().__dict__()
+        return jsonify(transform.delete_lesson_row_transform(object_id))
     except ValueError:
         return "", 404
     except psycopg2.Error as e:
         print(e)
         return jsonify(errorcodes.lookup(e.pgcode), 409)
-    return jsonify(lesson_row)
