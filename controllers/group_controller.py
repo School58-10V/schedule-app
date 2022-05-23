@@ -4,6 +4,7 @@ from data_model.group import Group
 from flask import request, jsonify, Response
 from schedule_app import app
 from validators.group_validator import GroupValidator
+from data_model.students_for_groups import StudentsForGroups
 
 validator = GroupValidator()
 
@@ -51,3 +52,14 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], dict]:
 def delete_group(object_id: int) -> dict:
     if request.method == 'DELETE':
         return Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source")).delete().__dict__()
+
+
+@app.route("/api/v1/group/detailed", methods=["GET"])
+def get_all_detailed() -> Response:
+    global_dct = {'groups': []}
+    for i in Group.get_all(app.config.get("schedule_db_source")):
+        local_dct = i.__dict__()
+        local_dct['students'] = [i.__dict__() for i in StudentsForGroups.
+            get_student_by_group_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+        global_dct['groups'].append(local_dct.copy())
+    return jsonify(global_dct)
