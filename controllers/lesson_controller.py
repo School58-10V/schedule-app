@@ -64,7 +64,7 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
                    .__dict__())
 
 
-@app.route("/api/v1/lesson/<int_object_id>", methods=["DELETE"])
+@app.route("/api/v1/lesson/<int:object_id>", methods=["DELETE"])
 def delete_lesson(object_id: int) -> Union[Union[Tuple[str, int], Tuple[Any, int]], Any]:
     """
     :param object_id: int:
