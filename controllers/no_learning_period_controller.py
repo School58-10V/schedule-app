@@ -1,22 +1,23 @@
 import psycopg2
 from flask import request, jsonify
 from psycopg2 import errorcodes
-from data_model.no_learning_period import NoLearningPeriod
 from validators.no_learning_period_validator import NoLearningPeriodValidator
+from services.transformation_services.no_learning_period_transformation_service \
+    import NoLearningPeriodTransformationService
 from schedule_app import app
 
+transform = NoLearningPeriodTransformationService()
 validator = NoLearningPeriodValidator()
 
 @app.route("/api/v1/no-learning-period", methods=["GET"])
 def get_no_learning_period():
-    return jsonify([i.__dict__() for i in NoLearningPeriod.get_all(app.config.get("schedule_db_source"))])
+    return jsonify(transform.get_no_learning_period_transform())
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["GET"])
 def get_no_learning_period_by_id(object_id):
     try:
-        result = jsonify(NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
-        return result
+        return transform.get_no_learning_period_by_id_transform(object_id)
     except ValueError:
         return "", 404
 
@@ -25,8 +26,7 @@ def get_no_learning_period_by_id(object_id):
 def create_no_learning_period():
     try:
         validator.validate(request.get_json(), "POST")
-        return jsonify(
-            NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source")).save().__dict__())
+        return jsonify(transform.create_no_learning_period_transform(request.get_json()))
     except ValueError:
         return "", 400
 
@@ -35,13 +35,7 @@ def create_no_learning_period():
 def update_no_learning_period(object_id):
     try:
         validator.validate(request.get_json(), "PUT")
-    except ValueError:
-        return "", 400
-    try:
-        NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
-        result = NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source"),
-                                  object_id=object_id).save().__dict__()
-        return jsonify(result)
+        return jsonify(transform.update_no_learning_period_transform(object_id, request.get_json()))
     except ValueError:
         return "", 404
     except TypeError:
@@ -51,10 +45,8 @@ def update_no_learning_period(object_id):
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["DELETE"])
 def delete_no_learning_period(object_id):
     try:
-        period = NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
-        period = period.delete().__dict__()
+        return jsonify(transform.delete_no_learning_period_transform(object_id))
     except ValueError:
         return "", 404
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
-    return jsonify(period)
