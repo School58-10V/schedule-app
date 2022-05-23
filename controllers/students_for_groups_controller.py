@@ -1,6 +1,6 @@
 from flask import jsonify
-from data_model.students_for_groups import StudentsForGroups
 
+from data_model.students_for_groups import StudentsForGroups
 from schedule_app import app
 
 

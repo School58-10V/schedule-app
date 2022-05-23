@@ -1,17 +1,19 @@
 from __future__ import annotations
-from validators.location_validator import LocationValidator
+
 from typing import TYPE_CHECKING, Union, Any
-from data_model.location import Location
-from flask import request, jsonify
+
 import psycopg2
+from flask import request, jsonify
 from psycopg2 import errorcodes
+
+from data_model.location import Location
 
 if TYPE_CHECKING:
     from flask import Response
 
 from schedule_app import app
 
-validator = LocationValidator()
+validator = app.config.get('validators_factory').get_appropriate_validator(__name__)
 
 
 # here will be your code

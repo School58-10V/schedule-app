@@ -1,18 +1,20 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, Union
+
 import psycopg2
 from flask import request, jsonify
 from psycopg2 import errorcodes
+
 from data_model.student import Student
 from data_model.students_for_groups import StudentsForGroups
-from validators.student_validator import StudentValidator
 
 if TYPE_CHECKING:
     from flask import Response
 
 from schedule_app import app
 
-validator = StudentValidator()
+validator = app.config.get('validators_factory').get_appropriate_validator(__name__)
 
 @app.route("/api/v1/students", methods=["GET"])
 def get_students():

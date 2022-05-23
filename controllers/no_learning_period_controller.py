@@ -1,11 +1,11 @@
 import psycopg2
 from flask import request, jsonify
 from psycopg2 import errorcodes
+
 from data_model.no_learning_period import NoLearningPeriod
-from validators.no_learning_period_validator import NoLearningPeriodValidator
 from schedule_app import app
 
-validator = NoLearningPeriodValidator()
+validator = app.config.get('validators_factory').get_appropriate_validator(__name__)
 
 
 @app.route("/api/v1/no-learning-period", methods=["GET"])

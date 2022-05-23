@@ -1,13 +1,12 @@
 import psycopg2
 from flask import request, jsonify
-from validators.subject_validator import SubjectValidator
+
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
-
 from schedule_app import app
 
-validator = SubjectValidator()
+validator = app.config.get('validators_factory').get_appropriate_validator(__name__)
 
 @app.route("/api/v1/subjects", methods=["GET"])
 def get_subjects():

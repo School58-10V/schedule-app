@@ -1,12 +1,10 @@
 import psycopg2
+from flask import request, jsonify
 
 from data_model.timetable import TimeTable
-from flask import request, jsonify
-from validators.timetable_validator import TimeTableValidator
-
 from schedule_app import app
 
-validator = TimeTableValidator()
+validator = app.config.get('validators_factory').get_appropriate_validator(__name__)
 
 @app.route("/api/v1/timetable", methods=["GET"])
 def get_timetable():

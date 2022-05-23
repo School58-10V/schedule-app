@@ -1,19 +1,20 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Union
-from validators.lesson_row_validator import LessonRowValidator
-import psycopg2
-from psycopg2 import errorcodes
-from data_model.lesson_row import LessonRow
-from flask import request, jsonify
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
+from typing import TYPE_CHECKING, Union
+
+import psycopg2
+from flask import request, jsonify
+from psycopg2 import errorcodes
+
+from data_model.lesson_row import LessonRow
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 if TYPE_CHECKING:
     from flask import Response
 
 from schedule_app import app
 
-validator = LessonRowValidator()
+validator = app.config.get('validators_factory').get_appropriate_validator(__name__)
 
 
 @app.route("/api/v1/lesson-row", methods=["GET"])

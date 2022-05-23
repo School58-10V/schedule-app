@@ -1,6 +1,6 @@
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from flask import jsonify
 
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from schedule_app import app
 
 

@@ -1,11 +1,11 @@
 import datetime
+
 import jwt
 from flask import request, jsonify
 from jwt import DecodeError, ExpiredSignatureError
+
 from data_model.user import User
-
 from schedule_app import app
-
 
 # TODO: тоже заимплементить конфиг (убрать точки со слешами)
 PRIVATE_KEY = open('./keys/schedule-key.pem').read()

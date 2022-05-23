@@ -1,8 +1,6 @@
-import psycopg2
-
-from data_model.teachers_for_subjects import TeachersForSubjects
 from flask import jsonify
 
+from data_model.teachers_for_subjects import TeachersForSubjects
 from schedule_app import app
 
 

@@ -1,13 +1,13 @@
 from typing import Union, Any, Tuple
-import psycopg2
-from validators.lesson_validator import LessonValidator
-from psycopg2 import errorcodes
-from data_model.lesson import Lesson
-from flask import request, jsonify, Response
 
+import psycopg2
+from flask import request, jsonify, Response
+from psycopg2 import errorcodes
+
+from data_model.lesson import Lesson
 from schedule_app import app
 
-validator = LessonValidator('LessonValidator')
+validator = app.config.get('validators_factory').get_appropriate_validator(__name__)
 
 
 @app.route("/api/v1/lesson", methods=["GET"])
