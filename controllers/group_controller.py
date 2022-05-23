@@ -59,7 +59,23 @@ def get_all_detailed() -> Response:
     global_dct = {'groups': []}
     for i in Group.get_all(app.config.get("schedule_db_source")):
         local_dct = i.__dict__()
-        local_dct['students'] = [i.__dict__() for i in StudentsForGroups.
-            get_student_by_group_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+        local_dct['students'] = [i.__dict__() for i in StudentsForGroups.get_student_by_group_id(
+            i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
         global_dct['groups'].append(local_dct.copy())
     return jsonify(global_dct)
+
+
+@app.route('/api/v1/group/detailed/<object_id>', methods=['GET'])
+def get_detailed_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
+    """
+    Дастаем Group по id вместе со студентами
+    :param object_id: int
+    :return: Response
+    """
+    try:
+        dct = Group.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
+        dct['students'] = [i.__dict__() for i in StudentsForGroups.get_student_by_group_id(
+            object_id, db_source=app.config.get("schedule_db_source"))]
+        return jsonify(dct)
+    except ValueError:
+        return '', 404
