@@ -1,5 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Union, Tuple
+
+from data_model.teacher import Teacher
 from validators.lesson_row_validator import LessonRowValidator
 import psycopg2
 from psycopg2 import errorcodes
@@ -25,7 +27,7 @@ def get_all_lesson_rows() -> Response:
     for i in LessonRow.get_all(app.config.get("schedule_db_source")):
         local_dct = i.__dict__()
         local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-                                 get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+            get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
         global_dct['lesson_rows'].append(local_dct.copy())
 
     return jsonify(global_dct)
@@ -55,8 +57,6 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     :param object_id: int
     :return: Response
     """
-    if request.get_json().get('object_id') != object_id:
-        return "", 400
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
@@ -73,8 +73,6 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, 
     :param object_id: int
     :return: Response
     """
-    if request.get_json().get('object_id') != object_id:
-        return "", 400
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
@@ -122,39 +120,42 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     if request.get_json().get('object_id') != object_id:
         return "", 400
+
     dct = request.get_json()
-    try:
-        LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
-    except ValueError:
-        return "", 404
+
     try:
         validator.validate(dct, method="PUT")
     except ValueError:
         return "", 400
+
+    try:
+        LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+    except ValueError:
+        return "", 404
+
     new_teachers_id = []
     if 'teachers' in dct:
         new_teachers_id = dct.pop('teachers')
-    lesson_row_by_id = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
-    lesson_row_by_id_dct = lesson_row_by_id.__dict__()
-    lesson_row_by_id_dct['teachers'] = [i.get_main_id() for i in lesson_row_by_id.get_teachers()]
-    old_teachers_id = lesson_row_by_id_dct.pop("teachers")
+
+    lesson_row_by_id = LessonRow(**dct, db_source=app.config.get('schedule_db_source')).save()
+    old_teachers_id = [i.get_main_id() for i in lesson_row_by_id.get_teachers()]
     teachers_to_create = list((set(new_teachers_id) - set(old_teachers_id)))
     teachers_to_delete = list((set(old_teachers_id) - set(new_teachers_id)))
 
-    for i in range(len(teachers_to_delete)):
-        tflr = TeachersForLessonRows.get_by_lesson_row_and_teacher_id(teacher_id=teachers_to_delete[i],
-                                                                      lesson_row_id=object_id,
-                                                                      db_source=app.config.get("schedule_db_source"))
-        for j in tflr:
-            j.delete()
+    try:
+        for i in teachers_to_delete:
+            teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+            lesson_row_by_id.remove_teacher(teacher)
 
-    for i in teachers_to_create:
-        TeachersForLessonRows(lesson_row_id=object_id, teacher_id=i,
-                              db_source=app.config.get("schedule_db_source")).save()
+        for i in teachers_to_create:
+            teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+            lesson_row_by_id.append_teacher(teacher)
 
-    lesson_row = LessonRow(**dct, object_id=object_id, db_source=app.config.get("schedule_db_source")).save().__dict__()
-    lesson_row['teachers'] = new_teachers_id
-    return jsonify(lesson_row)
+    except ValueError:
+        return '', 400
+
+    dct['teachers'] = new_teachers_id
+    return jsonify(dct)
 
 
 @app.route("/api/v1/lesson-row/<int:object_id>", methods=["DELETE"])
@@ -164,8 +165,6 @@ def delete_lesson_row(object_id: int) -> Union[Response, Tuple[str, int]]:
     :param object_id: int
     :return: Response
     """
-    if request.get_json().get('object_id') != object_id:
-        return "", 400
     try:
         lesson_row = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
         lesson_row = lesson_row.delete().__dict__()
