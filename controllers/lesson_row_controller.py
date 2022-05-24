@@ -100,15 +100,13 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
             teacher_id = dct.pop('teachers')
         lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()
         for i in teacher_id:
-            TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i,
-                                  db_source=app.config.get("schedule_db_source")).save()
+            teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+            lesson_row.append_teacher(teacher)
         dct["object_id"] = lesson_row.get_main_id()
         dct['teachers'] = teacher_id
         return jsonify(dct)
-    except TypeError:
+    except (TypeError, ValueError):
         return '', 400
-    except ValueError:
-        return '', 401
 
 
 @app.route("/api/v1/lesson-row/<int:object_id>", methods=["PUT"])
