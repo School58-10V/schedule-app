@@ -51,6 +51,8 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
     :param object_id: int:
     :return json:
     """
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
@@ -59,7 +61,7 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
         Lesson.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
-    return jsonify(Lesson(**request.get_json(), object_id=object_id, db_source=app.config.get("schedule_db_source"))
+    return jsonify(Lesson(**request.get_json(), db_source=app.config.get("schedule_db_source"))
                    .save()
                    .__dict__())
 
