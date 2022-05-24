@@ -104,7 +104,7 @@ def get_all_detailed() -> Response:
     return jsonify(global_dct)
 
 
-@app.route('/api/v1/group/detailed/<object_id>', methods=['GET'])
+@app.route('/api/v1/group/detailed/<int:object_id>', methods=['GET'])
 def get_detailed_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Дастаем Group по id вместе со студентами
