@@ -13,6 +13,7 @@ from schedule_app import app
 
 validator = LocationValidator()
 
+
 # here will be your code
 
 

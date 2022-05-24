@@ -7,7 +7,6 @@ from data_model.lesson_row import LessonRow
 from flask import request, jsonify
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
-
 if TYPE_CHECKING:
     from flask import Response
 
@@ -33,7 +32,7 @@ def get_all_lesson_rows() -> Response:
 
 
 @app.route('/api/v1/lesson-row/detailed', methods=["GET"])
-def get_all_detailed() -> Response:
+def get_all_lesson_row_detailed() -> Response:
     """
     Достаем все LessonRow вместе с учителями
     :return: Response
@@ -41,8 +40,10 @@ def get_all_detailed() -> Response:
     global_dct = {'lesson_rows': []}
     for i in LessonRow.get_all(app.config.get("schedule_db_source")):
         local_dct = i.__dict__()
-        local_dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+        local_dct['teachers'] = [i.__dict__() for i in
+                                 TeachersForLessonRows.get_teachers_by_lesson_row_id(
+                                     i.get_main_id(),
+                                     db_source=app.config.get("schedule_db_source"))]
         global_dct['lesson_rows'].append(local_dct.copy())
     return jsonify(global_dct)
 

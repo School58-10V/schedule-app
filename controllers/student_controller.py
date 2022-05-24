@@ -39,7 +39,7 @@ def get_students_detailed() -> Response:
     return jsonify({"students": result})
 
 
-@app.route("/api/v1/students/get/detailed/<object_id>", methods=["GET"])
+@app.route("/api/v1/students/get/detailed/<int:object_id>", methods=["GET"])
 def get_student_by_id_detailed(object_id: int) -> Tuple[str, int] | Response:
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
@@ -50,7 +50,7 @@ def get_student_by_id_detailed(object_id: int) -> Tuple[str, int] | Response:
     return jsonify(result)
 
 
-@app.route("/api/v1/students/<object_id>", methods=["GET"])
+@app.route("/api/v1/students/<int:object_id>", methods=["GET"])
 def get_student_by_id(object_id: int) -> Tuple[str, int] | Response:
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
@@ -82,34 +82,47 @@ def create_student() -> Tuple[str, int] | Response:
     return jsonify(dct)
 
 
-@app.route("/api/v1/students/<object_id>", methods=["PUT"])
+@app.route("/api/v1/students/<int:object_id>", methods=["PUT"])
 def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
+
     dct = request.get_json()
+
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
+
     try:
         validator.validate(dct, "PUT")
+
     except ValueError:
         return "", 400
+
     try:
         Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
         groups = []
+
         if 'groups' in dct:
             groups = dct.pop('groups')
         result = Student(**dct, db_source=app.config.get("schedule_db_source"), object_id=object_id).save()
+
         for i in result.get_all_groups():
             if i.get_main_id() not in groups:
                 result.remove_group(i)
+
         for i in groups:
             result.append_group_by_id(group_id=i)
+
         dct = result.__dict__()
         dct['groups'] = groups
         return jsonify(dct)
+
     except ValueError:
         return "", 404
+
     except TypeError:
         return "", 400
 
 
-@app.route("/api/v1/students/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/students/<int:object_id>", methods=["DELETE"])
 def delete_student(object_id: int) -> Response | Tuple[str, int] | Tuple[Response, int]:
     try:
         student = Student.get_by_id(object_id, app.config.get("schedule_db_source"))

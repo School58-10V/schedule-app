@@ -9,6 +9,7 @@ from schedule_app import app
 
 validator = LessonValidator()
 
+
 @app.route("/api/v1/lesson", methods=["GET"])
 def get_lessons() -> Response:
     """
@@ -17,7 +18,7 @@ def get_lessons() -> Response:
     return jsonify([i.__dict__() for i in Lesson.get_all(app.config.get("schedule_db_source"))])
 
 
-@app.route("/api/v1/lesson/<object_id>", methods=["GET"])
+@app.route("/api/v1/lesson/<int:object_id>", methods=["GET"])
 def get_lesson_by_id(object_id: int) -> Union[Tuple[str, int], Response]:
     """
     :param object_id: int:
@@ -44,7 +45,7 @@ def create_lesson() -> Union[Tuple[str, int], Response]:
         return "", 400
 
 
-@app.route("/api/v1/lesson/<object_id>", methods=["PUT"])
+@app.route("/api/v1/lesson/<int:object_id>", methods=["PUT"])
 def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
     """
     :param object_id: int:
@@ -63,7 +64,7 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
                    .__dict__())
 
 
-@app.route("/api/v1/lesson/<object_id>", methods=["DELETE"])
+@app.route("/api/v1/lesson/<int:object_id>", methods=["DELETE"])
 def delete_lesson(object_id: int) -> Union[Union[Tuple[str, int], Tuple[Any, int]], Any]:
     """
     :param object_id: int:

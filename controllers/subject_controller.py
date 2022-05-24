@@ -20,7 +20,7 @@ def get_subjects() -> Response:
         subj['teachers'] = [i.__dict__()['object_id'] for i in
                             TeachersForSubjects.get_teachers_by_subject_id(
                                 i.get_main_id(), app.config.get("schedule_db_source")
-                                )]
+                            )]
         result.append(subj)
     return jsonify({'subjects': result})
 
@@ -33,9 +33,10 @@ def get_subjects_detailed() -> Response:
         subj['teachers'] = [i.__dict__() for i in
                             TeachersForSubjects.get_teachers_by_subject_id(
                                 i.get_main_id(), app.config.get("schedule_db_source")
-                                )]
+                            )]
         result.append(subj)
     return jsonify({'subjects': result})
+
 
 @app.route("/api/v1/subjects/<int:object_id>", methods=["GET"])
 def get_subject_by_id(object_id) -> Union[Response, Tuple[str, int]]:
@@ -78,28 +79,36 @@ def create_subject() -> Union[Tuple[str, int], Response]:
 @app.route("/api/v1/subjects/<int:object_id>", methods=["PUT"])
 def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
     req: dict = request.get_json()
-    # проверить совпадение id в теле и url -> 400
+
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
+
     try:
         validator.validate(req, "PUT")
     except:
         return "", 400
+
     try:
 
         subject: Subject = Subject.get_by_id(object_id, app.config.get("schedule_db_source"))
         # чистим все поля (искл те которые надо будет добавить) а потом добавляем те которые надо добавить
         saved = []
+
         if req.get('teachers'):
+
             for teacher_obj in subject.get_teachers():
                 if teacher_obj not in req['teachers']:
                     subject.remove_teacher(teacher_obj)
                 else:
                     saved.append(teacher_obj)
+
             for teacher_id in req['teachers']:
                 if teacher_id in saved:
                     continue
                 subject.append_teacher(Teacher.get_by_id(teacher_id, app.config.get("schedule_db_source")))
 
         new_subject = subject.__dict__()
+
         if 'teachers' in req:
             req_teachers = req.pop('teachers')
         else:
@@ -126,6 +135,7 @@ def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int
                                                                        app.config.get("schedule_db_source"))])
     except ValueError:
         return '', 404
+
 
 @app.route("/api/v1/subjects/<int:object_id>", methods=["DELETE"])
 def delete_subject(object_id) -> Union[dict, Tuple[str, int], Tuple[Any, int]]:

@@ -9,8 +9,8 @@ def get_students_for_groups():
     return jsonify([i.__dict__() for i in StudentsForGroups.get_all(app.config.get("schedule_db_source"))])
 
 
-@app.route("/api/v1/students-for-groups/<object_id>", methods=["GET"])
-def get_students_for_groups_by_id(object_id):
+@app.route("/api/v1/students-for-groups/<int:object_id>", methods=["GET"])
+def get_students_for_groups_by_id(object_id: int):
     try:
         return jsonify(StudentsForGroups.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
     except ValueError:
