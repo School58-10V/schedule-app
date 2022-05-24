@@ -39,7 +39,7 @@ def get_subjects_detailed() -> Response:
 
 
 @app.route("/api/v1/subjects/<int:object_id>", methods=["GET"])
-def get_subject_by_id(object_id) -> Union[Response, Tuple[str, int]]:
+def get_subject_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
         dct = Subject.get_by_id(db_source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
         dct['teachers'] = [i.__dict__()['object_id'] for i in

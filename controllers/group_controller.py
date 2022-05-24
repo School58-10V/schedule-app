@@ -26,7 +26,10 @@ def get_groups() -> Response:
 @app.route("/api/v1/group/<int:object_id>", methods=["GET"])
 def get_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
-        return jsonify(Group.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
+        group = Group.get_by_id(object_id, app.config.get("schedule_db_source"))
+        dct = group.__dict__()
+        dct['students'] = [i.get_main_id() for i in group.get_all_students()]
+        return jsonify(dct)
     except ValueError:
         return '', 404
 
