@@ -54,8 +54,6 @@ def get_location_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     :param object_id: int
     :return: Response
     """
-    if request.get_json().get('object_id') != object_id:
-        return "", 400
     try:
         return jsonify(Location.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
     except ValueError:
@@ -83,8 +81,6 @@ def delete_location(object_id: int) -> Union[Tuple[str, int], Tuple[Any, int], R
     :param object_id: int
     :return: Response
     """
-    if request.get_json().get('object_id') != object_id:
-        return "", 400
     try:
         location = Location.get_by_id(object_id, app.config.get("schedule_db_source"))
         location = location.delete().__dict__()
