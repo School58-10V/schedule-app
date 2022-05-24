@@ -14,7 +14,7 @@ def get_no_learning_period():
 
 
 @app.route("/api/v1/no-learning-period/<int:object_id>", methods=["GET"])
-def get_no_learning_period_by_id(object_id):
+def get_no_learning_period_by_id(object_id: int):
     try:
         result = jsonify(NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
         return result
@@ -33,7 +33,7 @@ def create_no_learning_period():
 
 
 @app.route("/api/v1/no-learning-period/<int:object_id>", methods=["PUT"])
-def update_no_learning_period(object_id):
+def update_no_learning_period(object_id: int):
     if request.get_json().get('object_id') != object_id:
         return "", 400
     try:
@@ -52,7 +52,7 @@ def update_no_learning_period(object_id):
 
 
 @app.route("/api/v1/no-learning-period/<int:object_id>", methods=["DELETE"])
-def delete_no_learning_period(object_id):
+def delete_no_learning_period(object_id: int):
     try:
         period = NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
         period = period.delete().__dict__()

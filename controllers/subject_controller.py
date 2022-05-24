@@ -17,7 +17,7 @@ def get_subjects() -> Response:
     result = []
     for i in Subject.get_all(app.config.get("schedule_db_source")):
         subj = i.__dict__()
-        subj['teachers'] = [i.__dict__()['object_id'] for i in
+        subj['teachers'] = [i.get_main_id() for i in
                             TeachersForSubjects.get_teachers_by_subject_id(
                                 i.get_main_id(), app.config.get("schedule_db_source")
                             )]
@@ -42,7 +42,7 @@ def get_subjects_detailed() -> Response:
 def get_subject_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
         dct = Subject.get_by_id(db_source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
-        dct['teachers'] = [i.__dict__()['object_id'] for i in
+        dct['teachers'] = [i.get_main_id() for i in
                            TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
                                "schedule_db_source"))]
         return jsonify(dct)
@@ -64,15 +64,10 @@ def create_subject() -> Union[Tuple[str, int], Response]:
             for elem in req["teachers"]:
                 tfs = TeachersForSubjects(subject_id=subject.get_main_id(), teacher_id=int(elem),
                                           db_source=app.config.get("schedule_db_source")).save()
-                ids.append(tfs.get_main_id())
         result = subject.__dict__()
-        result["linker_ids"] = ids
+        result["teachers"] = req["teachers"]
         return jsonify(result)
-    except TypeError as e:
-        print(e)
-        return "", 400
-    except ValueError as e:
-        print(e)
+    except (ValueError, TypeError) as e:
         return "", 400
 
 
@@ -120,19 +115,18 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
         new_subject_dict['teachers'] = req_teachers if req_teachers else [i.get_main_id() for i in
                                                                           new_subject.get_teachers()]
         return jsonify(new_subject_dict)
-    except ValueError as e:
-        return "", 404
-    except TypeError:
+    except (ValueError, TypeError) as e:
         return "", 400
 
 
 @app.route("/api/v1/subject/detailed/<int:object_id>", methods=["GET"])
 def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
-        return jsonify('teachers',
-                       [i.__dict__() for i in
-                        TeachersForSubjects.get_teachers_by_subject_id(object_id,
-                                                                       app.config.get("schedule_db_source"))])
+        dct = Subject.get_by_id(db_source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
+        dct['teachers'] = [i.__dict__() for i in
+                           TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
+                               "schedule_db_source"))]
+        return jsonify(dct)
     except ValueError:
         return '', 404
 
