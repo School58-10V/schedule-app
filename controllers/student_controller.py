@@ -88,6 +88,7 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
 
     if request.get_json().get('object_id') != object_id:
+        print(0)
         return "", 400
 
     try:
@@ -102,7 +103,7 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
 
         if 'groups' in dct:
             groups = dct.pop('groups')
-        result = Student(**dct, db_source=app.config.get("schedule_db_source"), object_id=object_id).save()
+        result = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
 
         for i in result.get_all_groups():
             if i.get_main_id() not in groups:
