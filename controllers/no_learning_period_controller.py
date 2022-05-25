@@ -42,8 +42,8 @@ def update_no_learning_period(object_id: int):
         return "", 400
     try:
         NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
-        result = NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source"),
-                                  object_id=object_id).save().__dict__()
+        result = NoLearningPeriod(**request.get_json(),
+                                  db_source=app.config.get("schedule_db_source")).save().__dict__()
         return jsonify(result)
     except ValueError:
         return "", 404
