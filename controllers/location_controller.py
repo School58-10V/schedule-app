@@ -34,7 +34,7 @@ def update(object_id: int) -> Union[Tuple[str, int], Response]:
         Location.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
-    return jsonify(Location(**request.get_json(), object_id=object_id,
+    return jsonify(Location(**request.get_json(),
                             db_source=app.config.get("schedule_db_source")).save().__dict__())
 
 
