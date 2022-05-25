@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import logging
 from typing import TYPE_CHECKING, Union
 import psycopg2
 from flask import request, jsonify
@@ -14,28 +16,37 @@ from schedule_app import app
 
 validator = StudentValidator()
 
+
 @app.route("/api/v1/students", methods=["GET"])
 def get_students():
-    result = []
-    for student in Student.get_all(app.config.get("schedule_db_source")):
-        student_data = student.__dict__()
-        student_data["groups"] = [group.get_main_id() for group in
-                                  StudentsForGroups.get_group_by_student_id(student.get_main_id(),
-                                                                            app.config.get("schedule_db_source"))]
-        result.append(student_data)
-    return jsonify({"students": result})
+    try:
+        result = []
+        for student in Student.get_all(app.config.get("schedule_db_source")):
+            student_data = student.__dict__()
+            student_data["groups"] = [group.get_main_id() for group in
+                                      StudentsForGroups.get_group_by_student_id(student.get_main_id(),
+                                                                                app.config.get("schedule_db_source"))]
+            result.append(student_data)
+        return jsonify({"students": result})
+    except Exception as err:
+        logging.error(err)
+        return "", 500
 
 
 @app.route("/api/v1/students/detailed", methods=["GET"])
 def get_students_detailed():
-    result = []
-    for student in Student.get_all(app.config.get("schedule_db_source")):
-        student_data = student.__dict__()
-        student_data["groups"] = [group.__dict__() for group in
-                                  StudentsForGroups.get_group_by_student_id(student.get_main_id(),
-                                                                            app.config.get("schedule_db_source"))]
-        result.append(student_data)
-    return jsonify({"students": result})
+    try:
+        result = []
+        for student in Student.get_all(app.config.get("schedule_db_source")):
+            student_data = student.__dict__()
+            student_data["groups"] = [group.__dict__() for group in
+                                      StudentsForGroups.get_group_by_student_id(student.get_main_id(),
+                                                                                app.config.get("schedule_db_source"))]
+            result.append(student_data)
+        return jsonify({"students": result})
+    except Exception as err:
+        logging.error(err)
+        return "", 500
 
 
 @app.route("/api/v1/students/get/detailed/<object_id>", methods=["GET"])
@@ -68,15 +79,19 @@ def create_student():
     except ValueError:
         return '', 400
     try:
-        groups = dct.pop('groups')
-        student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
-        for i in groups:
-            student.append_group_by_id(i)
-    except ValueError:
-        return '', 404
-    dct = student.__dict__()
-    dct['groups'] = groups
-    return jsonify(dct)
+        try:
+            groups = dct.pop('groups')
+            student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
+            for i in groups:
+                student.append_group_by_id(i)
+        except ValueError:
+            return '', 404
+        dct = student.__dict__()
+        dct['groups'] = groups
+        return jsonify(dct)
+    except Exception as err:
+        logging.error(err)
+        return "", 500
 
 
 @app.route("/api/v1/students/<object_id>", methods=["PUT"])
@@ -88,6 +103,9 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
         return "", 400
     try:
         Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+    except ValueError:
+        return "", 404
+    try:
         groups = []
         if 'groups' in dct:
             groups = dct.pop('groups')
@@ -100,19 +118,21 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
         dct = result.__dict__()
         dct['groups'] = groups
         return jsonify(dct)
-    except ValueError:
-        return "", 404
-    except TypeError:
-        return "", 400
-
+    except Exception as err:
+        logging.error(err)
+        return "", 500
 
 @app.route("/api/v1/students/<object_id>", methods=["DELETE"])
 def delete_student(object_id):
     try:
         student = Student.get_by_id(object_id, app.config.get("schedule_db_source"))
-        student = student.delete().__dict__()
-        return jsonify(student)
     except ValueError:
         return "", 404
+    try:
+        student = student.delete().__dict__()
+        return jsonify(student)
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
+    except Exception as err:
+        logging.error(err)
+        return "", 500
