@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "fb1e0682-8569-4e24-9f1e-4257d79941af",
 		"name": "schedule_app_api_collection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20017530"
 	},
 	"item": [
 		{
@@ -100,7 +101,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"location_type\": \"класс\",\r\n\"location_desc\": \"\",\r\n\"profile\": \"Информатический\",\r\n\"num_of_class\": 1,\r\n\"link\": \"Offline\",\r\n\"equipment\": \"text\",\r\n\"comment\": \"\"\r\n}",
+							"raw": "{\r\n\"location_type\": \"\",\r\n\"location_desc\": \"\",\r\n\"profile\": \"Информатический\",\r\n\"num_of_class\": 1,\r\n\"link\": \"Offline\",\r\n\"object_id\": 52,\r\n\"equipment\": \"1\",\r\n\"comment\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -108,7 +109,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/location/49",
+							"raw": "http://localhost:5000/api/v1/location/52",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -118,7 +119,7 @@
 								"api",
 								"v1",
 								"location",
-								"49"
+								"52"
 							]
 						}
 					},
@@ -220,7 +221,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"subject_name\": \"Physics\",\r\n    \"teachers\": [\r\n        13\r\n    ]\r\n}",
+							"raw": "{\r\n    \"subject_name\": \"Physics\",\r\n    \"teachers\": [\r\n        13, 11\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -256,7 +257,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"subject_name\": \"тест\"\r\n}",
+							"raw": "{\r\n    \"object_id\": 51,\r\n    \"subject_name\": \"Physics\",\r\n    \"teachers\": [\r\n        13\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -264,7 +265,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/subjects/46",
+							"raw": "http://localhost:5000/api/v1/subjects/51",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -274,7 +275,7 @@
 								"api",
 								"v1",
 								"subjects",
-								"46"
+								"51"
 							],
 							"query": [
 								{
@@ -324,6 +325,51 @@
 								"v1",
 								"subjects",
 								"46"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_by_id_detaild",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/subject/detailed/43",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"subject",
+								"detailed",
+								"43"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_detailed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/subject/detailed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"subject",
+								"detailed"
 							]
 						}
 					},
@@ -390,7 +436,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"fio\": \"Антон Антонович Тест\",\r\n    \"bio\": \"yep\",\r\n    \"contacts\": \"555\",\r\n    \"office_id\": 12\r\n}",
+							"raw": "{\r\n    \"bio\": \"yep\",\r\n    \"contacts\": \"555\",\r\n    \"fio\": \"Антон Антонович Тест\",\r\n    \"lesson_row_id\": [12],\r\n    \"office_id\": 12,\r\n    \"subject_id\": [12]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -426,7 +472,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"bio\": \"yep\",\r\n    \"contacts\": \"565\",\r\n    \"fio\": \"Антон Антонович Тест 123\",\r\n    \"office_id\": 12\r\n}",
+							"raw": "{\r\n    \"bio\": \"yep\",\r\n    \"contacts\": \"565\",\r\n    \"fio\": \"Антон Антонович Тест \",\r\n    \"office_id\": 12, \r\n    \"object_id\": 79,\r\n    \"lesson_row_id\": [80],\r\n    \"subject_id\": [12]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -434,7 +480,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/teachers/76",
+							"raw": "http://localhost:5000/api/v1/teachers/79",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -444,7 +490,7 @@
 								"api",
 								"v1",
 								"teachers",
-								"76"
+								"79"
 							]
 						}
 					},
@@ -636,7 +682,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n        \"time_table_year\": 2047\r\n}",
+							"raw": "{\r\n    \"object_id\": 60,\r\n    \"time_table_year\": 19200\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -644,7 +690,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/timetable/58",
+							"raw": "http://localhost:5000/api/v1/timetable/60",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -654,7 +700,7 @@
 								"api",
 								"v1",
 								"timetable",
-								"58"
+								"60"
 							]
 						}
 					},
@@ -749,7 +795,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"class_letter\": \"N\",\r\n    \"grade\": 11,\r\n    \"profile_name\": \"физмат\",\r\n    \"teacher_id\": 13\r\n}",
+							"raw": "{\r\n        \"class_letter\": \"А\",\r\n        \"grade\": 9,\r\n        \"profile_name\": \"биомед\",\r\n        \"students\": [\r\n            123,\r\n            56,\r\n            60,\r\n            64\r\n        ],\r\n        \"teacher_id\": 11\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -785,7 +831,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"class_letter\": \"N\",\r\n    \"grade\": 11,\r\n    \"profile_name\": \"физмат\",\r\n    \"teacher_id\": 13\r\n}",
+							"raw": "{\r\n    \"class_letter\": \"D\",\r\n    \"grade\": 9,\r\n    \"object_id\": 40,\r\n    \"profile_name\": \"биомед\",\r\n    \"students\": [\r\n        60,\r\n        64\r\n    ],\r\n    \"teacher_id\": 11\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -793,7 +839,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/group/36",
+							"raw": "http://localhost:5000/api/v1/group/40",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -803,7 +849,7 @@
 								"api",
 								"v1",
 								"group",
-								"36"
+								"40"
 							]
 						}
 					},
@@ -832,6 +878,37 @@
 								"v1",
 								"group",
 								"36"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_all_detailed",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "get_by_id_detailed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/group/detailed/679",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"group",
+								"detailed",
+								"679"
 							]
 						}
 					},
@@ -971,7 +1048,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NjE5NjMxfQ.RdvGtWYkYRiwnQ_092T_geJ1tO6XVd2rtSK01d9HinakvffXRCNHPGjFbGtEEGeFOtTcjUUbpYx2AfJhvSj1tc4zPEX8pMgqA5igv_oq4KojajSqYzka8IgjXVL1R4s7jwCuS7ZNHSWhttVkfkQkeB0ydbv2m4jU6PY04Erk29xG_zlSdulpALjl5L9iR-5Iw7ebz0Pz39yduOt-aAwx6M94PkK1_inNvtiTkvH_gNy40b1SxRGY2ZQivVKo3pwqZQn06fVeHywmAOS8cB0i0sgQGiqmA2O0ZYQN0doQ_ZFIql6UUWhgRdBbx5sa69c2wPG68kN0Wo4nkvmTOimxQg",
 								"type": "text"
 							}
 						],
@@ -1013,7 +1090,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"date\": \"Sun, 21 May 2006 00:00:00 GMT\",\n        \"end_time\": 951,\n        \"group_id\": 1,\n        \"notes\": \"yrok\",\n        \"start_time\": 900,\n        \"state\": true,\n        \"subject_id\": 1,\n        \"teacher_id\": 4\n}",
+							"raw": "{\n    \"date\": \"Sun, 21 May 2006 00:00:00 GMT\",\n    \"end_time\": 945,\n    \"group_id\": 1,\n    \"notes\": \"\",\n    \"object_id\": 66,\n    \"start_time\": 900,\n    \"state\": true,\n    \"subject_id\": 2,\n    \"teacher_id\": 4\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1021,7 +1098,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson/60",
+							"raw": "http://localhost:5000/api/v1/lesson/66",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1031,7 +1108,7 @@
 								"api",
 								"v1",
 								"lesson",
-								"60"
+								"66"
 							]
 						}
 					},
@@ -1173,7 +1250,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"start_time\": \"Wed, 02 Feb 2012 00:00:11 GMT\",\r\n    \"stop_time\": \"Fri, 31 Jan 2012 00:00:00 GMT\",\r\n    \"timetable_id\": 1\r\n}",
+							"raw": "{\r\n    \"object_id\": 36,\r\n    \"start_time\": \"Wed, 12 Feb 2012 00:00:11 GMT\",\r\n    \"stop_time\": \"Fri, 20 Jan 2012 00:00:00 GMT\",\r\n    \"timetable_id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1181,7 +1258,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/no-learning-period/34",
+							"raw": "http://localhost:5000/api/v1/no-learning-period/36",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1191,7 +1268,7 @@
 								"api",
 								"v1",
 								"no-learning-period",
-								"34"
+								"36"
 							]
 						}
 					},
@@ -1339,7 +1416,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"full_name\":\"Мария2\",\"date_of_birth\":\"2005-06-21\",\"contacts\":\"@DragonMadness\",\"bio\":\"да с кем я разговариваю???\"}",
+							"raw": "{\"full_name\":\"Мария2\",\"date_of_birth\":\"2005-06-21\",\"contacts\":\"\",\"bio\":\"да с кем я разговариваю???\", \"groups\": [679, 1]}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1375,7 +1452,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"full_name\": \"Мария3\",\r\n    \"date_of_birth\": \"2005-06-21\",\r\n    \"contacts\": \"@DragonMadness\",\r\n    \"bio\": \"да кто здесь\"\r\n}",
+							"raw": "{\r\n    \"bio\": \"да кто здесь\",\r\n    \"contacts\": \"@DragonMadness\",\r\n    \"date_of_birth\": \"2005-06-21\",\r\n    \"full_name\": \"Мария3\",\r\n    \"groups\": [],\r\n    \"object_id\": 73\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1383,7 +1460,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/students/69",
+							"raw": "http://localhost:5000/api/v1/students/73",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1393,7 +1470,7 @@
 								"api",
 								"v1",
 								"students",
-								"69"
+								"73"
 							]
 						}
 					},
@@ -1411,7 +1488,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/v1/students/69",
+							"raw": "http://localhost:5000/api/v1/students/73",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1421,7 +1498,7 @@
 								"api",
 								"v1",
 								"students",
-								"69"
+								"73"
 							]
 						}
 					},
@@ -1570,13 +1647,13 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NDI2Njk3fQ.FQJ1R1a9cqhD71JPxeKRyXjYWaZs4bfrwjIY3sQkgdec3ojYB6eMV9JRynl35Cfl6GUse3Y8n2Wy9LT28asaZmy3R6XB6sc3rpZDoDQ7iTKzQOg4voRHydBK5yMmE1DvxNZf5fb1BrytYBBSoX_-bzyrX-nJpGwU8Tn6hGqYwp-F12UrDDh3jFxR6fwu_cVonZYXE2a5g9lIDXC2YbJn72P7WrbBV9wCOZGHH6uAfbzK8ybCzo0Bj55076QSPQUQKSHKxe9YA7l3pXFiBe4HG3zzHGHB64xde8YnKsL_Yb54zCz25CGt0AjvGkgiua-1NbteQjsFJGZKJ_RUoSjojg",
+								"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJsb2dpbiI6Im5ld19sb2dpbiIsInVzZXJfaXAiOiIxMjcuMC4wLjEiLCJ1c2VyX2FnZW50IjoiUG9zdG1hblJ1bnRpbWUvNy4yOS4wIiwiZXhwIjoxNjU0NjE5NjMxfQ.RdvGtWYkYRiwnQ_092T_geJ1tO6XVd2rtSK01d9HinakvffXRCNHPGjFbGtEEGeFOtTcjUUbpYx2AfJhvSj1tc4zPEX8pMgqA5igv_oq4KojajSqYzka8IgjXVL1R4s7jwCuS7ZNHSWhttVkfkQkeB0ydbv2m4jU6PY04Erk29xG_zlSdulpALjl5L9iR-5Iw7ebz0Pz39yduOt-aAwx6M94PkK1_inNvtiTkvH_gNy40b1SxRGY2ZQivVKo3pwqZQn06fVeHywmAOS8cB0i0sgQGiqmA2O0ZYQN0doQ_ZFIql6UUWhgRdBbx5sa69c2wPG68kN0Wo4nkvmTOimxQg",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"day_of_the_week\": 2,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 2121,\r\n\"end_time\": 1,\r\n\"timetable_id\": 1}",
+							"raw": "{\r\n    \"day_of_the_week\": 2,\r\n    \"end_time\": 1,\r\n    \"group_id\": 1,\r\n    \"room_id\": 1,\r\n    \"start_time\": 2121,\r\n    \"subject_id\": 1,\r\n    \"teachers\": [4, 5, 11],\r\n    \"timetable_id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1612,7 +1689,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"day_of_the_week\": 3,\r\n\"group_id\": 1,\r\n\"subject_id\": 1,\r\n\"room_id\": 1,\r\n\"start_time\": 1,\r\n\"end_time\": 851,\r\n\"timetable_id\": 1}",
+							"raw": "{\r\n    \"day_of_the_week\": 2,\r\n    \"end_time\": 1,\r\n    \"group_id\": 1,\r\n    \"object_id\": 116,\r\n    \"room_id\": 1,\r\n    \"start_time\": 211,\r\n    \"subject_id\": 1,\r\n    \"teachers\": [\r\n        5, 11\r\n    ],\r\n    \"timetable_id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1620,7 +1697,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson-row/112",
+							"raw": "http://localhost:5000/api/v1/lesson-row/116",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1630,7 +1707,7 @@
 								"api",
 								"v1",
 								"lesson-row",
-								"112"
+								"116"
 							]
 						}
 					},
@@ -1648,7 +1725,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/v1/lesson-row/112",
+							"raw": "http://localhost:5000/api/v1/lesson-row/116",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1658,7 +1735,7 @@
 								"api",
 								"v1",
 								"lesson-row",
-								"112"
+								"116"
 							]
 						}
 					},
