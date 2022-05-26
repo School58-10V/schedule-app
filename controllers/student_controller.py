@@ -88,7 +88,6 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
 
     if request.get_json().get('object_id') != object_id:
-        print(0)
         return "", 400
 
     try:

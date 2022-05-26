@@ -102,6 +102,7 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
         for i in teacher_id:
             teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
             lesson_row.append_teacher(teacher)
+        dct = lesson_row.__dict__()
         dct["object_id"] = lesson_row.get_main_id()
         dct['teachers'] = teacher_id
         return jsonify(dct)
@@ -151,7 +152,7 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
 
     except ValueError:
         return '', 400
-
+    dct = lesson_row_by_id.__dict__()
     dct['teachers'] = new_teachers_id
     return jsonify(dct)
 

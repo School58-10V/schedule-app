@@ -80,4 +80,4 @@ def delete_lesson(object_id: int) -> Union[Union[Tuple[str, int], Tuple[Any, int
     except psycopg2.Error as e:
         print(e)
         return errorcodes.lookup(e.pgcode), 409
-    return lesson
+    return jsonify(lesson)

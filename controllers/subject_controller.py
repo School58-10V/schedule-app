@@ -132,9 +132,9 @@ def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int
 
 
 @app.route("/api/v1/subjects/<int:object_id>", methods=["DELETE"])
-def delete_subject(object_id) -> Union[dict, Tuple[str, int], Tuple[Any, int]]:
+def delete_subject(object_id) -> Union[Response, Tuple[str, int], Tuple[Any, int]]:
     try:
-        return Subject.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__()
+        return jsonify(Subject.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__())
     except ValueError:
         return "", 404
     except psycopg2.errors.ForeignKeyViolation as error:

@@ -47,6 +47,7 @@ def create_group() -> Union[Response, Tuple[str, int]]:
         for i in student:
             student1 = Student.get_by_id(i, db_source=app.config.get('schedule_db_source'))
             group.append_student(student1)
+        dct = group.__dict__()
         dct['students'] = student
         dct['object_id'] = group.get_main_id()
         return jsonify(dct)
@@ -85,15 +86,15 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
     except ValueError:
         return '', 400
 
-    group = Group(**dct, db_source=app.config.get('schedule_db_source')).save()
+    dct = Group(**dct, db_source=app.config.get('schedule_db_source')).save().__dict__()
     dct['students'] = student_id
     return jsonify(dct)
 
 
 @app.route("/api/v1/group/<int:object_id>", methods=["DELETE"])
-def delete_group(object_id: int) -> dict:
+def delete_group(object_id: int) -> Response:
     if request.method == 'DELETE':
-        return Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source")).delete().__dict__()
+        return jsonify(Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source")).delete().__dict__())
 
 
 @app.route("/api/v1/group/detailed", methods=["GET"])
