@@ -23,12 +23,12 @@ def get_all_lesson_rows() -> Response:
     Достаем все LessonRow
     :return: Response
     """
-    global_dct = {'lesson_rows': []}
+    global_dct = []
     for i in LessonRow.get_all(app.config.get("schedule_db_source")):
         local_dct = i.__dict__()
         local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
             get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
-        global_dct['lesson_rows'].append(local_dct.copy())
+        global_dct.append(local_dct.copy())
 
     return jsonify(global_dct)
 
@@ -39,14 +39,14 @@ def get_all_lesson_row_detailed() -> Response:
     Достаем все LessonRow вместе с учителями
     :return: Response
     """
-    global_dct = {'lesson_rows': []}
+    global_dct = []
     for i in LessonRow.get_all(app.config.get("schedule_db_source")):
         local_dct = i.__dict__()
         local_dct['teachers'] = [i.__dict__() for i in
                                  TeachersForLessonRows.get_teachers_by_lesson_row_id(
                                      i.get_main_id(),
                                      db_source=app.config.get("schedule_db_source"))]
-        global_dct['lesson_rows'].append(local_dct.copy())
+        global_dct.append(local_dct.copy())
     return jsonify(global_dct)
 
 

@@ -35,7 +35,7 @@ def get_subjects_detailed() -> Response:
                                 i.get_main_id(), app.config.get("schedule_db_source")
                             )]
         result.append(subj)
-    return jsonify({'subjects': result})
+    return jsonify(result)
 
 
 @app.route("/api/v1/subjects/<int:object_id>", methods=["GET"])

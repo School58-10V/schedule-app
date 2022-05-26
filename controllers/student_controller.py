@@ -24,7 +24,7 @@ def get_students() -> Response:
                                   StudentsForGroups.get_group_by_student_id(student.get_main_id(),
                                                                             app.config.get("schedule_db_source"))]
         result.append(student_data)
-    return jsonify({"students": result})
+    return jsonify(result)
 
 
 @app.route("/api/v1/students/detailed", methods=["GET"])
@@ -36,7 +36,7 @@ def get_students_detailed() -> Response:
                                   StudentsForGroups.get_group_by_student_id(student.get_main_id(),
                                                                             app.config.get("schedule_db_source"))]
         result.append(student_data)
-    return jsonify({"students": result})
+    return jsonify(result)
 
 
 @app.route("/api/v1/students/get/detailed/<int:object_id>", methods=["GET"])

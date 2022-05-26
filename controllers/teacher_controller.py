@@ -32,7 +32,7 @@ def get_teachers() -> Response:
                                     get_lesson_rows_by_teacher_id(i.get_main_id(),
                                                                   db_source=app.config.get("schedule_db_source"))]
         teachers.append(teacher)
-    return jsonify({"teachers": teachers})
+    return jsonify(teachers)
 
 
 @app.route("/api/v1/teachers/<int:object_id>", methods=["GET"])
@@ -64,7 +64,7 @@ def get_detailed_teachers() -> Response:
             get_lesson_rows_by_teacher_id(object_id,
                                           db_source=app.config.get("schedule_db_source"))]
         teachers.append(teacher)
-    return jsonify({"teachers": teachers})
+    return jsonify(teachers)
 
 
 @app.route("/api/v1/teachers/get/detailed/<int:object_id>", methods=["GET"])
