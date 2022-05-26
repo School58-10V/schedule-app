@@ -17,7 +17,7 @@ db_source = app.config.get("schedule_db_source")
 
 @app.route("/api/v1/students", methods=["GET"])
 def get_students():
-    return jsonify(transform.get_students_transform())
+    return jsonify(transform.get_students_transform(db_source))
 
 
 @app.route("/api/v1/students/detailed", methods=["GET"])
