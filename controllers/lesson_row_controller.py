@@ -33,7 +33,7 @@ def get_all_lesson_rows() -> Response | tuple[str, int]:
 
         return jsonify(global_dct)
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -52,7 +52,7 @@ def get_all_detailed() -> Response | tuple[str, int]:
             global_dct['lesson_rows'].append(local_dct.copy())
         return jsonify(global_dct)
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -110,7 +110,7 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
         dct['teachers'] = teacher_id
         return jsonify(dct)
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -154,7 +154,7 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
         lesson_row['teachers'] = new_teachers_id
         return lesson_row
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -175,6 +175,6 @@ def delete_lesson_row(object_id: int) -> Union[Response, tuple[str, int]]:
         print(e)
         return jsonify(errorcodes.lookup(e.pgcode), 409)
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
     return jsonify(lesson_row)

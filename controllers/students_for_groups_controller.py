@@ -11,7 +11,7 @@ def get_students_for_groups():
     try:
         return jsonify([i.__dict__() for i in StudentsForGroups.get_all(app.config.get("schedule_db_source"))])
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 

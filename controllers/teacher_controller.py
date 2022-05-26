@@ -28,7 +28,7 @@ def get_teachers():
             teachers.append(teacher)
         return jsonify({"teachers": teachers})
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -64,7 +64,7 @@ def get_detailed_teachers():
             teachers.append(teacher)
         return jsonify({"teachers": teachers})
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -112,7 +112,7 @@ def create_teacher():
     except ValueError:
         return '', 404
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -145,7 +145,7 @@ def update_teacher(object_id):
 
         return jsonify(Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -161,5 +161,5 @@ def delete_teacher(object_id):
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500

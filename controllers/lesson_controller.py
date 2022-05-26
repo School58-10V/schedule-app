@@ -12,11 +12,11 @@ validator = LessonValidator()
 
 
 @app.route("/api/v1/lesson", methods=["GET"])
-def get_lessons() -> Union[Response, tuple[str, int]]:
+def get_lessons() -> Union[Response, Tuple[str, int]]:
     try:
         return jsonify([i.__dict__() for i in Lesson.get_all(app.config.get("schedule_db_source"))])
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -47,7 +47,7 @@ def create_lesson() -> Union[Tuple[str, int], Response]:
                        .save()
                        .__dict__())
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -70,7 +70,7 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
                        .save()
                        .__dict__())
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -90,6 +90,6 @@ def delete_lesson(object_id: int) -> Union[Union[Tuple[str, int], Tuple[Any, int
         print(e)
         return errorcodes.lookup(e.pgcode), 409
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
     return lesson

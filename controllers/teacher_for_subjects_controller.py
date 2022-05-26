@@ -13,7 +13,7 @@ def get_teacher_for_subjects():
     try:
         return jsonify([i.__dict__() for i in TeachersForSubjects.get_all(app.config.get("schedule_db_source"))])
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 

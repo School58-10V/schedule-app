@@ -29,7 +29,7 @@ def get_students():
             result.append(student_data)
         return jsonify({"students": result})
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -45,7 +45,7 @@ def get_students_detailed():
             result.append(student_data)
         return jsonify({"students": result})
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -90,7 +90,7 @@ def create_student():
         dct['groups'] = groups
         return jsonify(dct)
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -119,7 +119,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
         dct['groups'] = groups
         return jsonify(dct)
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 @app.route("/api/v1/students/<object_id>", methods=["DELETE"])
@@ -134,5 +134,5 @@ def delete_student(object_id):
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500

@@ -36,7 +36,7 @@ def update(object_id: int) -> Union[tuple[str, int], Response]:
         return jsonify(Location(**request.get_json(), object_id=object_id,
                                 db_source=app.config.get("schedule_db_source")).save().__dict__())
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -50,7 +50,7 @@ def get_locations() -> Response | tuple[str, int]:
     try:
         return jsonify([i.__dict__() for i in Location.get_all(app.config.get("schedule_db_source"))])
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -82,7 +82,7 @@ def create_location() -> Response():
         return jsonify(Location(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
                        .save().__dict__())
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -104,6 +104,6 @@ def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], R
     except psycopg2.Error as e:
         return errorcodes.lookup(e.pgcode), 409
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
     return jsonify(location)

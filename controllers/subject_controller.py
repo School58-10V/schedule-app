@@ -25,7 +25,7 @@ def get_subjects():
             result.append(subj)
         return jsonify({'subjects': result})
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -42,7 +42,7 @@ def get_subjects_detailed():
             result.append(subj)
         return jsonify({'subjects': result})
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -78,7 +78,7 @@ def create_subject():
         print(e)
         return "", 404
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -119,7 +119,7 @@ def update_subject(object_id):
     except ValueError:
         return "", 404
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -146,5 +146,5 @@ def delete_subject(object_id):
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500

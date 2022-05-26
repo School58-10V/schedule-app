@@ -15,7 +15,7 @@ def get_groups():
     try:
         return jsonify([i.__dict__() for i in Group.get_all(app.config.get("schedule_db_source"))])
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -38,7 +38,7 @@ def create_group():
             .save() \
             .__dict__()
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -57,7 +57,7 @@ def update_groups(object_id):
             .save() \
             .__dict__()
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -73,6 +73,6 @@ def delete_group(object_id, errorcodes=None):
         print(e)
         return errorcodes.lookup(e.pgcode), 409
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
     return group

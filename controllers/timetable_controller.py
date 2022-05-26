@@ -16,7 +16,7 @@ def get_timetable():
     try:
         return jsonify([i.__dict__() for i in TimeTable.get_all(app.config.get("schedule_db_source"))])
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -38,7 +38,7 @@ def create_timetable():
         return jsonify(TimeTable(**request.get_json(),
                                  db_source=app.config.get("schedule_db_source")).save().__dict__())
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -56,7 +56,7 @@ def update_timetable(object_id):
         return jsonify(TimeTable(**request.get_json(), object_id=object_id,
                                  db_source=app.config.get("schedule_db_source")).save().__dict__())
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
 
 
@@ -72,5 +72,5 @@ def delete_timetable(object_id):
     except psycopg2.Error as e:
         return jsonify(errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
-        logging.error(err)
+        logging.error(err, exc_info=True)
         return "", 500
