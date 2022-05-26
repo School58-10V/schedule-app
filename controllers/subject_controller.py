@@ -1,41 +1,55 @@
-from typing import Union, Any, Tuple
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
-import psycopg2
-from flask import request, jsonify, Response
-from validators.subject_validator import SubjectValidator
+import logging, psycopg2
+from flask import request, jsonify
+
+from schedule_app import app
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
+from validators.subject_validator import SubjectValidator
 
-from schedule_app import app
+if TYPE_CHECKING:
+    from flask import Response
+    from typing import Union, Any, Tuple
+
 
 validator = SubjectValidator()
 
 
 @app.route("/api/v1/subjects", methods=["GET"])
 def get_subjects() -> Response:
-    result = []
-    for i in Subject.get_all(app.config.get("schedule_db_source")):
-        subj = i.__dict__()
-        subj['teachers'] = [i.get_main_id() for i in
-                            TeachersForSubjects.get_teachers_by_subject_id(
-                                i.get_main_id(), app.config.get("schedule_db_source")
-                            )]
-        result.append(subj)
-    return jsonify(result)
+    try:
+        result = []
+        for i in Subject.get_all(app.config.get("schedule_db_source")):
+            subj = i.__dict__()
+            subj['teachers'] = [i.__dict__()['object_id'] for i in
+                                TeachersForSubjects.get_teachers_by_subject_id(
+                                    i.get_main_id(), app.config.get("schedule_db_source")
+                                    )]
+            result.append(subj)
+        return jsonify(result)
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/subject/detailed", methods=["GET"])
 def get_subjects_detailed() -> Response:
-    result = []
-    for i in Subject.get_all(app.config.get("schedule_db_source")):
-        subj = i.__dict__()
-        subj['teachers'] = [i.__dict__() for i in
-                            TeachersForSubjects.get_teachers_by_subject_id(
-                                i.get_main_id(), app.config.get("schedule_db_source")
-                            )]
-        result.append(subj)
-    return jsonify(result)
+    try:
+        result = []
+        for i in Subject.get_all(app.config.get("schedule_db_source")):
+            subj = i.__dict__()
+            subj['teachers'] = [i.__dict__() for i in
+                                TeachersForSubjects.get_teachers_by_subject_id(
+                                    i.get_main_id(), app.config.get("schedule_db_source")
+                                    )]
+            result.append(subj)
+        return jsonify(result)
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/subjects/<int:object_id>", methods=["GET"])
@@ -67,8 +81,12 @@ def create_subject() -> Union[Tuple[str, int], Response]:
         result = subject.__dict__()
         result["teachers"] = req["teachers"]
         return jsonify(result)
-    except (ValueError, TypeError) as e:
-        return "", 400
+    except ValueError as e:
+        logging.error(e, exc_info=True)
+        return "", 404
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/subjects/<int:object_id>", methods=["PUT"])
@@ -84,7 +102,6 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
         return "", 400
 
     try:
-
         subject: Subject = Subject.get_by_id(object_id, app.config.get("schedule_db_source"))
         # чистим все поля (искл те которые надо будет добавить) а потом добавляем те которые надо добавить
         saved = []
@@ -115,8 +132,11 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
         new_subject_dict['teachers'] = req_teachers if req_teachers else [i.get_main_id() for i in
                                                                           new_subject.get_teachers()]
         return jsonify(new_subject_dict)
-    except (ValueError, TypeError) as e:
-        return "", 400
+    except ValueError:
+        return "", 404
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/subject/detailed/<int:object_id>", methods=["GET"])
@@ -134,8 +154,14 @@ def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int
 @app.route("/api/v1/subjects/<int:object_id>", methods=["DELETE"])
 def delete_subject(object_id) -> Union[Response, Tuple[str, int], Tuple[Any, int]]:
     try:
-        return jsonify(Subject.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__())
+        subject = Subject.get_by_id(object_id, app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
-    except psycopg2.errors.ForeignKeyViolation as error:
-        return error.pgerror, 400
+    try:
+        subject = subject.delete().__dict__()
+        return jsonify(subject)
+    except psycopg2.Error as e:
+        return jsonify(psycopg2.errorcodes.lookup(e.pgcode)), 409
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
