@@ -34,6 +34,12 @@ class NoLearningPeriod(AbstractModel):
     def get_timetable_id(self) -> int:
         return self.__timetable_id
 
+    @classmethod
+    def get_all_by_timetable_id(cls, timetable_id: int, db_source: DBSource):
+        return [NoLearningPeriod(**i, db_source=db_source)
+                for i in db_source.get_by_query(cls._get_collection_name(),
+                                                {'timetable_id': timetable_id})]
+
     def __dict__(self) -> dict:
         return {
             "timetable_id": self.get_timetable_id(),

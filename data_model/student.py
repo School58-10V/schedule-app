@@ -126,6 +126,6 @@ class Student(AbstractModel):
         return self
 
     @classmethod
-    def get_by_name(cls, name: str, source: AbstractSource):
-        return [Student(**i, db_source=source) for i in source.get_by_query(cls._get_collection_name(), {'full_name': name})]
+    def get_by_name(cls, name: str, db_source: AbstractSource):
+        return [Student(**i, db_source=db_source) for i in db_source.get_by_query(cls._get_collection_name(), {'full_name': name})]
 
