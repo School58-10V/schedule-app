@@ -13,6 +13,7 @@ from schedule_app import app
 
 transform = LocationTransformationService()
 validator = LocationValidator()
+db_source = app.config.get("schedule_db_source")
 
 @app.route("/api/v1/location/<object_id>", methods=['PUT'])
 def update_location(object_id: int) -> Union[tuple[str, int], Response]:
@@ -26,7 +27,7 @@ def update_location(object_id: int) -> Union[tuple[str, int], Response]:
     except ValueError:
         return "", 400
     try:
-        return jsonify(transform.update_location_transform(object_id, request.get_json()))
+        return jsonify(transform.update_location_transform(object_id, request.get_json(), db_source))
     except ValueError:
         return "", 404
 
@@ -37,7 +38,7 @@ def get_locations() -> Response:
         Выдаём все Locations
         :return: Response
     """
-    return jsonify(transform.get_locations_transform())
+    return jsonify(transform.get_locations_transform(db_source))
 
 
 @app.route("/api/v1/location/<object_id>", methods=["GET"])
@@ -48,7 +49,7 @@ def get_location_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
     :return: Response
     """
     try:
-        return jsonify(transform.get_location_by_id_transform(object_id))
+        return jsonify(transform.get_location_by_id_transform(object_id, db_source))
     except ValueError:
         return '', 404
 
@@ -61,7 +62,7 @@ def create_location() -> Response():
     """
     try:
         validator.validate(request.get_json(), "POST")
-        return jsonify(transform.create_location_transform(request.get_json()))
+        return jsonify(transform.create_location_transform(request.get_json(), db_source))
     except ValueError:
         return "", 400
 
@@ -74,7 +75,7 @@ def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], R
     :return: Response
     """
     try:
-        return jsonify(transform.delete_location_transform(object_id))
+        return jsonify(transform.delete_location_transform(object_id, db_source))
     except ValueError:
         return "", 404
     except psycopg2.Error as e:

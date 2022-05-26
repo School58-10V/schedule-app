@@ -14,6 +14,7 @@ from schedule_app import app
 
 validator = LessonRowValidator()
 transform = LessonRowTransformationService()
+db_source = app.config.get("schedule_db_source")
 
 @app.route("/api/v1/lesson-row", methods=["GET"])
 def get_all_lesson_rows() -> Response:
@@ -21,7 +22,7 @@ def get_all_lesson_rows() -> Response:
     Достаем все LessonRow
     :return: Response
     """
-    return jsonify(transform.get_all_lesson_rows_transform())
+    return jsonify(transform.get_all_lesson_rows_transform(db_source))
 
 
 @app.route('/api/v1/lesson-row/detailed', methods=["GET"])
@@ -30,7 +31,7 @@ def get_all_detailed() -> Response:
     Достаем все LessonRow вместе с учителями
     :return: Response
     """
-    return jsonify(transform.get_all_detailed_transform())
+    return jsonify(transform.get_all_detailed_transform(db_source))
 
 
 @app.route("/api/v1/lesson-row/<object_id>", methods=["GET"])
@@ -41,7 +42,7 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
     :return: Response
     """
     try:
-        return jsonify(transform.get_lesson_row_by_id_transform(object_id))
+        return jsonify(transform.get_lesson_row_by_id_transform(object_id, db_source))
     except ValueError:
         return '', 404
 
@@ -54,7 +55,7 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, tuple[str, 
     :return: Response
     """
     try:
-        return jsonify(transform.get_detailed_lesson_row_by_id_transform(object_id))
+        return jsonify(transform.get_detailed_lesson_row_by_id_transform(object_id, db_source))
     except ValueError:
         return '', 404
 
@@ -70,7 +71,7 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
     except ValueError:
         return '', 400
     try:
-        return jsonify(transform.create_lesson_row_transform(request.get_json()))
+        return jsonify(transform.create_lesson_row_transform(request.get_json(), db_source))
     except TypeError:
         return '', 400
     except ValueError:
@@ -90,7 +91,7 @@ def update_lesson_rows(object_id: int) -> Union[Response, tuple[str, int]]:
         return "", 400
     try:
         transform.check_availability(object_id)
-        return transform.update_lesson_rows_transform(object_id, request.get_json())
+        return transform.update_lesson_rows_transform(object_id, request.get_json(), db_source)
     except ValueError:
         return "", 404
 
@@ -103,7 +104,7 @@ def delete_lesson_row(object_id: int) -> Union[Response, tuple[str, int]]:
     :return: Response
     """
     try:
-        return jsonify(transform.delete_lesson_row_transform(object_id))
+        return jsonify(transform.delete_lesson_row_transform(object_id, db_source))
     except ValueError:
         return "", 404
     except psycopg2.Error as e:

@@ -8,16 +8,17 @@ from schedule_app import app
 
 transform = NoLearningPeriodTransformationService()
 validator = NoLearningPeriodValidator()
+db_source = app.config.get("schedule_db_source")
 
 @app.route("/api/v1/no-learning-period", methods=["GET"])
 def get_no_learning_period():
-    return jsonify(transform.get_no_learning_period_transform())
+    return jsonify(transform.get_no_learning_period_transform(db_source))
 
 
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["GET"])
 def get_no_learning_period_by_id(object_id):
     try:
-        return transform.get_no_learning_period_by_id_transform(object_id)
+        return transform.get_no_learning_period_by_id_transform(object_id, db_source)
     except ValueError:
         return "", 404
 
@@ -26,7 +27,7 @@ def get_no_learning_period_by_id(object_id):
 def create_no_learning_period():
     try:
         validator.validate(request.get_json(), "POST")
-        return jsonify(transform.create_no_learning_period_transform(request.get_json()))
+        return jsonify(transform.create_no_learning_period_transform(request.get_json(), db_source))
     except ValueError:
         return "", 400
 
@@ -38,7 +39,7 @@ def update_no_learning_period(object_id):
     except ValueError:
         return "", 400
     try:
-        return jsonify(transform.update_no_learning_period_transform(object_id, request.get_json()))
+        return jsonify(transform.update_no_learning_period_transform(object_id, request.get_json(), db_source))
     except ValueError:
         return "", 404
     except TypeError:
@@ -48,7 +49,7 @@ def update_no_learning_period(object_id):
 @app.route("/api/v1/no-learning-period/<object_id>", methods=["DELETE"])
 def delete_no_learning_period(object_id):
     try:
-        return jsonify(transform.delete_no_learning_period_transform(object_id))
+        return jsonify(transform.delete_no_learning_period_transform(object_id, db_source))
     except ValueError:
         return "", 404
     except psycopg2.Error as e:

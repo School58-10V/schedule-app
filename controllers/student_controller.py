@@ -13,6 +13,7 @@ from schedule_app import app
 
 transform = StudentTransformationService()
 validator = StudentValidator()
+db_source = app.config.get("schedule_db_source")
 
 @app.route("/api/v1/students", methods=["GET"])
 def get_students():
@@ -21,13 +22,13 @@ def get_students():
 
 @app.route("/api/v1/students/detailed", methods=["GET"])
 def get_students_detailed():
-    return jsonify(transform.get_students_detailed_transform())
+    return jsonify(transform.get_students_detailed_transform(db_source))
 
 
 @app.route("/api/v1/students/get/detailed/<object_id>", methods=["GET"])
 def get_student_by_id_detailed(object_id):
     try:
-        return jsonify(transform.get_student_by_id_detailed_transform(object_id))
+        return jsonify(transform.get_student_by_id_detailed_transform(object_id, db_source))
     except ValueError:
         return "", 404
 
@@ -35,7 +36,7 @@ def get_student_by_id_detailed(object_id):
 @app.route("/api/v1/students/<object_id>", methods=["GET"])
 def get_student_by_id(object_id):
     try:
-        return jsonify(transform.get_student_by_id_transform(object_id))
+        return jsonify(transform.get_student_by_id_transform(object_id, db_source))
     except ValueError:
         return "", 404
 
@@ -46,7 +47,7 @@ def create_student():
         validator.validate(request.get_json(), "POST")
     except ValueError:
         return '', 400
-    return jsonify(transform.create_student_transform(request.get_json()))
+    return jsonify(transform.create_student_transform(request.get_json(), db_source))
 
 
 @app.route("/api/v1/students/<object_id>", methods=["PUT"])
@@ -56,7 +57,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
     except ValueError:
         return "", 400
     try:
-        return jsonify(transform.update_student_transform(object_id, request.get_json()))
+        return jsonify(transform.update_student_transform(object_id, request.get_json(), db_source))
     except ValueError:
         return "", 404
     except TypeError:
@@ -66,7 +67,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
 @app.route("/api/v1/students/<object_id>", methods=["DELETE"])
 def delete_student(object_id):
     try:
-        return jsonify(transform.delete_student_transform(object_id))
+        return jsonify(transform.delete_student_transform(object_id, db_source))
     except ValueError:
         return "", 404
     except psycopg2.Error as e:

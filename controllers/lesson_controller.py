@@ -9,13 +9,14 @@ from schedule_app import app
 
 transform = LessonTransformationService()
 validator = LessonValidator()
+db_source = app.config.get("schedule_db_source")
 
 @app.route("/api/v1/lesson", methods=["GET"])
 def get_lessons() -> Response:
     """
     :return json:
     """
-    return jsonify(transform.get_lessons_trasform())
+    return jsonify(transform.get_lessons_trasform(db_source))
 
 
 @app.route("/api/v1/lesson/<object_id>", methods=["GET"])
@@ -25,7 +26,7 @@ def get_lesson_by_id(object_id: int) -> Union[Tuple[str, int], Response]:
     :return json:
     """
     try:
-        return transform.get_lesson_by_id_transform(object_id)
+        return transform.get_lesson_by_id_transform(object_id, db_source)
     except ValueError:
         return '', 404
 
@@ -37,7 +38,7 @@ def create_lesson() -> Union[Tuple[str, int], Response]:
     """
     try:
         validator.validate(request.get_json(), "POST")
-        return jsonify(transform.create_lesson_transform(request.get_json()))
+        return jsonify(transform.create_lesson_transform(request.get_json(), db_source))
     except ValueError:
         return "", 400
 
@@ -53,7 +54,7 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
     except ValueError:
         return "", 400
     try:
-        return jsonify(transform.update_lessons_transform(object_id, request.get_json()))
+        return jsonify(transform.update_lessons_transform(object_id, request.get_json(), db_source))
     except ValueError:
         return "", 404
 
@@ -65,7 +66,7 @@ def delete_lesson(object_id: int) -> Union[Union[Tuple[str, int], Tuple[Any, int
     :return json:
     """
     try:
-        return transform.delete_lesson_transform(object_id)
+        return transform.delete_lesson_transform(object_id, db_source)
     except ValueError:
         return "", 404
     except psycopg2.Error as e:
