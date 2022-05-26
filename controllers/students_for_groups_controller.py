@@ -1,3 +1,5 @@
+import logging
+
 from flask import jsonify
 from data_model.students_for_groups import StudentsForGroups
 
@@ -6,7 +8,11 @@ from schedule_app import app
 
 @app.route("/api/v1/students-for-groups", methods=["GET"])
 def get_students_for_groups():
-    return jsonify([i.__dict__() for i in StudentsForGroups.get_all(app.config.get("schedule_db_source"))])
+    try:
+        return jsonify([i.__dict__() for i in StudentsForGroups.get_all(app.config.get("schedule_db_source"))])
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/students-for-groups/<object_id>", methods=["GET"])

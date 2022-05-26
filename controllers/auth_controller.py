@@ -22,6 +22,7 @@ TOKEN_EXP_TIME = datetime.timedelta(days=14)
 def do_login():
     login, password = request.json.get('login'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
+    # TODO: if login/password are missing, abort
     data = {
         'login': login, 'user_ip': user_ip,
         'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
@@ -58,8 +59,9 @@ def register():
 @app.before_request
 def before_request():
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule.rule == '/api/v1/login' or\
-            request.url_rule.rule == '/api/v1/register' or\
+    if request.url_rule is None or\
+            request.path == '/api/v1/login' or\
+            request.path == '/api/v1/register' or\
             request.method.lower() == 'get':
         return
     request_token = request.headers.get('Authorization')
