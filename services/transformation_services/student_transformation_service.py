@@ -31,7 +31,7 @@ class StudentTransformationService:
                             StudentsForGroups.get_group_by_student_id(object_id, app.config.get("schedule_db_source"))]
         return result
 
-    def get_student_by_id_transform(self, object_id):
+    def get_student_by_id_transform(self, object_id: int):
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         result["groups"] = [group_obj.get_main_id() for group_obj in
                             StudentsForGroups.get_group_by_student_id(object_id, app.config.get("schedule_db_source"))]
@@ -66,7 +66,7 @@ class StudentTransformationService:
         dct['groups'] = groups
         return dct
 
-    def delete_student_transform(self, object_id):
+    def delete_student_transform(self, object_id: int):
         student = Student.get_by_id(object_id, app.config.get("schedule_db_source"))
         student = student.delete().__dict__()
         return student

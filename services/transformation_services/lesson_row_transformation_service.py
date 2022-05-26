@@ -73,10 +73,10 @@ class LessonRowTransformationService:
         lesson_row['teachers'] = new_teachers_id
         return lesson_row
 
-    def delete_lesson_row_transform(self, object_id):
+    def delete_lesson_row_transform(self, object_id: int):
         lesson_row = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
         lesson_row = lesson_row.delete().__dict__()
         return lesson_row
 
-    def check_availability(self, object_id):
+    def check_availability(self, object_id: int):
         LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))

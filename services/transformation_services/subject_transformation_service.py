@@ -75,11 +75,11 @@ class SubjectTransformationService:
                                                                           new_subject.get_teachers()]
         return new_subject_dict
 
-    def get_teachers_by_subject_id_transform(self, object_id):
+    def get_teachers_by_subject_id_transform(self, object_id: int):
         return ('teachers',
                        [i.__dict__() for i in
                         TeachersForSubjects.get_teachers_by_subject_id(object_id,
                                                                        app.config.get("schedule_db_source"))])
 
-    def delete_subject_transform(self, object_id):
+    def delete_subject_transform(self, object_id: int):
         return Subject.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__()

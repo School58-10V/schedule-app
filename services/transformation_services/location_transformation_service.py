@@ -18,7 +18,7 @@ class LocationTransformationService:
     def create_location_transform(self, request: dict):
         return Location(**request, db_source=app.config.get("schedule_db_source")).save().__dict__()
 
-    def delete_location_transform(self, object_id):
+    def delete_location_transform(self, object_id: int):
         location = Location.get_by_id(object_id, app.config.get("schedule_db_source"))
         location = location.delete().__dict__()
         return location
