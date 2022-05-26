@@ -887,7 +887,21 @@
 					"name": "Get_all_detailed",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/group/detailed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"group",
+								"detailed"
+							]
+						}
 					},
 					"response": []
 				},
