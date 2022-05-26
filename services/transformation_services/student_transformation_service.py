@@ -14,8 +14,7 @@ class StudentTransformationService:
         for student in Student.get_all(db_source):
             student_data = student.__dict__()
             student_data["groups"] = [group.get_main_id() for group in
-                                      StudentsForGroups.get_group_by_student_id(student.get_main_id(),
-                                                                                db_source)]
+                                      StudentsForGroups.get_group_by_student_id(student.get_main_id(), db_source)]
             result.append(student_data)
         return {"students": result}
 
@@ -24,8 +23,7 @@ class StudentTransformationService:
         for student in Student.get_all(db_source):
             student_data = student.__dict__()
             student_data["groups"] = [group.__dict__() for group in
-                                      StudentsForGroups.get_group_by_student_id(student.get_main_id(),
-                                                                                db_source)]
+                                      StudentsForGroups.get_group_by_student_id(student.get_main_id(), db_source)]
             result.append(student_data)
         return {"students": result}
 

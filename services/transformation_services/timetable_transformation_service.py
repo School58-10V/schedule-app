@@ -19,8 +19,7 @@ class TimeTableTransformationService:
 
     def update_timetable_transform(self, object_id: int, request: dict, db_source: DBSource):
         TimeTable.get_by_id(object_id, db_source=db_source)
-        return TimeTable(**request, object_id=object_id,
-                         db_source=db_source).save().__dict__()
+        return TimeTable(**request, object_id=object_id, db_source=db_source).save().__dict__()
 
     def delete_timetable_transform(self, object_id: int, db_source: DBSource):
         return TimeTable.get_by_id(object_id, db_source=db_source).delete().__dict__()

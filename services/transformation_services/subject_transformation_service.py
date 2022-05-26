@@ -15,9 +15,7 @@ class SubjectTransformationService:
         for i in Subject.get_all(db_source):
             subj = i.__dict__()
             subj['teachers'] = [i.__dict__()['object_id'] for i in
-                                TeachersForSubjects.get_teachers_by_subject_id(
-                                    i.get_main_id(), db_source
-                                )]
+                                TeachersForSubjects.get_teachers_by_subject_id(i.get_main_id(), db_source)]
             result.append(subj)
         return {'subjects': result}
 
@@ -26,9 +24,7 @@ class SubjectTransformationService:
         for i in Subject.get_all(db_source):
             subj = i.__dict__()
             subj['teachers'] = [i.__dict__() for i in
-                                TeachersForSubjects.get_teachers_by_subject_id(
-                                    i.get_main_id(), db_source
-                                )]
+                                TeachersForSubjects.get_teachers_by_subject_id(i.get_main_id(), db_source)]
             result.append(subj)
         return {'subjects': result}
 
@@ -80,9 +76,7 @@ class SubjectTransformationService:
 
     def get_teachers_by_subject_id_transform(self, object_id: int, db_source: DBSource):
         return ('teachers',
-                       [i.__dict__() for i in
-                        TeachersForSubjects.get_teachers_by_subject_id(object_id,
-                                                                       db_source)])
+                       [i.__dict__() for i in TeachersForSubjects.get_teachers_by_subject_id(object_id, db_source)])
 
     def delete_subject_transform(self, object_id: int, db_source: DBSource):
         return Subject.get_by_id(object_id, db_source).delete().__dict__()

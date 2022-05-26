@@ -45,8 +45,7 @@ class LessonRowTransformationService:
         teacher_id = dct.pop('teachers')
         lesson_row = LessonRow(**dct, db_source=db_source).save()
         for i in teacher_id:
-            TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i,
-                                  db_source=db_source).save()
+            TeachersForLessonRows(lesson_row_id=lesson_row.get_main_id(), teacher_id=i, db_source=db_source).save()
         dct["object_id"] = lesson_row.get_main_id()
         dct['teachers'] = teacher_id
         return dct
@@ -69,11 +68,9 @@ class LessonRowTransformationService:
                 j.delete()
 
         for i in teachers_to_create:
-            TeachersForLessonRows(lesson_row_id=object_id, teacher_id=i,
-                                  db_source=db_source).save()
+            TeachersForLessonRows(lesson_row_id=object_id, teacher_id=i, db_source=db_source).save()
 
-        lesson_row = LessonRow(**dct, object_id=object_id,
-                               db_source=db_source).save().__dict__()
+        lesson_row = LessonRow(**dct, object_id=object_id, db_source=db_source).save().__dict__()
         lesson_row['teachers'] = new_teachers_id
         return lesson_row
 
