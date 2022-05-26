@@ -3,7 +3,7 @@ class StudentValidator:
     def validate(self, request: dict, method: str):
 
         required_keys = {'full_name', 'date_of_birth'}
-        allowed_keys = {'full_name', 'date_of_birth', 'contacts', 'bio'}
+        allowed_keys = {'full_name', 'date_of_birth', 'contacts', 'bio', 'groups'}
 
         if method == 'PUT':
             required_keys.add('object_id')
@@ -20,5 +20,13 @@ class StudentValidator:
                 if type(request[key]) != str:
                     raise ValueError
             if key == 'date_of_birth':
-                if type(request[key]) != int:
+                if type(request[key]) != str:
                     raise ValueError
+            if key == 'groups':
+                if type(request[key]) != list:
+                    raise ValueError
+                for i in request[key]:
+                    if type(i) != int:
+                        raise ValueError
+
+

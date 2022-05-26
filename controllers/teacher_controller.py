@@ -1,20 +1,28 @@
-import logging
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
-import psycopg2
-from psycopg2 import errorcodes
-from data_model.teacher import Teacher
-from data_model.teachers_for_subjects import TeachersForSubjects
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
-from validators.teacher_validator import TeacherValidator
+import psycopg2, logging
 from flask import request, jsonify
 
 from schedule_app import app
+from data_model.subject import Subject
+from data_model.teacher import Teacher
+from data_model.lesson_row import LessonRow
+from data_model.teachers_for_subjects import TeachersForSubjects
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+
+from validators.teacher_validator import TeacherValidator
+
+if TYPE_CHECKING:
+    from flask import Response
+    from typing import Tuple, Union, Any
+
 
 validator = TeacherValidator()
 
 
 @app.route("/api/v1/teachers", methods=["GET"])
-def get_teachers():
+def get_teachers() -> Response:
     try:
         teachers = []
         for i in Teacher.get_all(app.config.get("schedule_db_source")):
@@ -26,14 +34,14 @@ def get_teachers():
                 get_lesson_rows_by_teacher_id(i.get_main_id(),
                                               db_source=app.config.get("schedule_db_source"))]
             teachers.append(teacher)
-        return jsonify({"teachers": teachers})
+        return jsonify(teachers)
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
 
 
-@app.route("/api/v1/teachers/<object_id>", methods=["GET"])
-def get_teacher_by_id(object_id):
+@app.route("/api/v1/teachers/<int:object_id>", methods=["GET"])
+def get_teacher_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
 
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
@@ -49,7 +57,7 @@ def get_teacher_by_id(object_id):
 
 
 @app.route("/api/v1/teachers/get/detailed", methods=["GET"])
-def get_detailed_teachers():
+def get_detailed_teachers() -> Response:
     try:
         teachers = []
         for i in Teacher.get_all(app.config.get("schedule_db_source")):
@@ -62,14 +70,14 @@ def get_detailed_teachers():
                 get_lesson_rows_by_teacher_id(object_id,
                                               db_source=app.config.get("schedule_db_source"))]
             teachers.append(teacher)
-        return jsonify({"teachers": teachers})
+        return jsonify(teachers)
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
 
 
-@app.route("/api/v1/teachers/get/detailed/<object_id>", methods=["GET"])
-def get_teacher_detailed_by_id(object_id):
+@app.route("/api/v1/teachers/get/detailed/<int:object_id>", methods=["GET"])
+def get_teacher_detailed_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.__dict__() for i in TeachersForSubjects.
@@ -78,21 +86,25 @@ def get_teacher_detailed_by_id(object_id):
         teacher['lesson_row_id'] = [i.__dict__() for i in TeachersForLessonRows.
             get_lesson_rows_by_teacher_id(object_id,
                                           db_source=app.config.get("schedule_db_source"))]
-        return teacher
+        return jsonify(teacher)
     except ValueError:
         return '', 404
 
 
 @app.route("/api/v1/teachers", methods=["POST"])
-def create_teacher():
+def create_teacher() -> Union[Tuple[str, int], Response]:
     dct = request.get_json()
     try:
         validator.validate(dct, "POST")
     except:
         return '', 400
     try:
-        subject_id = dct.pop('subject_id')
-        lesson_row_id = dct.pop('lesson_row_id')
+        subject_id = []
+        if 'subject_id' in dct:
+            subject_id = dct.pop('subject_id')
+        lesson_row_id = []
+        if 'lesson_row_id' in dct:
+            subject_id = dct.pop('lesson_row_id')
 
         new_teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
 
@@ -116,50 +128,58 @@ def create_teacher():
         return "", 500
 
 
-@app.route("/api/v1/teachers/<object_id>", methods=["PUT"])
-def update_teacher(object_id):
-    try:
-        validator.validate(request.get_json(), "PUT")
-    except:
+@app.route("/api/v1/teachers/<int:object_id>", methods=["PUT"])
+def update_teacher(object_id: int) -> Union[Tuple[str, int], Response]:
+    if request.get_json().get('object_id') != object_id:
         return "", 400
     try:
-        teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
+        validator.validate(request.get_json(), "PUT")
+    except ValueError:
+        return "", 400
+    dct = request.get_json()
+    try:
+        Teacher.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
+    lesson_row_id = []
+    if 'lesson_row_id' in dct:
+        lesson_row_id += dct.pop('lesson_row_id')
+    subject_id = []
+    if 'subject_id' in dct:
+        subject_id += dct.pop('subject_id')
+    teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
+
+    for i in teacher.get_lesson_rows():
+        if i.get_main_id() not in lesson_row_id:
+            teacher.remove_lesson_row(i)
+
+    for i in teacher.get_subjects():
+        if i.get_main_id() not in subject_id:
+            teacher.remove_subject(i)
+
     try:
-        teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id, db_source=app.config.get("schedule_db_source"))]
-        teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id,
-                                          db_source=app.config.get("schedule_db_source"))]
+        for i in lesson_row_id:
+            teacher.append_lesson_row(LessonRow.get_by_id(i, db_source=app.config.get("schedule_db_source")))
 
-        for i in request.get_json()['subject_id']:
-            if i not in teacher['subject_id']:
-                TeachersForSubjects(teacher_id=object_id, subject_id=i,
-                                    db_source=app.config.get("schedule_db_source")).save()
+        for i in subject_id:
+            teacher.append_subject(Subject.get_by_id(i, db_source=app.config.get("schedule_db_source")))
+    except ValueError:
+        return '', 400
 
-        for i in request.get_json()['lesson_row_id']:
-            if i not in teacher['lesson_row_id']:
-                TeachersForLessonRows(teacher_id=object_id, lesson_row_id=i,
-                                      db_source=app.config.get("schedule_db_source")).save()
-
-        return jsonify(Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
-    except Exception as err:
-        logging.error(err, exc_info=True)
-        return "", 500
+    dct = teacher.__dict__()
+    dct['subject_id'] = subject_id
+    dct['lesson_row_id'] = lesson_row_id
+    return jsonify(dct)
 
 
-@app.route("/api/v1/teachers/<object_id>", methods=["DELETE"])
-def delete_teacher(object_id):
+@app.route("/api/v1/teachers/<int:object_id>", methods=["DELETE"])
+def delete_teacher(object_id: int) -> Union[Response, Tuple[str, int], Tuple[Any, int]]:
     try:
-        teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source"))
+        return jsonify(Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__())
     except ValueError:
         return "", 404
-    try:
-        teacher = teacher.delete().__dict__()
-        return jsonify(teacher)
     except psycopg2.Error as e:
-        return jsonify(errorcodes.lookup(e.pgcode)), 409
+        return jsonify(psycopg2.errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500

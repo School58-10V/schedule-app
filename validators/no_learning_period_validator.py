@@ -16,5 +16,11 @@ class NoLearningPeriodValidator:
         for key in request.keys():
             if key not in allowed_keys:
                 raise ValueError
-            if type(request[key]) != int:
-                raise ValueError
+            if key == 'start_time' or key == 'stop_time':
+                if type(request[key]) != str:
+                    raise ValueError
+            if key == 'timetable_id':
+                if type(request[key]) != int:
+                    print(key)
+                    raise ValueError
+

@@ -108,7 +108,7 @@ class Lesson(AbstractModel):
                     res.append(ParsedData(exception_text, None))
             return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Урок с который начинается в {self.get_start_time()} и заканчивается в {self.get_end_time()}, " \
                f"id={self.get_main_id()}"
 
@@ -124,7 +124,7 @@ class Lesson(AbstractModel):
                 "state": self.get_state()}
 
     @classmethod
-    def get_today_replacements(cls, db_source: DBSource, date: datetime.date = datetime.date.today()):
+    def get_today_replacements(cls, db_source: DBSource, date: datetime.date = datetime.date.today()) -> List[Lesson]:
         replacements = [Lesson.get_by_id(i['object_id'], db_source)
                         for i in db_source.get_by_query(cls._get_collection_name(),
                                                         {"day": date})]
@@ -132,7 +132,7 @@ class Lesson(AbstractModel):
 
     @classmethod
     def get_replacements_by_teacher(cls, db_source: DBSource, teacher: str,
-                                    date: datetime.date = datetime.date.today()):
+                                    date: datetime.date = datetime.date.today()) -> List[Lesson]: # если ошибка в типе, я лох
         replacements_today = [Lesson.get_by_id(i['object_id'], db_source)
                               for i in db_source.get_by_query(cls._get_collection_name(),
                                                               {"day": date})]
