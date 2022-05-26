@@ -58,9 +58,9 @@ def register():
 @app.before_request
 def before_request():
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule.rule == '/api/v1/login' or\
-            request.url_rule.rule == '/api/v1/register' or\
-            request.method.lower() == 'get':
+    if request.method.lower() == 'get' or\
+    request.url_rule.rule == '/api/v1/login' or\
+            request.url_rule.rule == '/api/v1/register':
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')

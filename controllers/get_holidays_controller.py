@@ -20,25 +20,19 @@ def get_holidays_by_year(year: int):
     try:
         name = User.get_by_login(login, db_source=app.config.get('auth_db_source')).get_name()
     except ValueError:
-        print('1233')
         return '', 401
-    try:
         ##### Нужно ли проверять пароль? Если да, то как его передавать, через headers?
 
-        student = Student.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
-
-    except ValueError:
-        try:
-            print('tyt')
-            teacher = Teacher.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
-        except ValueError:
-            return '', 401
+    student = Student.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
+    teacher = Teacher.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
+    if len(student + teacher) == 0:
+        return '', 401
 
     try:
         timetable_id = TimeTable.get_by_year(year=year, db_source=app.config.get('schedule_db_source')).get_main_id()
         nlp = NoLearningPeriod.get_all_by_timetable_id(timetable_id=timetable_id,
                                                        db_source=app.config.get('schedule_db_source'))
-        result = [(i.get_start_time(), i.get_stop_time()) for i in nlp]
-    except ValueError:
+        result = [(i + 1, nlp[i].get_start_time(), nlp[i].get_stop_time()) for i in range(len(nlp))]
+    except (ValueError, IndexError):
         return 'Нет расписания на этот год', 404
-    return tabulate(sorted(result), ['Начало каникул', 'Конец каникул'], tablefmt='grid'), 200
+    return tabulate(sorted(result), ['№', 'Начало каникул', 'Конец каникул'], tablefmt='grid'), 200
