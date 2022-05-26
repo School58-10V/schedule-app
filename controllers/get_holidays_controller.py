@@ -4,6 +4,7 @@ from tabulate import tabulate
 
 from data_model.no_learning_period import NoLearningPeriod
 from data_model.student import Student
+from data_model.teacher import Teacher
 from data_model.timetable import TimeTable
 from data_model.user import User
 from schedule_app import app
@@ -17,20 +18,27 @@ def get_holidays_by_year(year: int):
     data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
     login = data['login']
     try:
-        user = User.get_by_login(login, db_source=app.config.get('auth_db_source'))
+        name = User.get_by_login(login, db_source=app.config.get('auth_db_source')).get_name()
+    except ValueError:
+        print('1233')
+        return '', 401
+    try:
         ##### Нужно ли проверять пароль? Если да, то как его передавать, через headers?
-        name = user.get_name()
 
-        student = Student.get_by_name(name=name, db_source=app.config.get('auth_db_source'))
+        student = Student.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
 
     except ValueError:
-        return '', 401
+        try:
+            print('tyt')
+            teacher = Teacher.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
+        except ValueError:
+            return '', 401
 
     try:
-        timetable_id = TimeTable.get_by_year(year=year, db_source=app.config.get('auth_db_source')).get_main_id()
+        timetable_id = TimeTable.get_by_year(year=year, db_source=app.config.get('schedule_db_source')).get_main_id()
         nlp = NoLearningPeriod.get_all_by_timetable_id(timetable_id=timetable_id,
-                                                       db_source=app.config.get('auth_db_source'))
-        result = [(i.get_start_time(), i.get_end_time()) for i in nlp]
+                                                       db_source=app.config.get('schedule_db_source'))
+        result = [(i.get_start_time(), i.get_stop_time()) for i in nlp]
     except ValueError:
         return 'Нет расписания на этот год', 404
     return tabulate(sorted(result), ['Начало каникул', 'Конец каникул'], tablefmt='grid'), 200
