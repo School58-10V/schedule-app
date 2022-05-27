@@ -122,6 +122,7 @@ def update_student(object_id: int) -> Union[Response, tuple[str, int]]:
         logging.error(err, exc_info=True)
         return "", 500
 
+
 @app.route("/api/v1/students/<object_id>", methods=["DELETE"])
 def delete_student(object_id):
     try:
