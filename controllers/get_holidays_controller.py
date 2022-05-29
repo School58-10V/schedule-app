@@ -1,5 +1,5 @@
 import jwt
-from flask import request, jsonify
+from flask import request
 from tabulate import tabulate
 
 from data_model.no_learning_period import NoLearningPeriod
@@ -32,7 +32,8 @@ def get_holidays_by_year(year: int):
         timetable_id = TimeTable.get_by_year(year=year, db_source=app.config.get('schedule_db_source')).get_main_id()
         nlp = NoLearningPeriod.get_all_by_timetable_id(timetable_id=timetable_id,
                                                        db_source=app.config.get('schedule_db_source'))
-        result = [(i + 1, nlp[i].get_start_time(), nlp[i].get_stop_time()) for i in range(len(nlp))]
+        result = sorted([(nlp[i].get_start_time(), nlp[i].get_stop_time()) for i in range(len(nlp))], key=lambda x: x[0])
+        result = [(i + 1, *result[i]) for i in range(len(result))]
     except (ValueError, IndexError):
         return 'Нет расписания на этот год', 404
-    return tabulate(sorted(result), ['№', 'Начало каникул', 'Конец каникул'], tablefmt='grid'), 200
+    return tabulate(result, ['№', 'Начало каникул', 'Конец каникул'], tablefmt='grid'), 200
