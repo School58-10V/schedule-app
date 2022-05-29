@@ -32,8 +32,11 @@ def get_holidays_by_year(year: int):
         timetable_id = TimeTable.get_by_year(year=year, db_source=app.config.get('schedule_db_source')).get_main_id()
         nlp = NoLearningPeriod.get_all_by_timetable_id(timetable_id=timetable_id,
                                                        db_source=app.config.get('schedule_db_source'))
-        result = sorted([(nlp[i].get_start_time(), nlp[i].get_stop_time()) for i in range(len(nlp))], key=lambda x: x[0])
-        result = [(i + 1, *result[i]) for i in range(len(result))]
+        result = sorted([(nlp[i].get_start_time(),
+                          nlp[i].get_stop_time())
+                         for i in range(len(nlp))], key=lambda x: x[0])
+        result = [(i + 1, result[i][0].strftime('%d-%m-%Y'),
+                   result[i][1].strftime('%d-%m-%Y')) for i in range(len(result))]
     except (ValueError, IndexError):
         return 'Нет расписания на этот год', 404
     return tabulate(result, ['№', 'Начало каникул', 'Конец каникул'], tablefmt='grid'), 200
