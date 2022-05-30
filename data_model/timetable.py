@@ -34,6 +34,10 @@ class TimeTable(AbstractModel):
                 "time_table_year": self.get_year()}
 
     @classmethod
+    def get_current_timetable(cls, source: AbstractSource):
+        return cls(source, **source.get_by_query(cls._get_collection_name(), {'time_table_year': datetime.date.today().year})[0])
+
+    @classmethod
     def get_by_year(cls, year: int, db_source: AbstractSource) -> TimeTable:
         try:
             return cls(db_source, **(db_source.get_by_query(cls._get_collection_name(), {'time_table_year': year})[0]))

@@ -4,9 +4,9 @@ from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
-from data_model.student import Student
 from data_model.students_for_groups import StudentsForGroups
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+from data_model.timetable import TimeTable
 
 if TYPE_CHECKING:
     from adapters.abstract_source import AbstractSource
@@ -81,6 +81,7 @@ class LessonRow(AbstractModel):
 
     @classmethod
     def prettify_time(cls, time):
+        """ Превращает тысяча десять в 10:10 """
         hours = time // 100
         minutes = time % 100
         return str(hours).zfill(2) + ':' + str(minutes).zfill(2)
@@ -178,15 +179,12 @@ class LessonRow(AbstractModel):
 
     @classmethod
     def get_all_by_student_id(cls, student_id: int, db_source: AbstractSource) -> List[LessonRow]:
-        """ возвращает все lessonrow для student"""
+        """ возвращает все lessonrow для student """
         group_list = StudentsForGroups.get_group_by_student_id(student_id, db_source)
-        lessonrow_list = [
-            LessonRow(db_source=db_source, **(db_source.get_by_query(
-                        cls._get_collection_name(),
-                        {"group_id": group.get_main_id()})[0])
-                      )
-            for group in group_list
-        ]
+        lessonrow_list = []
+        for i in group_list:
+            for lr in db_source.get_by_query(cls._get_collection_name(), {"group_id": i.get_main_id(), "timetable_id": TimeTable.get_current_timetable(db_source).get_main_id()}):
+                lessonrow_list.append(LessonRow(db_source, **lr))
         return lessonrow_list
 
     @classmethod
