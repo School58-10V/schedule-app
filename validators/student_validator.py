@@ -16,8 +16,11 @@ class StudentValidator:
         for key in request.keys():
             if key not in allowed_keys:
                 raise ValueError
-            if key == 'full_name' or key == 'contacts' or key == 'bio':
+            if key == 'full_name':
                 if type(request[key]) != str:
+                    raise ValueError
+            if key == 'contacts' or key == 'bio':
+                if type(request[key]) != str and request[key] is not None:
                     raise ValueError
             if key == 'date_of_birth':
                 if type(request[key]) != str:

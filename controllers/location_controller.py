@@ -37,7 +37,7 @@ def update(object_id: int) -> Union[Tuple[str, int], Response]:
     except ValueError:
         return "", 404
     try:
-        return jsonify(Location(**request.get_json(), object_id=object_id,
+        return jsonify(Location(**request.get_json(),
                                 db_source=app.config.get("schedule_db_source")).save().__dict__())
     except Exception as err:
         logging.error(err, exc_info=True)
@@ -56,7 +56,6 @@ def get_locations() -> Response | tuple[str, int]:
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
-
 
 
 @app.route("/api/v1/location/<int:object_id>", methods=["GET"])
