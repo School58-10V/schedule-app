@@ -47,7 +47,7 @@ class Student(AbstractModel):
         return self.__bio
 
     @staticmethod
-    def parse(file_location, db_source: DBSource) -> List[(Optional[str], Optional[Student])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Student])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
@@ -73,7 +73,7 @@ class Student(AbstractModel):
 
         return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Student(full_name = {self.__full_name}, date_of_birth = {self.__date_of_birth}, ' \
                f'contacts = {self.__contacts}, bio =  {self.__bio}) '
 
@@ -126,6 +126,7 @@ class Student(AbstractModel):
         return self
 
     @classmethod
-    def get_by_name(cls, name: str, source: AbstractSource):
-        return [Student(**i, db_source=source) for i in source.get_by_query(cls._get_collection_name(), {'full_name': name})]
+    def get_by_name(cls, name: str, source: AbstractSource) -> List[Student]:
+        return [Student(**i, db_source=source) for i in source.get_by_query(cls._get_collection_name(),
+                                                                            {'full_name': name})]
 
