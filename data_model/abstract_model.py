@@ -16,12 +16,12 @@ class AbstractModel(ABC):
         self._db_source = db_source
 
     @classmethod
-    def _get_collection_name(cls):
+    def _get_collection_name(cls) -> str:
         # if cls.__name__[-1] == 's':
         #     return cls.__name__
         return cls.__name__ + 's'
 
-    def save(self):
+    def save(self) -> AbstractModel:
         if self.get_main_id() is None:
             result = self._db_source.insert(self._get_collection_name(), self.__dict__())
             self._set_main_id(result['object_id'])
@@ -29,13 +29,13 @@ class AbstractModel(ABC):
             self._db_source.update(self._get_collection_name(), self.get_main_id(), self.__dict__())
         return self
 
-    def delete(self):
+    def delete(self) -> AbstractModel:
         if self.get_main_id() is not None:
             self._db_source.delete(self._get_collection_name(), self.get_main_id())
             self._set_main_id(None)
         return self
 
-    def serialize_to_json(self, indent: Optional[int] = None) -> str:
+    def serialize_to_json(self, indent: Optional[int] = None) -> json:
         """
         Превращает данный объект класса в JSON-строку
 
@@ -75,10 +75,10 @@ class AbstractModel(ABC):
     def __dict__(self):
         pass
 
-    def get_db_source(self):
+    def get_db_source(self) -> DBSource:
         return self._db_source
 
-    def get_main_id(self):
+    def get_main_id(self) -> int:
         """
         Возвращает айди текущего объекта
 

@@ -3,7 +3,7 @@ class GroupValidator:
     def validate(self, request: dict, method: str):
 
         required_keys = {'teacher_id', 'class_letter', 'grade', 'profile_name'}
-        allowed_keys = {'teacher_id', 'class_letter', 'grade', 'profile_name'}
+        allowed_keys = {'teacher_id', 'class_letter', 'grade', 'profile_name', 'students'}
 
         if method == 'PUT':
             required_keys.add('object_id')
@@ -22,3 +22,9 @@ class GroupValidator:
             if key == 'class_letter' or key == 'profile_name':
                 if type(request[key]) != str:
                     raise ValueError
+            if key == 'students':
+                if type(request[key]) != list:
+                    raise ValueError
+                for i in request[key]:
+                    if type(i) != int:
+                        raise ValueError

@@ -2,6 +2,7 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 
 from typing import Optional, List, TYPE_CHECKING
 
+from adapters.abstract_source import AbstractSource
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
@@ -27,7 +28,7 @@ class StudentsForGroups(AbstractModel):
         self._object_id = object_id
 
     @classmethod
-    def _get_collection_name(cls):
+    def _get_collection_name(cls) -> str:
         return cls.__name__
 
     def get_student_id(self) -> int:
@@ -61,7 +62,7 @@ class StudentsForGroups(AbstractModel):
     #
     #        return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f''
 
     def __dict__(self) -> dict:
@@ -70,20 +71,20 @@ class StudentsForGroups(AbstractModel):
                 'object_id': self.get_main_id()}
 
     @classmethod
-    def get_group_by_student_id(cls, student_id: int, db_source: DBSource) -> List[Group]:
+    def get_group_by_student_id(cls, student_id: int, db_source: AbstractSource) -> List[Group]:
         from data_model.group import Group
         return [Group.get_by_id(i['group_id'], db_source=db_source)
                 for i in db_source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
 
     @classmethod
-    def get_student_by_group_id(cls, group_id: int, db_source: DBSource) -> List[Student]:
+    def get_student_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List[Student]:
         from data_model.student import Student
         return [Student.get_by_id(i['student_id'], db_source=db_source)
                 for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
 
     @classmethod
     def get_by_student_and_group_id(cls, group_id: int, student_id: int,
-                                    db_source: DBSource) -> List[StudentsForGroups]:
+                                    db_source: AbstractSource) -> List[StudentsForGroups]:
         res = []
         # Проходим циклом по списку словарей с данными про объекты,
         # в которых student_id и group_id, которые нам нужны

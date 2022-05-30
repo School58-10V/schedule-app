@@ -134,3 +134,4 @@ db
 *.idea
 .venv
 keys/
+pyvenv.cfg
