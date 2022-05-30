@@ -98,8 +98,9 @@ def create_lesson_row() -> Union[Response, tuple[str, int]]:
     dct = request.get_json()
     try:
         validator.validate(dct, "POST")
-    except:
-        return '', 400
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 400
     try:
         teacher_id = dct.pop('teachers')
         lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()

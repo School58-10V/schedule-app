@@ -35,8 +35,9 @@ def lesson_row_to_string(lesson_row: LessonRow) -> str:
 
 
 @app.route("/api/v1/get-closest-lesson-for-student", methods=["GET"])
-def get_closest_lesson_for_student(current_datetime=datetime.datetime):
+def get_closest_lesson_for_student():
     try:
+        today = datetime.datetime.now().weekday()
         request_token = request.headers.get('Authorization')
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
         login = data['login']
@@ -48,21 +49,23 @@ def get_closest_lesson_for_student(current_datetime=datetime.datetime):
                                                                    db_source=app.config.get('schedule_db_source'))
         lesson_rows_list: List[LessonRow] = []
 
-        today = current_datetime.weekday  # number 0-6
-
         current_timetable = TimeTable.get_by_year(db_source=app.config.get('schedule_db_source'))
 
         for i in student_groups:
             var = [j for j in i.get_lesson_rows() if
                    j.get_day_of_the_week() == today and j.get_timetable_id() == current_timetable.get_main_id()]
             if var:
-                lesson_rows_list.append(*var)
+                for j in var:
+                    lesson_rows_list.append(j)
 
-        lesson_rows_list.sort(key=lambda x: x.get_start_time())
-        if len(lesson_rows_list) == 0:
+        filtered_lessons_by_time = [c for c in lesson_rows_list if int(c.get_end_time()) > int(datetime.datetime.now().strftime('%H%M'))]
+        print(filtered_lessons_by_time)
+        
+        filtered_lessons_by_time.sort(key=lambda x: x.get_start_time())
+        if len(filtered_lessons_by_time) == 0:
             return 'Сегодня уроков нет!'
 
-        first_lesson_row = lesson_rows_list[0]
+        first_lesson_row = filtered_lessons_by_time[0]
 
         weekday_to_text = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
         return f'Ближайший урок сегодня, в {weekday_to_text[today]}: {lesson_row_to_string(first_lesson_row)}'
