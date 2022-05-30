@@ -1,12 +1,14 @@
-import datetime
-from typing import Tuple, Union, Optional
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
-import jwt
-from flask import request, jsonify, Response
-from jwt import DecodeError, ExpiredSignatureError
+import datetime, jwt
+from flask import request, jsonify
 from data_model.user import User
-
 from schedule_app import app
+
+if TYPE_CHECKING:
+    from flask import Response
+    from typing import Tuple, Union, Optional
 
 
 # TODO: тоже заимплементить конфиг (убрать точки со слешами)
@@ -24,6 +26,7 @@ TOKEN_EXP_TIME = datetime.timedelta(days=14)
 def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
     login, password = request.json.get('login'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
+    # TODO: if login/password are missing, abort
     data = {
         'login': login, 'user_ip': user_ip,
         'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
@@ -60,18 +63,18 @@ def register() -> Response:
 @app.before_request
 def before_request() -> Optional[Tuple[str, int]]:
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule is None \
-            or request.method.lower() == 'get'\
-            or request.url_rule.rule == '/api/v1/login' \
-            or request.url_rule.rule == '/api/v1/register':
+    if request.url_rule is None or\
+            request.path == '/api/v1/login' or\
+            request.path == '/api/v1/register' or\
+            request.method.lower() == 'get':
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    except DecodeError:
+    except jwt.DecodeError:
         return '', 401
-    except ExpiredSignatureError:
+    except jwt.ExpiredSignatureError:
         # ошибка:
         return '', 401
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):

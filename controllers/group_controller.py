@@ -1,26 +1,39 @@
-from typing import Tuple, Optional, Union
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+import logging, psycopg2
+from flask import request, jsonify
 
 from data_model.group import Group
-from flask import request, jsonify, Response
-
 from data_model.student import Student
-from schedule_app import app
-from validators.group_validator import GroupValidator
 from data_model.students_for_groups import StudentsForGroups
+
+from schedule_app import app
+
+from validators.group_validator import GroupValidator
+
+if TYPE_CHECKING:
+    from flask import Response
+    from typing import Tuple, Union
+
 
 validator = GroupValidator()
 
 
 @app.route("/api/v1/group", methods=["GET"])
-def get_groups() -> Response:
-    dct = []
-    for i in Group.get_all(app.config.get("schedule_db_source")):
-        dct1 = i.__dict__()
-        dct1['students'] = []
-        for j in i.get_all_students():
-            dct1['students'].append(j.get_main_id())
-        dct.append(dct1)
-    return jsonify(dct)
+def get_groups():
+    try:
+        dct = []
+        for i in Group.get_all(app.config.get("schedule_db_source")):
+            dct1 = i.__dict__()
+            dct1['students'] = []
+            for j in i.get_all_students():
+                dct1['students'].append(j.get_main_id())
+            dct.append(dct1)
+        return jsonify(dct)
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/group/<int:object_id>", methods=["GET"])
@@ -36,38 +49,45 @@ def get_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
 
 @app.route("/api/v1/group", methods=["POST"])
 def create_group() -> Union[Response, Tuple[str, int]]:
+    dct = request.get_json()
     try:
-        validator.validate(request.get_json(), "POST")
-        dct = request.get_json()
+        validator.validate(dct, "POST")
+    except ValueError:
+        return "", 400
+
+    try:
         student = []
         if 'students' in dct:
             student = dct.pop('students')
-        group = Group(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
+        group = Group(**dct, db_source=app.config.get("schedule_db_source")) \
             .save()
         for i in student:
             student1 = Student.get_by_id(i, db_source=app.config.get('schedule_db_source'))
             group.append_student(student1)
         dct = group.__dict__()
         dct['students'] = student
-        dct['object_id'] = group.get_main_id()
         return jsonify(dct)
-    except ValueError:
-        return "", 400
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/group/<int:object_id>", methods=["PUT"])
 def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
-    if request.get_json().get('object_id') != object_id:
-        return "", 400
+    dct = request.get_json()
+
     try:
-        validator.validate(request.get_json(), "PUT")
+        if dct.get('object_id') != object_id:
+            raise ValueError
+        validator.validate(dct, "PUT")
     except ValueError:
         return "", 400
+
     try:
         group = Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
-    dct = request.get_json()
+
     student_id = []
     if 'students' in dct:
         student_id = dct.pop('students')
@@ -92,9 +112,20 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
 
 
 @app.route("/api/v1/group/<int:object_id>", methods=["DELETE"])
-def delete_group(object_id: int) -> Response:
-    if request.method == 'DELETE':
-        return jsonify(Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source")).delete().__dict__())
+def delete_group(object_id: int) -> Response: 
+    try:
+        group = Group.get_by_id(object_id, app.config.get("schedule_db_source"))
+    except ValueError:
+        return "", 404
+    try:
+        group = group.delete().__dict__()
+        return jsonify(group)
+    except psycopg2.Error as e:
+        logging.error(e, exc_info=True)
+        return psycopg2.errorcodes.lookup(e.pgcode), 409    
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/group/detailed", methods=["GET"])
@@ -111,7 +142,7 @@ def get_all_detailed() -> Response:
 @app.route('/api/v1/group/detailed/<int:object_id>', methods=['GET'])
 def get_detailed_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
-    Дастаем Group по id вместе со студентами
+    Достаем Group по id вместе со студентами
     :param object_id: int
     :return: Response
     """

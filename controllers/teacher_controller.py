@@ -1,38 +1,43 @@
 from __future__ import annotations
-from typing import Union, Any, TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
-import psycopg2
-
-from data_model.lesson_row import LessonRow
-from data_model.subject import Subject
-
-if TYPE_CHECKING:
-    from flask import Response
-
-from data_model.teacher import Teacher
-from data_model.teachers_for_subjects import TeachersForSubjects
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
-from validators.teacher_validator import TeacherValidator
+import psycopg2, logging
 from flask import request, jsonify
 
 from schedule_app import app
+from data_model.subject import Subject
+from data_model.teacher import Teacher
+from data_model.lesson_row import LessonRow
+from data_model.teachers_for_subjects import TeachersForSubjects
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+
+from validators.teacher_validator import TeacherValidator
+
+if TYPE_CHECKING:
+    from flask import Response
+    from typing import Tuple, Union, Any
+
 
 validator = TeacherValidator()
 
 
 @app.route("/api/v1/teachers", methods=["GET"])
 def get_teachers() -> Response:
-    teachers = []
-    for i in Teacher.get_all(app.config.get("schedule_db_source")):
-        teacher = i.__dict__()
-        teacher['subject_id'] = [j.get_main_id() for j in TeachersForSubjects.
-                                 get_subjects_by_teacher_id(i.get_main_id(),
-                                                            db_source=app.config.get("schedule_db_source"))]
-        teacher['lesson_row_id'] = [j.get_main_id() for j in TeachersForLessonRows.
-                                    get_lesson_rows_by_teacher_id(i.get_main_id(),
-                                                                  db_source=app.config.get("schedule_db_source"))]
-        teachers.append(teacher)
-    return jsonify(teachers)
+    try:
+        teachers = []
+        for i in Teacher.get_all(app.config.get("schedule_db_source")):
+            teacher = i.__dict__()
+            teacher['subject_id'] = [j.get_main_id() for j in TeachersForSubjects.
+                get_subjects_by_teacher_id(i.get_main_id(),
+                                           db_source=app.config.get("schedule_db_source"))]
+            teacher['lesson_row_id'] = [j.get_main_id() for j in TeachersForLessonRows.
+                get_lesson_rows_by_teacher_id(i.get_main_id(),
+                                              db_source=app.config.get("schedule_db_source"))]
+            teachers.append(teacher)
+        return jsonify(teachers)
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/teachers/<int:object_id>", methods=["GET"])
@@ -53,18 +58,22 @@ def get_teacher_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
 
 @app.route("/api/v1/teachers/get/detailed", methods=["GET"])
 def get_detailed_teachers() -> Response:
-    teachers = []
-    for i in Teacher.get_all(app.config.get("schedule_db_source")):
-        object_id = i.get_main_id()
-        teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
-        teacher['subject'] = [i.__dict__() for i in TeachersForSubjects.
-            get_subjects_by_teacher_id(object_id,
-                                       db_source=app.config.get("schedule_db_source"))]
-        teacher['lesson_row'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_lesson_rows_by_teacher_id(object_id,
-                                          db_source=app.config.get("schedule_db_source"))]
-        teachers.append(teacher)
-    return jsonify(teachers)
+    try:
+        teachers = []
+        for i in Teacher.get_all(app.config.get("schedule_db_source")):
+            object_id = i.get_main_id()
+            teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
+            teacher['subject'] = [i.__dict__() for i in TeachersForSubjects.
+                get_subjects_by_teacher_id(object_id,
+                                           db_source=app.config.get("schedule_db_source"))]
+            teacher['lesson_row'] = [i.__dict__() for i in TeachersForLessonRows.
+                get_lesson_rows_by_teacher_id(object_id,
+                                              db_source=app.config.get("schedule_db_source"))]
+            teachers.append(teacher)
+        return jsonify(teachers)
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/teachers/get/detailed/<int:object_id>", methods=["GET"])
@@ -112,11 +121,11 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
         new_teacher_dct['lesson_row_id'] = lesson_row_id
 
         return jsonify(new_teacher_dct)
-
-    except TypeError:
-        return '', 400
-    except ValueError as e:
+    except ValueError:
         return '', 404
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
 @app.route("/api/v1/teachers/<int:object_id>", methods=["PUT"])
@@ -169,5 +178,8 @@ def delete_teacher(object_id: int) -> Union[Response, Tuple[str, int], Tuple[Any
         return jsonify(Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).delete().__dict__())
     except ValueError:
         return "", 404
-    except psycopg2.errors.ForeignKeyViolation as error:
-        return error.pgerror, 400
+    except psycopg2.Error as e:
+        return jsonify(psycopg2.errorcodes.lookup(e.pgcode)), 409
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
