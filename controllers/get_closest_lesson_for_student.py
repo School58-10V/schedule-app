@@ -1,4 +1,5 @@
 import datetime
+import logging
 from typing import List
 from urllib import request
 
@@ -34,34 +35,37 @@ def lesson_row_to_string(lesson_row: LessonRow) -> str:
 
 
 @app.route("/api/v1/get-closest-lesson-for-student", methods=["GET"])
-def get_closest_lesson_for_student(current_datetime: datetime.datetime):
-    request_token = request.headers.get('Authorization')
-    data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    login = data['login']
-    student_name = User.get_by_login(login=login, db_source=app.config.get('auth_db_source')).get_name()
-    student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
+def get_closest_lesson_for_student(current_datetime=datetime.datetime):
+    try:
+        request_token = request.headers.get('Authorization')
+        data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+        login = data['login']
+        student_name = User.get_by_login(login=login, db_source=app.config.get('auth_db_source')).get_name()
+        student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
 
-    student_id = student.get_main_id()
-    student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,
-                                                               db_source=app.config.get('schedule_db_source'))
-    lesson_rows_list: List[LessonRow] = []
+        student_id = student[0].get_main_id()
+        student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,
+                                                                   db_source=app.config.get('schedule_db_source'))
+        lesson_rows_list: List[LessonRow] = []
 
-    today = current_datetime.weekday()  # number 0-6
-    current_timetable = TimeTable.get_by_year(db_source=app.config.get('auth_db_source'))
+        today = current_datetime.weekday  # number 0-6
 
-    for i in student_groups:
-        var = [j for j in i.get_lesson_rows() if
-               j.get_day_of_the_week() == today and j.get_timetable_id() == current_timetable.get_main_id()]
-        if var:
-            lesson_rows_list.append(*var)
+        current_timetable = TimeTable.get_by_year(db_source=app.config.get('schedule_db_source'))
 
-    lesson_rows_list.sort(key=lambda x: x.get_start_time())
-    if len(lesson_rows_list) == 0:
-        return 'Сегодня уроков нет!'
+        for i in student_groups:
+            var = [j for j in i.get_lesson_rows() if
+                   j.get_day_of_the_week() == today and j.get_timetable_id() == current_timetable.get_main_id()]
+            if var:
+                lesson_rows_list.append(*var)
 
-    first_lesson_row = lesson_rows_list[0]
+        lesson_rows_list.sort(key=lambda x: x.get_start_time())
+        if len(lesson_rows_list) == 0:
+            return 'Сегодня уроков нет!'
 
-    weekday_to_text = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
-    return f'Ближайший урок сегодня, в {weekday_to_text[today]}: {lesson_row_to_string(first_lesson_row)}'
+        first_lesson_row = lesson_rows_list[0]
 
-
+        weekday_to_text = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+        return f'Ближайший урок сегодня, в {weekday_to_text[today]}: {lesson_row_to_string(first_lesson_row)}'
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
