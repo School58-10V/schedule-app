@@ -33,8 +33,8 @@ def lesson_row_to_string(lesson_row: LessonRow) -> str:
     return lesson_row_to_string
 
 
-@app.route("/api/v1/students", methods=["GET"])
-def get_students(current_datetime: datetime.datetime):
+@app.route("/api/v1/get-closest-lesson-for-student", methods=["GET"])
+def get_closest_lesson_for_student(current_datetime: datetime.datetime):
     request_token = request.headers.get('Authorization')
     data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
     login = data['login']
@@ -42,7 +42,8 @@ def get_students(current_datetime: datetime.datetime):
     student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
 
     student_id = student.get_main_id()
-    student_groups = StudentsForGroups.get_group_by_student_id(student_id, app.config.get('schedule_db_source'))
+    student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,
+                                                               db_source=app.config.get('schedule_db_source'))
     lesson_rows_list: List[LessonRow] = []
 
     today = current_datetime.weekday()  # number 0-6
