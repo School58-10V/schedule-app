@@ -2,8 +2,8 @@ class LessonRowValidator:
     def validate(self, request: dict, method: str):
 
         required_keys = {'start_time', 'end_time', 'group_id', 'room_id', 'timetable_id', 'day_of_the_week'}
-        allowed_keys = {'start_time', 'end_time', 'group_id', 'room_id', 'timetable_id', 'day_of_the_week', 'teachers', 'subject_id'}
-
+        allowed_keys = {'start_time', 'end_time', 'group_id', 'room_id', 'timetable_id', 'day_of_the_week', 'teachers',
+                        'subject_id'}
 
         if method == 'PUT':
             required_keys.add('object_id')
