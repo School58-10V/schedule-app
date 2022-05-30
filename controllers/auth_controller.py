@@ -66,10 +66,7 @@ def before_request():
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    except DecodeError:
-        return '', 401
-    except ExpiredSignatureError:
-        # ошибка:
+    except (DecodeError, ExpiredSignatureError):
         return '', 401
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
         return '', 401
