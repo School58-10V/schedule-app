@@ -28,7 +28,7 @@ class StudentsForGroups(AbstractModel):
         self._object_id = object_id
 
     @classmethod
-    def _get_collection_name(cls):
+    def _get_collection_name(cls) -> str:
         return cls.__name__
 
     def get_student_id(self) -> int:
@@ -62,7 +62,7 @@ class StudentsForGroups(AbstractModel):
     #
     #        return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f''
 
     def __dict__(self) -> dict:

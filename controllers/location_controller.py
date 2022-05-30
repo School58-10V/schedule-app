@@ -1,26 +1,33 @@
 from __future__ import annotations
-from validators.location_validator import LocationValidator
-from typing import TYPE_CHECKING, Union, Any
-from data_model.location import Location
+from typing import TYPE_CHECKING
+
+import logging, psycopg2
 from flask import request, jsonify
-import psycopg2
-from psycopg2 import errorcodes
+
+from schedule_app import app
+from data_model.location import Location
+from validators.location_validator import LocationValidator
 
 if TYPE_CHECKING:
     from flask import Response
+    from typing import Union, Any, Tuple
 
-from schedule_app import app
 
 validator = LocationValidator()
 
+
 # here will be your code
-@app.route("/api/v1/location/<object_id>", methods=['PUT'])
-def update(object_id: int) -> Union[tuple[str, int], Response]:
+
+
+@app.route("/api/v1/location/<int:object_id>", methods=['PUT'])
+def update(object_id: int) -> Union[Tuple[str, int], Response]:
     """
     Обновляем Location
     :param object_id: int
     :return: Response
     """
+    if request.get_json().get('object_id') != object_id:
+        return "", 400
     try:
         validator.validate(request.get_json(), "PUT")
     except ValueError:
@@ -29,21 +36,31 @@ def update(object_id: int) -> Union[tuple[str, int], Response]:
         Location.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
-    return jsonify(Location(**request.get_json(), object_id=object_id,
-                            db_source=app.config.get("schedule_db_source")).save().__dict__())
+    try:
+        return jsonify(Location(**request.get_json(), object_id=object_id,
+                                db_source=app.config.get("schedule_db_source")).save().__dict__())
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
+
 
 
 @app.route("/api/v1/location", methods=["GET"])
-def get_locations() -> Response:
+def get_locations() -> Response | tuple[str, int]:
     """
         Выдаём все Locations
         :return: Response
         """
-    return jsonify([i.__dict__() for i in Location.get_all(app.config.get("schedule_db_source"))])
+    try:
+        return jsonify([i.__dict__() for i in Location.get_all(app.config.get("schedule_db_source"))])
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
-@app.route("/api/v1/location/<object_id>", methods=["GET"])
-def get_location_by_id(object_id: int) -> Union[Response, tuple[str, int]]:
+
+@app.route("/api/v1/location/<int:object_id>", methods=["GET"])
+def get_location_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     """
     Выдаём Location по заданному id
     :param object_id: int
@@ -63,14 +80,20 @@ def create_location() -> Response():
     """
     try:
         validator.validate(request.get_json(), "POST")
-        return jsonify(Location(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
-                       .save().__dict__())
     except ValueError:
         return "", 400
+    try:
+        return jsonify(Location(**request.get_json(), db_source=app.config.get("schedule_db_source")) \
+                       .save().__dict__())
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
 
 
-@app.route("/api/v1/location/<object_id>", methods=["DELETE"])
-def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], Response]:
+
+
+@app.route("/api/v1/location/<int:object_id>", methods=["DELETE"])
+def delete_location(object_id: int) -> Union[Tuple[str, int], Tuple[Any, int], Response]:
     """
     Удаляем Location по заданному id
     :param object_id: int
@@ -78,9 +101,13 @@ def delete_location(object_id: int) -> Union[tuple[str, int], tuple[Any, int], R
     """
     try:
         location = Location.get_by_id(object_id, app.config.get("schedule_db_source"))
-        location = location.delete().__dict__()
     except ValueError:
         return "", 404
+    try:
+        location = location.delete().__dict__()
     except psycopg2.Error as e:
-        return errorcodes.lookup(e.pgcode), 409
+        return psycopg2.errorcodes.lookup(e.pgcode), 409
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
     return jsonify(location)
