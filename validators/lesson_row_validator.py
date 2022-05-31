@@ -11,27 +11,17 @@ class LessonRowValidator:
 
         for key in required_keys:
             if key not in request.keys():
-                print(request.keys())
-                print(allowed_keys)
                 raise ValueError
 
         for key in request.keys():
             if key not in allowed_keys:
-                print(request.keys())
-                print(allowed_keys)
                 raise ValueError
             if key != 'teachers':
                 if type(request[key]) != int:
-                    print(request.keys())
-                    print(allowed_keys)
                     raise ValueError
             if key == 'teacher':
                 if type(request[key]) != list:
-                    print(request.keys())
-                    print(allowed_keys)
                     raise ValueError
                 for i in request[key]:
                     if type(i) != int:
-                        print(request.keys())
-                        print(allowed_keys)
                         raise ValueError

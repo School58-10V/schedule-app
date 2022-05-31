@@ -16,7 +16,7 @@ class TeacherValidator:
         for key in request.keys():
             if key not in allowed_keys:
                 raise ValueError
-            if key == 'fio' or key == 'bio' or key == 'contacts':
+            if key == 'fio' or key == 'bio' or 'contacts':
                 if type(request[key]) != str:
                     raise ValueError
             if key == 'office_id':

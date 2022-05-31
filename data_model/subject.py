@@ -71,7 +71,7 @@ class Subject(AbstractModel):
                 res.append(ParsedData(exception_text, None))
         return res
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'Subject(subject_name: {self.get_subject_name()})'
 
     def __dict__(self) -> dict:
@@ -79,5 +79,5 @@ class Subject(AbstractModel):
                 "subject_name": self.get_subject_name()}
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource) -> Subject:
+    def get_by_id(cls, element_id: int, db_source: DBSource):
         return Subject(db_source=db_source, **db_source.get_by_id("Subjects", element_id))

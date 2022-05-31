@@ -2,7 +2,7 @@ class LessonValidator:
 
     def validate(self, request: dict, method: str):
 
-        required_keys = {'start_time', 'end_time', 'notes', 'teacher_id', 'group_id', 'subject_id', 'date'}
+        required_keys = {'start_time', 'end_time', 'notes', 'state', 'teacher_id', 'group_id', 'subject_id', 'date'}
         allowed_keys = {'start_time', 'end_time', 'notes', 'state', 'teacher_id', 'group_id', 'subject_id', 'date'}
 
         if method == 'PUT':

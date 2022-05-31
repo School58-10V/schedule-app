@@ -4,9 +4,9 @@ from typing import Optional, List, TYPE_CHECKING
 
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
+from data_model.student import Student
 from data_model.students_for_groups import StudentsForGroups
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
-from data_model.timetable import TimeTable
 
 if TYPE_CHECKING:
     from adapters.abstract_source import AbstractSource
@@ -70,18 +70,17 @@ class LessonRow(AbstractModel):
             "timetable_id": self.get_timetable_id(),
             "object_id": self.get_main_id()}
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return f'LessonRow(day_of_the_week={self.get_day_of_the_week()}, group_id={self.get_group_id()}' \
-               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), ' \
-               f' start_time={self.get_start_time()}), end_time={self.get_end_time()}), ' \
-               f' timetable_id={self.get_timetable_id()}), object_id={self.get_main_id()})'
+               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), start_time={self.get_start_time()})' \
+               f', end_time={self.get_end_time()}), timetable_id={self.get_timetable_id()})' \
+               f', object_id={self.get_main_id()})'
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'Урок в день недели номер {self.get_day_of_the_week() + 1} который начинается в {self.get_start_time()}'
 
     @classmethod
     def prettify_time(cls, time):
-        """ Превращает тысяча десять в 10:10 """
         hours = time // 100
         minutes = time % 100
         return str(hours).zfill(2) + ':' + str(minutes).zfill(2)
@@ -103,7 +102,7 @@ class LessonRow(AbstractModel):
                 timetable_id = i[6]
 
                 res.append(ParsedData(None, LessonRow(db_source=db_source,
-                                                      day_of_the_week=int(day_of_the_week),
+                                                      day_of_the_week=day_of_the_week,
                                                       group_id=int(group_id),
                                                       subject_id=int(subject_id),
                                                       room_id=int(room_id),
@@ -162,7 +161,7 @@ class LessonRow(AbstractModel):
         return self
 
     @classmethod
-    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List:
+    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource):
         """
 
         :param group_id: идшник группы
@@ -179,12 +178,15 @@ class LessonRow(AbstractModel):
 
     @classmethod
     def get_all_by_student_id(cls, student_id: int, db_source: AbstractSource) -> List[LessonRow]:
-        """ возвращает все lessonrow для student """
+        """ возвращает все lessonrow для student"""
         group_list = StudentsForGroups.get_group_by_student_id(student_id, db_source)
-        lessonrow_list = []
-        for i in group_list:
-            for lr in db_source.get_by_query(cls._get_collection_name(), {"group_id": i.get_main_id(), "timetable_id": TimeTable.get_current_timetable(db_source).get_main_id()}):
-                lessonrow_list.append(LessonRow(db_source, **lr))
+        lessonrow_list = [
+            LessonRow(db_source=db_source, **(db_source.get_by_query(
+                        cls._get_collection_name(),
+                        {"group_id": group.get_main_id()})[0])
+                      )
+            for group in group_list
+        ]
         return lessonrow_list
 
     @classmethod

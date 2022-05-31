@@ -80,11 +80,11 @@ class Location(AbstractModel):
 
         return res
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f'Location(location_type={self.get_location_type()}, num_of_class={self.get_location_desc()}, ' \
                f'link={self.get_link()}, comment={self.get_comment()})'
 
-    def __dict__(self) -> dict:
+    def __dict__(self):
         return {'location_type': self.get_location_type(),
                 'object_id': self.get_main_id(),
                 'location_desc': self.get_location_desc(),
@@ -95,5 +95,5 @@ class Location(AbstractModel):
                 'comment': self.get_comment()}
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource) -> Location:
+    def get_by_id(cls, element_id: int, db_source: DBSource):
         return Location(db_source=db_source, **db_source.get_by_id("Locations", element_id))
