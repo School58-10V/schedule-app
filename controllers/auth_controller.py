@@ -24,20 +24,24 @@ TOKEN_EXP_TIME = datetime.timedelta(days=14)
 # Генерирует токен по информации о пользователе и возвращает его
 @app.route('/api/v1/login', methods=['POST'])
 def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
+    print('Get request')
     login, password = request.json.get('login'), request.json.get('password')
+    print(request.json)
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
+    print(login, password)
     # TODO: if login/password are missing, abort
     data = {
         'login': login, 'user_ip': user_ip,
         'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
         }
+    print(data)
     try:
         user = User.get_by_login(login=login, db_source=app.config.get('auth_db_source'))
     except ValueError:
         return '', 401
     if not user.compare_hash(password):
         return jsonify(""), 401
-
+    print('Debug')
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
     return jsonify({'token': encoded_data})
 

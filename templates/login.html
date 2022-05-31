@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <a href="/register">Зарегистрироваться</a>
+
+
+    <input type="text" id="loginField">
+    <input type="password" id="passwordField">
+    <input type="submit" id="sendButton">
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="static/js/login.js"></script>
+{% endblock %}
