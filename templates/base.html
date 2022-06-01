@@ -6,17 +6,32 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+        nav, .wrapper{
+            text-align: center;
+            margin: auto;
+            width: 1000px;
+        }
+        nav > a{
+            margin: 0px 20px
+        }
     </style>
 </head>
 <body>
     <nav>
         <a href="/">Главная</a>
         <a href="/login">Войти</a>
+        <a href="/logout">Выход</a>
     </nav>
 
+    <div class="wrapper">
     {% block main %}
     {% endblock %}
+    </div>
 
+
+    {% block footer %}
+    {% endblock %}
+    
     {% block script %}
     {% endblock %}
 </body>

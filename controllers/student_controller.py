@@ -49,7 +49,7 @@ def get_students_detailed() -> Response:
         return "", 500
 
 
-@app.route("/api/v1/students/get/detailed/<int:object_id>", methods=["GET"])
+@app.route("/api/v1/students/detailed/<int:object_id>", methods=["GET"])
 def get_student_by_id_detailed(object_id: int) -> Tuple[str, int] | Response:
     try:
         result = Student.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()

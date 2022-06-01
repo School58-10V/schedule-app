@@ -15,6 +15,36 @@ def login_page():
     return render_template('login.html')
 
 
+@app.route('/logout', methods=['GET'])
+def logout_page():
+    return render_template('logout.html')
+
+
 @app.route('/register', methods=['GET'])
 def register_page():
     return render_template('register.html')
+
+
+@app.route('/students', methods=['GET'])
+def students_page():
+    return render_template('students.html')
+
+
+@app.route('/groups', methods=['GET'])
+def groups_page():
+    return render_template('groups.html')
+
+
+@app.route('/lessons', methods=['GET'])
+def lessons_page():
+    return render_template('lessons.html')
+
+
+@app.route('/teachers', methods=['GET'])
+def teachers_page():
+    return render_template('teachers.html')
+
+
+@app.route('/subjects', methods=['GET'])
+def subjects_page():
+    return render_template('subjects.html')

@@ -1,17 +1,17 @@
-import { BASE_PATH } from './config.js'
-import { setCookie } from './usefulFunctions.js'
-// import Cookie from '../../node_modules/js-cookie/dist/js.cookie.mjs'
+import { BASE_PATH } from "./config.js";
+import { setCookie } from "./usefulFunctions";
 
-sendButton.addEventListener('click', (e)=>{
+
+registerButton.addEventListener('click', (e) => {
     e.preventDefault();
 
     let request = new XMLHttpRequest();
-    let url = BASE_PATH + '/login';
+    let url = BASE_PATH + '/register';
     request.open('POST', url);
-    console.log(url);
 
     let data = JSON.stringify({
         "login": loginField.value,
+        "fullname": fullnameField.value,
         "password": passwordField.value
     });
 
@@ -21,6 +21,7 @@ sendButton.addEventListener('click', (e)=>{
     request.send(data);
 
     loginField.value = '';
+    fullnameField.value = '';
     passwordField.value = '';
 
     request.onload = () => {
@@ -34,13 +35,7 @@ sendButton.addEventListener('click', (e)=>{
             };
 
             setCookie('token', token, time);
-            
             window.location.pathname = '/';
         }
-        else if (request.status == 401){
-            loginField.style.borderColor = 'red';
-            passwordField.style.borderColor = 'red';
-            loginField.placeholder = 'Неверные данные';
-        }
     };
-})
+});
