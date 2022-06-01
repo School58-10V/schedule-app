@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Все предметы:</h1>
+<table id="subjectsTable" border=1 frame=void>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>ID учителей</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block footer %}
+<nav>
+    <a href="/students">Список учеников</a>
+    <a href="/groups">Список классов</a>
+    <a href="/lessons">Список уроков</a>
+    <a href="/teachers">Список учителей</a>
+    <a href="/subjects">Список предметов</a>
+</nav>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/subjects.js"></script>
+{% endblock %}
