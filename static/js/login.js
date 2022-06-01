@@ -1,5 +1,5 @@
 import { BASE_PATH } from './config.js'
-import Cookies from 'js-cookie'
+import cookie from js-cookie
 
 
 sendButton.addEventListener('click', (e)=>{
