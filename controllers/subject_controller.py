@@ -55,7 +55,7 @@ def get_subjects_detailed() -> Response:
 @app.route("/api/v1/subjects/<int:object_id>", methods=["GET"])
 def get_subject_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
-        dct = Subject.get_by_id(db_source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
+        dct = Subject.get_by_id(source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
         dct['teachers'] = [i.get_main_id() for i in
                            TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
                                "schedule_db_source"))]
@@ -73,11 +73,11 @@ def create_subject() -> Union[Tuple[str, int], Response]:
     except:
         return "", 400
     try:
-        subject = Subject(subject_name=req["subject_name"], db_source=app.config.get("schedule_db_source")).save()
+        subject = Subject(subject_name=req["subject_name"], source=app.config.get("schedule_db_source")).save()
         if "teachers" in req.keys():
             for elem in req["teachers"]:
                 tfs = TeachersForSubjects(subject_id=subject.get_main_id(), teacher_id=int(elem),
-                                          db_source=app.config.get("schedule_db_source")).save()
+                                          source=app.config.get("schedule_db_source")).save()
         result = subject.__dict__()
         result["teachers"] = req["teachers"]
         return jsonify(result)
@@ -127,7 +127,7 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
             req_teachers = None
 
         new_subject.update(req)
-        new_subject = Subject(**new_subject, db_source=app.config.get("schedule_db_source")).save()
+        new_subject = Subject(**new_subject, source=app.config.get("schedule_db_source")).save()
         new_subject_dict = new_subject.__dict__()
         new_subject_dict['teachers'] = req_teachers if req_teachers else [i.get_main_id() for i in
                                                                           new_subject.get_teachers()]
@@ -142,7 +142,7 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
 @app.route("/api/v1/subject/detailed/<int:object_id>", methods=["GET"])
 def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
-        dct = Subject.get_by_id(db_source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
+        dct = Subject.get_by_id(source=app.config.get("schedule_db_source"), element_id=object_id).__dict__()
         dct['teachers'] = [i.__dict__() for i in
                            TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
                                "schedule_db_source"))]

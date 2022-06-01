@@ -9,7 +9,7 @@ from data_model.parsed_data import ParsedData
 from data_model.student import Student
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class Group(AbstractModel):
@@ -18,10 +18,10 @@ class Group(AbstractModel):
     """
 
     def __init__(
-            self, db_source: DBSource, teacher_id: int, class_letter: str, grade: int,
+            self, source: AbstractSource, teacher_id: int, class_letter: str, grade: int,
             profile_name: str, object_id: Optional[int] = None
     ):
-        super().__init__(db_source)
+        super().__init__(source)
         self.__teacher_id = teacher_id
         self.__class_letter = class_letter
         self.__grade = grade
@@ -41,7 +41,7 @@ class Group(AbstractModel):
         return self.__profile_name
 
     @staticmethod
-    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Group])]:
+    def parse(file_location: str, db_source: AbstractSource) -> List[(Optional[str], Optional[Group])]:
         # ввод; адрес файла,
         with open(file_location, encoding='utf-8') as file:
             # файл теперь в file
@@ -57,7 +57,7 @@ class Group(AbstractModel):
                     grade = i[2]
                     profile_name = i[3]
                     # тут наполняем список
-                    res.append(ParsedData(None, Group(db_source=db_source,
+                    res.append(ParsedData(None, Group(source=source,
                                                       teacher_id=int(teacher_id),
                                                       class_letter=class_letter,
                                                       grade=int(grade),
@@ -88,25 +88,24 @@ class Group(AbstractModel):
 
     def get_all_students(self) -> List[Student]:
         """
-           Возвращает список объектов GroupsForStudents используя db_source данный в __init__()
-           :return: список словарей объектов Student
+           Возвращает список объектов Student, у которых эта конкретная группа
         """
-        return StudentsForGroups.get_student_by_group_id(self.get_main_id(), self._db_source)
+        return StudentsForGroups.get_student_by_group_id(self.get_main_id(), self._source)
 
     def append_student(self, student: Student) -> Group:
         """
             Сохраняем нового студента для группы. На ввод объект класса Student, который мы хотим
             добавить, на вывод self
         """
-        for i in StudentsForGroups.get_student_by_group_id(self.get_main_id(), self.get_db_source()):
+        for i in StudentsForGroups.get_student_by_group_id(self.get_main_id(), self.get_source()):
             if i.get_main_id() == student.get_main_id():
                 return self
 
-        StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
+        StudentsForGroups(self._source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
         return self
 
     def get_lesson_rows(self) -> List[LessonRow]:
-        return LessonRow.get_lesson_rows_by_group_id(self.get_main_id(), self.get_db_source())
+        return LessonRow.get_lesson_rows_by_group_id(self.get_main_id(), self.get_source())
 
     def remove_student(self, student: Student) -> Group:
         """
@@ -114,7 +113,7 @@ class Group(AbstractModel):
             удалить, на вывод self
         """
         # Берем все объекты смежной сущности, проходим по нему циклом
-        for i in StudentsForGroups.get_by_student_and_group_id(db_source=self._db_source, group_id=self.get_main_id(),
+        for i in StudentsForGroups.get_by_student_and_group_id(source=self._source, group_id=self.get_main_id(),
                                                                student_id=student.get_main_id()):
 
             # И все удаляем

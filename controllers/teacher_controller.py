@@ -29,10 +29,10 @@ def get_teachers() -> Response:
             teacher = i.__dict__()
             teacher['subject_id'] = [j.get_main_id() for j in TeachersForSubjects.
                 get_subjects_by_teacher_id(i.get_main_id(),
-                                           db_source=app.config.get("schedule_db_source"))]
+                                           source=app.config.get("schedule_db_source"))]
             teacher['lesson_row_id'] = [j.get_main_id() for j in TeachersForLessonRows.
                 get_lesson_rows_by_teacher_id(i.get_main_id(),
-                                              db_source=app.config.get("schedule_db_source"))]
+                                              source=app.config.get("schedule_db_source"))]
             teachers.append(teacher)
         return jsonify(teachers)
     except Exception as err:
@@ -47,10 +47,10 @@ def get_teacher_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.get_main_id() for i in TeachersForSubjects.
             get_subjects_by_teacher_id(object_id,
-                                       db_source=app.config.get("schedule_db_source"))]
+                                       source=app.config.get("schedule_db_source"))]
         teacher['lesson_row_id'] = [i.get_main_id() for i in TeachersForLessonRows.
             get_lesson_rows_by_teacher_id(object_id,
-                                          db_source=app.config.get("schedule_db_source"))]
+                                          source=app.config.get("schedule_db_source"))]
         return jsonify(teacher)
     except ValueError:
         return '', 404
@@ -65,10 +65,10 @@ def get_detailed_teachers() -> Response:
             teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
             teacher['subject'] = [i.__dict__() for i in TeachersForSubjects.
                 get_subjects_by_teacher_id(object_id,
-                                           db_source=app.config.get("schedule_db_source"))]
+                                           source=app.config.get("schedule_db_source"))]
             teacher['lesson_row'] = [i.__dict__() for i in TeachersForLessonRows.
                 get_lesson_rows_by_teacher_id(object_id,
-                                              db_source=app.config.get("schedule_db_source"))]
+                                              source=app.config.get("schedule_db_source"))]
             teachers.append(teacher)
         return jsonify(teachers)
     except Exception as err:
@@ -82,10 +82,10 @@ def get_teacher_detailed_by_id(object_id: int) -> Union[Response, Tuple[str, int
         teacher = Teacher.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         teacher['subject_id'] = [i.__dict__() for i in TeachersForSubjects.
             get_subjects_by_teacher_id(object_id,
-                                       db_source=app.config.get("schedule_db_source"))]
+                                       source=app.config.get("schedule_db_source"))]
         teacher['lesson_row_id'] = [i.__dict__() for i in TeachersForLessonRows.
             get_lesson_rows_by_teacher_id(object_id,
-                                          db_source=app.config.get("schedule_db_source"))]
+                                          source=app.config.get("schedule_db_source"))]
         return jsonify(teacher)
     except ValueError:
         return '', 404
@@ -106,15 +106,15 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
         if 'lesson_row_id' in dct:
             subject_id = dct.pop('lesson_row_id')
 
-        new_teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
+        new_teacher = Teacher(**dct, source=app.config.get("schedule_db_source")).save()
 
         for i in subject_id:
             TeachersForSubjects(teacher_id=new_teacher.get_main_id(), subject_id=i,
-                                db_source=app.config.get("schedule_db_source")).save()
+                                source=app.config.get("schedule_db_source")).save()
 
         for i in lesson_row_id:
             TeachersForLessonRows(teacher_id=new_teacher.get_main_id(), lesson_row_id=i,
-                                  db_source=app.config.get("schedule_db_source")).save()
+                                  source=app.config.get("schedule_db_source")).save()
 
         new_teacher_dct = new_teacher.__dict__()
         new_teacher_dct['subject_id'] = subject_id
@@ -138,7 +138,7 @@ def update_teacher(object_id: int) -> Union[Tuple[str, int], Response]:
         return "", 400
     dct = request.get_json()
     try:
-        Teacher.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        Teacher.get_by_id(object_id, source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
     lesson_row_id = []
@@ -147,7 +147,7 @@ def update_teacher(object_id: int) -> Union[Tuple[str, int], Response]:
     subject_id = []
     if 'subject_id' in dct:
         subject_id += dct.pop('subject_id')
-    teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
+    teacher = Teacher(**dct, source=app.config.get("schedule_db_source")).save()
 
     for i in teacher.get_lesson_rows():
         if i.get_main_id() not in lesson_row_id:
@@ -159,10 +159,10 @@ def update_teacher(object_id: int) -> Union[Tuple[str, int], Response]:
 
     try:
         for i in lesson_row_id:
-            teacher.append_lesson_row(LessonRow.get_by_id(i, db_source=app.config.get("schedule_db_source")))
+            teacher.append_lesson_row(LessonRow.get_by_id(i, source=app.config.get("schedule_db_source")))
 
         for i in subject_id:
-            teacher.append_subject(Subject.get_by_id(i, db_source=app.config.get("schedule_db_source")))
+            teacher.append_subject(Subject.get_by_id(i, source=app.config.get("schedule_db_source")))
     except ValueError:
         return '', 400
 

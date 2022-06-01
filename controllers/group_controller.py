@@ -59,10 +59,10 @@ def create_group() -> Union[Response, Tuple[str, int]]:
         student = []
         if 'students' in dct:
             student = dct.pop('students')
-        group = Group(**dct, db_source=app.config.get("schedule_db_source")) \
+        group = Group(**dct, source=app.config.get("schedule_db_source")) \
             .save()
         for i in student:
-            student1 = Student.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+            student1 = Student.get_by_id(i, source=app.config.get('schedule_db_source'))
             group.append_student(student1)
         dct = group.__dict__()
         dct['students'] = student
@@ -84,7 +84,7 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
         return "", 400
 
     try:
-        group = Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        group = Group.get_by_id(object_id, source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
 
@@ -96,17 +96,17 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
     add_students = list(set(student_id) - set(old_students_id))
     try:
         for i in delete_students:
-            student1 = Student.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+            student1 = Student.get_by_id(i, source=app.config.get('schedule_db_source'))
             group.remove_student(student1)
 
         for i in add_students:
-            student1 = Student.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+            student1 = Student.get_by_id(i, source=app.config.get('schedule_db_source'))
             group.append_student(student1)
 
     except ValueError:
         return '', 400
 
-    dct = Group(**dct, db_source=app.config.get('schedule_db_source')).save().__dict__()
+    dct = Group(**dct, source=app.config.get('schedule_db_source')).save().__dict__()
     dct['students'] = student_id
     return jsonify(dct)
 
@@ -134,7 +134,7 @@ def get_all_detailed() -> Response:
     for i in Group.get_all(app.config.get("schedule_db_source")):
         local_dct = i.__dict__()
         local_dct['students'] = [i.__dict__() for i in StudentsForGroups.get_student_by_group_id(
-            i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+            i.get_main_id(), source=app.config.get("schedule_db_source"))]
         global_dct.append(local_dct.copy())
     return jsonify(global_dct)
 
@@ -149,7 +149,7 @@ def get_detailed_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]
     try:
         dct = Group.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['students'] = [i.__dict__() for i in StudentsForGroups.get_student_by_group_id(
-            object_id, db_source=app.config.get("schedule_db_source"))]
+            object_id, source=app.config.get("schedule_db_source"))]
         return jsonify(dct)
     except ValueError:
         return '', 404

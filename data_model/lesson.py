@@ -1,18 +1,19 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 
-from data_model.abstract_model import AbstractModel
-from typing import List, Optional, TYPE_CHECKING
-from data_model.parsed_data import ParsedData
 import datetime
+from typing import List, Optional, TYPE_CHECKING
+
+from data_model.abstract_model import AbstractModel
+from data_model.parsed_data import ParsedData
 from data_model.teacher import Teacher
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class Lesson(AbstractModel):
 
-    def __init__(self, db_source: DBSource, start_time: int, end_time: int, date: datetime.date, teacher_id: int,
+    def __init__(self, source: AbstractSource, start_time: int, end_time: int, date: datetime.date, teacher_id: int,
                  group_id: int,
                  subject_id: int, notes: str, object_id: Optional[int] = None, state: Optional[bool] = True):
         """
@@ -26,7 +27,7 @@ class Lesson(AbstractModel):
             :param group_id: урок
             :param state: состояние
         """
-        super().__init__(db_source)
+        super().__init__(source)
         self.__start_time = start_time
         self.__end_time = end_time
         self.__date = date
@@ -72,7 +73,7 @@ class Lesson(AbstractModel):
         return self.__state
 
     @staticmethod
-    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Lesson])]:
+    def parse(file_location: str, db_source: AbstractSource) -> List[(Optional[str], Optional[Lesson])]:
         with open(file_location, encoding='utf-8') as file:
             lines = file.read().split('\n')[1:]
             lines = [i.split(';') for i in lines]
@@ -87,7 +88,7 @@ class Lesson(AbstractModel):
                     subject_id = i[5]
                     notes = i[6]
                     state = i[7] == 'True'
-                    res.append(ParsedData(None, Lesson(db_source=db_source,
+                    res.append(ParsedData(None, Lesson(source=source,
                                                        start_time=int(start_time),
                                                        end_time=int(end_time),
                                                        date=datetime.datetime.strptime(day, "%Y-%m-%d").date(),
@@ -124,19 +125,24 @@ class Lesson(AbstractModel):
                 "state": self.get_state()}
 
     @classmethod
-    def get_today_replacements(cls, db_source: DBSource, date: datetime.date = datetime.date.today()) -> List[Lesson]:
-        replacements = [Lesson.get_by_id(i['object_id'], db_source)
-                        for i in db_source.get_by_query(cls._get_collection_name(),
-                                                        {"day": date})]
+    def get_today_replacements(
+            cls, source: AbstractSource, date: datetime.date = datetime.date.today()
+    ) -> List[Lesson]:
+        replacements = [
+            Lesson.get_by_id(i['object_id'], source)
+            for i in source.get_by_query(cls._get_collection_name(), {"day": date})
+        ]
         return replacements
 
     @classmethod
-    def get_replacements_by_teacher(cls, db_source: DBSource, teacher: str,
-                                    date: datetime.date = datetime.date.today()) -> List[Lesson]: # если ошибка в типе, я лох
-        replacements_today = [Lesson.get_by_id(i['object_id'], db_source)
-                              for i in db_source.get_by_query(cls._get_collection_name(),
-                                                              {"day": date})]
-        teacher_info = Teacher.get_by_name(teacher, db_source)
+    def get_replacements_by_teacher(
+            cls, source: AbstractSource, teacher: str,
+            date: datetime.date = datetime.date.today()
+    ) -> List[Lesson]:  # если ошибка в типе, я лох
+        replacements_today = [Lesson.get_by_id(i['object_id'], source)
+                              for i in source.get_by_query(cls._get_collection_name(),
+                                                           {"day": date})]
+        teacher_info = Teacher.get_by_name(teacher, source)
         teacher_id = teacher_info[0].get_main_id()
         # replacements = ', '.join([replacements_today
         #                            for i in db_source.get_by_query(cls._get_collection_name(),

@@ -11,7 +11,7 @@ from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.teachers_for_subjects import TeachersForSubjects
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
     from data_model.subject import Subject
 
 
@@ -26,10 +26,10 @@ class Teacher(AbstractModel):
         subject - его предмет.
     """
 
-    def __init__(self, db_source: DBSource, fio: str, object_id: Optional[int] = None,
+    def __init__(self, source: AbstractSource, fio: str, object_id: Optional[int] = None,
                  office_id: int = None, bio: str = None,
                  contacts: str = None):
-        super().__init__(db_source)
+        super().__init__(source)
         self.__fio = fio
         self._object_id = object_id
         self.__bio = bio
@@ -49,7 +49,7 @@ class Teacher(AbstractModel):
         return self.__office_id
 
     @staticmethod
-    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Teacher])]:
+    def parse(file_location: str, db_source: AbstractSource) -> List[(Optional[str], Optional[Teacher])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
@@ -63,7 +63,7 @@ class Teacher(AbstractModel):
                     contacts = i[2]
                     office_id = int(i[3])
 
-                    res.append(ParsedData(None, Teacher(db_source=db_source, fio=fio,
+                    res.append(ParsedData(None, Teacher(source=source, fio=fio,
                                                         office_id=office_id, bio=bio,
                                                         contacts=contacts, object_id=None)))
                 except IndexError as e:
@@ -82,14 +82,14 @@ class Teacher(AbstractModel):
             Возвращает список объектов LessonRow используя db_source данный в __init__()
             :return: список объектов LessonRow
         """
-        return TeachersForLessonRows.get_lesson_rows_by_teacher_id(self.get_main_id(), self.get_db_source())
+        return TeachersForLessonRows.get_lesson_rows_by_teacher_id(self.get_main_id(), self.get_source())
 
     def get_subjects(self) -> List[Subject]:
         """
             Возвращает список объектов Subject используя db_source данный в __init__()
             :return: список объектов Subject
         """
-        return TeachersForSubjects.get_subjects_by_teacher_id(self.get_main_id(), self.get_db_source())
+        return TeachersForSubjects.get_subjects_by_teacher_id(self.get_main_id(), self.get_source())
 
     def append_lesson_row(self, lesson_row_obj: LessonRow) -> Teacher:
         """
@@ -97,7 +97,7 @@ class Teacher(AbstractModel):
         :param lesson_row_obj: LessonRow связь с которым мы хотим создать
         :return:
         """
-        obj = TeachersForLessonRows(self.get_db_source(), lesson_row_id=lesson_row_obj.get_main_id(),
+        obj = TeachersForLessonRows(self.get_source(), lesson_row_id=lesson_row_obj.get_main_id(),
                                     teacher_id=self.get_main_id())
         for i in self.get_lesson_rows():
             if obj.get_lesson_row_id() == i.get_main_id():
@@ -112,7 +112,7 @@ class Teacher(AbstractModel):
         :return: сущность Teacher над которой работаем
         """
         obj = TeachersForSubjects(
-            self.get_db_source(), subject_id=subject_obj.get_main_id(),
+            self.get_source(), subject_id=subject_obj.get_main_id(),
             teacher_id=self.get_main_id()
         )
         for i in self.get_subjects():
@@ -127,7 +127,7 @@ class Teacher(AbstractModel):
         :param lesson_row_obj: LessonRow связь с которым мы хотим удалить
         :return: сущность Teacher над которой работаем
         """
-        for i in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_obj.get_main_id(), self.get_main_id(), self.get_db_source()):
+        for i in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_obj.get_main_id(), self.get_main_id(), self.get_source()):
             i.delete()
         return self
 
@@ -137,13 +137,13 @@ class Teacher(AbstractModel):
         :param subject_obj: Subject связь с которым мы хотим удалить
         :return: сущность Teacher над которой работаем
         """
-        for i in TeachersForSubjects.get_by_subject_and_teacher_id(subject_obj.get_main_id(), self.get_main_id(), self.get_db_source()):
+        for i in TeachersForSubjects.get_by_subject_and_teacher_id(subject_obj.get_main_id(), self.get_main_id(), self.get_source()):
             i.delete()
         return self
 
     @classmethod
-    def get_by_name(cls, name: str, db_source: AbstractSource) -> List[Teacher]:
-        return [Teacher(db_source, **i) for i in db_source.get_by_query(cls._get_collection_name(), {'fio': name})]
+    def get_by_name(cls, name: str, source: AbstractSource) -> List[Teacher]:
+        return [Teacher(source, **i) for i in source.get_by_query(cls._get_collection_name(), {'fio': name})]
 
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),

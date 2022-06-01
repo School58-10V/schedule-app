@@ -6,7 +6,7 @@ from adapters.abstract_source import AbstractSource
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
     from data_model.group import Group
     from data_model.student import Student
 
@@ -20,9 +20,9 @@ class StudentsForGroups(AbstractModel):
         object_id - айди группы учeников
     """
 
-    def __init__(self, db_source: DBSource, student_id: int,
+    def __init__(self, source: AbstractSource, student_id: int,
                  group_id: int, object_id: Optional[int] = None):
-        super().__init__(db_source)
+        super().__init__(source)
         self.__student_id = student_id
         self.__group_id = group_id
         self._object_id = object_id
@@ -38,7 +38,7 @@ class StudentsForGroups(AbstractModel):
         return self.__group_id
 
     #    @staticmethod
-    #    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
+    #    def parse(file_location: str, db_source: AbstractSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
     #        f = open(file_location, encoding='utf-8')
     #        lines = f.read().split('\n')[1:]
     #        lines = [i.split(';') for i in lines]
@@ -49,7 +49,7 @@ class StudentsForGroups(AbstractModel):
     #                student_id = int(i[0])
     #                group_id = int(i[1])
     #                res.append(ParsedData(None, StudentsForGroups(student_id=student_id,
-    #                                                             group_id=group_id, db_source=db_source)))
+    #                                                             group_id=group_id, source=db_source)))
     #            except IndexError as e:
     #                exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
     #                print(exception_text)
@@ -71,24 +71,24 @@ class StudentsForGroups(AbstractModel):
                 'object_id': self.get_main_id()}
 
     @classmethod
-    def get_group_by_student_id(cls, student_id: int, db_source: AbstractSource) -> List[Group]:
+    def get_group_by_student_id(cls, student_id: int, source: AbstractSource) -> List[Group]:
         from data_model.group import Group
-        return [Group.get_by_id(i['group_id'], db_source=db_source)
-                for i in db_source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
+        return [Group.get_by_id(i['group_id'], source=source)
+                for i in source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
 
     @classmethod
-    def get_student_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List[Student]:
+    def get_student_by_group_id(cls, group_id: int, source: AbstractSource) -> List[Student]:
         from data_model.student import Student
-        return [Student.get_by_id(i['student_id'], db_source=db_source)
-                for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
+        return [Student.get_by_id(i['student_id'], source=source)
+                for i in source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
 
     @classmethod
     def get_by_student_and_group_id(cls, group_id: int, student_id: int,
-                                    db_source: AbstractSource) -> List[StudentsForGroups]:
+                                    source: AbstractSource) -> List[StudentsForGroups]:
         res = []
         # Проходим циклом по списку словарей с данными про объекты,
         # в которых student_id и group_id, которые нам нужны
         # и переводим их в объекты класса
-        for i in db_source.get_by_query(cls._get_collection_name(), {"student_id": student_id, 'group_id': group_id}):
-            res.append(cls(**i, db_source=db_source))
+        for i in source.get_by_query(cls._get_collection_name(), {"student_id": student_id, 'group_id': group_id}):
+            res.append(cls(**i, source=source))
         return res

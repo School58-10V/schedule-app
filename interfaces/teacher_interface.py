@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from tabulate import tabulate
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class TeacherInterface:
@@ -17,7 +17,7 @@ class TeacherInterface:
                        (7, "Посмотреть информацию о каникулах"),
                        (8, "Мой следующий урок")], ['Опция', 'Команда'], tablefmt='grid')
 
-    def __init__(self, db_source: DBSource, teacher_id: int):
+    def __init__(self, source: AbstractSource, teacher_id: int):
         self.__db_source = db_source
         self.__teacher_id = teacher_id
         # Список, который хранит все методы для удобного вызова (его в общем, надо сюда)

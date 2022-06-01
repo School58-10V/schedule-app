@@ -6,21 +6,21 @@ from typing import List, Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from data_model.subject import Subject
     from data_model.teacher import Teacher
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class TeachersForSubjects(AbstractModel):
     """
         Вспомогательный класс для реализации связей many to many между Subject и Teacher
     """
-    def __init__(self, db_source: DBSource, teacher_id: int, subject_id: int, object_id: Optional[int] = None):
+    def __init__(self, source: AbstractSource, teacher_id: int, subject_id: int, object_id: Optional[int] = None):
         """
             :param teacher_id - Идентификационный номер Teacher
             :param subject_id - Идентификационный номер Subject
             :param object_id - Идентификационный номер SubjectForTeacher(опционально)
 
         """
-        super().__init__(db_source)
+        super().__init__(source)
         self.__teacher_id = teacher_id
         self.__subject_id = subject_id
         self._object_id = object_id
@@ -46,34 +46,34 @@ class TeachersForSubjects(AbstractModel):
         return "TeachersForSubjects"
 
     @classmethod
-    def get_teachers_by_subject_id(cls, subject_id: int, db_source: DBSource) -> List[Teacher]:
+    def get_teachers_by_subject_id(cls, subject_id: int, source: AbstractSource) -> List[Teacher]:
         # в качестве аргумента подаем id, по которому будем искать все Teacher
         from data_model.teacher import Teacher
-        return [Teacher.get_by_id(i["teacher_id"], db_source) for i in
-                db_source.get_by_query(cls._get_collection_name(), query={"subject_id": subject_id})]
+        return [Teacher.get_by_id(i["teacher_id"], source) for i in
+                source.get_by_query(cls._get_collection_name(), query={"subject_id": subject_id})]
         # используя метод get_by_query достаем "SubjectsAndTeachers", в описании которых ключ "subject_id" соответствует
         # subject_id в вводимом аргументе. Из полученного списка словарей достаем из каждого словаря
         # по ключу "subject_id" его id и передаем в метод, вызываемой от класса Teacher
 
     @classmethod
-    def get_subjects_by_teacher_id(cls, teacher_id: int, db_source: DBSource) -> List[Subject]:  # в качестве
+    def get_subjects_by_teacher_id(cls, teacher_id: int, source: AbstractSource) -> List[Subject]:  # в качестве
         from data_model.subject import Subject
 
         return [
-            Subject.get_by_id(i['subject_id'], db_source=db_source)
-            for i in db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
+            Subject.get_by_id(i['subject_id'], source=source)
+            for i in source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
         ]
 
 
     @classmethod
-    def get_by_subject_and_teacher_id(cls, subject_id: int, teacher_id: int, db_source: DBSource) -> list:
+    def get_by_subject_and_teacher_id(cls, subject_id: int, teacher_id: int, source: AbstractSource) -> list:
         """
         список обьектов этого класса в котором у нас совподают идишник который мы передали
 
         :param teacher_id: идшник Teacher у которого есть Lesson_row
         :param subject_id: идшник Subject который есть у учитель
-        :param db_source: класс укоторого у нас есть нужный нам метод get_by_query
+        :param source: источник данных
         :return: список обьектов этого класса в котором у нас совподают идишник который мы передали
         """
-        objs = db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'subject_id': subject_id})
-        return [cls(**obj, db_source=db_source) for obj in objs]
+        objs = source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'subject_id': subject_id})
+        return [cls(**obj, source=source) for obj in objs]

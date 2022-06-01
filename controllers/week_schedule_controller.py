@@ -29,20 +29,20 @@ def get_week_schedule():
         raise NotImplementedError('Если больше одного ученика с одним именем, мы падаем :(')
 
     lessonrow_list = LessonRow.get_all_by_student_id(student_list[0].get_main_id(),
-                                                     db_source=app.config.get('schedule_db_source'))
+                                                     source=app.config.get('schedule_db_source'))
     data = []
     weekdays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', "Пятница", "Суббота", "Воскресенье"]
     for lr in lessonrow_list:
         obj = {
             'День недели': weekdays[lr.get_day_of_the_week()],
-            'Предмет': Subject.get_by_id(lr.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name(),
+            'Предмет': Subject.get_by_id(lr.get_subject_id(), source=app.config.get('schedule_db_source')).get_subject_name(),
             'Начальное время': LessonRow.prettify_time(lr.get_start_time()),
             'Конечное время': LessonRow.prettify_time(lr.get_end_time()),
-            'Номер кабинета': Location.get_by_id(lr.get_room_id(), db_source=app.config.get('schedule_db_source')).get_num_of_class(),
+            'Номер кабинета': Location.get_by_id(lr.get_room_id(), source=app.config.get('schedule_db_source')).get_num_of_class(),
             'Учитель(ля)': ', '.join([
                 i.get_fio()
                 for i in TeachersForLessonRows.get_teachers_by_lesson_row_id(
-                    lr.get_main_id(), db_source=app.config.get('schedule_db_source'))
+                    lr.get_main_id(), source=app.config.get('schedule_db_source'))
             ])
         }
         data.append(obj)

@@ -41,7 +41,7 @@ def create_timetable() -> Union[Response, Tuple[str, int]]:
         return "", 400
     try:
         return jsonify(TimeTable(**request.get_json(),
-                                 db_source=app.config.get("schedule_db_source")).save().__dict__())
+                                 source=app.config.get("schedule_db_source")).save().__dict__())
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
@@ -57,12 +57,12 @@ def update_timetable(object_id: int) -> Union[Tuple[str, int], Response]:
     except ValueError:
         return "", 400
     try:
-        TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        TimeTable.get_by_id(object_id, source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
     try:
         return jsonify(TimeTable(**request.get_json(),
-                                 db_source=app.config.get("schedule_db_source")).save().__dict__())
+                                 source=app.config.get("schedule_db_source")).save().__dict__())
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500

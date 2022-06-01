@@ -19,9 +19,9 @@ PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
 
 def lesson_row_to_string(lesson_row: LessonRow) -> str:
-    subject = Subject.get_by_id(lesson_row.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name()
-    room = Location.get_by_id(lesson_row.get_room_id(), db_source=app.config.get('schedule_db_source')).get_num_of_class()
-    group = Group.get_by_id(lesson_row.get_group_id(), db_source=app.config.get('schedule_db_source'))
+    subject = Subject.get_by_id(lesson_row.get_subject_id(), source=app.config.get('schedule_db_source')).get_subject_name()
+    room = Location.get_by_id(lesson_row.get_room_id(), source=app.config.get('schedule_db_source')).get_num_of_class()
+    group = Group.get_by_id(lesson_row.get_group_id(), source=app.config.get('schedule_db_source'))
     group = str(group.get_grade()) + ' ' + group.get_letter()
 
     # TODO: if time == 1103, str will be 11:3 instead of 11:03. fix later!
@@ -41,15 +41,15 @@ def get_closest_lesson_for_student():
         request_token = request.headers.get('Authorization')
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
         login = data['login']
-        student_name = User.get_by_login(login=login, db_source=app.config.get('auth_db_source')).get_name()
+        student_name = User.get_by_login(login=login, source=app.config.get('auth_db_source')).get_name()
         student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
 
         student_id = student[0].get_main_id()
         student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,
-                                                                   db_source=app.config.get('schedule_db_source'))
+                                                                   source=app.config.get('schedule_db_source'))
         lesson_rows_list: List[LessonRow] = []
 
-        current_timetable = TimeTable.get_by_year(db_source=app.config.get('schedule_db_source'))
+        current_timetable = TimeTable.get_by_year(source=app.config.get('schedule_db_source'))
 
         for i in student_groups:
             var = [j for j in i.get_lesson_rows() if

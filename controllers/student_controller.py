@@ -81,7 +81,7 @@ def create_student() -> Tuple[str, int] | Response:
     try:
         try:
             groups = dct.pop('groups')
-            student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
+            student = Student(**dct, source=app.config.get("schedule_db_source")).save()
             for i in groups:
                 student.append_group_by_id(i)
         except ValueError:
@@ -109,7 +109,7 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
         return "", 400
 
     try:
-        Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        Student.get_by_id(object_id, source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
     try:
@@ -117,7 +117,7 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
 
         if 'groups' in dct:
             groups = dct.pop('groups')
-        result = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
+        result = Student(**dct, source=app.config.get("schedule_db_source")).save()
 
         for i in result.get_all_groups():
             if i.get_main_id() not in groups:
