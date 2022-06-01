@@ -1,11 +1,17 @@
-import datetime
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
-import jwt
+import datetime, jwt
 from flask import request, jsonify
 from jwt import DecodeError, ExpiredSignatureError
 
 from data_model.user import User
 from schedule_app import app
+
+if TYPE_CHECKING:
+    from flask import Response
+    from typing import Tuple, Union, Optional
+
 
 # TODO: тоже заимплементить конфиг (убрать точки со слешами)
 PRIVATE_KEY = open('./keys/schedule-key.pem').read()
@@ -19,9 +25,10 @@ TOKEN_EXP_TIME = datetime.timedelta(days=14)
 
 # Генерирует токен по информации о пользователе и возвращает его
 @app.route('/api/v1/login', methods=['POST'])
-def do_login():
+def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
     login, password = request.json.get('login'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
+    # TODO: if login/password are missing, abort
     data = {
         'login': login, 'user_ip': user_ip,
         'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
@@ -38,7 +45,7 @@ def do_login():
 
 
 @app.route('/api/v1/register', methods=['POST'])
-def register():
+def register() -> Response:
     login, fullname, password = request.json.get('login'), request.json.get('fullname'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     data = {
@@ -56,20 +63,18 @@ def register():
 # выбрасывает ошибку 400 когда токен некорректен
 # выбрасывает ошибку 401 когда данные не соответствуют
 @app.before_request
-def before_request():
+def before_request() -> Optional[Tuple[str, int]]:
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule.rule == '/api/v1/login' or\
-            request.url_rule.rule == '/api/v1/register' or\
+    if request.url_rule is None or\
+            request.path == '/api/v1/login' or\
+            request.path == '/api/v1/register' or\
             request.method.lower() == 'get':
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    except DecodeError:
-        return '', 401
-    except ExpiredSignatureError:
-        # ошибка:
+    except (DecodeError, ExpiredSignatureError):
         return '', 401
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
         return '', 401

@@ -8,3 +8,6 @@ import controllers.student_controller
 import controllers.subject_controller
 import controllers.teacher_controller
 import controllers.timetable_controller
+import controllers.get_holidays_controller
+import controllers.get_closest_lesson_for_student
+import controllers.week_schedule_controller

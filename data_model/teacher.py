@@ -142,8 +142,8 @@ class Teacher(AbstractModel):
         return self
 
     @classmethod
-    def get_by_name(cls, name: str, source: AbstractSource) -> List[Teacher]:
-        return [Teacher(source, **i) for i in source.get_by_query(cls._get_collection_name(), {'fio': name})]
+    def get_by_name(cls, name: str, db_source: AbstractSource) -> List[Teacher]:
+        return [Teacher(db_source, **i) for i in db_source.get_by_query(cls._get_collection_name(), {'fio': name})]
 
     def __dict__(self) -> dict:
         return {"fio": self.get_fio(),
