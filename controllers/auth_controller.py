@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 import datetime, jwt
 from flask import request, jsonify
+from jwt import DecodeError, ExpiredSignatureError
+
 from data_model.user import User
 from schedule_app import app
 
@@ -37,7 +39,6 @@ def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
         return '', 401
     if not user.compare_hash(password):
         return jsonify(""), 401
-
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
     return jsonify({'token': encoded_data})
 
@@ -72,10 +73,7 @@ def before_request() -> Optional[Tuple[str, int]]:
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    except jwt.DecodeError:
-        return '', 401
-    except jwt.ExpiredSignatureError:
-        # ошибка:
+    except (DecodeError, ExpiredSignatureError):
         return '', 401
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
         return '', 401

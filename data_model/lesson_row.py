@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
+
+from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.students_for_groups import StudentsForGroups
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
+from data_model.timetable import TimeTable
 
 if TYPE_CHECKING:
     from adapters.abstract_source import AbstractSource
@@ -77,6 +79,13 @@ class LessonRow(AbstractModel):
     def __str__(self) -> str:
         return f'Урок в день недели номер {self.get_day_of_the_week() + 1} который начинается в {self.get_start_time()}'
 
+    @classmethod
+    def prettify_time(cls, time):
+        """ Превращает тысяча десять в 10:10 """
+        hours = time // 100
+        minutes = time % 100
+        return str(hours).zfill(2) + ':' + str(minutes).zfill(2)
+
     @staticmethod
     def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[LessonRow])]:
         f = open(file_location, encoding='utf-8')
@@ -114,6 +123,7 @@ class LessonRow(AbstractModel):
 
     @classmethod
     def get_all_by_day(cls, week_day: int, db_source: DBSource):
+        # TODO: remove? это разве не тоже самое что и LessonRow.get_by_day()
         lessons = [LessonRow.get_by_id(i['object_id'], db_source)
                    for i in db_source.get_by_query(cls._get_collection_name(),
                                                    {"day_of_the_week": week_day})]
@@ -162,10 +172,20 @@ class LessonRow(AbstractModel):
         return [cls(db_source, **i) for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
 
     @classmethod
-    def get_by_day(cls, day: int, db_source: DBSource) -> List[LessonRow]:
+    def get_by_day(cls, day: int, db_source: AbstractSource) -> List[LessonRow]:
         lessons = [LessonRow.get_by_id(i['object_id'], db_source)
                    for i in db_source.get_by_query(cls._get_collection_name(), {"day_of_the_week": day})]
         return lessons
+
+    @classmethod
+    def get_all_by_student_id(cls, student_id: int, db_source: AbstractSource) -> List[LessonRow]:
+        """ возвращает все lessonrow для student """
+        group_list = StudentsForGroups.get_group_by_student_id(student_id, db_source)
+        lessonrow_list = []
+        for i in group_list:
+            for lr in db_source.get_by_query(cls._get_collection_name(), {"group_id": i.get_main_id(), "timetable_id": TimeTable.get_current_timetable(db_source).get_main_id()}):
+                lessonrow_list.append(LessonRow(db_source, **lr))
+        return lessonrow_list
 
     @classmethod
     def get_by_day_and_student(cls, day: int, student_id: int, db_source: DBSource) -> List[LessonRow]:
