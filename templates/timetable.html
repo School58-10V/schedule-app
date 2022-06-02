@@ -1,18 +1,9 @@
 {% extends 'base.html' %}
 {% block main %}
-<h1>Все уроки:</h1>
-<table id="lessonsTable" border=1 frame=void>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Дата</th>
-            <th>ID класса</th>
-            <th>Название</th>
-            <th>ID урока</th>
-            <th>ID учителя</th>
-        </tr>
-    </thead>
-</table>
+<h1>Расписание</h1>
+<div id="timetable">
+
+</div>
 {% endblock %}
 
 {% block footer %}
@@ -27,5 +18,5 @@
 {% endblock %}
 
 {% block script %}
-<script type="module" src="static/js/lessons.js"></script>
+<script type="module" src="static/js/timetable.js"></script>
 {% endblock %}

@@ -13,8 +13,6 @@ function request(){
             let response = JSON.parse(xhr.response);
             let table = document.getElementById('lessonsTable');
 
-            print(table.children);
-
             response.forEach(element => {
                 let row = table.insertRow(1);
 
