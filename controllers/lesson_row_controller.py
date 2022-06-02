@@ -102,8 +102,9 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
     try:
         validator.validate(dct, "POST")
-    except:
-        return '', 400
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 400
     try:
         teacher_id = []
         if 'teachers' in dct:
