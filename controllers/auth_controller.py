@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 import datetime, jwt
 from flask import request, jsonify
+from jwt import DecodeError, ExpiredSignatureError
+
 from data_model.user import User
 from schedule_app import app
 

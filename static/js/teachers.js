@@ -12,7 +12,7 @@ function request(){
         if(xhr.status == 200){
             let response = JSON.parse(xhr.response);
             let table = document.getElementById('teachersTable');
-            
+
             response.forEach(element => {
                 let row = table.insertRow(1);
 
