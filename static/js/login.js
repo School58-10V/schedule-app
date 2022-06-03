@@ -8,7 +8,6 @@ sendButton.addEventListener('click', (e)=>{
     let request = new XMLHttpRequest();
     let url = BASE_PATH + '/login';
     request.open('POST', url);
-    console.log(url);
 
     let data = JSON.stringify({
         "login": loginField.value,

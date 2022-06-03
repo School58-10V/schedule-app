@@ -48,3 +48,7 @@ def teachers_page():
 @app.route('/subjects', methods=['GET'])
 def subjects_page():
     return render_template('subjects.html')
+
+@app.route('/timetable', methods=['GET'])
+def timetable_page():
+    return render_template('timetable.html')
