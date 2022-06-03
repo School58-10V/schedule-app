@@ -16,12 +16,8 @@ PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 @app.route("/api/v1/week", methods=["GET"])
 def get_week_schedule():
     try:
-        print('Damn')
-        print(request.data)
-        print('Damn')
         full_name = request.get_json()['full_name']
     except KeyError as e:    
-        print(e)
         # TODO: поменять ид ошибки здесь
         return 'Не указано имя ученика', 400
 
