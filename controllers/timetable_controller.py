@@ -6,14 +6,14 @@ from flask import request, jsonify
 
 from schedule_app import app
 from data_model.timetable import TimeTable
-from validators.timetable_validator import TimeTableValidator
+from validators.timetable_validator import TimetableValidator
 
 if TYPE_CHECKING:
     from flask import Response
     from typing import Union, Any, Tuple
 
 
-validator = TimeTableValidator()
+validator = TimetableValidator()
 
 
 @app.route("/api/v1/timetable", methods=["GET"])

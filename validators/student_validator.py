@@ -1,35 +1,11 @@
-class StudentValidator:
+import validators.abstract_validator
 
-    def validate(self, request: dict, method: str):
 
+class StudentValidator(validators.abstract_validator.AbstractValidator):
+    def __init__(self):
         required_keys = {'full_name', 'date_of_birth'}
-        allowed_keys = {'full_name', 'date_of_birth', 'contacts', 'bio', 'groups'}
+        allowed_keys = {'full_name', 'date_of_birth', 'contacts', 'bio'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
+        keys_types = {'full_name': str, 'date_of_birth': int, 'contacts': str, 'bio': str}
 
-        for key in required_keys:
-            if key not in request.keys():
-                raise ValueError
-
-        for key in request.keys():
-            if key not in allowed_keys:
-                raise ValueError
-            if key == 'full_name':
-                if type(request[key]) != str:
-                    raise ValueError
-            if key == 'contacts' or key == 'bio':
-                if type(request[key]) != str and request[key] is not None:
-                    raise ValueError
-            if key == 'date_of_birth':
-                if type(request[key]) != str:
-                    raise ValueError
-            if key == 'groups':
-                if type(request[key]) != list:
-                    raise ValueError
-                for i in request[key]:
-                    if type(i) != int:
-                        raise ValueError
-
-
+        super(StudentValidator, self).__init__(required_keys, allowed_keys, keys_types)
