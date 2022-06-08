@@ -11,15 +11,14 @@ from data_model.timetable import TimeTable
 if TYPE_CHECKING:
     from adapters.abstract_source import AbstractSource
     from data_model.teacher import Teacher
-    from adapters.db_source import DBSource
 
 
 class LessonRow(AbstractModel):
-    def __init__(self, db_source: DBSource, day_of_the_week: int, group_id: int, subject_id: int, room_id: int,
+    def __init__(self, source: AbstractSource, day_of_the_week: int, group_id: int, subject_id: int, room_id: int,
                  start_time: int, end_time: int, timetable_id: int, object_id: Optional[int] = None):
         """
             :param day_of_the_week: день недели (число от 0 до 6)
-            :param db_source: Адаптер бд сорса
+            :param source: Адаптер сорса
             :param start_time:  начальное время
             :param end_time: конечное время
             :param group_id: номер группы
@@ -28,7 +27,7 @@ class LessonRow(AbstractModel):
             :param timetable_id: год в который происходят уроки
             :param object_id: айди самого класса ряд уроков
         """
-        super().__init__(db_source)
+        super().__init__(source)
         self.__day_of_the_week = day_of_the_week
         self.__start_time = start_time
         self.__end_time = end_time
@@ -87,7 +86,7 @@ class LessonRow(AbstractModel):
         return str(hours).zfill(2) + ':' + str(minutes).zfill(2)
 
     @staticmethod
-    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[LessonRow])]:
+    def parse(file_location: str, db_source: AbstractSource) -> List[(Optional[str], Optional[LessonRow])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -102,7 +101,7 @@ class LessonRow(AbstractModel):
                 end_time = i[5]
                 timetable_id = i[6]
 
-                res.append(ParsedData(None, LessonRow(db_source=db_source,
+                res.append(ParsedData(None, LessonRow(source=source,
                                                       day_of_the_week=int(day_of_the_week),
                                                       group_id=int(group_id),
                                                       subject_id=int(subject_id),
@@ -122,11 +121,11 @@ class LessonRow(AbstractModel):
         return res
 
     @classmethod
-    def get_all_by_day(cls, week_day: int, db_source: DBSource):
+    def get_all_by_day(cls, week_day: int, source: AbstractSource):
         # TODO: remove? это разве не тоже самое что и LessonRow.get_by_day()
-        lessons = [LessonRow.get_by_id(i['object_id'], db_source)
-                   for i in db_source.get_by_query(cls._get_collection_name(),
-                                                   {"day_of_the_week": week_day})]
+        lessons = [LessonRow.get_by_id(i['object_id'], source=source)
+                   for i in source.get_by_query(cls._get_collection_name(),
+                                                {"day_of_the_week": week_day})]
         return lessons
 
     def get_teachers(self) -> List[Teacher]:
@@ -134,7 +133,7 @@ class LessonRow(AbstractModel):
             Возвращает список объектов Teacher используя db_source данный в __init__()
             :return: список словарей объектов Teacher
         """
-        return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_db_source())
+        return TeachersForLessonRows.get_teachers_by_lesson_row_id(self.get_main_id(), self.get_source())
 
     def append_teacher(self, teacher: Teacher) -> LessonRow:
         """
@@ -142,9 +141,9 @@ class LessonRow(AbstractModel):
             :return: новый экземпляр класса LessonRow
         """
         instance = TeachersForLessonRows(teacher_id=teacher.get_main_id(),
-                                         lesson_row_id=self._object_id, db_source=self.get_db_source())
+                                         lesson_row_id=self._object_id, source=self.get_source())
         for elem in TeachersForLessonRows.get_teachers_by_lesson_row_id(lesson_row_id=self._object_id,
-                                                                        db_source=self.get_db_source()):
+                                                                        source=self.get_source()):
             if elem.get_main_id() == teacher.get_main_id():
                 return self
         instance.save()
@@ -157,45 +156,47 @@ class LessonRow(AbstractModel):
         """
         for elem in TeachersForLessonRows.get_by_lesson_row_and_teacher_id(lesson_row_id=self.get_main_id(),
                                                                            teacher_id=teacher.get_main_id(),
-                                                                           db_source=self.get_db_source()):
+                                                                           source=self.get_source()):
             elem.delete()
         return self
 
     @classmethod
-    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List:
+    def get_lesson_rows_by_group_id(cls, group_id: int, source: AbstractSource) -> List:
         """
 
         :param group_id: идшник группы
         :param db_source: дб_сорс
         :return: список объектов LessonRow где group_id равен указаному
         """
-        return [cls(db_source, **i) for i in db_source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
+        return [cls(source, **i) for i in source.get_by_query(cls._get_collection_name(), {'group_id': group_id})]
 
     @classmethod
-    def get_by_day(cls, day: int, db_source: AbstractSource) -> List[LessonRow]:
-        lessons = [LessonRow.get_by_id(i['object_id'], db_source)
-                   for i in db_source.get_by_query(cls._get_collection_name(), {"day_of_the_week": day})]
+    def get_by_day(cls, day: int, source: AbstractSource) -> List[LessonRow]:
+        lessons = [LessonRow.get_by_id(i['object_id'], source)
+                   for i in source.get_by_query(cls._get_collection_name(), {"day_of_the_week": day})]
         return lessons
 
     @classmethod
-    def get_all_by_student_id(cls, student_id: int, db_source: AbstractSource) -> List[LessonRow]:
+    def get_all_by_student_id(cls, student_id: int, source: AbstractSource) -> List[LessonRow]:
         """ возвращает все lessonrow для student """
-        group_list = StudentsForGroups.get_group_by_student_id(student_id, db_source)
+        group_list = StudentsForGroups.get_group_by_student_id(student_id, source)
         lessonrow_list = []
         for i in group_list:
-            for lr in db_source.get_by_query(cls._get_collection_name(), {"group_id": i.get_main_id(), "timetable_id": TimeTable.get_current_timetable(db_source).get_main_id()}):
-                lessonrow_list.append(LessonRow(db_source, **lr))
+            for lr in source.get_by_query(cls._get_collection_name(), {"group_id": i.get_main_id(),
+                                                                       "timetable_id": TimeTable.get_current_timetable(
+                                                                               source).get_main_id()}):
+                lessonrow_list.append(LessonRow(source, **lr))
         return lessonrow_list
 
     @classmethod
-    def get_by_day_and_student(cls, day: int, student_id: int, db_source: DBSource) -> List[LessonRow]:
-        group_ids = [i.get_main_id() for i in StudentsForGroups.get_group_by_student_id(student_id, db_source)]
+    def get_by_day_and_student(cls, day: int, student_id: int, source: AbstractSource) -> List[LessonRow]:
+        group_ids = [i.get_main_id() for i in StudentsForGroups.get_group_by_student_id(student_id, source)]
         lessons = []
         for group_id in group_ids:
-            group_lessons = [LessonRow.get_by_id(i['object_id'], db_source)
-                             for i in db_source.get_by_query(cls._get_collection_name(),
-                                                             {"day_of_the_week": day,
-                                                              "group_id": group_id})]
+            group_lessons = [LessonRow.get_by_id(i['object_id'], source)
+                             for i in source.get_by_query(cls._get_collection_name(),
+                                                          {"day_of_the_week": day,
+                                                           "group_id": group_id})]
             for lesson in group_lessons:
                 lessons.append(lesson)
         return sorted(lessons, key=lambda x: x.get_start_time())

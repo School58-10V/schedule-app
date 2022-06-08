@@ -5,7 +5,7 @@ from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class Location(AbstractModel):
@@ -18,10 +18,10 @@ class Location(AbstractModel):
            location_type - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
     """
 
-    def __init__(self, db_source: DBSource, location_type: str, object_id: int = None,
+    def __init__(self, source: AbstractSource, location_type: str, object_id: int = None,
                  location_desc: str = None, profile: str = None, num_of_class: int = None,
                  equipment: str = None, link: str = 'Offline', comment: str = ''):
-        super().__init__(db_source)
+        super().__init__(source)
         self.__location_type = location_type
         self._object_id = object_id
         self.__location_desc = location_desc
@@ -53,7 +53,7 @@ class Location(AbstractModel):
         return self.__comment
 
     @staticmethod
-    def parse(file_location, db_source: DBSource) -> List[(Optional[str], Optional[Location])]:
+    def parse(file_location, db_source: AbstractSource) -> List[(Optional[str], Optional[Location])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -65,7 +65,7 @@ class Location(AbstractModel):
                 num_of_class = int(i[1])
                 link = i[2]
                 comment = i[3]
-                res.append(ParsedData(None, Location(db_source=db_source,
+                res.append(ParsedData(None, Location(source=source,
                                                      location_type=location_type, link=link,
                                                      num_of_class=num_of_class, comment=comment)))
             except IndexError as e:
@@ -95,5 +95,5 @@ class Location(AbstractModel):
                 'comment': self.get_comment()}
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource) -> Location:
-        return Location(db_source=db_source, **db_source.get_by_id("Locations", element_id))
+    def get_by_id(cls, element_id: int, source: AbstractSource) -> Location:
+        return Location(source=source, **source.get_by_id(cls._get_collection_name(), element_id))

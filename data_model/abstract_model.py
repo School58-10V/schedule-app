@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class AbstractModel(ABC):
@@ -12,8 +12,8 @@ class AbstractModel(ABC):
         Абстрактный класс сущности
     """
 
-    def __init__(self, db_source: DBSource):
-        self._db_source = db_source
+    def __init__(self, source: AbstractSource):
+        self._source = source
 
     @classmethod
     def _get_collection_name(cls) -> str:
@@ -23,15 +23,15 @@ class AbstractModel(ABC):
 
     def save(self) -> AbstractModel:
         if self.get_main_id() is None:
-            result = self._db_source.insert(self._get_collection_name(), self.__dict__())
+            result = self._source.insert(self._get_collection_name(), self.__dict__())
             self._set_main_id(result['object_id'])
         else:
-            self._db_source.update(self._get_collection_name(), self.get_main_id(), self.__dict__())
+            self._source.update(self._get_collection_name(), self.get_main_id(), self.__dict__())
         return self
 
     def delete(self) -> AbstractModel:
         if self.get_main_id() is not None:
-            self._db_source.delete(self._get_collection_name(), self.get_main_id())
+            self._source.delete(self._get_collection_name(), self.get_main_id())
             self._set_main_id(None)
         return self
 
@@ -45,27 +45,27 @@ class AbstractModel(ABC):
         return json.dumps(self.__dict__(), ensure_ascii=False, indent=indent)
 
     @classmethod
-    def get_all(cls, db_source: DBSource) -> List[AbstractModel]:
+    def get_all(cls, source: AbstractSource) -> List[AbstractModel]:
         """
         Возвращает все данные из сохранений в формате объектов соответствующих классов
 
-        :param db_source: data_source объект
+        :param source: объект источника данных
         :return: Список всех объектов этого класса
         """
-        return [cls(**obj, db_source=db_source) for obj in db_source.get_all(cls._get_collection_name())]
+        return [cls(**obj, source=source) for obj in source.get_all(cls._get_collection_name())]
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource) -> AbstractModel:
+    def get_by_id(cls, element_id: int, source: AbstractSource) -> AbstractModel:
         """
         Возвращает запрошенный по element_id объект класса по данным из сохранений
 
         :param element_id: айдишник объекта
-        :param db_source: data_source объект
+        :param source: data_source объект
         :return: Объект этого класса с таким идшником
         """
 
-        obj = db_source.get_by_id(cls._get_collection_name(), element_id)
-        return cls(**obj, db_source=db_source)
+        obj = source.get_by_id(cls._get_collection_name(), element_id)
+        return cls(**obj, source=source)
 
     @abstractmethod
     def __str__(self):
@@ -75,8 +75,11 @@ class AbstractModel(ABC):
     def __dict__(self):
         pass
 
-    def get_db_source(self) -> DBSource:
-        return self._db_source
+    def get_source(self) -> AbstractSource:
+        """
+        Возвращает источник с которым мы работаем
+        """
+        return self._source
 
     def get_main_id(self) -> int:
         """

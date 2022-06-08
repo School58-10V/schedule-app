@@ -6,7 +6,7 @@ from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class Subject(AbstractModel):
@@ -15,9 +15,9 @@ class Subject(AbstractModel):
         object_id - Идентификационный номер предмета
     """
 
-    def __init__(self, db_source: DBSource, subject_name: Optional[str] = None,
+    def __init__(self, source: AbstractSource, subject_name: Optional[str] = None,
                  object_id: Optional[int] = None):
-        super().__init__(db_source)
+        super().__init__(source)
         self.__subject_name = subject_name
         self._object_id = object_id
 
@@ -29,7 +29,7 @@ class Subject(AbstractModel):
             Ссылается на класс TeachersForSubjects и использует его метод
             :return: список объектов Teacher
         """
-        return TeachersForSubjects.get_teachers_by_subject_id(self.get_main_id(), self.get_db_source())
+        return TeachersForSubjects.get_teachers_by_subject_id(self.get_main_id(), self.get_source())
 
     def append_teacher(self, teacher: Teacher) -> Subject:
         """
@@ -38,7 +38,7 @@ class Subject(AbstractModel):
             :return: сам предмет
         """
         if teacher.get_main_id() not in [obj.get_main_id() for obj in self.get_teachers()]:
-            TeachersForSubjects(self.get_db_source(), teacher.get_main_id(), self.get_main_id()).save()
+            TeachersForSubjects(self.get_source(), teacher.get_main_id(), self.get_main_id()).save()
         return self
 
     def remove_teacher(self, teacher: Teacher) -> Subject:
@@ -46,11 +46,11 @@ class Subject(AbstractModel):
             Получает на вход учителя и удаляет связь между учителем и предметом из базы.
             :return: сам предмет
         """
-        [obj.delete() for obj in TeachersForSubjects.get_by_subject_and_teacher_id(self.get_main_id(), teacher.get_main_id(), self.get_db_source())]
+        [obj.delete() for obj in TeachersForSubjects.get_by_subject_and_teacher_id(self.get_main_id(), teacher.get_main_id(), self.get_source())]
         return self
 
     @staticmethod
-    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Subject])]:
+    def parse(file_location: str, db_source: AbstractSource) -> List[(Optional[str], Optional[Subject])]:
         file = open(file_location, 'r', encoding='utf-8')
         lines = file.read().split('\n')[1:]
         file.close()
@@ -59,7 +59,7 @@ class Subject(AbstractModel):
             j = i.split(';')
             try:
                 name_subject = j[0]
-                res.append(ParsedData(None, Subject(subject_name=name_subject, db_source=db_source)))
+                res.append(ParsedData(None, Subject(subject_name=name_subject, source=source)))
             except IndexError as error:
                 exception_text = f"Запись {lines.index(i) + 1} строка {lines.index(i) + 2} " \
                                  f"не добавилась в [res].\nОшибка: {error}"
@@ -79,5 +79,5 @@ class Subject(AbstractModel):
                 "subject_name": self.get_subject_name()}
 
     @classmethod
-    def get_by_id(cls, element_id: int, db_source: DBSource) -> Subject:
-        return Subject(db_source=db_source, **db_source.get_by_id("Subjects", element_id))
+    def get_by_id(cls, element_id: int, source: AbstractSource) -> Subject:
+        return Subject(source=source, **source.get_by_id("Subjects", element_id))

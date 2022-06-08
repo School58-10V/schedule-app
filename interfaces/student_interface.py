@@ -19,7 +19,7 @@ from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 
 class StudentInterface:
 
-    def __init__(self, db_source: DBSource, student_id: int):
+    def __init__(self, source: AbstractSource, student_id: int):
         self.__current_user_id = student_id
         self.__current_user = str(student_id)  # TODO: сделать это именем, т.е. получить имя студента через БД
         self.__db_source = db_source

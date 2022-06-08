@@ -9,7 +9,7 @@ from data_model.abstract_model import AbstractModel
 from data_model.students_for_groups import StudentsForGroups
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
     from data_model.group import Group
 
 
@@ -24,10 +24,10 @@ class Student(AbstractModel):
     """
 
     def __init__(
-            self, db_source: DBSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
+            self, source: AbstractSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
             ):
-        super().__init__(db_source)
+        super().__init__(source)
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
         self._object_id = object_id
@@ -47,7 +47,7 @@ class Student(AbstractModel):
         return self.__bio
 
     @staticmethod
-    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Student])]:
+    def parse(file_location: str, db_source: AbstractSource) -> List[(Optional[str], Optional[Student])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
@@ -89,7 +89,7 @@ class Student(AbstractModel):
            Ссылается на класс StudentsForGroups и использует его метод
            :return: список объектов Group
         """
-        return StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source())
+        return StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_source())
 
     def append_group(self, group: Group) -> Student:
         """
@@ -97,19 +97,19 @@ class Student(AbstractModel):
         :param group: объект класса Group, который мы хотим добавить этому студенту StudentsForGroups
         :return: себя
         """
-        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source()):
+        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_source()):
             if i.get_main_id() == group.get_main_id():
                 return self
 
-        StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
+        StudentsForGroups(self._source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
         return self
 
     def append_group_by_id(self, group_id: int) -> Student:
-        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source()):
+        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_source()):
             if i.get_main_id() == group_id:
                 return self
 
-        StudentsForGroups(self._db_source, group_id=group_id, student_id=self.get_main_id()).save()
+        StudentsForGroups(self._source, group_id=group_id, student_id=self.get_main_id()).save()
         return self
 
     def remove_group(self, group: Group) -> Student:
@@ -119,7 +119,7 @@ class Student(AbstractModel):
         :return: себя
         """
         # Берем все объекты смежной сущности, проходим по нему циклом
-        for i in StudentsForGroups.get_by_student_and_group_id(db_source=self._db_source, group_id=group.get_main_id(),
+        for i in StudentsForGroups.get_by_student_and_group_id(source=self._source, group_id=group.get_main_id(),
                                                                student_id=self.get_main_id()):
             # И все удаляем
             i.delete()
@@ -127,5 +127,5 @@ class Student(AbstractModel):
 
     @classmethod
     def get_by_name(cls, name: str, source: AbstractSource) -> List[Student]:
-        return [Student(**i, db_source=source) for i in source.get_by_query(cls._get_collection_name(),
+        return [Student(**i, source=source) for i in source.get_by_query(cls._get_collection_name(),
                                                                             {'full_name': name})]

@@ -1,10 +1,11 @@
 from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
+
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
     from data_model.lesson_row import LessonRow
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
     from data_model.teacher import Teacher
 
 
@@ -17,8 +18,8 @@ class TeachersForLessonRows(AbstractModel):
         object_id - Идентификационный номер учителя на ряд уроков
     """
 
-    def __init__(self, db_source: DBSource, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
-        super().__init__(db_source)
+    def __init__(self, source: AbstractSource, teacher_id: int, lesson_row_id: int, object_id: Optional[int] = None):
+        super().__init__(source)
         self.__teacher_id = teacher_id
         self.__lesson_row_id = lesson_row_id
         self._object_id = object_id
@@ -55,7 +56,7 @@ class TeachersForLessonRows(AbstractModel):
     #             teacher_id = int(j[0])
     #             lesson_row_id = int(j[1])
     #
-    #             res.append(ParsedData(None, TeachersForLessonRows(db_source=db_source,
+    #             res.append(ParsedData(None, TeachersForLessonRows(source=db_source,
     #                                                               teacher_id=teacher_id,
     #                                                               lesson_row_id=lesson_row_id)))
     #         except (IndexError, ValueError) as error:
@@ -73,7 +74,7 @@ class TeachersForLessonRows(AbstractModel):
         return 'TeachersForLessonRows'
 
     @classmethod
-    def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, db_source: DBSource) -> List[Teacher]:
+    def get_teachers_by_lesson_row_id(cls, lesson_row_id: int, source: AbstractSource) -> List[Teacher]:
         """
         возвращает всех учителей, у которых есть определенный lesson_row_id
 
@@ -83,12 +84,12 @@ class TeachersForLessonRows(AbstractModel):
         """
         from data_model.teacher import Teacher
         return [
-            Teacher.get_by_id(i['teacher_id'], db_source=db_source)
-            for i in db_source.get_by_query(cls._get_collection_name(), {'lesson_row_id': lesson_row_id})
+            Teacher.get_by_id(i['teacher_id'], source=source)
+            for i in source.get_by_query(cls._get_collection_name(), {'lesson_row_id': lesson_row_id})
             ]
 
     @classmethod
-    def get_lesson_rows_by_teacher_id(cls, teacher_id: int, db_source: DBSource) -> List[LessonRow]:
+    def get_lesson_rows_by_teacher_id(cls, teacher_id: int, source: AbstractSource) -> List[LessonRow]:
         """
         возвращает всех учителей, у которых есть определенный teacher_id
 
@@ -99,19 +100,19 @@ class TeachersForLessonRows(AbstractModel):
         from data_model.lesson_row import LessonRow
 
         return [
-            LessonRow.get_by_id(i['lesson_row_id'], db_source=db_source)
-            for i in db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
+            LessonRow.get_by_id(i['lesson_row_id'], source=source)
+            for i in source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
         ]
 
     @classmethod
-    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, db_source: DBSource) -> list:
+    def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, source: AbstractSource) -> list:
         """
         Возвращает список обьектов этого класса в котором у нас совподают идишник который мы передали
 
         :param teacher_id: идшник Teacher у которого есть Lesson_row
         :param lesson_row_id: идшник Lesson_row который есть у учитель
-        :param db_source: класс укоторого у нас есть нужный нам метод get_by_query
+        :param source: источник данных
         :return: список обьектов этого класса в котором у нас совподают идишник который мы передали
         """
-        objs = db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'lesson_row_id': lesson_row_id})
-        return [cls(**obj, db_source=db_source) for obj in objs]
+        objs = source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id, 'lesson_row_id': lesson_row_id})
+        return [cls(**obj, source=source) for obj in objs]

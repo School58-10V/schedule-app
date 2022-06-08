@@ -30,7 +30,7 @@ def get_all_lesson_rows() -> Response | tuple[str, int]:
         for i in LessonRow.get_all(app.config.get("schedule_db_source")):
             local_dct = i.__dict__()
             local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-                get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+                get_teachers_by_lesson_row_id(i.get_main_id(), source=app.config.get("schedule_db_source"))]
             global_dct.append(local_dct.copy())
 
         return jsonify(global_dct)
@@ -52,7 +52,7 @@ def get_all_lesson_row_detailed() -> Response:
             local_dct['teachers'] = [i.__dict__() for i in
                                     TeachersForLessonRows.get_teachers_by_lesson_row_id(
                                         i.get_main_id(),
-                                        db_source=app.config.get("schedule_db_source"))]
+                                        source=app.config.get("schedule_db_source"))]
             global_dct.append(local_dct.copy())
         return jsonify(global_dct)
     except Exception as err:
@@ -70,7 +70,7 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
+            get_teachers_by_lesson_row_id(object_id, source=app.config.get("schedule_db_source"))]
         return jsonify(dct)
     except ValueError:
         return '', 404
@@ -86,7 +86,7 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, 
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
+            get_teachers_by_lesson_row_id(object_id, source=app.config.get("schedule_db_source"))]
 
         return jsonify(dct)
     except ValueError:
@@ -109,9 +109,9 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
         teacher_id = []
         if 'teachers' in dct:
             teacher_id = dct.pop('teachers')
-        lesson_row = LessonRow(**dct, db_source=app.config.get("schedule_db_source")).save()
+        lesson_row = LessonRow(**dct, source=app.config.get("schedule_db_source")).save()
         for i in teacher_id:
-            teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+            teacher = Teacher.get_by_id(i, source=app.config.get('schedule_db_source'))
             lesson_row.append_teacher(teacher)
         dct = lesson_row.__dict__()
         dct["object_id"] = lesson_row.get_main_id()
@@ -142,7 +142,7 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
         return "", 400
 
     try:
-        LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        LessonRow.get_by_id(object_id, source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
 
@@ -151,18 +151,18 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
         if 'teachers' in dct:
             new_teachers_id = dct.pop('teachers')
 
-        lesson_row_by_id = LessonRow(**dct, db_source=app.config.get('schedule_db_source')).save()
+        lesson_row_by_id = LessonRow(**dct, source=app.config.get('schedule_db_source')).save()
         old_teachers_id = [i.get_main_id() for i in lesson_row_by_id.get_teachers()]
         teachers_to_create = list((set(new_teachers_id) - set(old_teachers_id)))
         teachers_to_delete = list((set(old_teachers_id) - set(new_teachers_id)))
 
         try:
             for i in teachers_to_delete:
-                teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+                teacher = Teacher.get_by_id(i, source=app.config.get('schedule_db_source'))
                 lesson_row_by_id.remove_teacher(teacher)
 
             for i in teachers_to_create:
-                teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
+                teacher = Teacher.get_by_id(i, source=app.config.get('schedule_db_source'))
                 lesson_row_by_id.append_teacher(teacher)
 
         except ValueError:

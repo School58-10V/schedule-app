@@ -49,7 +49,7 @@ def create_lesson() -> Union[Tuple[str, int], Response]:
     except ValueError:
         return "", 400
     try:
-        return jsonify(Lesson(**request.get_json(), db_source=app.config.get("schedule_db_source"))
+        return jsonify(Lesson(**request.get_json(), source=app.config.get("schedule_db_source"))
                        .save()
                        .__dict__())
     except Exception as err:
@@ -70,11 +70,11 @@ def update_lessons(object_id: int) -> Union[Tuple[str, int], Response]:
     except ValueError:
         return "", 400
     try:
-        Lesson.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+        Lesson.get_by_id(object_id, source=app.config.get("schedule_db_source"))
     except ValueError:
         return "", 404
     try:
-        return jsonify(Lesson(**request.get_json(), db_source=app.config.get("schedule_db_source"))
+        return jsonify(Lesson(**request.get_json(), source=app.config.get("schedule_db_source"))
                        .save()
                        .__dict__())
     except Exception as err:

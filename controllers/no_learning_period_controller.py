@@ -35,7 +35,7 @@ def create_no_learning_period():
         return "", 400
     try:
         return jsonify(
-            NoLearningPeriod(**request.get_json(), db_source=app.config.get("schedule_db_source")).save().__dict__())
+            NoLearningPeriod(**request.get_json(), source=app.config.get("schedule_db_source")).save().__dict__())
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
@@ -52,7 +52,7 @@ def update_no_learning_period(object_id: int):
     try:
         NoLearningPeriod.get_by_id(object_id, app.config.get("schedule_db_source"))
         result = NoLearningPeriod(**request.get_json(),
-                                  db_source=app.config.get("schedule_db_source")).save().__dict__()
+                                  source=app.config.get("schedule_db_source")).save().__dict__()
         return jsonify(result)
     except Exception as err:
         logging.error(err, exc_info=True)

@@ -5,19 +5,19 @@ from db_source import DBSource
 db_source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
                      password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
 # Создаем студента и сохраняем его
-student = Student(db_source=db_source, date_of_birth='', full_name='Фио')
+student = Student(db_source=source, date_of_birth='', full_name='Фио')
 student.save()
 
 # Создаем группу и сохраняем ее
-group = Group(db_source=db_source, teacher_id=2, class_letter='', grade=3, profile_name=', ')
+group = Group(db_source=source, teacher_id=2, class_letter='', grade=3, profile_name=', ')
 group.save()
 
 # Создаем студента 1 и сохраняем его
-student1 = Student(db_source=db_source, date_of_birth='', full_name='Ученик №1')
+student1 = Student(db_source=source, date_of_birth='', full_name='Ученик №1')
 student1.save()
 
 # Создаем группу 1 и сохраняем ее
-group1 = Group(db_source=db_source, teacher_id=3, class_letter='А', grade=1, profile_name='Группа №1')
+group1 = Group(db_source=source, teacher_id=3, class_letter='А', grade=1, profile_name='Группа №1')
 group1.save()
 
 # Выводим всех изначальных студентов группы и все изначальные группы студентов

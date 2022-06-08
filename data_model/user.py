@@ -6,14 +6,14 @@ from data_model.parsed_data import ParsedData
 import hashlib
 
 if TYPE_CHECKING:
-    from adapters.db_source import DBSource
+    from adapters.abstract_source import AbstractSource
 
 
 class User(AbstractModel):
 
-    def __init__(self, db_source: DBSource, name: str, login: str, hash_password: Optional[str] = None,
+    def __init__(self, source: AbstractSource, name: str, login: str, hash_password: Optional[str] = None,
                  password: Optional[str] = None, object_id: int = None):
-        super().__init__(db_source)
+        super().__init__(source)
         self.__login = login
         if hash_password is None and password is not None:
             self.__password_hash = hashlib.sha256(password.encode()).hexdigest()
@@ -31,13 +31,13 @@ class User(AbstractModel):
         """
 
     @classmethod
-    def get_by_login(cls, login: str, db_source: DBSource) -> Optional[User]:
-        data = db_source.get_by_query(collection_name=cls._get_collection_name(), query={'login': login})
+    def get_by_login(cls, login: str, source: AbstractSource) -> Optional[User]:
+        data = source.get_by_query(collection_name=cls._get_collection_name(), query={'login': login})
         if len(data) == 0:
             raise ValueError('No data was given')
         if len(data) > 1:
             raise ValueError('Too big data')
-        return User(**data[0], db_source=db_source)
+        return User(**data[0], source=source)
 
     def get_login(self) -> str:
         return self.__login
