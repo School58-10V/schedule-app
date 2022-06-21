@@ -29,6 +29,8 @@ TOKEN_EXP_TIME = datetime.timedelta(days=14)
 def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
     """Генерирует токен по информации о пользователе и возвращает его
 
+    :param smth: ну ээ аргумент функции
+
     :returns: JWT токен с инфорамицией о пользователе
     """
     login, password = request.json.get('login'), request.json.get('password')
