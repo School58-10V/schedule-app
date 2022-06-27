@@ -20,7 +20,7 @@ def get_week_schedule():
     """
     try:
         full_name = request.get_json()['full_name']
-    except KeyError:
+    except KeyError as e:    
         # TODO: поменять ид ошибки здесь
         return 'Не указано имя ученика', 400
 

@@ -112,7 +112,7 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
 
 
 @app.route("/api/v1/group/<int:object_id>", methods=["DELETE"])
-def delete_group(object_id: int) -> Response: 
+def delete_group(object_id: int) -> Response:
     try:
         group = Group.get_by_id(object_id, app.config.get("schedule_db_source"))
     except ValueError:
@@ -122,7 +122,7 @@ def delete_group(object_id: int) -> Response:
         return jsonify(group)
     except psycopg2.Error as e:
         logging.error(e, exc_info=True)
-        return psycopg2.errorcodes.lookup(e.pgcode), 409    
+        return psycopg2.errorcodes.lookup(e.pgcode), 409
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500

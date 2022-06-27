@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Все ученики:</h1>
+<table id="studentsTable" border=1 frame=void>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ФИО</th>
+            <th>Дата рождения</th>
+            <th>Контакты</th>
+            <th>Био</th>
+            <th>ID классов</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block footer %}
+<nav>
+    <a href="/students">Список учеников</a>
+    <a href="/groups">Список классов</a>
+    <a href="/lessons">Список уроков</a>
+    <a href="/teachers">Список учителей</a>
+    <a href="/subjects">Список предметов</a>
+</nav>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/students.js"></script>
+{% endblock %}

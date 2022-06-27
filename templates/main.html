@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Добро пожаловать в Schedule App</h1>
+
+<a href="/students">Список учеников</a><br>
+<a href="/groups">Список классов</a><br>
+<a href="/lessons">Список уроков</a><br>
+<a href="/teachers">Список учителей</a><br>
+<a href="/subjects">Список предметов</a>
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="static/js/main.js"></script>
+{% endblock %}

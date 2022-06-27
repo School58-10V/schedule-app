@@ -1,28 +1,15 @@
-class LessonValidator:
+import validators.abstract_validator
 
-    def validate(self, request: dict, method: str):
 
-        required_keys = {'start_time', 'end_time', 'notes', 'teacher_id', 'group_id', 'subject_id', 'date'}
+class LessonValidator(validators.abstract_validator.AbstractValidator):
+    def __init__(self):
+        required_keys = {'start_time', 'end_time', 'notes', 'state', 'teacher_id', 'group_id', 'subject_id', 'date'}
         allowed_keys = {'start_time', 'end_time', 'notes', 'state', 'teacher_id', 'group_id', 'subject_id', 'date'}
 
-        if method == 'PUT':
-            required_keys.add('object_id')
-            allowed_keys.add('object_id')
+        keys_types = {
+            'start_time': int, 'end_time': int, 'notes': str, 'state': bool,
+            'teacher_id': int, 'group_id': int, 'subject_id': int, 'date': str
+        }
 
-        for key in required_keys:
-            if key not in request.keys():
-                raise ValueError
+        super(LessonValidator, self).__init__(required_keys, allowed_keys, keys_types)
 
-        for key in request.keys():
-            if key not in allowed_keys:
-                raise ValueError
-            if key == 'start_time' or key == 'end_time' or key == 'teacher_id' or \
-                    key == 'group_id' or key == 'subject_id':
-                if type(request[key]) != int:
-                    raise ValueError
-            if key == 'state':
-                if type(request[key]) != bool:
-                    raise ValueError
-            if key == 'notes' or key == 'date':
-                if type(request[key]) != str:
-                    raise ValueError

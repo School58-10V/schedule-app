@@ -46,7 +46,6 @@ def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
         return '', 401
     if not user.compare_hash(password):
         return jsonify(""), 401
-
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
     return jsonify({'token': encoded_data})
 
