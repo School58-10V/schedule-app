@@ -15,6 +15,9 @@ PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
 @app.route("/api/v1/week", methods=["GET"])
 def get_week_schedule():
+    """Ну мы крч выдаём красивое расписание
+
+    """
     try:
         full_name = request.get_json()['full_name']
     except KeyError as e:    

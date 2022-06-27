@@ -2,6 +2,10 @@ from adapters.db_source import DBSource
 
 
 class DBFactory:
+    """description
+
+    :param host: url хоста
+    """
     def __init__(self,
                  host="postgresql.aakapustin.ru",
                  password="VYRL!9XEB3yXQs4aPz_Q",
@@ -9,6 +13,10 @@ class DBFactory:
         self.__dbs = self.create_db_source(host, password, user, options=options)
 
     def get_db_source(self):
+        """Что-то возвращаем
+
+        :returns: описание чего-то возвращаемого
+        """
         return self.__dbs
 
     def create_db_source(self,

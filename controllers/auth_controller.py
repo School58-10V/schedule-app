@@ -1,7 +1,9 @@
 from __future__ import annotations
+
+import datetime
+import jwt
 from typing import TYPE_CHECKING
 
-import datetime, jwt
 from flask import request, jsonify
 from jwt import DecodeError, ExpiredSignatureError
 
@@ -23,9 +25,14 @@ PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 TOKEN_EXP_TIME = datetime.timedelta(days=14)
 
 
-# Генерирует токен по информации о пользователе и возвращает его
 @app.route('/api/v1/login', methods=['POST'])
 def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
+    """Генерирует токен по информации о пользователе и возвращает его
+
+    :param smth: ну ээ аргумент функции
+
+    :returns: JWT токен с инфорамицией о пользователе
+    """
     login, password = request.json.get('login'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     # TODO: if login/password are missing, abort
@@ -45,6 +52,9 @@ def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
 
 @app.route('/api/v1/register', methods=['POST'])
 def register() -> Response:
+    """Регистрирует нового пользователя с переданными данными
+
+    """
     login, fullname, password = request.json.get('login'), request.json.get('fullname'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     data = {
@@ -57,12 +67,16 @@ def register() -> Response:
     return jsonify({'token': encoded_data})
 
 
-# Вызывается при каждом реквесте (кроме реквеста к /login)
-# проверяет совпадение информации о пользователе с информацией из токена
-# выбрасывает ошибку 400 когда токен некорректен
-# выбрасывает ошибку 401 когда данные не соответствуют
+#  -> Optional[Tuple[str, int]]
 @app.before_request
-def before_request() -> Optional[Tuple[str, int]]:
+def before_request():
+    """Проверяет совпадение информации о пользователе с информацией из токена
+
+    Вызывается при каждом реквесте (кроме реквеста к /login)
+
+    :return: ошибку 400 когда токен некорректен
+    :return: ошибку 401 когда данные не соответствуют
+    """
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
     if request.url_rule is None or\
             request.path == '/api/v1/login' or\
