@@ -5,15 +5,15 @@ from data_model.subject import Subject
 from data_model.teacher import Teacher
 
 def get_random_student(students):
-    return students.get(random.randrange(0, len(students)))
+    return students[random.randrange(0, len(students))]
 
 
 def get_random_teachers(teachers):
-    return teachers.get(random.randrange(0, len(teachers)))
+    return teachers[random.randrange(0, len(teachers))]
 
 
 def get_random_subject(subjects):
-    return subjects.get(random.randrange(0, len(subjects)))
+    return subjects[random.randrange(0, len(subjects))]
 
 
 def create_random_lesson(source, group, subjects, teachers, day, start_time, end_time):
@@ -35,7 +35,7 @@ def create_random_day(source, group, subjects, teachers, day, pair_amount):
         end_time += 45 + breaktime
 
 def parse_subject(source, data):
-    return Subject(source, data.get("subject_name"), data.get("object_id"))
+    return Subject(source, data["subject_name"], data["object_id"])
 
 def parse_subjects(source, data):
     results = []
@@ -45,7 +45,7 @@ def parse_subjects(source, data):
 
 
 def parse_teacher(source, data):
-    return Teacher(source, data.get("fio"), data.get("object_id"), data.get("office_id"), data.get("bio"), data.get("contacts"))
+    return Teacher(source, data["fio"], data["object_id"], data["office_id"], data["bio"], data["contacts"])
 
 def parse_teachers(source, data):
     results = []
