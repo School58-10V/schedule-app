@@ -1,5 +1,5 @@
 from tests.funfactory import Funfactory
-factory = Funfactory
-factory.create_group()
-for i in range(3):
-    factory.create_lesson_row()
+import controllers
+import frontend
+from schedule_app import app
+app.run()

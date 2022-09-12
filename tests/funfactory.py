@@ -19,14 +19,14 @@ class Funfactory:
         self.__students_id = [79, 80, 123]
         self.__group_id = []
 
-    @app.route("/api/v1/group", methods=["POST"])
-    def create_group(self):
+    @app.route("/api/v1/hinkali_makegroup", methods=["POST"])
+    def create_fungroup():
         dct = {
             "class_letter": "В",
             "grade": 11,
             "profile_name": "Хинкали",
-            "students": self.__students_id,
-            "teacher_id": random.choice(Teacher.get_all()).get_main_id()
+            "students": [79, 80, 123],
+            "teacher_id": random.choice(Teacher.get_all(db_source=app.config.get("schedule_db_source"))).get_main_id()
         }
         try:
             student = []
@@ -34,7 +34,6 @@ class Funfactory:
                 student = dct.pop('students')
             group = Group(**dct, db_source=app.config.get("schedule_db_source")) \
                 .save()
-            self.__group_id = group.get_main_id()
             for i in student:
                 student1 = Student.get_by_id(i, db_source=app.config.get('schedule_db_source'))
                 group.append_student(student1)
@@ -45,16 +44,16 @@ class Funfactory:
             logging.error(err, exc_info=True)
             return "", 500
 
-    @app.route("/api/v1/lesson-row", methods=["POST"])
-    def create_lesson_row(self):
+    @app.route("/api/v1/hinkali_makelessonrow", methods=["POST"])
+    def create_funlesson_row():
         dct = {
             "day_of_the_week": random.choice([0, 1, 2, 3, 4, 5, 6]),
             "end_time": 1130,
-            "group_id": self.__group_id,
-            "room_id": random.choice(Location.get_all()).get_main_id(),
+            "group_id": 54,
+            "room_id": random.choice(Location.get_all(db_source=app.config.get("schedule_db_source"))).get_main_id(),
             "start_time": 1000,
-            "subject_id": random.choice(Subject.get_all()).get_main_id(),
-            "teachers": random.choice(Teacher.get_all()).get_main_id(),
+            "subject_id": random.choice(Subject.get_all(db_source=app.config.get("schedule_db_source"))).get_main_id(),
+            "teachers": [random.choice(Teacher.get_all(db_source=app.config.get("schedule_db_source"))).get_main_id()],
             "timetable_id": 1
         }
         try:
@@ -69,8 +68,6 @@ class Funfactory:
             dct["object_id"] = lesson_row.get_main_id()
             dct['teachers'] = teacher_id
             return jsonify(dct)
-        except (TypeError, ValueError):
-            return '', 400
         except Exception as err:
             logging.error(err, exc_info=True)
             return "", 500
