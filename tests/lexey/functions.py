@@ -55,6 +55,6 @@ def parse_teachers(source, data):
 
 
 def get_data(source, group):
-    print(source.get_by_query(source, collection_name="Students", query={"full_name": "Алексей"}))
+    print(source.get_by_query(source, collection_name="Students", query={"bio": "пельмень"}))
     print(source.get_by_query(source, collection_name="Group", query={"profile_name": "математика"}))
     print(source.get_by_query(source, collection_name="Lesson", query={"group_id": group.get_main_id()}))
