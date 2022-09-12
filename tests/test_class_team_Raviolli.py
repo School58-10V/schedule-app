@@ -6,7 +6,6 @@ import datetime
 from typing import TYPE_CHECKING, List, Dict
 from data_model.group import Group
 from data_model.lesson_row import LessonRow
-from data_model.location import Location
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.timetable import TimeTable
@@ -44,7 +43,8 @@ class TestClass:
         :return:
         """
         groups = Group.get_by_class_letters(db_source=self.get_db_source(), class_letter=class_letter, grade=grade)
-        if len(groups) != 1:
+
+        if len(groups) == 1:
             return groups[0]
         raise ValueError("Ошибка в базе данных!!! Групп с таким названием несколько!")
 
@@ -76,7 +76,7 @@ class TestClass:
             start_time = 540
             end_time = 585
             lesson_rows[i] = []
-            for j in lst[counter]:
+            for j in range(lst[counter]):
                 subject = random.choice(subjects)
                 try:
                     teacher = random.choice(subject.get_teachers())
