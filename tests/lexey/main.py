@@ -35,8 +35,10 @@ monday_pairs = int(input("Количество пар в понедельник:
 thursday_pairs = int(input("Количество пар в четверг:"))
 friday_pairs = int(input("Количество пар в пятницу:"))
 
-functions.create_random_day(source, group, subjects, teachers, 5, monday_pairs)
-functions.create_random_day(source, group, subjects, teachers, 8, thursday_pairs)
-functions.create_random_day(source, group, subjects, teachers, 9, friday_pairs)
+dates = functions.get_rand_dates()
+
+functions.create_random_day(source, group, subjects, teachers, dates[0], monday_pairs)
+functions.create_random_day(source, group, subjects, teachers, dates[1], thursday_pairs)
+functions.create_random_day(source, group, subjects, teachers, dates[2], friday_pairs)
 
 functions.get_data(source, group)

@@ -58,3 +58,10 @@ def get_data(source, group):
     print(source.get_by_query(source, collection_name="Students", query={"bio": "пельмень"}))
     print(source.get_by_query(source, collection_name="Group", query={"profile_name": "математика"}))
     print(source.get_by_query(source, collection_name="Lesson", query={"group_id": group.get_main_id()}))
+
+def get_rand_dates(dates_amount=3):
+    dates = list(range(12, 16))
+    result = []
+    for i in range(dates_amount):
+        result.append(dates.pop(random.randrange(12, 16)))
+    return result
