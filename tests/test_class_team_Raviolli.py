@@ -49,6 +49,10 @@ class TestClass:
         raise ValueError("Ошибка в базе данных!!! Групп с таким названием несколько!")
 
     def __get_all_teachers(self) -> List:
+        """
+        Возвращает всех учителей
+        :return:
+        """
         teachers = Teacher.get_all(db_source=self.get_db_source())
         if len(teachers) == 0:
             raise ValueError("У нас нет учителей :0")
@@ -56,14 +60,18 @@ class TestClass:
 
     @staticmethod
     def __get_year() -> int:
+        """
+        Возвращает текущий год
+        :return:
+        """
         return datetime.date.today().year
 
     def run(self, lst: list, class_letter: str, grade: int) -> Dict:
         """
         Главный метод, запускающий все
-        :param lst:
-        :param class_letter:
-        :param grade:
+        :param lst: список с количеством пар на дни
+        :param class_letter: буква класса
+        :param grade: год обучения
         :return:
         """
         group = self.__get_group(class_letter=class_letter, grade=grade)
