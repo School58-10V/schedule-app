@@ -1,7 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List
+
+import random
+import datetime
+
+from typing import TYPE_CHECKING, List, Dict
 from data_model.group import Group
+from data_model.lesson_row import LessonRow
+from data_model.location import Location
 from data_model.subject import Subject
+from data_model.teacher import Teacher
+from data_model.timetable import TimeTable
 
 if TYPE_CHECKING:
     from adapters.db_source import DBSource
@@ -23,13 +31,16 @@ class TestClass:
         Возвращает список всех предметов
         :return:
         """
-        return Subject.get_all(db_source=self.get_db_source())
+        subjects = Subject.get_all(db_source=self.get_db_source())
+        if len(subjects) == 0:
+            raise ValueError("У нас нет никаких предметов :0")
+        return subjects
 
     def __get_group(self, class_letter: str, grade: int) -> Group:
         """
         Возвращает группу по букве и классу
         :param class_letter: Буква класса
-        :param grade: Класс (номер, год)
+        :param grade: Класс (номер, год обучения)
         :return:
         """
         groups = Group.get_by_class_letters(db_source=self.get_db_source(), class_letter=class_letter, grade=grade)
@@ -37,16 +48,52 @@ class TestClass:
             return groups[0]
         raise ValueError("Ошибка в базе данных!!! Групп с таким названием несколько!")
 
-    def run(self, num1: int, num2: int, num3: int, class_letter: str, grade: int):
+    def __get_all_teachers(self) -> List:
+        teachers = Teacher.get_all(db_source=self.get_db_source())
+        if len(teachers) == 0:
+            raise ValueError("У нас нет учителей :0")
+        return teachers
+
+    @staticmethod
+    def __get_year() -> int:
+        return datetime.date.today().year
+
+    def run(self, lst: list, class_letter: str, grade: int) -> Dict:
         """
         Главный метод, запускающий все
-        :param num1:
-        :param num2:
-        :param num3:
+        :param lst:
         :param class_letter:
         :param grade:
         :return:
         """
         group = self.__get_group(class_letter=class_letter, grade=grade)
-
-        pass
+        subjects = self.__get_all_subject()
+        teachers = self.__get_all_teachers()
+        timetable = TimeTable.get_by_year(year=self.__get_year(), db_source=self.get_db_source())
+        counter = 0
+        lesson_rows = {}
+        for i in random.sample(range(5), 3):
+            start_time = 540
+            end_time = 585
+            lesson_rows[i] = []
+            for j in lst[counter]:
+                subject = random.choice(subjects)
+                try:
+                    teacher = random.choice(subject.get_teachers())
+                except IndexError:
+                    teacher = random.choice(teachers)
+                    subject.append_teacher(teacher)
+                office_id = teacher.get_office_id()
+                lesson_row = LessonRow(db_source=self.get_db_source(),
+                                       day_of_the_week=i,
+                                       group_id=group.get_main_id(),
+                                       end_time=end_time,
+                                       start_time=start_time,
+                                       room_id=office_id,
+                                       subject_id=subject.get_main_id(),
+                                       timetable_id=timetable.get_main_id()).save()
+                lesson_rows[i].append(lesson_row)
+            counter += 1
+            start_time += 60
+            end_time += 60
+        return lesson_rows
