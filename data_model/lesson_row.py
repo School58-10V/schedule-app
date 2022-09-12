@@ -20,7 +20,7 @@ class LessonRow(AbstractModel):
         """
             :param day_of_the_week: день недели (число от 0 до 6)
             :param db_source: Адаптер бд сорса
-            :param start_time:  начальное время
+            :param start_time: начальное время
             :param end_time: конечное время
             :param group_id: номер группы
             :param subject_id: айди предмета
