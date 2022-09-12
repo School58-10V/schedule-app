@@ -32,14 +32,9 @@ subjects = functions.parse_subjects(source, source.get_all("Subjects"))
 
 teachers = functions.parse_teachers(source, source.get_all("Teachers"))
 
-monday_pairs = int(input("Количество пар в понедельник:"))
-thursday_pairs = int(input("Количество пар в четверг:"))
-friday_pairs = int(input("Количество пар в пятницу:"))
-
 dates = functions.get_rand_dates()
 
-functions.create_random_day(source, group, subjects, teachers, dates[0], monday_pairs)
-functions.create_random_day(source, group, subjects, teachers, dates[1], thursday_pairs)
-functions.create_random_day(source, group, subjects, teachers, dates[2], friday_pairs)
+for date in dates:
+    functions.create_random_day(source, group, subjects, teachers, date, int(input(f"Количество пар {date}го: ")))
 
 functions.get_data(source, group)
