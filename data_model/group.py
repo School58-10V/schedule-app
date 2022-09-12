@@ -122,7 +122,7 @@ class Group(AbstractModel):
         return self
 
     @classmethod
-    def get_class_letters(cls, db_source: DBSource, class_letter: str, grade: int) -> List[Group]:
+    def get_by_class_letters(cls, db_source: DBSource, class_letter: str, grade: int) -> List[Group]:
 
         list_of_groups = db_source.get_by_query(cls._get_collection_name(),
                                                 {'class_letter': class_letter, 'grade': grade})

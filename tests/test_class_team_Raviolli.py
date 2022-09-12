@@ -32,12 +32,10 @@ class TestClass:
         :param grade: Класс (номер, год)
         :return:
         """
-        groups = Group.get_by_class_letter(db_source=self.get_db_source(), class_letter=class_letter, grade=grade)
+        groups = Group.get_by_class_letters(db_source=self.get_db_source(), class_letter=class_letter, grade=grade)
         if len(groups) != 1:
             return groups[0]
         raise ValueError("Ошибка в базе данных!!! Групп с таким названием несколько!")
-
-
 
     def run(self, num1: int, num2: int, num3: int, class_letter: str, grade: int):
         """
