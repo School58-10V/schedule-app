@@ -23,8 +23,8 @@ def create_random_lesson(source, group, subjects, teachers, day, start_time, end
 
 
 def create_random_day(source, group, subjects, teachers, day, pair_amount):
-    start_time = 0
-    end_time = 45
+    start_time = 900
+    end_time = 945
     for i in range(pair_amount * 2):
         create_random_lesson(source, group, subjects, teachers, day, start_time, end_time)
         if i % 2 == 0:
