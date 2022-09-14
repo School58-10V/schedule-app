@@ -28,7 +28,7 @@ class TeamGedzaTestClass:
         print('Выдаю им пары')
         self.clone_lessons_for_random_days(random_lessonrows_to_copy, lesson_day_list)
         print('Готово! Проверяй!')
-        self.check_new_lessonrows_for_group()
+        # self.check_new_lessonrows_for_group()
 
     def create_student_group(self):
         teacher_name = random.choice(['Афанасьев Александр Николаевич', 'Капустин Андрей Андреевич'])
@@ -48,8 +48,8 @@ class TeamGedzaTestClass:
         student_object_list = [Student.get_by_name(name, self._db_source)[0] for name in
                                TeamGedzaTestClass.student_list]
         for student in student_object_list:
-            obj = StudentsForGroups(self._db_source, student.get_main_id(), self.student_group.get_main_id())
-            obj.save()
+            sfg = StudentsForGroups(self._db_source, student.get_main_id(), self.student_group.get_main_id())
+            sfg.save()
 
     def get_random_lessons(self, lesson_day_list=None):
         """
@@ -69,14 +69,19 @@ class TeamGedzaTestClass:
 
         return random_lessonrows_to_copy
 
-    def clone_lessons_for_random_days(self, random_lessonrows_to_copy: List[LessonRow], lesson_day_list):
+    @classmethod
+    def get_random_day_numbers(cls):
         numbers = list(range(7))
         random_day_numbers = []
 
         while len(random_day_numbers) < 3:
-            random_lesson = random.choice(numbers)
-            if random_lesson not in random_day_numbers:
-                random_day_numbers.append(random_lesson)
+            random_number = random.choice(numbers)
+            if random_number not in random_day_numbers:
+                random_day_numbers.append(random_number)
+        return random_day_numbers
+
+    def clone_lessons_for_random_days(self, random_lessonrows_to_copy: List[LessonRow], lesson_day_list):
+        random_day_numbers = self.get_random_day_numbers()
 
         for i in lesson_day_list:
             # i - число пар в какой-то день
@@ -94,3 +99,6 @@ class TeamGedzaTestClass:
                 for teacher in lr.get_teachers():
                     new_lesson_row.append_teacher(teacher)
 
+
+obj = TeamGedzaTestClass()
+obj.run()
