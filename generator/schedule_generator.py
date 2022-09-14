@@ -52,9 +52,9 @@ class TestGenerator:
         return subjects_today
 
     @staticmethod
-    def add_teacher():
-        # TODO: дописать создание учителя
-        return 'Учителя нет)'
+    def add_teacher(teacher):
+        new_teacher = Teacher(**teacher, db_source=app.config.get('schedule_db_source')).save()
+        return new_teacher
 
     def get_subject_teacher_pairs(self, amount):
         subjects = self.choose_subjects(amount)
@@ -68,7 +68,13 @@ class TestGenerator:
             if len(all_teachers) != 0:
                 teachers.append(random.choice(all_teachers))
             else:
-                teachers.append(self.add_teacher())
+                print("Нужен новый учитель:")
+                fio = input("ИФО:")
+                bio = input("информация об учителе:")
+                contacts = input("контакты учителя:")
+                office_id = input("закреплённый кабинет:")
+                teachers.append(self.add_teacher({fio: "Новый Учитель", office_id: office_id,
+                                                  bio: bio, contacts: contacts}))
 
         return subjects, teachers
 
