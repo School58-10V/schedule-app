@@ -136,17 +136,18 @@ class TeamGedzaTestClass:
             cabinet_number = Location.get_by_id(lr.get_room_id(), self._db_source).get_num_of_class()
             teacher_list_string = ", ".join([t.get_fio() for t in lr.get_teachers()])
             subject_name = Subject.get_by_id(lr.get_subject_id(), self._db_source).get_subject_name()
-            print(f'{lr_counter}. Урок {subject_name} в {day_of_the_week_dict[lr.get_day_of_the_week()]}, с '
-                  f'{lr.prettify_time(lr.get_start_time())} до {lr.prettify_time(lr.get_end_time())}, '
-                  f'в кабинете #{cabinet_number} '
-                  f'у учителя(ей) {teacher_list_string}.')
-            lr_counter += 1
 
             # Делаем print() если переходим на следующий день недели
             if (last_day_of_the_week is not None) and\
                     last_day_of_the_week != day_of_the_week_dict[lr.get_day_of_the_week()]:
                 print()
+
             last_day_of_the_week = day_of_the_week_dict[lr.get_day_of_the_week()]
+            print(f'{lr_counter}. Урок {subject_name} в {day_of_the_week_dict[lr.get_day_of_the_week()]}, с '
+                  f'{lr.prettify_time(lr.get_start_time())} до {lr.prettify_time(lr.get_end_time())}, '
+                  f'в кабинете #{cabinet_number} '
+                  f'у учителя(ей) {teacher_list_string}.')
+            lr_counter += 1
 
 
 student_list = ['Хромов Михаил Романович', 'Снигур Юрий Петрович', 'Суслова Екатерина Батьковна']
