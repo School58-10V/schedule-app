@@ -66,7 +66,7 @@ def get_rand_dates(dates_amount=3):
 
 def process_students(source, students, group):
     people = {}
-    req_names = {"Алексей": "2005-06-23", "Василий": "2005-06-21", "Иван": "2005-04-19"}
+    req_names = {"Алексей": "2005-06-23", "Василий": "2005-06-21", "Иван": "2005-03-19"}
     for student in students:
         if student.get_name() in req_names and student.get_name() not in people:
             people[student.get_name()] = student
