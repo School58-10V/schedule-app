@@ -162,7 +162,7 @@ class LessonRow(AbstractModel):
         return self
 
     @classmethod
-    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List:
+    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List[LessonRow]:
         """
 
         :param group_id: идшник группы

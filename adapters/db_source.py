@@ -76,7 +76,7 @@ class DBSource(AbstractSource):
                 raise ValueError('Данной таблицы не существует.')
 
         desc = [x[0] for x in cursor.description]
-        values = [f'\'{document[x]}\'' if x != 'object_id' else 'default' for x in desc]
+        values = [self.__wrap_string(document[x]) if x != 'object_id' else 'default' for x in desc]
         request = f'INSERT INTO "{collection_name}" VALUES ({",".join(map(str, values))}) RETURNING *;'
         try:
             cursor.execute(request)
@@ -101,6 +101,7 @@ class DBSource(AbstractSource):
         document.pop('object_id')
         collection = collection_name
         req_data = []
+        # TODO: remove this if statement, shouldn't be required
         if not collection_name.endswith("s"):
             collection += "s"
         for elem in document:
