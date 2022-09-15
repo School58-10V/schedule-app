@@ -1,6 +1,4 @@
 import random
-from datetime import date
-from data_model.lesson import Lesson
 from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.student import Student

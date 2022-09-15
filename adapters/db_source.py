@@ -76,7 +76,7 @@ class DBSource(AbstractSource):
                 raise ValueError('Данной таблицы не существует.')
 
         desc = [x[0] for x in cursor.description]
-        values = [f'\'{document[x]}\'' if x != 'object_id' else 'default' for x in desc]
+        values = [self.__wrap_string(document[x]) if x != 'object_id' else 'default' for x in desc]
         request = f'INSERT INTO "{collection_name}" VALUES ({",".join(map(str, values))}) RETURNING *;'
         try:
             cursor.execute(request)
