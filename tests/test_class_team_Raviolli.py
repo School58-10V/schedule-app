@@ -101,7 +101,7 @@ class TestClass:
                                        subject_id=subject.get_main_id(),
                                        timetable_id=timetable.get_main_id()).save()
                 lesson_rows[i].append(lesson_row)
+                start_time += 60
+                end_time += 60
             counter += 1
-            start_time += 60
-            end_time += 60
         return lesson_rows
