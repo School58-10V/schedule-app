@@ -72,9 +72,9 @@ class LessonRow(AbstractModel):
 
     def __repr__(self) -> str:
         return f'LessonRow(day_of_the_week={self.get_day_of_the_week()}, group_id={self.get_group_id()}' \
-               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}), ' \
-               f' start_time={self.get_start_time()}), end_time={self.get_end_time()}), ' \
-               f' timetable_id={self.get_timetable_id()}), object_id={self.get_main_id()})'
+               f', subject_id={self.get_subject_id()}, room_id={self.get_room_id()}, ' \
+               f' start_time={self.get_start_time()}, end_time={self.get_end_time()}, ' \
+               f' timetable_id={self.get_timetable_id()}, object_id={self.get_main_id()})'
 
     def __str__(self) -> str:
         return f'Урок в день недели номер {self.get_day_of_the_week() + 1} который начинается в {self.get_start_time()}'
