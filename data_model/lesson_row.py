@@ -20,7 +20,7 @@ class LessonRow(AbstractModel):
         """
             :param day_of_the_week: день недели (число от 0 до 6)
             :param db_source: Адаптер бд сорса
-            :param start_time:  начальное время
+            :param start_time: начальное время
             :param end_time: конечное время
             :param group_id: номер группы
             :param subject_id: айди предмета
@@ -162,7 +162,7 @@ class LessonRow(AbstractModel):
         return self
 
     @classmethod
-    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List:
+    def get_lesson_rows_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List[LessonRow]:
         """
 
         :param group_id: идшник группы

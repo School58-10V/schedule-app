@@ -16,10 +16,9 @@ class Group(AbstractModel):
     """
         Класс группы.
     """
-
     def __init__(
-            self, db_source: DBSource, teacher_id: int, class_letter: str, grade: int,
-            profile_name: str, object_id: Optional[int] = None
+            self, db_source: DBSource, teacher_id: int, class_letter: Optional[str] = None, grade: Optional[int] = None,
+            profile_name: Optional[str] = None, object_id: Optional[int] = None
     ):
         super().__init__(db_source)
         self.__teacher_id = teacher_id
