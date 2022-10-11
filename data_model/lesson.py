@@ -129,7 +129,7 @@ class Lesson(AbstractModel):
     def get_today_replacements(cls, db_source: DBSource, date: datetime.date = datetime.date.today()) -> List[Lesson]:
         replacements = [Lesson.get_by_id(i['object_id'], db_source)
                         for i in db_source.get_by_query(cls._get_collection_name(),
-                                                        {"day": date})]
+                                                        {"date": date})]
         return replacements
 
     @classmethod

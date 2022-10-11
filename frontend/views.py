@@ -1,13 +1,23 @@
 from flask import request, render_template
+
+from db_source import DBSource
 from schedule_app import app
 
+from interfaces.student_interface import StudentInterface
+from interfaces.schedule_interface import get_schedule_for_today
+
+DBSOURCE = DBSource(host="postgresql.aakapustin.ru",
+                    password="VYRL!9XEB3yXQs4aPz_Q",
+                    user="schedule_app",
+                    options="-c search_path=dbo,public")
 
 BASE_PATH = '127.0.0.1:5000/api/v1'
 
 
 @app.route('/', methods=['GET'])
 def main_page():
-    return render_template('main.html')
+    # st = StudentInterface(db_source=DBSOURCE, student_id=123)
+    return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=80))
 
 
 @app.route('/login', methods=['GET'])
