@@ -1,6 +1,6 @@
 from flask import request, render_template
 
-from db_source import DBSource
+from adapters.db_source import DBSource
 from schedule_app import app
 
 from interfaces.student_interface import StudentInterface
