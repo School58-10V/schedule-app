@@ -1,26 +1,33 @@
-.table {
-    background-image: url(static/img/7.png);
-    background-size: contain;
-    left: 5%;
-    width: 18%;
-    position: absolute;
-    height: 100%;
-    z-index: 5;
-}
-
-.table-an {
-    animation-name: table-animation;
-    animation-duration: 5s;
+.nav_button:hover {
+    animation: 1.5s linear table-animation;
 }
 
 @keyframes table-animation {
     0% {
-        src="static/img/7_2.png"
+        width: 180px;
+        padding: 105px 0px 0px 0px;
+        
+        background-image: url('../img/7.png');
     }
-    50% {
-        src="static/img/7.png"
+    33% {
+        width: 175px;
+        padding: 110px 0px 0px 0px;
+        margin-right: 25px;
+
+        background-image: url('../img/7_2.png');
     }
-    100% {
-        src="static/img/7_1.png"
+    66% {
+        width: 195px;
+        padding: 90px 0px 0px 0px;
+        margin-right: 5px;
+
+        background-image: url('../img/7_1.png');
+    }
+    100%{
+        width: 180px;
+        padding: 105px 0px 0px 0px;
+        margin-right: 20px;
+        
+        background-image: url('../img/7.png');
     }
 }

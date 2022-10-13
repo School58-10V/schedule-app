@@ -1,27 +1,49 @@
 <!DOCTYPE html>
 <head>
     <title>Schedule App</title>
+    <link rel="stylesheet" src="static/css/nadoo.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: url("static/img/fon.png");
+            background-repeat: no-repeat;
+            background-size: cover;
         }
         nav, .wrapper{
-            text-align: center;
-            margin: auto;
-            width: 1000px;
+            /* width: 50%; */
+            display: flex;
+            align-content: space-around;
+            z-index: 5;
         }
-        nav > a{
-            margin: 0px 20px
+        .nav_button{
+            width: 180px;
+            height: 70px;
+            padding: 105px 0px 0px 0px;
+            
+            margin-right: 20px;
+
+            text-align: center;
+            background-image: url('static/img/7.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            
+            color: whitesmoke;
+            text-decoration: none;
+
+            z-index: 10;
         }
     </style>
 </head>
 <body>
     <nav>
-<!--        <a href="/">Главная</a>-->
-<!--        <a href="/login">Войти</a>-->
-<!--        <a href="/logout">Выход</a>-->
+        <a class="nav_button" href="/students">Список учеников</a>
+        <a class="nav_button" href="/groups">Список классов</a>
+        <a class="nav_button" href="/lessons">Список уроков</a><br>
+        <a class="nav_button" href="/teachers">Список учителей</a><br>
+        <a class="nav_button" href="/subjects">Список предметов</a>
     </nav>
+
 
     <div>
     {% block main %}
