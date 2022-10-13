@@ -1,32 +1,29 @@
 .nav_button:hover {
-    animation: 1.5s linear table-animation;
+    animation: 1.2s linear table-animation;
 }
 
 @keyframes table-animation {
     0% {
-        width: 180px;
+        width: 170px;
         padding: 105px 0px 0px 0px;
         
         background-image: url('../img/7.png');
     }
     33% {
-        width: 175px;
+        width: 170px;
         padding: 110px 0px 0px 0px;
-        margin-right: 25px;
 
         background-image: url('../img/7_2.png');
     }
     66% {
-        width: 195px;
+        width: 180px;
         padding: 90px 0px 0px 0px;
-        margin-right: 5px;
 
         background-image: url('../img/7_1.png');
     }
     100%{
-        width: 180px;
+        width: 170px;
         padding: 105px 0px 0px 0px;
-        margin-right: 20px;
         
         background-image: url('../img/7.png');
     }

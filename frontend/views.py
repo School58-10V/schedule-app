@@ -17,7 +17,7 @@ BASE_PATH = '127.0.0.1:5000/api/v1'
 @app.route('/', methods=['GET'])
 def main_page():
     # st = StudentInterface(db_source=DBSOURCE, student_id=123)
-    return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=80))
+    return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=119))
 
 
 @app.route('/login', methods=['GET'])
