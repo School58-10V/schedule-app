@@ -11,6 +11,16 @@
             <th>ID урока</th>
             <th>ID учителя</th>
         </tr>
+    {% for i in lessons %}
+    <tr>
+            <th>{{ i['object_id'] }}</th>
+        <th>{{ i['date'] }}</th>
+        <th>{{ i['state'] }}</th>
+        <th>{{ i['notes'] }}</th>
+        <th>{{ i['subject_id'] }}</th>
+        <th>{{ i['teacher_id'] }}</th>
+    </tr>
+    {% endfor %}
     </thead>
 </table>
 {% endblock %}

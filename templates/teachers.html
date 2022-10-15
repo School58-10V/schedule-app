@@ -12,6 +12,17 @@
             <th>ID предметов</th>
             <th>ID кабинета</th>
         </tr>
+    {% for i in teachers %}
+    <tr>
+        <th>{{ i['object_id'] }}</th>
+        <th>{{ i['fio'] }}</th>
+        <th>{{ i['bio'] }}</th>
+        <th>{{ i['contacts'] }}</th>
+        <th>{{ i['lesson_row_id'] }}</th>
+        <th>{{ i['subject_id'] }}</th>
+        <th>{{ i['office_id'] }}</th>
+    </tr>
+    {% endfor %}
     </thead>
 </table>
 {% endblock %}

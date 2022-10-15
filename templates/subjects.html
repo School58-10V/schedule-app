@@ -8,6 +8,13 @@
             <th>Название</th>
             <th>ID учителей</th>
         </tr>
+    {% for i in subjects %}
+    <tr>
+        <th>{{ i['object_id'] }}</th>
+        <th>{{ i['subject_name'] }}</th>
+        <th>{{ i['teachers'] }}</th>
+    </tr>
+    {% endfor %}
     </thead>
 </table>
 {% endblock %}

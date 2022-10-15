@@ -3,6 +3,10 @@ from flask import render_template
 from schedule_app import app
 from interfaces.schedule_interface import get_schedule_for_today
 from controllers.group_controller import get_groups
+from controllers.lesson_controller import get_lessons
+from controllers.student_controller import get_students
+from controllers.subject_controller import get_subjects
+from controllers.teacher_controller import get_teachers
 
 
 BASE_PATH = '127.0.0.1:5000/api/v1'
@@ -31,12 +35,12 @@ def register_page():
 
 @app.route('/students', methods=['GET'])
 def students_page():
-    return render_template('students.html')
+    # print(get_students().json)
+    return render_template('students.html', students=get_students().json)
 
 
 @app.route('/groups', methods=['GET'])
 def groups_page():
-    print(get_groups().json)
     # print(list(get_groups()), dict(get_groups()), get_groups())
 
     return render_template('groups.html', groups=get_groups().json)
@@ -44,17 +48,17 @@ def groups_page():
 
 @app.route('/lessons', methods=['GET'])
 def lessons_page():
-    return render_template('lessons.html')
+    return render_template('lessons.html', lessons=get_lessons().json)
 
 
 @app.route('/teachers', methods=['GET'])
 def teachers_page():
-    return render_template('teachers.html')
+    return render_template('teachers.html', teachers=get_teachers().json)
 
 
 @app.route('/subjects', methods=['GET'])
 def subjects_page():
-    return render_template('subjects.html')
+    return render_template('subjects.html', subjects=get_subjects().json)
 
 
 @app.route('/timetable', methods=['GET'])
