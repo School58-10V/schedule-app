@@ -2,6 +2,7 @@ from flask import render_template
 
 from schedule_app import app
 from interfaces.schedule_interface import get_schedule_for_today
+from controllers.group_controller import get_groups
 
 
 BASE_PATH = '127.0.0.1:5000/api/v1'
@@ -35,7 +36,10 @@ def students_page():
 
 @app.route('/groups', methods=['GET'])
 def groups_page():
-    return render_template('groups.html')
+    print(get_groups().json)
+    # print(list(get_groups()), dict(get_groups()), get_groups())
+
+    return render_template('groups.html', groups=get_groups().json)
 
 
 @app.route('/lessons', methods=['GET'])
