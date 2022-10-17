@@ -5,6 +5,20 @@
 <input type="submit" value="Получить расписание" id="submitButton"><br>
 
 <div id="timetable">
+<table id="timetablesTable" border=1 frame=void>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>День недели</th>
+            <th>ID классов</th>
+            <th>ID предметов</th>
+            <th>ID локации</th>
+            <th>Начало</th>
+            <th>Конец</th>
+            <th>ID года</th>
+        </tr>
+    </thead>
+</table>
 
 </div>
 {% endblock %}
@@ -21,5 +35,5 @@
 {% endblock %}
 
 {% block script %}
-<script type="module" src="static/js/timetable.js"></script>
+<script type="module" src="static/js/week_timetable.js"></script>
 {% endblock %}
