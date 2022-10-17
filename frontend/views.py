@@ -1,10 +1,11 @@
+import datetime
 from flask import request, render_template
 
 from adapters.db_source import DBSource
 from schedule_app import app
 
 from interfaces.student_interface import StudentInterface
-from interfaces.schedule_interface import get_schedule_for_today
+from interfaces.schedule_interface import get_schedule_for_day, schedule_for_week
 
 DBSOURCE = DBSource(host="postgresql.aakapustin.ru",
                     password="VYRL!9XEB3yXQs4aPz_Q",
@@ -17,7 +18,8 @@ BASE_PATH = '127.0.0.1:5000/api/v1'
 @app.route('/', methods=['GET'])
 def main_page():
     # st = StudentInterface(db_source=DBSOURCE, student_id=123)
-    return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=80))
+    return render_template('main.html', schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                                      week_day=datetime.date.today().weekday()))
 
 
 @app.route('/login', methods=['GET'])
@@ -60,6 +62,29 @@ def subjects_page():
     return render_template('subjects.html')
 
 
-@app.route('/timetable', methods=['GET'])
+@app.route('/timetable', methods=['GET', 'POST'])
 def timetable_page():
-    return render_template('timetable.html')
+    if request.method == 'POST':
+        weekday_to_num = {
+            'Понедельник': 0,
+            'Вторник': 1,
+            'Среда': 2,
+            'Четверг': 3,
+            'Пятница': 4,
+        }
+        weekday = request.form.get('weekday', '')
+
+        return render_template('timetable.html',
+                               schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                             week_day=weekday_to_num[weekday]))
+    else:
+        return render_template('timetable.html', schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                                               week_day=datetime.date.today().weekday()))
+
+
+@app.route('/timetable_week', methods=['GET'])
+def timetable_week_page():
+    schedule = schedule_for_week()
+    return render_template('timetable_week.html', schedule=schedule)
+    # return render_template('timetable_week.html', schedule=schedule_for_week(db_source=DBSOURCE, current_user_id=80,
+    #                                                                            ))

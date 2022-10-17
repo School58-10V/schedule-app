@@ -1,4 +1,5 @@
 import datetime
+from schedule_app import app
 
 from tabulate import tabulate
 
@@ -8,13 +9,17 @@ from data_model.location import Location
 from data_model.student import Student
 from data_model.subject import Subject
 from data_model.timetable import TimeTable
+from interfaces.student_interface import StudentInterface
 
 
-def get_schedule_for_today(db_source, current_user_id):
+WEEKDAYS = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница']
+
+
+def get_schedule_for_day(db_source, current_user_id, week_day):
     # Узнаем, какой год нам надо смореть
     timetable_id = TimeTable.get_by_year(datetime.date.today().year, db_source).get_main_id()
     # Берем все уроки, которые проходят сегодня
-    lesson_rows = LessonRow.get_all_by_day(week_day=datetime.date.today().weekday(),
+    lesson_rows = LessonRow.get_all_by_day(week_day=week_day,
                                            db_source=db_source)
     # Берем все замены, которые есть на сегодня
     lesson = {i.get_start_time(): i for i in Lesson.get_today_replacements(date=datetime.date.today(),
@@ -44,6 +49,11 @@ def get_schedule_for_today(db_source, current_user_id):
              Location.get_by_id(i.get_room_id(), db_source).get_num_of_class())
             for i in lesson_rows_dct]
     if not data:
-        return 'Сегодня уроков нет! Ура!'
-    return f'Расписание на сегодня: {datetime.date.today()}\n' + \
+        return f'В {WEEKDAYS[week_day]} уроков нет! Ура!'
+    return f'Расписание на {WEEKDAYS[week_day]}:\n' + \
            tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
+
+
+def schedule_for_week():
+    interface = StudentInterface(db_source=app.config.get('schedule_db_source'), student_id=80)
+    return '\n'.join(interface.get_schedule_for_week())

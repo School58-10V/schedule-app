@@ -1,25 +1,47 @@
 {% extends 'base.html' %}
 {% block main %}
+<head>
+    <link rel="stylesheet" href="static/css/nadoo.css">
+</head>
 <h1>Расписание</h1>
-<input type="text" placeholder="ФИО ученика" id="nameField">
-<input type="submit" value="Получить расписание" id="submitButton"><br>
+<!--<input type="text" placeholder="ФИО ученика" id="nameField">-->
+<!--<input type="submit" value="Получить расписание" id="submitButton"><br>-->
 
-<div id="timetable">
 
+<div class="schedule_wrapper">
+    <form method="post" id="weekday">
+        <!--    <label for="day_of_week">Выбери день недели</label>-->
+        <select name="weekday" style="font-size: 20px">
+            <option style="font-size: 20px">Понедельник</option>
+            <option style="font-size: 20px">Вторник</option>
+            <option style="font-size: 20px">Среда</option>
+            <option style="font-size: 20px">Четверг</option>
+            <option style="font-size: 20px">Пятница</option>
+        </select>
+        <!--    <input type="text" name="day">-->
+
+        <input type="submit" id="getSchedule" value="Получить расписание на день" style="font-size: 20px">
+    </form>
+    <img src="static/img/board.png">
+    <div style="text-align: center;">
+
+
+        <pre class="schedule_text">{{ schedule }}</pre>
+    </div>
 </div>
 {% endblock %}
 
 {% block footer %}
-<nav>
-    <a href="/students">Список учеников</a>
-    <a href="/groups">Список классов</a>
-    <a href="/lessons">Список уроков</a>
-    <a href="/teachers">Список учителей</a>
-    <a href="/subjects">Список предметов</a>
-    <a href="/timetable">Расписание</a>
-</nav>
+<!--<nav>-->
+<!--    <a href="/students">Список учеников</a>-->
+<!--    <a href="/groups">Список классов</a>-->
+<!--    <a href="/lessons">Список уроков</a>-->
+<!--    <a href="/teachers">Список учителей</a>-->
+<!--    <a href="/subjects">Список предметов</a>-->
+<!--    <a href="/timetable">Расписание</a>-->
+<!--</nav>-->
 {% endblock %}
 
 {% block script %}
-<script type="module" src="static/js/timetable.js"></script>
+<!--<script type="module" src="static/js/timetable.js"></script>-->
 {% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block main %}
+<head>
+    <link rel="stylesheet" href="static/css/nadoo.css">
+</head>
+<h1>Расписание</h1>
+<div class="schedule_wrapper">
+    <img src="static/img/board.png">
+    <div style="text-align: center;">
+
+
+        <pre class="schedule_text">{{ schedule }}</pre>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<!--<nav>-->
+<!--    <a href="/students">Список учеников</a>-->
+<!--    <a href="/groups">Список классов</a>-->
+<!--    <a href="/lessons">Список уроков</a>-->
+<!--    <a href="/teachers">Список учителей</a>-->
+<!--    <a href="/subjects">Список предметов</a>-->
+<!--    <a href="/timetable">Расписание</a>-->
+<!--</nav>-->
+{% endblock %}
+
+{% block script %}
+<!--<script type="module" src="static/js/timetable.js"></script>-->
+{% endblock %}

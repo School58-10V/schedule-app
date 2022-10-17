@@ -28,7 +28,7 @@ class StudentInterface:
         self.__current_year = self.__today.year
         self.__current_day_of_week = self.__today.weekday()  # передается от 0 до 6, нужно обсудить в каком формате у нас день недели в итоге
 
-        self.__login()
+        # self.__login()
 
     def __login(self, initial: bool = True):
         username = self.__smart_input('Ваше ФИО: ')
@@ -383,7 +383,7 @@ class StudentInterface:
         return f'Расписание на сегодня: {datetime.date.today()}\n' + \
                tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
-    def __get_schedule_for_week(self):
+    def get_schedule_for_week(self):
         week_dict = {0: "Понедельник",
                      1: "Вторник",
                      2: "Среда",
@@ -392,11 +392,13 @@ class StudentInterface:
                      5: "Суббота",
                      6: "Воскресенье"}
 
+        schedule = []
+
         for i in range(0, 6):
-            print(f"\n{week_dict[i]}\n")
-            print(tabulate(self.__get_schedule_for_day(i), ["Предмет", "Время начала", "Место проведения"],
-                           tablefmt="grid"))
-        return
+            schedule.append(
+                f'\n{week_dict[i]}\n {tabulate(self.__get_schedule_for_day(i), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid")}')
+
+        return schedule
 
     def __get_schedule_for_day(self, day):
         db_result = LessonRow.get_by_day_and_student(day, self.__current_user_id, self.__db_source)
