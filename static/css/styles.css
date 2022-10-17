@@ -72,10 +72,9 @@
         }
         .menu_buttons{
             height: 13%;
-            /*margin-top: 6%;*/
             width: 28%;
             border-radius: 10%;
-            right: 4.5%;*/
+            right: 4.5%;
             left: 66%;
             z-index: 18;
             position: absolute;

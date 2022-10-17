@@ -47,3 +47,34 @@ def get_schedule_for_today(db_source, current_user_id):
         return 'Сегодня уроков нет! Ура!'
     return f'Расписание на сегодня: {datetime.date.today()}\n' + \
            tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
+
+
+def get_schedule_for_day(user_id, day, db_source):
+    db_result = LessonRow.get_by_day_and_student(day, user_id, db_source)
+    data = {"subj_names": [], "start_times": [], "locations": []}
+    for lesson_row in db_result:
+        data.get("subj_names").append(
+            Subject.get_by_id(lesson_row.get_subject_id(), db_source=db_source).get_subject_name())
+        data.get("start_times").append(lesson_row.get_start_time())
+        location = Location.get_by_id(lesson_row.get_room_id(), db_source=db_source)
+        if location.get_link() is None:
+            data.get("locations").append(location.get_num_of_class())
+        else:
+            data.get("locations").append(location.get_link())
+    return data
+
+
+def get_schedule_for_week(db_source, user_id):
+    week_dict = {0: "Понедельник",
+                 1: "Вторник",
+                 2: "Среда",
+                 3: "Четверг",
+                 4: "Пятница",
+                 5: "Суббота",
+                 6: "Воскресенье"}
+    lst = []
+    for i in range(0, 6):
+        lst.append(f'{week_dict[i]}\n' + tabulate(get_schedule_for_day(day=i, db_source=db_source, user_id=user_id),
+                                                  ["Предмет", "Время начала", "Место проведения"],
+                                                  tablefmt="grid"))
+    return lst
