@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<head>
+    <style>
+        .schedule_wrapper > img {
+            position: fixed;
+            bottom: 0%;
+            left: 25%;
+            right: 25%;
+            height: 75%;
+            z-index: 10;
+        }
+        .schedule_text {
+            color: whitesmoke;
+            z-index: 10;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 36%;
+            font-size: 100%;
+        }
+        .table_header {
+            color: black;
+            font-style: italic;
+            z-index: 10;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 26%;
+            font-size: 350%;
+        }
+    </style>
+</head>
+
+<div class="schedule_wrapper">
+    <img src="static/img/board.png">
+    <center>
+        <pre class="table_header">Расписание на неделю</pre>
+    </center>
+    <center>
+        <pre class="schedule_text">{{ table }}</pre>
+    </center>
+</div>
+{% endblock %}

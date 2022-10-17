@@ -4,7 +4,7 @@ from adapters.db_source import DBSource
 from schedule_app import app
 
 from interfaces.student_interface import StudentInterface
-from interfaces.schedule_interface import get_schedule_for_today
+from interfaces.schedule_interface import get_schedule_for_today, get_schedule_for_week
 
 DBSOURCE = DBSource(host="postgresql.aakapustin.ru",
                     password="VYRL!9XEB3yXQs4aPz_Q",
@@ -17,7 +17,7 @@ BASE_PATH = '127.0.0.1:5000/api/v1'
 @app.route('/', methods=['GET'])
 def main_page():
     # st = StudentInterface(db_source=DBSOURCE, student_id=123)
-    return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=119))
+    return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=122))
 
 
 @app.route('/login', methods=['GET'])
@@ -63,3 +63,7 @@ def subjects_page():
 @app.route('/timetable', methods=['GET'])
 def timetable_page():
     return render_template('timetable.html')
+
+@app.route("/personal-timetable", methods=["GET"])
+def personal_timetable_page():
+    return render_template("personal_table.html", table=get_schedule_for_week(db_source=DBSOURCE, student_id=122))
