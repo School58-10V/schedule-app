@@ -1,43 +1,7 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<head>
-    <link rel="stylesheet" href="static/css/nadoo.css">
-    <style>
-        .schedule_wrapper{
-            position: fixed;
-            z-index: 10;
-            height: 100%;
-            width: 100%
-        }
-        .schedule_wrapper > img{
-            position: fixed;
-            bottom: 0%;
-            height: 75%;
-            z-index: 10;
-            left: 25%;
-            right: 25%;
-        }
-        .schedule_text{
-            color: whitesmoke;
-            z-index: 10;
-            height: 100%;
-            width: 100%;
-            position: fixed;
-            top: 38%;
-            font-size: 150%;
-        }
-    </style>
-</head>
-
-<div class="schedule_wrapper">
-    <img src="static/img/board.png">
-    <center>
-    <pre class="schedule_text">{{ schedule }}</pre>
-    </center>
-</div>
-
-
+    <pre>{{ schedule }}</pre>
 {% endblock %}
 
 {% block script %}

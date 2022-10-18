@@ -1,60 +1,35 @@
 <!DOCTYPE html>
 <head>
     <title>Schedule App</title>
-    <link rel="stylesheet" src="static/css/nadoo.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap');
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-image: url("static/img/fon2.png");
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-        nav{
-            /* width: 50%; */
-            display: flex;
-            align-content: space-around;
-            z-index: 5;
-            margin-top: -10px;
-        }
-        .nav_button{
-            width: 170px;
-            height: 60px;
-            padding: 105px 0px 0px 0px;
-            
-            margin-right: 20px;
-
-            text-align: center;
-            background-image: url('static/img/7.png');
-            background-repeat: no-repeat;
-            background-size: contain;
-            
-            color: whitesmoke;
-            text-decoration: none;
-
-            z-index: 10;
-        }
-    </style>
+    <link rel="stylesheet" href="static/css/styles.css">
 </head>
-<body>
-    <nav>
-        <a class="nav_button" href="/students">Список учеников</a>
-        <a class="nav_button" href="/groups">Список классов</a>
-        <a class="nav_button" href="/lessons">Список уроков</a><br>
-        <a class="nav_button" href="/teachers">Список учителей</a><br>
-        <a class="nav_button" href="/subjects">Список предметов</a>
+<body class="flex flex-col h-100vh">
+<header>
+    <nav class="flex flex-row items-center justify-center">
+        <a class="nav-button first-nav-button" href="/students">Список учеников</a>
+        <a class="nav-button" href="/groups">Список классов</a>
+        <a class="nav-button" href="/lessons">Список уроков</a>
+        <a class="nav-button" href="/teachers">Список учителей</a>
+        <a class="nav-button last-nav-button" href="/subjects">Список предметов</a>
     </nav>
+</header>
 
 
+<div class="font-size-1rem text-center flex flex-row justify-center grow">
+    <div class="container-lg">
+        {% block main %}
+        {% endblock %}
+    </div>
+</div>
+
+
+<footer class="text-center">
     <div>
-    {% block main %}
-    {% endblock %}
+        <pre class="font-size-15rem">Школа 58, 11 Матинф класс</pre>
     </div>
 
+</footer>
 
-    {% block footer %}
-    {% endblock %}
-    
-    {% block script %}
-    {% endblock %}
+{% block script %}
+{% endblock %}
 </body>

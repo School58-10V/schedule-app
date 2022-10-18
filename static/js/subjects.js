@@ -1,4 +1,6 @@
-import { BASE_PATH } from './config.js';
+// import BASE_PATH from './config.js';
+
+const BASE_PATH = '/api/v1';
 
 function request(){
     let xhr = new XMLHttpRequest();
