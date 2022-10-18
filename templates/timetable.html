@@ -22,12 +22,54 @@
 
         <input type="submit" id="getSchedule" value="Получить расписание на день" style="font-size: 20px">
     </form>
-    <img src="static/img/board.png">
-    <div style="text-align: center;">
+<img src="static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%">
+<div/>
+<div style="text-align: center; align: center; ">
 
 
-        <pre class="schedule_text">{{ schedule }}</pre>
-    </div>
+
+        <table class="tb_table" style="width: 60%; height: 50%; top: 38%; left: 18%; align: center; margin: auto">
+            <tr>
+                <td>{{ schedule[0][0] }}</td>
+                <td>{{ schedule[0][1] }}</td>
+                <td>{{ schedule[0][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[1][0] }}</td>
+                <td>{{ schedule[1][1] }}</td>
+                <td>{{ schedule[1][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[2][0] }}</td>
+                <td>{{ schedule[2][1] }}</td>
+                <td>{{ schedule[2][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[3][0] }}</td>
+                <td>{{ schedule[3][1] }}</td>
+                <td>{{ schedule[3][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[4][0] }}</td>
+                <td>{{ schedule[4][1] }}</td>
+                <td>{{ schedule[4][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[5][0] }}</td>
+                <td>{{ schedule[5][1] }}</td>
+                <td>{{ schedule[5][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[6][0] }}</td>
+                <td>{{ schedule[6][1] }}</td>
+                <td>{{ schedule[6][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[7][0] }}</td>
+                <td>{{ schedule[7][1] }}</td>
+                <td>{{ schedule[7][2] }}</td>
+            </tr>
+        </table>
 </div>
 {% endblock %}
 
