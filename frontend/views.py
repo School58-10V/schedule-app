@@ -3,6 +3,8 @@ import datetime
 from flask import render_template
 from tabulate import tabulate
 
+from data_model.group import Group
+from data_model.student import Student
 from schedule_app import app
 from interfaces.schedule_interface import get_schedule_for_week, get_schedule_for_day
 from form.set_student_name_form import StudentName
@@ -75,7 +77,27 @@ def subjects_page():
     return render_template('subjects.html', subjects=get_subjects().json)
 
 
-@app.route('/timetable', methods=['GET'])
+@app.route('/timetable', methods=['GET', 'POST'])
 def timetable_page():
+    dct = {'понедельник': 0, "вторник": 1, "среда": 2, "четверг": 3, "пятница": 4, "суббота": 5, "воскресенье": 6}
     form = StudentName()
-    return render_template('timetable.html')
+    if form.validate_on_submit():
+        students1 = Student.get_by_name(source=app.config.get('schedule_db_source'), name=form.name.data)
+        if len(students1) == 0 and form.date.data.lover() not in dct:
+            return render_template('timetable.html', error=True, form=form)
+        if form.group.data is not None:
+            students2 = set(Group.get_by_id(db_source=app.config.get('schedule_db_source'),
+                                            element_id=form.group.data).get_all_students())
+            students1 = set(students1) & students2
+            students1 = students1.pop()
+        else:
+            students1 = students1[-1]
+        students1 = students1.get_main_id()
+        date = dct[form.date.data.lower()]
+        schedule = tabulate(get_schedule_for_day(day=date,
+                                                 user_id=students1,
+                                                 db_source=app.config.get('schedule_db_source')),
+                            ["Предмет", "Время начала", "Место проведения"],
+                            tablefmt="grid")
+        return render_template('timetable.html', form=form, schedule=schedule, error=False)
+    return render_template('timetable.html', form=form, error=False, schedule=[])
