@@ -31,9 +31,9 @@
 
 .schedule_wrapper{
     position: fixed;
-    z-index: 10;
+    z-index: 12;
     height: 100%;
-    width: 100%
+    width: 100%;
 }
 .schedule_wrapper > img{
     position: fixed;
@@ -51,4 +51,16 @@
     position: fixed;
     top: 38%;
     font-size: 150%;
+}
+.tb_table{
+    border: none;
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    margin: auto;
+    top: 38%;
+    font-size: 150%;
+    color:#ffffff;
+    line-height:0px;
 }

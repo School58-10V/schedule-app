@@ -48,10 +48,25 @@ def get_schedule_for_day(db_source, current_user_id, week_day):
                                db_source).get_subject_name(),
              Location.get_by_id(i.get_room_id(), db_source).get_num_of_class())
             for i in lesson_rows_dct]
-    if not data:
-        return f'В {WEEKDAYS[week_day]} уроков нет! Ура!'
-    return f'Расписание на {WEEKDAYS[week_day]}:\n' + \
-           tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
+    nov_tb = [["", "Урока нет", ""] for i in range(9)]
+
+    p = -1
+    for i in nov_tb:
+        p += 1
+        if p == 0:
+            i[0] = "Время"
+            i[1] = datetime.date.today()
+            i[2] = "КАБ."
+        else:
+            if p + 1 > 9:
+                break
+            if p > len(data):
+                break
+            i[0] = str(data[p - 1][0])[:-2] + ":" + str(data[p - 1][0])[2:] + "-" + str(data[p - 1][1] // 100) + ":" + str(data[p - 1][1] % 100)
+            i[1] = data[p - 1][2]
+            i[2] = data[p - 1][3]
+    print(nov_tb)
+    return nov_tb
 
 
 def schedule_for_week():
