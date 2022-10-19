@@ -17,10 +17,11 @@
             <option style="font-size: 20px">Среда</option>
             <option style="font-size: 20px">Четверг</option>
             <option style="font-size: 20px">Пятница</option>
+
         </select>
         <!--    <input type="text" name="day">-->
 
-        <input type="submit" id="getSchedule" value="Получить расписание на день" style="font-size: 20px">
+        <input type="submit" id="getSchedule" value="Получить расписание на день" style="font-size: 20px; background-image: url('../img/fon.png')">
     </form>
 <img src="static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%">
 <div/>
@@ -28,46 +29,51 @@
 
 
 
-        <table class="tb_table" style="width: 60%; height: 50%; top: 38%; left: 18%; align: center; margin: auto">
+        <table class="tb_table" style="width: 48%; height: 56%; top: 31%; left: 28%; align: center; margin: auto">
             <tr>
-                <td>{{ schedule[0][0] }}</td>
-                <td>{{ schedule[0][1] }}</td>
+                <td style="width: 28%; height: 12%">{{ schedule[0][0] }}</td>
+                <td style="width: 57%">{{ schedule[0][1] }}</td>
                 <td>{{ schedule[0][2] }}</td>
             </tr>
             <tr>
-                <td>{{ schedule[1][0] }}</td>
-                <td>{{ schedule[1][1] }}</td>
+                <td style="width: 28%">{{ schedule[1][0] }}</td>
+                <td style="text-align: left; width: 57%">{{ schedule[1][1] }}</td>
                 <td>{{ schedule[1][2] }}</td>
             </tr>
             <tr>
                 <td>{{ schedule[2][0] }}</td>
-                <td>{{ schedule[2][1] }}</td>
+                <td style="text-align: left; height: 13%">{{ schedule[2][1] }}</td>
                 <td>{{ schedule[2][2] }}</td>
             </tr>
             <tr>
                 <td>{{ schedule[3][0] }}</td>
-                <td>{{ schedule[3][1] }}</td>
+                <td style="text-align: left">{{ schedule[3][1] }}</td>
                 <td>{{ schedule[3][2] }}</td>
             </tr>
             <tr>
                 <td>{{ schedule[4][0] }}</td>
-                <td>{{ schedule[4][1] }}</td>
+                <td style="text-align: left">{{ schedule[4][1] }}</td>
                 <td>{{ schedule[4][2] }}</td>
             </tr>
             <tr>
                 <td>{{ schedule[5][0] }}</td>
-                <td>{{ schedule[5][1] }}</td>
+                <td style="text-align: left">{{ schedule[5][1] }}</td>
                 <td>{{ schedule[5][2] }}</td>
             </tr>
             <tr>
                 <td>{{ schedule[6][0] }}</td>
-                <td>{{ schedule[6][1] }}</td>
+                <td style="text-align: left">{{ schedule[6][1] }}</td>
                 <td>{{ schedule[6][2] }}</td>
             </tr>
             <tr>
                 <td>{{ schedule[7][0] }}</td>
-                <td>{{ schedule[7][1] }}</td>
+                <td style="text-align: left; height: 7%">{{ schedule[7][1] }}</td>
                 <td>{{ schedule[7][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[8][0] }}</td>
+                <td style="text-align: left; height: 10%">{{ schedule[8][1] }}</td>
+                <td>{{ schedule[8][2] }}</td>
             </tr>
         </table>
 </div>

@@ -31,9 +31,9 @@
 
 .schedule_wrapper{
     position: fixed;
-    z-index: 10;
+    z-index: 12;
     height: 100%;
-    width: 100%
+    width: 100%;
 }
 .schedule_wrapper > img{
     position: fixed;
