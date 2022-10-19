@@ -4,7 +4,8 @@ from flask import render_template
 from tabulate import tabulate
 
 from schedule_app import app
-from interfaces.schedule_interface import get_schedule_for_today, get_schedule_for_week, get_schedule_for_day
+from interfaces.schedule_interface import get_schedule_for_week, get_schedule_for_day
+from form.set_student_name_form import StudentName
 from controllers.group_controller import get_groups
 from controllers.lesson_controller import get_lessons
 from controllers.student_controller import get_students
@@ -76,4 +77,5 @@ def subjects_page():
 
 @app.route('/timetable', methods=['GET'])
 def timetable_page():
+    form = StudentName()
     return render_template('timetable.html')
