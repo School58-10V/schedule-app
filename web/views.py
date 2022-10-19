@@ -1,4 +1,4 @@
-from flask import request, render_template, session
+from flask import request, render_template, session, redirect, url_for
 
 from adapters.db_source import DBSource
 from schedule_app import app
@@ -29,9 +29,9 @@ def logout_page():
     return render_template('logout.html')
 
 
-@app.route('/personal-lessons', methods=['GET'])
+@app.route('/my-lessons', methods=['GET'])
 def personal_lessons():
-    return render_template('personal_lessons.html')
+    return render_template('my_lessons.html')
 
 
 @app.route('/register', methods=['GET'])

@@ -15,13 +15,15 @@ PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
 @app.route("/api/v1/week", methods=["GET"])
 def get_week_schedule():
-    try:
-        full_name = request.get_json()['full_name']
-    except KeyError as e:    
-        # TODO: поменять ид ошибки здесь
-        return 'Не указано имя ученика', 400
 
-    student_list = Student.get_by_name(name=full_name, source=app.config.get('schedule_db_source'))
+    try:
+        request_token = request.headers.get('Authorization')
+        data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+    except KeyError:
+        return 'Не передан токен', 401
+
+    user = User.get_by_login(login=data['login'], db_source=app.config.get('auth_db_source'))
+    student_list = Student.get_by_name(name=user.get_name(), source=app.config.get('schedule_db_source'))
 
     if len(student_list) == 0:
         return 'Такого ученика не существует', 404
@@ -34,16 +36,16 @@ def get_week_schedule():
     weekdays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', "Пятница", "Суббота", "Воскресенье"]
     for lr in lessonrow_list:
         obj = {
-            'День недели': weekdays[lr.get_day_of_the_week()],
-            'Предмет': Subject.get_by_id(lr.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name(),
-            'Начальное время': LessonRow.prettify_time(lr.get_start_time()),
-            'Конечное время': LessonRow.prettify_time(lr.get_end_time()),
-            'Номер кабинета': Location.get_by_id(lr.get_room_id(), db_source=app.config.get('schedule_db_source')).get_num_of_class(),
-            'Учитель(ля)': ', '.join([
+            'weekday': lr.get_day_of_the_week(),
+            'subject': Subject.get_by_id(lr.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name(),
+            'start_time': LessonRow.prettify_time(lr.get_start_time()),
+            'end_time': LessonRow.prettify_time(lr.get_end_time()),
+            'location_number': Location.get_by_id(lr.get_room_id(), db_source=app.config.get('schedule_db_source')).get_num_of_class(),
+            'teacher_full_name_list': [
                 i.get_fio()
                 for i in TeachersForLessonRows.get_teachers_by_lesson_row_id(
                     lr.get_main_id(), db_source=app.config.get('schedule_db_source'))
-            ])
+            ]
         }
         data.append(obj)
     data.sort(key=lambda x: weekdays.index(x['День недели']))

@@ -1,6 +1,10 @@
 import {BASE_PATH} from './config.js'
-import {setCookie} from './usefulFunctions.js'
+import {getCookie, setCookie} from './usefulFunctions.js'
 // import Cookie from '../../node_modules/js-cookie/dist/js.cookie.mjs'
+
+if (getCookie('token') !== undefined) {
+    window.location.pathname = '/';
+}
 
 sendButton.addEventListener('click', (e) => {
     e.preventDefault();

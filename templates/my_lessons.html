@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div>
+        <h1>Все предметы:</h1>
+        <table id="my-lessonsTable-weekday-x" hidden>
+            <thead>
+            <tr>
+                <th>День недели</th>
+                <th>Начало урока</th>
+                <th>Конец урока</th>
+                <th>Предмет</th>
+                <th>Номер кабинета</th>
+                <th>Номер кабинета</th>
+            </tr>
+            </thead>
+        </table>
+            <table id="my-lessonsTable">
+            <thead>
+            <tr>
+                <th>День недели</th>
+                <th>Начало урока</th>
+                <th>Конец урока</th>
+                <th>Предмет</th>
+                <th>Номер кабинета</th>
+                <th>Номер кабинета</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="static/js/my-lessons.js"></script>
+{% endblock %}
