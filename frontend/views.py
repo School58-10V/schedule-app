@@ -1,7 +1,9 @@
 import datetime
 
-from flask import render_template
+from flask import render_template, request
+from flask_wtf import csrf
 from tabulate import tabulate
+from werkzeug.utils import redirect
 
 from data_model.group import Group
 from data_model.student import Student
@@ -80,8 +82,8 @@ def subjects_page():
 @app.route('/timetable', methods=['GET', 'POST'])
 def timetable_page():
     dct = {'понедельник': 0, "вторник": 1, "среда": 2, "четверг": 3, "пятница": 4, "суббота": 5, "воскресенье": 6}
-    form = StudentName()
-    if form.validate_on_submit():
+    form = StudentName(meta={'csrf': False})
+    if form.validate_on_submit() or request.method == 'POST' or form.is_submitted():
         students1 = Student.get_by_name(source=app.config.get('schedule_db_source'), name=form.name.data)
         if len(students1) == 0 and form.date.data.lover() not in dct:
             return render_template('timetable.html', error=True, form=form)
