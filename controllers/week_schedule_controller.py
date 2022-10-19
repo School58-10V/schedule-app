@@ -1,4 +1,5 @@
 import jwt
+import json
 import tabulate
 from flask import request, jsonify
 
@@ -14,14 +15,23 @@ PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
 
 @app.route("/api/v1/week", methods=["GET"])
-def get_week_schedule():
-    try:
-        full_name = request.get_json()['full_name']
-    except KeyError as e:    
-        # TODO: поменять ид ошибки здесь
-        return 'Не указано имя ученика', 400
+def get_schedule():
+    # try:
+    weekday = json.loads(request.args.get('data'))['weekday']
 
-    student_list = Student.get_by_name(name=full_name, source=app.config.get('schedule_db_source'))
+    try:
+        request_token = request.headers.get('Authorization')
+        data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+    except KeyError:
+        return 'Не передан токен', 401
+    # return 'placeholder'
+
+    # except KeyError as e:    
+        # TODO: поменять ид ошибки здесь
+        # return 'Не указано имя ученика', 400
+
+    user = User.get_by_login(login=data['login'], db_source=app.config.get('auth_db_source'))
+    student_list = Student.get_by_name(name=user.get_name(), source=app.config.get('schedule_db_source'))
 
     if len(student_list) == 0:
         return 'Такого ученика не существует', 404
@@ -47,6 +57,7 @@ def get_week_schedule():
         }
         data.append(obj)
     data.sort(key=lambda x: weekdays.index(x['День недели']))
+    # print(data)
 
     pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
 

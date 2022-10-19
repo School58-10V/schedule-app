@@ -71,10 +71,10 @@ def before_request() -> Optional[Tuple[str, int]]:
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
-    # try:
-    #     data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    # except (DecodeError, ExpiredSignatureError):
-    #     return '', 401
-    # if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
-    #     return '', 401
+    try:
+        data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+    except (DecodeError, ExpiredSignatureError):
+        return '', 400
+    if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
+        return '', 401
 

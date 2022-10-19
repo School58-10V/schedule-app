@@ -10,15 +10,13 @@
 
 <div class="schedule_wrapper">
     <form method="post" id="weekday">
-        <!--    <label for="day_of_week">Выбери день недели</label>-->
-        <select name="weekday" style="font-size: 20px">
+        <select name="weekday" id="selection" style="font-size: 20px">
             <option style="font-size: 20px">Понедельник</option>
             <option style="font-size: 20px">Вторник</option>
             <option style="font-size: 20px">Среда</option>
             <option style="font-size: 20px">Четверг</option>
             <option style="font-size: 20px">Пятница</option>
         </select>
-        <!--    <input type="text" name="day">-->
 
         <input type="submit" id="getSchedule" value="Получить расписание на день" style="font-size: 20px">
     </form>
@@ -26,7 +24,7 @@
     <div style="text-align: center;">
 
 
-        <pre class="schedule_text">{{ schedule }}</pre>
+        <pre class="schedule_text" id="timetable">{{ schedule }}</pre>
     </div>
 </div>
 {% endblock %}
@@ -43,5 +41,5 @@
 {% endblock %}
 
 {% block script %}
-<!--<script type="module" src="static/js/timetable.js"></script>-->
+<script type="module" src="static/js/timetable.js"></script>
 {% endblock %}
