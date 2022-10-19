@@ -1,4 +1,4 @@
-from flask import request, render_template
+from flask import request, render_template, session
 
 from adapters.db_source import DBSource
 from schedule_app import app
@@ -16,7 +16,7 @@ BASE_PATH = '127.0.0.1:5000/api/v1'
 
 @app.route('/', methods=['GET'])
 def main_page():
-    # st = StudentInterface(db_source=DBSOURCE, student_id=123)
+    # session.get()
     return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=119))
 
 

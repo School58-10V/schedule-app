@@ -1,4 +1,4 @@
 import controllers
-import frontend
+import web
 from schedule_app import app
 app.run(debug=True)

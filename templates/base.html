@@ -2,15 +2,22 @@
 <head>
     <title>Schedule App</title>
     <link rel="stylesheet" href="static/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 </head>
 <body class="flex flex-col h-100vh">
 <header>
-    <nav class="flex flex-row items-center justify-center">
-        <a class="nav-button first-nav-button" href="/students">Список учеников</a>
-        <a class="nav-button" href="/groups">Список классов</a>
-        <a class="nav-button" href="/lessons">Список уроков</a>
-        <a class="nav-button" href="/teachers">Список учителей</a>
-        <a class="nav-button last-nav-button" href="/subjects">Список предметов</a>
+    <nav class="grid items-center justify-center" style="height: min-content">
+        <div>
+            <a class="nav-button first-nav-button" href="/students">Список учеников</a>
+            <a class="nav-button" href="/groups">Список классов</a>
+            <a class="nav-button" href="/lessons">Список уроков</a>
+            <a class="nav-button" href="/teachers">Список учителей</a>
+{#            <a class="nav-button{% if not user.is_authorized %} last-nav-button{% endif %}" href="/subjects">Список предметов</a>#}
+{#            {% if user.is_authorized %}#}
+{#                <a class="nav-button last-nav-button" href="/my-schedule">Мое расписание</a>#}
+{#            {% endif %}#}
+        </div>
     </nav>
 </header>
 

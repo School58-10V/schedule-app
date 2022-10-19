@@ -16,7 +16,7 @@ sendButton.addEventListener('click', (e)=>{
 
     request.withCredentials = true;
     request.setRequestHeader("Content-Type", "application/json");
-    
+
     request.send(data);
 
     loginField.value = '';
@@ -33,7 +33,7 @@ sendButton.addEventListener('click', (e)=>{
             };
 
             setCookie('token', token, time);
-            
+
             window.location.pathname = '/';
         }
         else if (request.status == 401){

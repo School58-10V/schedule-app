@@ -1,5 +1,5 @@
 from tests.funfactory import Funfactory
 import controllers
-import frontend
+import web
 from schedule_app import app
 app.run()
