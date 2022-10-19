@@ -16,7 +16,6 @@ BASE_PATH = '127.0.0.1:5000/api/v1'
 
 @app.route('/', methods=['GET'])
 def main_page():
-    # session.get()
     return render_template('main.html', schedule=get_schedule_for_today(db_source=DBSOURCE, current_user_id=119))
 
 
@@ -28,6 +27,11 @@ def login_page():
 @app.route('/logout', methods=['GET'])
 def logout_page():
     return render_template('logout.html')
+
+
+@app.route('/personal-lessons', methods=['GET'])
+def personal_lessons():
+    return render_template('personal_lessons.html')
 
 
 @app.route('/register', methods=['GET'])
