@@ -1,12 +1,23 @@
-function request(){
-    let student_name = document.getElementById("nameField").value
-    let student_id
-    student_id = Student.get_by_name(student_name)
-    let response = LessonRow.get_all_by_student_id(student_id);
-    let table = document.getElementById('timetablesTable');
-    response.forEach(element => {
-                let row = table.insertRow(1);
+import { BASE_PATH } from './config.js';
 
+let name = document.getElementsById("nameField")
+if (name){
+function request(){
+}
+    let xhr = new XMLHttpRequest();
+    let url = BASE_PATH + '/get-weekly-timetable-for-student/' + name;
+
+    xhr.open('GET', url);
+
+    xhr.send();
+
+    xhr.onload = ()=>{
+        if(xhr.status == 200){
+            let response = JSON.parse(xhr.response);
+            let table = document.getElementById('timetablesTable');
+
+            response.forEach(element => {
+                let row = table.insertRow(1);
                 let id = row.insertCell(0);
                 let day_of_the_week = row.insertCell(1);
                 let group_id = row.insertCell(2);
@@ -27,6 +38,7 @@ function request(){
             });
         }
     }
+}
 }
 
 request();

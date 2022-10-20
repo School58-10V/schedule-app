@@ -47,3 +47,17 @@ def get_schedule_for_today(db_source, current_user_id):
         return 'Сегодня уроков нет! Ура!'
     return f'Расписание на сегодня: {datetime.date.today()}\n' + \
            tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
+
+def get_schedule_for_week(db_source, student_id):
+    # забираем все лессонроучики по данному расписанию для данного студа
+    lesson_rows = LessonRow.get_all_by_student_id(student_id=student_id, db_source=db_source)
+    # Форматируем дату в норм табличку
+    lesson_rows.sort(key= lambda x: x.get_start_time())
+    data = {}
+    for row in lesson_rows:
+        subj_name = Subject.get_by_id(row.get_subject_id(), db_source=db_source).get_subject_name()
+        if (row.get_day_of_the_week() in data.keys()):
+            data[row.get_day_of_the_week()].append(subj_name)
+        else:
+            data[row.get_day_of_the_week()] = [subj_name]
+    return tabulate(data, ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], tablefmt="grid")

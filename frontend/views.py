@@ -1,5 +1,6 @@
 from flask import request, render_template
-
+from interfaces.student_interface import StudentInterface
+from interfaces.schedule_interface import get_schedule_for_today, get_schedule_for_week
 from adapters.db_source import DBSource
 from schedule_app import app
 
@@ -63,3 +64,8 @@ def subjects_page():
 @app.route('/timetable', methods=['GET'])
 def timetable_page():
     return render_template('timetable.html')
+
+
+@app.route("/timetable/week/<int:object_id>", methods=["GET"])
+def personal_timetable_page(object_id):
+    return render_template("timetable.html", table=get_schedule_for_week(db_source=DBSOURCE, student_id=object_id))

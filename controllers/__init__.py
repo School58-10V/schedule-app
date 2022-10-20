@@ -11,3 +11,4 @@ import controllers.timetable_controller
 import controllers.get_holidays_controller
 import controllers.get_closest_lesson_for_student
 import controllers.week_schedule_controller
+import controllers.get_weekly_lesson_for_student
