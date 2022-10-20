@@ -16,49 +16,35 @@ PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
 @app.route("/api/v1/week", methods=["GET"])
 def get_schedule():
-    # try:
-    weekday = json.loads(request.args.get('data'))['weekday']
+    weekday = json.loads(request.args.get('data'))
 
     try:
         request_token = request.headers.get('Authorization')
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
     except KeyError:
         return 'Не передан токен', 401
-    # return 'placeholder'
-
-    # except KeyError as e:    
-        # TODO: поменять ид ошибки здесь
-        # return 'Не указано имя ученика', 400
 
     user = User.get_by_login(login=data['login'], db_source=app.config.get('auth_db_source'))
-    student_list = Student.get_by_name(name=user.get_name(), source=app.config.get('schedule_db_source'))
+    student = Student.get_by_id(element_id=80, db_source=app.config.get('schedule_db_source'))
 
-    if len(student_list) == 0:
-        return 'Такого ученика не существует', 404
-    if len(student_list) > 1:
-        raise NotImplementedError('Если больше одного ученика с одним именем, мы падаем :(')
-
-    lessonrow_list = LessonRow.get_all_by_student_id(student_list[0].get_main_id(),
+    lessonrow_list = LessonRow.get_all_by_day(week_day=weekday,
                                                      db_source=app.config.get('schedule_db_source'))
-    data = []
-    weekdays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', "Пятница", "Суббота", "Воскресенье"]
+    groups_id = [i.get_main_id() for i in Student.get_by_id(student.get_main_id(),
+                                                db_source=app.config.get('schedule_db_source')).get_all_groups()]
+    data = {
+        'time': [],
+        'name': [],
+        'location': []
+    }
+
     for lr in lessonrow_list:
-        obj = {
-            'День недели': weekdays[lr.get_day_of_the_week()],
-            'Предмет': Subject.get_by_id(lr.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name(),
-            'Начальное время': LessonRow.prettify_time(lr.get_start_time()),
-            'Конечное время': LessonRow.prettify_time(lr.get_end_time()),
-            'Номер кабинета': Location.get_by_id(lr.get_room_id(), db_source=app.config.get('schedule_db_source')).get_num_of_class(),
-            'Учитель(ля)': ', '.join([
-                i.get_fio()
-                for i in TeachersForLessonRows.get_teachers_by_lesson_row_id(
-                    lr.get_main_id(), db_source=app.config.get('schedule_db_source'))
-            ])
-        }
-        data.append(obj)
-    data.sort(key=lambda x: weekdays.index(x['День недели']))
-    # print(data)
+        if lr.get_group_id() in groups_id:
+            time = f'{LessonRow.prettify_time(lr.get_start_time())}:{LessonRow.prettify_time(lr.get_end_time())}'
+            name = Subject.get_by_id(lr.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name()
+            location = Location.get_by_id(lr.get_room_id(), db_source=app.config.get('schedule_db_source')).get_num_of_class()
 
-    pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
+            data['time'].append(time)
+            data['name'].append(name)
+            data['location'].append(location)
 
-    return pretty_data, 200
+    return data

@@ -15,7 +15,7 @@
 
 
 <div class="schedule_wrapper" style="height: 5%;">
-    <form method="post" id="weekday">
+    <form method="post" id="weekdayForm" action="/timetable">
         <select name="weekday" id="selection" style="font-size: 20px">
             <option style="font-size: 20px">Понедельник</option>
             <option style="font-size: 20px">Вторник</option>
@@ -25,36 +25,26 @@
 
         </select>
 
-        <input type="submit" id="getSchedule" value="Получить расписание на день" style="font-size: 20px; background-image: url('../img/fon.png')">
+        <input type="submit" id="getSchedule"  value="Получить расписание на день" style="font-size: 20px; background-image: url('../img/fon.png')">
     </form>
 </div>
 
 <div style="text-align: center; align-items: center; ">
     <img src="static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%; margin: auto;">
-    <table class="tb_table" style="width: 48%; height: 56%; top: 40%; left: 26%; align-items: center; margin: auto">
+    <table class="tb_table" style="width: 48%; height: 56%; top: 40%; left: 23%; align-items: center; margin: auto">
         
-        {% for i in range(8) %}}
         <tr>
-            <td style="width: 28%; height: 12%">{{ schedule[i][0] }}</td>
-            <td style="width: 57%">{{ schedule[i][1] }}</td>
-            <td>{{ schedule[i][2] }}</td>
+            <td style="width: 28%; height: 12%">Дата</td>
+            <td style="width: 57%">Предмет</td>
+            <td>Кабинет</td>
         </tr>
-        {% endfor %}
-
            
         </table>
 </div>
 {% endblock %}
 
 {% block footer %}
-<!--<nav>-->
-<!--    <a href="/students">Список учеников</a>-->
-<!--    <a href="/groups">Список классов</a>-->
-<!--    <a href="/lessons">Список уроков</a>-->
-<!--    <a href="/teachers">Список учителей</a>-->
-<!--    <a href="/subjects">Список предметов</a>-->
-<!--    <a href="/timetable">Расписание</a>-->
-<!--</nav>-->
+
 {% endblock %}
 
 {% block script %}

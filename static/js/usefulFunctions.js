@@ -40,3 +40,14 @@ export function deleteCookie(name){
     };
     setCookie(name, '', time);
 }
+
+
+export let header_timetable = `<tr>
+<td style="width: 28%; height: 12%">Дата</td>
+<td style="width: 57%">Предмет</td>
+<td>Кабинет</td>
+</tr>`;
+
+
+
+
