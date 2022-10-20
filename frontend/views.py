@@ -6,7 +6,7 @@ from adapters.db_source import DBSource
 from schedule_app import app
 
 from interfaces.student_interface import StudentInterface
-from interfaces.schedule_interface import get_schedule_for_day, schedule_for_week
+from interfaces.schedule_interface import get_schedule_for_day, schedule_for_week, tmp
 
 DBSOURCE = DBSource(host="postgresql.aakapustin.ru",
                     password="VYRL!9XEB3yXQs4aPz_Q",
@@ -73,19 +73,21 @@ def timetable_page():
                 'Четверг': 3,
                 'Пятница': 4,
             }
-    # try:
-        weekday = json.loads(request.args.get('data'))['weekday']
-        print(weekday)
-        # return None
-        return render_template('timetable.html', 
-            schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
-                                                week_day=weekday_to_num[weekday]))
-    # except TypeError:
+
+        weekday = json.loads(request.data)['weekday']
+        # weekday = request.data.get('weekday', '')
+
+        data = tmp(weekday_to_num[weekday])
+
+        timetable = list(zip(data['subj_names'], data['start_times'], data['locations']))
+
+        return render_template('timetable.html', gay=['я гей'], schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                                               week_day=1))
     else:
         print('kek')
         # return None
-        return render_template('timetable.html', schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
-                                                                               week_day=datetime.date.today().weekday()))
+        return render_template('timetable.html', gay=['я гей', 'я гей'], schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                                               week_day=1))
 
 
 @app.route('/timetable_week', methods=['GET'])
@@ -94,3 +96,11 @@ def timetable_week_page():
     return render_template('timetable_week.html', schedule=schedule)
     # return render_template('timetable_week.html', schedule=schedule_for_week(db_source=DBSOURCE, current_user_id=80,
     #                                                                            ))
+
+#  <!-- {% for i in range(8) %}
+#             <tr>
+#                 <td style="width: 28%; height: 12%">{{ schedule[i][0] }}</td>
+#                 <td style="width: 57%">{{ schedule[i][1] }}</td>
+#                 <td>{{ schedule[i][2] }}</td>
+#             </tr>
+#             {% endfor %} -->
