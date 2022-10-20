@@ -24,12 +24,12 @@ class Student(AbstractModel):
     """
 
     def __init__(
-            self, db_source: DBSource, full_name: str, date_of_birth: str, object_id: Optional[int] = None,
+            self, db_source: DBSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
             ):
         super().__init__(db_source)
         self.__full_name = full_name
-        self.__date_of_birth = datetime.strptime(date_of_birth)
+        self.__date_of_birth = date_of_birth
         self._object_id = object_id
         self.__contacts = contacts
         self.__bio = bio

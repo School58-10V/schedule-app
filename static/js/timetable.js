@@ -12,10 +12,10 @@ getSchedule.addEventListener('click', (e) => {
     });
 
     let xhr = new XMLHttpRequest();
-    let url = BASE_PATH + '/week?data=' + encodeURIComponent(data);
-    xhr.open('GET', url);
+    let url = '/timetable?data=' + encodeURIComponent(data);
+    xhr.open('POST', url);
     
-    console.log(getCookie('token'))
+    // console.log(getCookie('token'))
 
     xhr.withCredentials = true;
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -25,9 +25,9 @@ getSchedule.addEventListener('click', (e) => {
     xhr.onload = ()=>{
         if(xhr.status == 200){
             // let response = JSON.parse(xhr.response);
-            let elem = document.getElementById('timetable');
-            // console.log(xhr.response);
-            elem.innerHTML = xhr.response;
+            // let elem = document.getElementById('timetable');
+            console.log(xhr.response);
+            // elem.innerHTML = xhr.response;
         }
     }
 });

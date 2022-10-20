@@ -2,13 +2,19 @@
 {% block main %}
 <head>
     <link rel="stylesheet" href="static/css/nadoo.css">
+    <style>
+        body{
+            overflow: hidden;
+            height: 100%;
+        }
+    </style>
 </head>
 <h1>Расписание</h1>
 <!--<input type="text" placeholder="ФИО ученика" id="nameField">-->
 <!--<input type="submit" value="Получить расписание" id="submitButton"><br>-->
 
 
-<div class="schedule_wrapper">
+<div class="schedule_wrapper" style="height: 5%;">
     <form method="post" id="weekday">
         <select name="weekday" id="selection" style="font-size: 20px">
             <option style="font-size: 20px">Понедельник</option>
@@ -21,10 +27,13 @@
 
         <input type="submit" id="getSchedule" value="Получить расписание на день" style="font-size: 20px; background-image: url('../img/fon.png')">
     </form>
-<img src="static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%">
-<div/>
-<div style="text-align: center; align: center; ">
-        <table class="tb_table" style="width: 48%; height: 56%; top: 31%; left: 28%; align: center; margin: auto">
+</div>
+
+<div style="text-align: center; align-items: center; ">
+    <img src="static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%; margin: auto;">
+    {{ schedule }}
+        <table class="tb_table" style="width: 48%; height: 56%; top: 40%; left: 26%; align-items: center; margin: auto">
+
             <tr>
                 <td style="width: 28%; height: 12%">{{ schedule[0][0] }}</td>
                 <td style="width: 57%">{{ schedule[0][1] }}</td>

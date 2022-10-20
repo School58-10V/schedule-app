@@ -1,3 +1,4 @@
+import json
 import datetime
 from flask import request, render_template
 
@@ -66,18 +67,23 @@ def subjects_page():
 def timetable_page():
     if request.method == 'POST':
         weekday_to_num = {
-            'Понедельник': 0,
-            'Вторник': 1,
-            'Среда': 2,
-            'Четверг': 3,
-            'Пятница': 4,
-        }
-        weekday = request.form.get('weekday', '')
-
-        return render_template('timetable.html',
-                               schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
-                                                             week_day=weekday_to_num[weekday]))
+                'Понедельник': 0,
+                'Вторник': 1,
+                'Среда': 2,
+                'Четверг': 3,
+                'Пятница': 4,
+            }
+    # try:
+        weekday = json.loads(request.args.get('data'))['weekday']
+        print(weekday)
+        # return None
+        return render_template('timetable.html', 
+            schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                week_day=weekday_to_num[weekday]))
+    # except TypeError:
     else:
+        print('kek')
+        # return None
         return render_template('timetable.html', schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
                                                                                week_day=datetime.date.today().weekday()))
 

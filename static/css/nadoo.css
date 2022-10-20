@@ -5,7 +5,7 @@
 @keyframes table-animation {
     0% {
         width: 170px;
-        padding: 105px 0px 0px 0px;
+        padding: 105px 0px 10px 0px;
         
         background-image: url('../img/7.png');
     }
@@ -23,7 +23,7 @@
     }
     100%{
         width: 170px;
-        padding: 105px 0px 0px 0px;
+        padding: 105px 0px 10px 0px;
         
         background-image: url('../img/7.png');
     }
