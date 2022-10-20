@@ -395,7 +395,6 @@ class StudentInterface:
         schedule = []
 
         for i in range(0, 6):
-            print(self.__get_schedule_for_day(i))
             schedule.append(
                 f'\n{week_dict[i]}\n {tabulate(self.__get_schedule_for_day(i), ["Предмет", "Время начала", "Место проведения"], tablefmt="grid")}')
 

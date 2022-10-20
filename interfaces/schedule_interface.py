@@ -76,7 +76,4 @@ def get_schedule_for_day(db_source, current_user_id, week_day):
 
 def schedule_for_week():
     interface = StudentInterface(db_source=app.config.get('schedule_db_source'), student_id=80)
-    print(interface.get_schedule_for_week())
     return '\n'.join(interface.get_schedule_for_week())
-
-
