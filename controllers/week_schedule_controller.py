@@ -18,6 +18,8 @@ def get_week_schedule():
 
     try:
         request_token = request.headers.get('Authorization')
+        if not request_token:
+            raise KeyError
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
     except KeyError:
         return 'Не передан токен', 401
@@ -33,7 +35,6 @@ def get_week_schedule():
     lessonrow_list = LessonRow.get_all_by_student_id(student_list[0].get_main_id(),
                                                      db_source=app.config.get('schedule_db_source'))
     data = []
-    weekdays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', "Пятница", "Суббота", "Воскресенье"]
     for lr in lessonrow_list:
         obj = {
             'weekday': lr.get_day_of_the_week(),
@@ -48,8 +49,8 @@ def get_week_schedule():
             ]
         }
         data.append(obj)
-    data.sort(key=lambda x: weekdays.index(x['День недели']))
+    data.sort(key=lambda x: (x['weekday'], x['start_time']))
 
-    pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
+    # pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
 
-    return pretty_data, 200
+    return jsonify(data), 200

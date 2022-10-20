@@ -73,7 +73,15 @@ body {
     margin-top: 1rem;
 }
 
+.ml-07 {
+    margin-left: 0.7rem;
+}
+
 /* font */
+
+.font-weight-bold {
+    font-weight: bold;
+}
 
 .font-size-1rem {
     font-size: 1rem;

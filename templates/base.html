@@ -14,10 +14,8 @@
             <a class="nav-button" href="/groups">Список классов</a>
             <a class="nav-button" href="/lessons">Список уроков</a>
             <a class="nav-button" href="/teachers">Список учителей</a>
-{#            <a class="nav-button{% if not user.is_authorized %} last-nav-button{% endif %}" href="/subjects">Список предметов</a>#}
-{#            {% if user.is_authorized %}#}
-{#                <a class="nav-button last-nav-button" href="/my-schedule">Мое расписание</a>#}
-{#            {% endif %}#}
+            <a class="nav-button" href="/my-lessons">Расписание на неделю</a>
+
         </div>
     </nav>
 </header>
@@ -34,6 +32,8 @@
 <footer class="text-center mt-1">
     <div>
         <pre class="font-size-15rem">Школа 58, 11 Матинф класс</pre>
+        <a href="/login">Авторизоваться</a>
+        <a href="/logout">выйти</a>
     </div>
 
 </footer>

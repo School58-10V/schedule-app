@@ -2,31 +2,8 @@
 
 {% block main %}
     <div>
-        <h1>Все предметы:</h1>
-        <table id="my-lessonsTable-weekday-x" hidden>
-            <thead>
-            <tr>
-                <th>День недели</th>
-                <th>Начало урока</th>
-                <th>Конец урока</th>
-                <th>Предмет</th>
-                <th>Номер кабинета</th>
-                <th>Номер кабинета</th>
-            </tr>
-            </thead>
-        </table>
-            <table id="my-lessonsTable">
-            <thead>
-            <tr>
-                <th>День недели</th>
-                <th>Начало урока</th>
-                <th>Конец урока</th>
-                <th>Предмет</th>
-                <th>Номер кабинета</th>
-                <th>Номер кабинета</th>
-            </tr>
-            </thead>
-        </table>
+        <h1>Расписание на неделю</h1>
+        {% include 'blocks/lessonrow_table.html' %}
     </div>
 {% endblock %}
 

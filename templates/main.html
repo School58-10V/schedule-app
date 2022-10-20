@@ -1,7 +1,27 @@
 {% extends 'base.html' %}
 
 {% block main %}
-    <pre>{{ schedule }}</pre>
+    <div>
+        <div class="flex flex-row text-center items-center justify-center">
+            <h1>Расписание в </h1>
+{#            <label for="select-weekday">#}
+{#                <p>Выбрать другой день недели</p>#}
+{#            </label>#}
+            <select class="ml-07 font-weight-bold font-size-15rem" name="clown" id="select-weekday">
+                <option value="0" {% if weekday_string == "Понедельник" %}selected{% endif %}>Понедельник</option>
+                <option value="1" {% if weekday_string == "Вторник" %}selected{% endif %}>Вторник</option>
+                <option value="2" {% if weekday_string == "Среда" %}selected{% endif %}>Среду</option>
+                <option value="3" {% if weekday_string == "Четверг" %}selected{% endif %}>Четверг</option>
+                <option value="4" {% if weekday_string == "Пятница" %}selected{% endif %}>Пятницу</option>
+                <option value="5" {% if weekday_string == "Суббота" %}selected{% endif %}>Субботу</option>
+                <option value="6" {% if weekday_string == "Воскресенье" %}selected{% endif %}>Воскресенье</option>
+            </select>
+        </div>
+
+        <h2 id="no-lessonrow-today" hidden>Сегодня у тебя нет уроков. ура!</h2>
+
+        {% include 'blocks/lessonrow_table.html' %}
+    </div>
 {% endblock %}
 
 {% block script %}
