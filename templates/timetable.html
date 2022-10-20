@@ -33,7 +33,14 @@
     <img src="static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%; margin: auto;">
     <table class="tb_table" style="width: 48%; height: 56%; top: 40%; left: 26%; align-items: center; margin: auto">
         
-        {{ gay }}
+        {% for i in range(8) %}}
+        <tr>
+            <td style="width: 28%; height: 12%">{{ schedule[i][0] }}</td>
+            <td style="width: 57%">{{ schedule[i][1] }}</td>
+            <td>{{ schedule[i][2] }}</td>
+        </tr>
+        {% endfor %}
+
            
         </table>
 </div>

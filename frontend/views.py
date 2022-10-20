@@ -81,13 +81,13 @@ def timetable_page():
 
         timetable = list(zip(data['subj_names'], data['start_times'], data['locations']))
 
-        return render_template('timetable.html', gay=['я гей'], schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
-                                                                               week_day=1))
+        return render_template('timetable.html', schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                                               week_day=weekday_to_num[weekday]))
     else:
         print('kek')
         # return None
-        return render_template('timetable.html', gay=['я гей', 'я гей'], schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
-                                                                               week_day=1))
+        return render_template('timetable.html', schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                                               week_day=datetime.date.today()))
 
 
 @app.route('/timetable_week', methods=['GET'])
