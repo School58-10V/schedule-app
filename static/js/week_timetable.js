@@ -1,9 +1,12 @@
+submitButton.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let name = document.getElementById('nameField').value;
+    }
+
 import { BASE_PATH } from './config.js';
 
-let name = document.getElementsById("nameField")
 if (name){
 function request(){
-}
     let xhr = new XMLHttpRequest();
     let url = BASE_PATH + '/get-weekly-timetable-for-student/' + name;
 
