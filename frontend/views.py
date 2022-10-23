@@ -63,3 +63,8 @@ def subjects_page():
 @app.route('/timetable', methods=['GET'])
 def timetable_page():
     return render_template('timetable.html')
+
+
+@app.route('/pain', methods=['GET'])
+def pain_page():
+    return render_template('pain.html')
