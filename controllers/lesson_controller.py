@@ -49,7 +49,7 @@ def create_lesson() -> Union[Tuple[str, int], Response]:
     except ValueError:
         return "", 400
     try:
-        return jsonify(Lesson(**request.get_json(), db_source=app.config.get("schedule_db_source"))
+        return jsonify(LessAon(**request.get_json(), db_source=app.config.get("schedule_db_source"))
                        .save()
                        .__dict__())
     except Exception as err:

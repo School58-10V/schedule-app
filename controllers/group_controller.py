@@ -50,10 +50,6 @@ def get_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
 @app.route("/api/v1/group", methods=["POST"])
 def create_group() -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
-    try:
-        validator.validate(dct, "POST")
-    except ValueError:
-        return "", 400
 
     try:
         student = []

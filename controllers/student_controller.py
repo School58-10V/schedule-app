@@ -152,3 +152,11 @@ def delete_student(object_id: int) -> Response | Tuple[str, int] | Tuple[Respons
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
+
+
+@app.route("/api/v1/students/<int:object_id>", methods=["GET"])
+def get_student_by_name(object_id: int) -> Tuple[str, int] | Response:
+    try:
+        Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
+    except ValueError:
+        return "", 404
