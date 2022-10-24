@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import List
 from urllib import request
 
@@ -40,13 +41,12 @@ def get_weekly_timetable(name):
     try:
         student_name = name
         student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
-
         student_id = student[0].get_main_id()
         student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,
                                                                    db_source=app.config.get('schedule_db_source'))
         lesson_rows_list: List[LessonRow] = []
-
-        current_timetable = TimeTable.get_by_year(db_source=app.config.get('schedule_db_source'))
+        year = datetime.now().year
+        current_timetable = TimeTable.get_by_year(year, db_source=app.config.get('schedule_db_source'))
         tt = []
         for day in tt:
             for i in student_groups:
