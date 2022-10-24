@@ -63,3 +63,8 @@ def subjects_page():
 @app.route('/timetable', methods=['GET'])
 def timetable_page():
     return render_template('timetable.html')
+
+
+@app.route('/meow', methods=['GET'])
+def meow():
+    return render_template('meow.html')

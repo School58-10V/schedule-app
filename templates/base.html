@@ -3,7 +3,31 @@
     <title>Schedule App</title>
     <link rel="stylesheet" src="static/css/nadoo.css">
     <style>
+
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap');
+        .schedule_wrapper{
+            position: fixed;
+            z-index: 10;
+            height: 100%;
+            width: 100%
+        }
+        .schedule_wrapper > img{
+            position: fixed;
+            bottom: 0%;
+            height: 75%;
+            z-index: 10;
+            left: 25%;
+            right: 25%;
+        }
+        .schedule_text{
+            color: whitesmoke;
+            z-index: 10;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 38%;
+            font-size: 150%;
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-image: url("static/img/fon2.png");
@@ -57,4 +81,9 @@
     
     {% block script %}
     {% endblock %}
+
+    {% block meow %}
+
+    {% endblock %}
+
 </body>
