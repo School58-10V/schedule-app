@@ -31,6 +31,9 @@ class Location(AbstractModel):
         self.__link = link
         self.__comment = comment
 
+    def get_main_id(self) -> int:
+        return self._object_id
+
     def get_location_desc(self) -> str:
         return self.__location_desc
 

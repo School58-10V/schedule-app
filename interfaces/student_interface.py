@@ -400,7 +400,7 @@ class StudentInterface:
 
         return schedule
 
-    def get_schedule_for_day(self, day):
+    def __get_schedule_for_day(self, day):
         db_result = LessonRow.get_by_day_and_student(day, self.__current_user_id, self.__db_source)
         data = {"subj_names": [], "start_times": [], "locations": []}
         for lesson_row in db_result:

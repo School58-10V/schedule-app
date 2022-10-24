@@ -16,17 +16,21 @@ class AbstractValidator(ABC):
 
         for key in self.required_keys:
             if key not in request.keys():
+                print('Нет обязательного ключа')
                 raise ValueError
 
         for key in request.keys():
             if key not in self.allowed_keys:
+                print('Подан запрещённый ключ')
                 raise ValueError
             if type(self.keys_types[key]) == str:  # обработка случая list[int] и т.п
                 value = self.keys_types[key].split('[')[1][:-1]
                 if type(request[key]) != list or not self.check_list_items(request[key], eval(value)):
+                    print('Тип не совпадает', request[key][0])
                     raise ValueError
 
-            if type(request[key]) != self.keys_types[key]:
+            elif type(request[key]) != self.keys_types[key]:
+                print('Тип не совпадает', key)
                 raise ValueError
 
     @staticmethod

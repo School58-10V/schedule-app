@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 import psycopg2, logging
 from flask import request, jsonify
+from data_model.location import Location
 
 from schedule_app import app
 from data_model.subject import Subject
@@ -94,14 +95,21 @@ def get_teacher_detailed_by_id(object_id: int) -> Union[Response, Tuple[str, int
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher() -> Union[Tuple[str, int], Response]:
     dct = request.get_json()
+    print(dct)
     try:
         validator.validate(dct, "POST")
-    except:
-        return '', 400
+    except ValueError:
+        return 'Ошибка при валидации', 400
     try:
+        # надо переписать, чтобы получалось ID из названий предметов, номеров кабинетов
+
+        # if 'office_id' in dct:
+        #     dct['office_id'] = Location.get_num_of_class(dct['office_id']).get_main_id()
+
         subject_id = []
         if 'subject_id' in dct:
             subject_id = dct.pop('subject_id')
+
         lesson_row_id = []
         if 'lesson_row_id' in dct:
             subject_id = dct.pop('lesson_row_id')

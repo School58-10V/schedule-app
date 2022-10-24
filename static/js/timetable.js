@@ -28,6 +28,7 @@ weekdayForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     let weekday = document.getElementById('selection').value;
+
     let weekday_to_num = {
         'Понедельник': 0,
         'Вторник': 1,

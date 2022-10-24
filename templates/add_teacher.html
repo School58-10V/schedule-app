@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<form>
+    <input type="text" id="fio" placeholder="ФИО учителя">
+    <input type="text" id="bio" placeholder="Био">
+    <input type="text" id="contacts" placeholder="Контакты">
+    <input type="number" id="class_number" placeholder="Номер кабинета">
+    <input type="number" id="subject" placeholder="Id предмета">
+    <input type="text" id="groups" placeholder="Список id групп">
+
+    <input type="submit" id="sendButton" value="Создать учителя">
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/add_teacher.js"></script>
+{% endblock %}

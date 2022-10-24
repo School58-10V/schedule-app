@@ -6,7 +6,7 @@ from adapters.db_source import DBSource
 from schedule_app import app
 
 from interfaces.student_interface import StudentInterface
-from interfaces.schedule_interface import get_schedule_for_day, schedule_for_week, tmp
+from interfaces.schedule_interface import get_schedule_for_day, schedule_for_week
 
 DBSOURCE = DBSource(host="postgresql.aakapustin.ru",
                     password="VYRL!9XEB3yXQs4aPz_Q",
@@ -56,6 +56,11 @@ def lessons_page():
 @app.route('/teachers', methods=['GET'])
 def teachers_page():
     return render_template('teachers.html')
+
+    
+@app.route('/add_teacher', methods=['GET'])
+def teachers_addition_page():
+    return render_template('add_teacher.html')
 
 
 @app.route('/subjects', methods=['GET'])
