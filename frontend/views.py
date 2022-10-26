@@ -79,6 +79,11 @@ def subjects_page():
     return render_template('subjects.html', subjects=get_subjects().json)
 
 
+@app.route('/add-teacher', methods=['GET', 'POST'])
+def add_teacher_page():
+    return render_template('add_teachers.html')
+
+
 @app.route('/timetable', methods=['GET', 'POST'])
 def timetable_page():
     dct = {'понедельник': 0, "вторник": 1, "среда": 2, "четверг": 3, "пятница": 4, "суббота": 5, "воскресенье": 6}

@@ -66,7 +66,7 @@ def before_request() -> Optional[Tuple[str, int]]:
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
     if request.url_rule is None or\
             request.path == '/api/v1/login' or\
-            request.path == '/api/v1/register' or request.path == '/timetable' or\
+            request.path == '/api/v1/register' or\
             request.method.lower() == 'get':
         return
     request_token = request.headers.get('Authorization')
