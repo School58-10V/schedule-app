@@ -13,12 +13,12 @@ sendButton.addEventListener('click', (e)=>{
 //
     let data = JSON.stringify({
         "location_type": document.getElementById("location_type").value,
-        "location_desc": location_desc.value,
-        "profile": profile.value,
-        "num_of_class": num_of_class.value,
-        "equipment": equipment.value,
-        "link": link.value,
-        "comment": comment.value
+        "location_desc": document.getElementById("location_desc").value,
+        "profile": document.getElementById("profile").value,
+        "num_of_class": document.getElementById("num_of_class").value,
+        "equipment": document.getElementById("equipment").value,
+        "link": document.getElementById("link").value,
+        "comment": document.getElementById("comment").value
     });
     request.withCredentials = true;
     request.setRequestHeader("Content-Type", "application/json");
