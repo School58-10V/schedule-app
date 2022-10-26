@@ -11,19 +11,15 @@ sendButton.addEventListener('click', (e)=>{
 //    let lesson_rows = lesson_row_id.value;
 //
     let data = JSON.stringify({
-        "fio": fio.value,
-        "bio": bio.value,
-        "contacts": contacts.value,
-        "office_id": office_id.value,
+        "subject_name": subject_name.value,
+        "teachers": bio.value
     });
     request.withCredentials = true;
     request.setRequestHeader("Content-Type", "application/json");
 
     request.send(data);
-    fio.value = '';
-    bio.value = '';
-    contacts.value = '';
-    office_id.value = '';
+    subject_name.value = '';
+    teachers.value = '';
     request.onload = () => {
         if(request.status === 200){
             let response = JSON.parse(request.response);
@@ -39,9 +35,9 @@ sendButton.addEventListener('click', (e)=>{
             window.location.pathname = '/';
         }
         else if (request.status === 401){
-            fio.style.borderColor = 'red';
-            bio.style.borderColor = 'red';
-            fio.placeholder = 'Неверные данные';
+            subject_name.style.borderColor = 'red';
+            teachers.style.borderColor = 'red';
+            subject_name.placeholder = 'Неверные данные';
         }
     };
 })
