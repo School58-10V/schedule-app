@@ -4,7 +4,7 @@
 <form  action="" method="post">
 
 
-        {{ form.hidden_tag() }}
+        {{ form.hidden_tag( csrf_token() ) }}
         <p style="font-size: 2vw;">{{ form.name.label }}</p><br>
         {{ form.name(style='border-color: #474389;') }}<br>
         <p style="font-size: 2vw;">{{form.group.label}}</p>
