@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
 {% block main %}
-<h1>Все классы:</h1>
-<table id="groupsTable" border=1 frame=void>
-    <thead>
+    <h1>Все классы:</h1>
+    {% with object_type="group", inputs=[
+      {"name": "grade", "label": "Класс", "type": "number"},
+      {"name": "teacher_id", "label": "Ид учителя", "type": "number"},
+      {"name": "class_letter", "label": "Буква", "type": "text"},
+      {"name": "profile_name", "label": "Профиль", "type": "text"}
+    ] %}
+        {% include 'blocks/add_object.html' %}
+    {% endwith %}
+    <table id="groupsTable">
+        <thead>
         <tr>
             <th>ID</th>
             <th>Класс</th>
@@ -11,20 +19,21 @@
             <th>ID учеников</th>
             <th>ID классного руководителя</th>
         </tr>
-    </thead>
-</table>
+        </thead>
+    </table>
 {% endblock %}
 
 {% block footer %}
-<nav>
-    <a href="/students">Список учеников</a>
-    <a href="/groups">Список классов</a>
-    <a href="/lessons">Список уроков</a>
-    <a href="/teachers">Список учителей</a>
-    <a href="/subjects">Список предметов</a>
-</nav>
+    <nav>
+        <a href="/students">Список учеников</a>
+        <a href="/groups">Список классов</a>
+        <a href="/lessons">Список уроков</a>
+        <a href="/teachers">Список учителей</a>
+        <a href="/subjects">Список предметов</a>
+    </nav>
 {% endblock %}
 
 {% block script %}
-<script src="static/js/groups.js"></script>
+    <script type="module" src="static/js/groups.js"></script>
+    <script type="module" src="static/js/add-object.js"></script>
 {% endblock %}
