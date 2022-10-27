@@ -57,10 +57,15 @@ def lessons_page():
 def teachers_page():
     return render_template('teachers.html')
 
-    
+
 @app.route('/add_teacher', methods=['GET'])
 def teachers_addition_page():
     return render_template('add_teacher.html')
+
+
+@app.route('/add_location', methods=['GET'])
+def location_addition_page():
+    return render_template('add_location.html')
 
 
 @app.route('/subjects', methods=['GET'])
@@ -75,5 +80,13 @@ def timetable_page():
 
 @app.route('/timetable_week', methods=['GET'])
 def timetable_week_page():
-    schedule = schedule_for_week()
+    schedule = schedule_for_week(db_source=DBSOURCE, current_user_id=80)
     return render_template('timetable_week.html', schedule=schedule)
+    # return render_template('timetable_week.html', schedule=schedule_for_week(db_source=DBSOURCE, current_user_id=80,
+    #                                                                            ))
+
+
+@app.route('/timetable_for_week/<day>', methods=['GET', 'POST'])
+def timetable_for_week_page(day):
+    return render_template('timetable_for_week.html', schedule=get_schedule_for_day(db_source=DBSOURCE, current_user_id=80,
+                                                                      week_day=day))

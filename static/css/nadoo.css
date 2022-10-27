@@ -64,3 +64,22 @@
     color:#ffffff;
     line-height:0px;
 }
+.day_button{
+    width: 170px;
+    height: 60px;
+    padding: 105px 0px 10px 0px;
+    margin-right: 20px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    color: whitesmoke;
+    text-decoration: none;
+    z-index: 20;
+}
+nav1{
+    display: flex;
+    width: 500px;
+    align-content: space-around;
+    z-index: 14;
+    margin-top: -10px;
+}

@@ -65,7 +65,6 @@ def get_schedule_for_day(db_source, current_user_id, week_day):
             i[0] = str(data[p - 1][0])[:-2] + ":" + str(data[p - 1][0])[2:] + "-" + str(data[p - 1][1] // 100) + ":" + str(data[p - 1][1] % 100)
             i[1] = data[p - 1][2]
             i[2] = data[p - 1][3]
-    print(nov_tb)
     return nov_tb
 
 
@@ -74,6 +73,45 @@ def get_schedule_for_day(db_source, current_user_id, week_day):
 #     return interface.get_schedule_for_day(day)
 
 
-def schedule_for_week():
-    interface = StudentInterface(db_source=app.config.get('schedule_db_source'), student_id=80)
-    return '\n'.join(interface.get_schedule_for_week())
+def schedule_for_week(db_source, current_user_id):
+    week = []
+    for i in range(8):
+        # Узнаем, какой год нам надо смореть
+        timetable_id = TimeTable.get_by_year(datetime.date.today().year, db_source).get_main_id()
+        # Берем все уроки, которые проходят сегодня
+        lesson_rows = LessonRow.get_all_by_day(week_day=i,
+                                               db_source=db_source)
+        # Берем все замены, которые есть на сегодня
+        lesson = {i.get_start_time(): i for i in Lesson.get_today_replacements(date=datetime.date.today(),
+                                                                               db_source=db_source)}
+        # Смотрим группы, которые есть у ученика
+        groups_id = [i.get_main_id() for i in Student.get_by_id(current_user_id,
+                                                                db_source).get_all_groups()]
+        lesson_rows_dct = []
+        for i in lesson_rows:
+            # Если уроки проходят в этом году и у групп, в которые входить пользователь
+            if i.get_timetable_id() == timetable_id and i.get_group_id() in groups_id:
+                # То смотрим, есть ли на это время замена
+                if i.get_start_time() not in lesson or \
+                        lesson[i.get_start_time()].get_group_id() not in groups_id:
+                    # Если нету, то добавляем этот урок
+                    lesson_rows_dct.append(i)
+                else:
+                    # Если есть, то добавляем вместо этого урока замену
+                    lesson_rows_dct.append(lesson[i.get_start_time()])
+        # Сортируем то расписание, которое у нас получилось по началу урока
+        lesson_rows_dct.sort(key=lambda x: x.get_start_time())
+        data = [Subject.get_by_id(i.get_subject_id(), db_source).get_subject_name()
+                for i in lesson_rows_dct]
+        week.append(data)
+    nov_tb = [["Урока нет" for i in range(8)] for i in range(6)]
+    p = -1
+    for ii in range(len(nov_tb)):
+        p += 1
+        c = -1
+        for iii in range(len(nov_tb[ii])):
+            c += 1
+            if c > len(week[ii]) - 1 or len(week[ii]) == 0:
+                break
+            nov_tb[ii][iii] = week[ii][iii]
+    return nov_tb

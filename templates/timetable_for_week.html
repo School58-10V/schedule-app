@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block main %}
+<head>
+    <link rel="stylesheet" href="/static/css/nadoo.css">
+    <style>
+        body{
+            overflow: hidden;
+            height: 100%;
+        }
+    </style>
+</head>
+<!--<input type="text" placeholder="ФИО ученика" id="nameField">-->
+<!--<input type="submit" value="Получить расписание" id="submitButton"><br>-->
+
+
+<div style="text-align: center; align-items: center; ">
+    <img src="/static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%; margin: auto;">
+        <table class="tb_table" style="width: 48%; height: 56%; top: 40%; left: 26%; align-items: center; margin: auto">
+
+            <tr>
+                <td style="width: 28%; height: 12%">{{ schedule[0][0] }}</td>
+                <td style="width: 57%">{{ schedule[0][1] }}</td>
+                <td>{{ schedule[0][2] }}</td>
+            </tr>
+            <tr>
+                <td style="width: 28%">{{ schedule[1][0] }}</td>
+                <td style="text-align: left; width: 57%">{{ schedule[1][1] }}</td>
+                <td>{{ schedule[1][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[2][0] }}</td>
+                <td style="text-align: left; height: 13%">{{ schedule[2][1] }}</td>
+                <td>{{ schedule[2][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[3][0] }}</td>
+                <td style="text-align: left">{{ schedule[3][1] }}</td>
+                <td>{{ schedule[3][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[4][0] }}</td>
+                <td style="text-align: left">{{ schedule[4][1] }}</td>
+                <td>{{ schedule[4][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[5][0] }}</td>
+                <td style="text-align: left">{{ schedule[5][1] }}</td>
+                <td>{{ schedule[5][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[6][0] }}</td>
+                <td style="text-align: left">{{ schedule[6][1] }}</td>
+                <td>{{ schedule[6][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[7][0] }}</td>
+                <td style="text-align: left; height: 7%">{{ schedule[7][1] }}</td>
+                <td>{{ schedule[7][2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ schedule[8][0] }}</td>
+                <td style="text-align: left; height: 10%">{{ schedule[8][1] }}</td>
+                <td>{{ schedule[8][2] }}</td>
+            </tr>
+        </table>
+</div>
+{% endblock %}
+
+{% block footer %}
+<!--<nav>-->
+<!--    <a href="/students">Список учеников</a>-->
+<!--    <a href="/groups">Список классов</a>-->
+<!--    <a href="/lessons">Список уроков</a>-->
+<!--    <a href="/teachers">Список учителей</a>-->
+<!--    <a href="/subjects">Список предметов</a>-->
+<!--    <a href="/timetable">Расписание</a>-->
+<!--</nav>-->
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/timetable.js"></script>
+{% endblock %}

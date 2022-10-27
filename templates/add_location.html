@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<form>
+    <input type="number" id="num_of_class" placeholder="Номер класса">
+    <input type="text" id="profile" placeholder="Профиль класса">
+    <input type="text" id="equipment" placeholder="Оборудование в классе">
+    <input type="text" id="link" placeholder="Ссылка для подключения к месту проведения урока">
+    <input type="text" id="location_type" placeholder="Тип локации">
+<!--    <input type="text" id="location_desc" placeholder="location_desc"  # я так и не поняла, что это и нужно ли нам это>-->
+
+    <input type="submit" id="sendButton" value="Создать локацию (кабинет)">
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/add_location.js"></script>
+{% endblock %}
