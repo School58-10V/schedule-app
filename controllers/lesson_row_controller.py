@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 import logging, psycopg2
 from flask import request, jsonify
 
+from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.lesson_row import LessonRow
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
@@ -92,6 +93,30 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, 
     except ValueError:
         return '', 404
 
+@app.route("/api/v1/lesson-row/personal", methods=["GET"])
+def get_lesson_row_by_day_and_student() -> Union[Response, Tuple[str, int]]:
+    """
+    Достаёт LessonRow по дню и айди студака
+    :return: Response
+    """
+    try:
+        # logging.debug("hi")
+        day = request.args.get("day", None)
+        student_id = request.args.get("student_id", None)
+        # logging.debug(day + " ; " + student_id)
+        if (day != None and student_id != None):
+            rows = []
+            data = LessonRow.get_by_day_and_student(int(day), int(student_id), app.config.get("schedule_db_source"))
+            for row in data:
+                local_dct = row.__dict__().copy()
+                local_dct["subject_name"] = Subject.get_by_id(row.get_subject_id(), app.config.get("schedule_db_source")).get_subject_name()
+                rows.append(local_dct)
+            return jsonify(rows)
+        else:
+            return "", 400
+    except Exception as e:
+        print(e)
+        return "", 404
 
 @app.route("/api/v1/lesson-row", methods=["POST"])
 def create_lesson_row() -> Union[Response, Tuple[str, int]]:
