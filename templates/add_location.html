@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<form>
-    <input type="number" id="num_of_class" placeholder="Номер класса">
-    <input type="text" id="profile" placeholder="Профиль класса">
-    <input type="text" id="equipment" placeholder="Оборудование в классе">
-    <input type="text" id="link" placeholder="Ссылка для подключения к месту проведения урока">
-    <input type="text" id="location_type" placeholder="Тип локации">
+<form style="color: white">
+    <label>Номер класса <input type="number" id="num_of_class"></label><br>
+    <label>Профиль класса <input type="text" id="profile"></label><br>
+    <label>Оборудование в классе <input type="text" id="equipment"></label><br>
+    <label>Ссылка для подключения к месту проведения урока <input type="text" id="link"></label><br>
+    <label>Тип локации <input type="text" id="location_type"></label><br>
 <!--    <input type="text" id="location_desc" placeholder="location_desc"  # я так и не поняла, что это и нужно ли нам это>-->
 
     <input type="submit" id="sendButton" value="Создать локацию (кабинет)">

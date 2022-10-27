@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<form style="color: white">
+    <label>Название предмета <input type="text" id="subject_name"></label><br>
+    <label>ID учителей <input type="number" id="teachers"></label><br>
+
+    <input type="submit" id="sendButton" value="Создать группу">
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/add_subject.js"></script>
+{% endblock %}

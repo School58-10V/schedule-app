@@ -73,6 +73,11 @@ def group_addition_page():
     return render_template('add_group.html')
 
 
+@app.route('/add_subject', methods=['GET'])
+def subject_addition_page():
+    return render_template('add_subject.html')
+
+
 @app.route('/subjects', methods=['GET'])
 def subjects_page():
     return render_template('subjects.html')

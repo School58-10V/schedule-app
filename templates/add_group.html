@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<form>
-    <input type="number" id="teacher_id" placeholder="ID учителя">
-    <input type="text" id="class_letter" placeholder="Буква">
-    <input type="number" id="grade" placeholder="Ранг">
-    <input type="text" id="profile_name" placeholder="Профиль">
+<form style="color: white">
+    <label>ID учителя <input type="number" id="teacher_id"></label><br>
+    <label>Класс <input type="number" id="grade"></label><br>
+    <label>Буква <input type="text" id="class_letter"></label><br>
+    <label>Профиль <input type="text" id="profile_name"></label><br>
 
     <input type="submit" id="sendButton" value="Создать группу">
 </form>

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<form>
-    <input type="text" id="fio" placeholder="ФИО учителя">
-    <input type="text" id="bio" placeholder="Био">
-    <input type="text" id="contacts" placeholder="Контакты">
-    <input type="number" id="class_number" placeholder="Номер кабинета">
-    <input type="number" id="subject" placeholder="Id предмета">
-    <input type="text" id="groups" placeholder="Список id групп">
+<form style="color: white">
+    <label>ФИО учителя <input type="text" id="fio"></label><br>
+    <label>Био <input type="text" id="bio"></label><br>
+    <label>Контакты <input type="text" id="contacts"></label><br>
+    <label>Номер кабинета <input type="number" id="class_number"></label><br>
+    <label>Id предмета <input type="number" id="subject"></label><br>
+    <label>Список id групп <input type="text" id="groups"></label><br>
 
     <input type="submit" id="sendButton" value="Создать учителя">
 </form>
