@@ -14,7 +14,7 @@ function request(){
             let table = document.getElementById('groupsTable');
 
             response.forEach(element => {
-                let row = table.insertRow(1);
+                let row = table.insertRow(2);
 
                 let id = row.insertCell(0);
                 let grade = row.insertCell(1);

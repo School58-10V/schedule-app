@@ -47,7 +47,17 @@ def students_page():
 
 @app.route('/groups', methods=['GET'])
 def groups_page():
-    return render_template('groups.html')
+    context = {
+        "object_type": "group",
+        "inputs": [
+            {"name": "grade", "label": "Класс", "type": "number"},
+            {"name": "class_letter", "label": "Буква", "type": "text"},
+            {"name": "profile_name", "label": "Профиль", "type": "text"},
+            {"name": "students", "label": "ИД учеников", "type": "list"},
+            {"name": "teacher_id", "label": "ИД Учителя", "type": "number"}
+        ]
+    }
+    return render_template('groups.html', **context)
 
 
 @app.route('/lessons', methods=['GET'])

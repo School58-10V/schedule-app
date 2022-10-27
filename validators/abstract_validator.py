@@ -26,7 +26,8 @@ class AbstractValidator(ABC):
                 if type(request[key]) != list or not self.check_list_items(request[key], eval(value)):
                     raise ValueError
 
-            if type(request[key]) != self.keys_types[key]:
+            # != list cuz the self.keys_types are gonna do List[int] as str and the type() will do List so never true
+            if type(request[key]) != list and (type(request[key]) != self.keys_types[key]):
                 raise ValueError
 
     @staticmethod

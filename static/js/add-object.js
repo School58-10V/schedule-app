@@ -7,16 +7,29 @@ const objectCreatedSuccessParagraph = document.getElementById('objectCreatedSucc
 createObjectForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (getCookie("token") === undefined) {
-        alert("Ты не можешь создавать токены, ты не авторизован!");
+        alert("Ты не можешь создавать что-то, ты не авторизован!");
         return;
     }
 
     let inputObjectDict = {};
-    createObjectForm.childNodes.forEach((el) => {
+    let list_of_inputs = [];
+    let c = 0;
+    while (true) {
+        if (createObjectForm[c] !== undefined) {
+            list_of_inputs.push(createObjectForm[c]);
+            c += 1;
+        } else {
+            break;
+        }
+    }
+    list_of_inputs.forEach((el) => {
         if (el.tagName === "INPUT" && el.value !== "Создать") {
             let val = el.value;
-            if (el.type === 'number') {
+            if (el.dataset.type === 'number') {
                 val = parseInt(val);
+            } else if (el.dataset.type === 'list') {
+                val = val.split(',').map(parseFloat);
+                console.log(val)
             }
             inputObjectDict[el.name] = val;
         }

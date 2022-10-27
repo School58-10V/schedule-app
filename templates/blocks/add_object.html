@@ -1,13 +1,10 @@
 <div>
     <form class="" id="addObjectForm">
         <input hidden name="object_type" value="{{ object_type }}">
+        <td><input type="submit" id="objectCreateSubmitButton" value="Создать"></td>
         {% for inp in inputs %}
-            <label for="{{ inp.name + "Field" }}">
-                {{ inp.label }}
-            </label>
-            <input type="{{ inp.type }}" name="{{ inp.name }}" id="{{ inp.name + "Field" }}">
+            <td><input data-type="{{ inp.type }}" type="{{ inp.type }}" name="{{ inp.name }}" {% if inp.type == "list" %}value="[]"{% endif %} id="{{ inp.name + "Field" }}"></td>
         {% endfor %}
-        <input type="submit" id="objectCreateSubmitButton" value="Создать">
     </form>
     <p hidden id="objectCreatedSuccessParagraph" class="text-green">Объект создан!</p>
 </div>

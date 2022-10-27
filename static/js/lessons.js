@@ -12,9 +12,9 @@ function request(){
         if(xhr.status == 200){
             let response = JSON.parse(xhr.response);
             let table = document.getElementById('lessonsTable');
-
+            let c = 2;
             response.forEach(element => {
-                let row = table.insertRow(1);
+                let row = table.insertRow(c);
 
                 let id = row.insertCell(0);
                 let date = row.insertCell(1);
