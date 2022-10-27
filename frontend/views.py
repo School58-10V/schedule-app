@@ -68,6 +68,11 @@ def location_addition_page():
     return render_template('add_location.html')
 
 
+@app.route('/add_group', methods=['GET'])
+def group_addition_page():
+    return render_template('add_group.html')
+
+
 @app.route('/subjects', methods=['GET'])
 def subjects_page():
     return render_template('subjects.html')
