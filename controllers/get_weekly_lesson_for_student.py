@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import List
 from urllib import request
 
-
 from data_model.group import Group
 from data_model.lesson_row import LessonRow
 from data_model.location import Location
@@ -39,6 +38,7 @@ def lesson_row_to_string(lesson_row: LessonRow) -> str:
 @app.route("/api/v1/get-weekly-timetable-for-student/<name>", methods=["GET"])
 def get_weekly_timetable(name):
     try:
+
         student_name = name
         student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
         student_id = student[0].get_main_id()
@@ -47,7 +47,7 @@ def get_weekly_timetable(name):
         lesson_rows_list: List[LessonRow] = []
         year = datetime.now().year
         current_timetable = TimeTable.get_by_year(year, db_source=app.config.get('schedule_db_source'))
-        tt = []
+        tt = [0, 1, 2, 3, 4, 5, 6]
         for day in tt:
             for i in student_groups:
                 var = [j for j in i.get_lesson_rows() if
@@ -55,14 +55,29 @@ def get_weekly_timetable(name):
                 if var:
                     for j in var:
                         lesson_rows_list.append(j)
-            tt[day] = lesson_rows_list
-            lesson_rows_list = []
 
-        for day in tt:
-            day.sort(key=lambda x: x.get_start_time())
-            tt[day] = day
-
-        return jsonify(tt)
+        lesson_rows_list.sort(key=lambda x: x.get_start_time())
+        # Сделать здесь сортировку сначала по дню, а потом по часам
+        result = {'понедельник': [], 'вторник': [], 'среда': [], 'четверг': [],
+                  'пятница': [], 'суббота': [], 'воскресенье': []}
+        for i in lesson_rows_list:
+            local_dict = i.__dict__()
+            if i.get_day_of_the_week() == 0:
+                result["понедельник"].append(local_dict)
+            if i.get_day_of_the_week() == 1:
+                result["вторник"].append(local_dict)
+            if i.get_day_of_the_week() == 2:
+                result['среда'].append(local_dict)
+            if i.get_day_of_the_week() == 3:
+                result['четверг'].append(local_dict)
+            if i.get_day_of_the_week() == 4:
+                result['пятница'].append(local_dict)
+            if i.get_day_of_the_week() == 5:
+                result['суббота'].append(local_dict)
+            if i.get_day_of_the_week() == 6:
+                result['воскресенье'].append(local_dict)
+        print(result)
+        return jsonify(result)
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
