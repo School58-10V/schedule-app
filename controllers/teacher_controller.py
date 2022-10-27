@@ -94,10 +94,10 @@ def get_teacher_detailed_by_id(object_id: int) -> Union[Response, Tuple[str, int
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher() -> Union[Tuple[str, int], Response]:
     dct = request.get_json()
-    try:
-        validator.validate(dct, "POST")
-    except:
-        return '', 400
+    # try:
+    #     validator.validate(dct, "POST")
+    # except:
+    #     return '', 400
     try:
         subject_id = []
         if 'subject_id' in dct:

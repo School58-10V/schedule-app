@@ -1,5 +1,6 @@
-import { BASE_PATH } from './config.js';
+/*import { BASE_PATH } from './config.js';*/
 
+const BASE_PATH = '/api/v1'
 function request(){
     let xhr = new XMLHttpRequest();
     let url = BASE_PATH + '/students';
@@ -9,7 +10,7 @@ function request(){
     xhr.send();
 
     xhr.onload = ()=>{
-        if(xhr.status == 200){
+        if(xhr.status === 200){
             let response = JSON.parse(xhr.response);
             let table = document.getElementById('studentsTable');
 

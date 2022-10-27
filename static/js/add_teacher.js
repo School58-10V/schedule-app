@@ -1,5 +1,5 @@
 import { BASE_PATH } from './config.js'
-import { setCookie } from './usefulFunctions.js'
+import {getCookie, setCookie} from './usefulFunctions.js'
 
 
 sendButton.addEventListener('click', (e)=>{
@@ -18,7 +18,7 @@ sendButton.addEventListener('click', (e)=>{
     });
     request.withCredentials = true;
     request.setRequestHeader("Content-Type", "application/json");
-
+    request.setRequestHeader("Authorization",getCookie("token"));
     request.send(data);
     fio.value = '';
     bio.value = '';
