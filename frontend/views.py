@@ -69,3 +69,8 @@ def timetable_page():
 @app.route("/timetable/week/<int:object_id>", methods=["GET"])
 def personal_timetable_page(object_id):
     return render_template("timetable.html", table=get_schedule_for_week(db_source=DBSOURCE, student_id=object_id))
+
+
+@app.route("/get-weekly-timetable-for-student", methods=["GET"])
+def weekly_timetable_for_student():
+    return render_template("timetable_for_student.html")

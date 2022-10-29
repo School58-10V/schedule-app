@@ -35,11 +35,11 @@ def lesson_row_to_string(lesson_row: LessonRow) -> str:
     return lesson_row_to_string
 
 
-@app.route("/api/v1/get-weekly-timetable-for-student/<name>", methods=["GET"])
-def get_weekly_timetable(name):
+@app.route("/api/v1/get-weekly-timetable-for-student", methods=["GET"])
+def get_weekly_timetable():
     try:
 
-        student_name = name
+        student_name = request.args.get("name")
         student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
         student_id = student[0].get_main_id()
         student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,
@@ -57,11 +57,14 @@ def get_weekly_timetable(name):
                         lesson_rows_list.append(j)
 
         lesson_rows_list.sort(key=lambda x: x.get_start_time())
-        # Сделать здесь сортировку сначала по дню, а потом по часам
+
         result = {'понедельник': [], 'вторник': [], 'среда': [], 'четверг': [],
                   'пятница': [], 'суббота': [], 'воскресенье': []}
         for i in lesson_rows_list:
             local_dict = i.__dict__()
+            subject_name = Subject.get_by_id(local_dict["subject_id"], db_source=app.config.get('schedule_db_source'))\
+                .get_subject_name()
+            local_dict["subject_name"] = subject_name
             if i.get_day_of_the_week() == 0:
                 result["понедельник"].append(local_dict)
             if i.get_day_of_the_week() == 1:
@@ -76,7 +79,7 @@ def get_weekly_timetable(name):
                 result['суббота'].append(local_dict)
             if i.get_day_of_the_week() == 6:
                 result['воскресенье'].append(local_dict)
-        print(result)
+
         return jsonify(result)
     except Exception as err:
         logging.error(err, exc_info=True)

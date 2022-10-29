@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Расписание</h1>
+<form name="publish">
+ <input type="text" name="nameField" placeholder="ФИО ученика" id="nameField">
+ <input type="submit" value="Получить расписание" id="submitButton"><br>
+</form>
+<table id="timetablesTable"></table>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/weekly_timetable_for_student.js">
+</script>
+{% endblock %}
+
+
+
