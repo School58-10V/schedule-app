@@ -1,5 +1,11 @@
-import { BASE_PATH } from './config.js'
-import { setCookie } from './usefulFunctions.js'
+const BASE_PATH = '/api/v1'
+function setCookie(name, value, time){
+    let duration = time['seconds'] + time['minutes'] * 60 +
+                    time['hours'] * 3600 + time['days'] * 86400;
+
+    let data = `${name}=${value}; max-age=${duration}; path=/`;
+    document.cookie = data;
+}
 
 
 sendButton.addEventListener('click', (e)=>{
