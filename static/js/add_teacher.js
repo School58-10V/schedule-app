@@ -22,35 +22,40 @@ sendButton.addEventListener('click', (e)=>{
     request.open('POST', url);
 //    let lesson_rows = lesson_row_id.value;
 //
+    let data_subject_id = subject_id.value.split(' ');
+    let subject_id_lst = [];
+    for (let i=0; i < data_subject_id.length; i+= 1){
+    let x = parseInt(data_subject_id[i], 10);
+    subject_id_lst.push(x);}
+    let data_lesson_row_id = lesson_row_id.value.split(' ');
+    let lesson_row_id_lst = [];
+
+    for (let i=0; i < data_lesson_row_id.length; i+= 1){
+
+    alert('123');
+    let x = parseInt(data_lesson_row_id[i], 10);
+    lesson_row_id_lst.push(x);}
+    alert('-----');
+    let office_id_int = parseInt(office_id.value);
     let data = JSON.stringify({
         "fio": fio.value,
         "bio": bio.value,
         "contacts": contacts.value,
-        "office_id": office_id.value,
+        "office_id": office_id_int,
+        'lesson_row_id': lesson_row_id_lst,
+        'subject_id': subject_id_lst,
     });
     request.withCredentials = true;
-    request.setRequestHeader("Content-Type", "application/json");
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.setRequestHeader("Authorization",getCookie("token"));
     request.send(data);
     fio.value = '';
     bio.value = '';
     contacts.value = '';
     office_id.value = '';
+    alert('======');
     request.onload = () => {
-        if(request.status === 200){
-            let response = JSON.parse(request.response);
-
-            let token = response['token'];
-
-            let time = {
-                'seconds': 0, 'minutes': 0, 'hours': 0, 'days': 14
-            };
-
-            setCookie('token', token, time);
-
-            window.location.pathname = '/';
-        }
-        else if (request.status === 401){
+         if (request.status === 401){
             fio.style.borderColor = 'red';
             bio.style.borderColor = 'red';
             fio.placeholder = 'Неверные данные';
