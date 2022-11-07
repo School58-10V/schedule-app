@@ -1,7 +1,7 @@
 import datetime
 
 from flask import render_template, request
-#from flask_wtf import csrf
+# from flask_wtf import csrf
 from tabulate import tabulate
 from werkzeug.utils import redirect
 
@@ -9,7 +9,7 @@ from data_model.group import Group
 from data_model.student import Student
 from schedule_app import app
 from interfaces.schedule_interface import get_schedule_for_week, get_schedule_for_day
-#from form.set_student_name_form import StudentName
+# from form.set_student_name_form import StudentName
 from controllers.group_controller import get_groups
 from controllers.lesson_controller import get_lessons
 from controllers.student_controller import get_students
@@ -83,6 +83,20 @@ def subjects_page():
 def add_teacher_page():
     return render_template('add_teachers.html')
 
+
+@app.route('/add-subject', methods=['GET', 'POST'])
+def add_subject_page():
+    return render_template('add_subjects.html')
+
+
+@app.route('/add-location', methods=['GET', 'POST'])
+def add_location_page():
+    return render_template('add_locations.html')
+
+
+@app.route('/add-group', methods=['GET', 'POST'])
+def add_group_page():
+    return render_template('add_groups.html')
 
 # @app.route('/timetable', methods=['GET', 'POST'])
 # def timetable_page():
