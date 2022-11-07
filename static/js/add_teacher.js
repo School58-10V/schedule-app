@@ -32,10 +32,9 @@ sendButton.addEventListener('click', (e)=>{
 
     for (let i=0; i < data_lesson_row_id.length; i+= 1){
 
-    alert('123');
     let x = parseInt(data_lesson_row_id[i], 10);
     lesson_row_id_lst.push(x);}
-    alert('-----');
+//    alert('-----');
     let office_id_int = parseInt(office_id.value);
     let data = JSON.stringify({
         "fio": fio.value,
@@ -53,7 +52,6 @@ sendButton.addEventListener('click', (e)=>{
     bio.value = '';
     contacts.value = '';
     office_id.value = '';
-    alert('======');
     request.onload = () => {
          if (request.status === 401){
             fio.style.borderColor = 'red';

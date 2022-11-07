@@ -94,6 +94,7 @@ def get_teacher_detailed_by_id(object_id: int) -> Union[Response, Tuple[str, int
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher() -> Union[Tuple[str, int], Response]:
     dct = request.get_json()
+    print(dct)
     # try:
     #     validator.validate(dct, "POST")
     # except:
@@ -104,8 +105,7 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
             subject_id = dct.pop('subject_id')
         lesson_row_id = []
         if 'lesson_row_id' in dct:
-            subject_id = dct.pop('lesson_row_id')
-
+            lesson_row_id = dct.pop('lesson_row_id')
         new_teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
 
         for i in subject_id:
@@ -121,7 +121,7 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
         new_teacher_dct['lesson_row_id'] = lesson_row_id
 
         return jsonify(new_teacher_dct)
-    except ValueError:
+    except ValueError as e:
         return '', 404
     except Exception as err:
         logging.error(err, exc_info=True)

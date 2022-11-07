@@ -40,7 +40,7 @@ sendButton.addEventListener('click', (e)=>{
 
             setCookie('token', token, time);
             
-            window.location.pathname = '/';
+//            window.location.pathname = '/';
         }
         else if (request.status == 401){
             loginField.style.borderColor = 'red';
