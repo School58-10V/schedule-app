@@ -62,7 +62,7 @@ function updateSchedule(new_schedule){
     let table = document.querySelector('.tb_table');
     table.innerHTML = '';
 
-    add_line(table, 'Время', 'Предмет', 'Кабинет')
+    add_line(table, 'Время', 'Предмет', 'Каб')
 
     for(let i = 0; i < new_schedule['name'].length; ++i){
         add_line(table, new_schedule.time[i], new_schedule.name[i], new_schedule.location[i]);

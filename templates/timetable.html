@@ -13,8 +13,7 @@
 <!--<input type="text" placeholder="ФИО ученика" id="nameField">-->
 <!--<input type="submit" value="Получить расписание" id="submitButton"><br>-->
 
-
-<div class="schedule_wrapper" style="height: 5%;">
+<div class="schedule_wrapper" style="height: 5%; z-index: 6; position: fixed">
     <form method="post" id="weekdayForm" action="/timetable">
         <select name="weekday" id="selection" style="font-size: 20px">
             <option style="font-size: 20px">Понедельник</option>
@@ -28,17 +27,16 @@
         <input type="submit" id="getSchedule"  value="Получить расписание на день" style="font-size: 20px; background-image: url('../img/fon.png')">
     </form>
 </div>
-
 <div style="text-align: center; align-items: center; ">
-    <img src="static/img/boardwtab.png" style="width: 55%; height: 85%; top: 20%; margin: auto;">
+    <img src="static/img/boardwtab.png" style="width: 55%; height: 85%; left: 23%; top: 20%; margin: auto; z-index: 5; position: fixed">
     <table class="tb_table" style="width: 48%; height: 56%; top: 40%; left: 23%; align-items: center; margin: auto">
-        
+
         <tr>
             <td style="width: 28%; height: 12%">Дата</td>
             <td style="width: 57%">Предмет</td>
-            <td>Кабинет</td>
+            <td style="left: 29%">Каб</td>
         </tr>
-           
+
         </table>
 </div>
 {% endblock %}

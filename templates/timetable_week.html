@@ -4,7 +4,8 @@
     <link rel="stylesheet" href="/static/css/nadoo.css">
 </head>
 <div style="text-align: center; background-image: url('../img/доскаобъяв2.png')">
-    <nov1 style="display: flex; background-image: url('../img/доскаобъяв2.png'">
+    <img src="/static/img/доскаобъяв2.png" style="right: 20%; width: 55%; height: 80%; top: 21%; margin: auto; z-index: 1; position: fixed">
+    <nov1 style="display: flex; position: fixed; z-index: 6;  left: 29%; top: 14%">
         <a class="day_button" style="top: 20%;  left: 100%" href="/timetable_for_week/0">Понедельник <br> {{ schedule[0][0] }} <br>
             {{ schedule[0][1] }} <br> {{ schedule[0][2] }} <br> {{ schedule[0][3] }} <br>
             {{ schedule[0][4] }} <br> {{ schedule[0][5] }} <br> {{ schedule[0][6] }} <br> {{ schedule[0][7] }}</a>
@@ -14,6 +15,8 @@
         <a class="day_button" href="/timetable_for_week/2">Среда <br> {{ schedule[2][0] }} <br>
             {{ schedule[2][1] }} <br> {{ schedule[2][2] }} <br> {{ schedule[2][3] }} <br>
             {{ schedule[2][4] }} <br> {{ schedule[2][5] }} <br> {{ schedule[2][6] }} <br> {{ schedule[0][7] }}</a>
+    </nov1>
+    <nov1 style="display: flex; position: fixed; z-index: 6;  left: 29%; top: 50%">
         <a class="day_button" href="/timetable_for_week/3">Четверг <br> {{ schedule[3][0] }} <br>
             {{ schedule[3][1] }} <br> {{ schedule[3][2] }} <br> {{ schedule[3][3] }} <br>
             {{ schedule[3][4] }} <br> {{ schedule[3][5] }} <br> {{ schedule[3][6] }} <br> {{ schedule[3][7] }}</a>

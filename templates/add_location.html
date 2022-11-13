@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<form style="color: white">
+
+<form style="color: white; z-index: 6; position: fixed; left: 52%">
+
     <label>Номер класса <input type="number" id="num_of_class"></label><br>
     <label>Профиль класса <input type="text" id="profile"></label><br>
     <label>Оборудование в классе <input type="text" id="equipment"></label><br>
@@ -11,6 +13,7 @@
 
     <input type="submit" id="sendButton" value="Создать локацию (кабинет)">
 </form>
+<img src="static/img/book.png" style="height: 80%; left: 15%; top: 20%; margin: auto; z-index: 5; position: fixed">
 {% endblock %}
 
 {% block script %}

@@ -31,7 +31,7 @@
 
 .schedule_wrapper{
     position: fixed;
-    z-index: 12;
+    z-index: 5;
     height: 100%;
     width: 100%;
 }
@@ -39,7 +39,7 @@
     position: fixed;
     bottom: 0%;
     height: 75%;
-    z-index: 10;
+    z-index: 5;
     left: 25%;
     right: 25%;
 }
@@ -68,7 +68,7 @@
     width: 170px;
     height: 60px;
     padding: 105px 0px 10px 0px;
-    margin-right: 20px;
+    margin-right: 115px;
     text-align: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -80,6 +80,6 @@ nav1{
     display: flex;
     width: 500px;
     align-content: space-around;
-    z-index: 14;
+    z-index: 30;
     margin-top: -10px;
 }
