@@ -51,3 +51,19 @@ def get_week_schedule():
     pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
 
     return pretty_data, 200
+
+@app.route("/api/v1/week-raw/<int:student_id>", methods=["GET"])
+def get_raw_week_schedule(student_id):
+
+    # забираем все лессонроучики по данному расписанию для данного студа
+    lesson_rows = LessonRow.get_all_by_student_id(student_id=student_id, db_source=app.config.get('schedule_db_source'))
+    # Форматируем дату в норм табличку
+    lesson_rows.sort(key= lambda x: x.get_start_time())
+    data = {}
+    for row in lesson_rows:
+        subj_name = Subject.get_by_id(row.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name()
+        if (row.get_day_of_the_week() in data.keys()):
+            data[row.get_day_of_the_week()].append(subj_name)
+        else:
+            data[row.get_day_of_the_week()] = [subj_name]
+    return data, 200
