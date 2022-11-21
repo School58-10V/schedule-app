@@ -65,7 +65,7 @@ def before_request() -> Optional[Tuple[str, int]]:
     if request.url_rule is None or\
             request.path == '/api/v1/login' or\
             request.path == '/api/v1/register' or\
-            request.method.lower() == 'get':
+            request.method.lower() == 'get' or request.method.lower() == 'options':
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')

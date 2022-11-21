@@ -30,9 +30,9 @@ def get_week_schedule():
         # return 'Не указано имя ученика', 400
 
     request_token = request.headers.get('Authorization')
-    # data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    # user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
-    user = User.get_by_login('mavovk', db_source=app.config.get('auth_db_source'))
+    data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+    user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
+    # user = User.get_by_login('mavovk', db_source=app.config.get('auth_db_source'))
     student_list = Student.get_by_name(name=user.get_name(), source=app.config.get('schedule_db_source'))
 
     if len(student_list) == 0:
