@@ -1,4 +1,6 @@
 from flask import Flask
+from flask_cors import CORS
+
 from services.db_source_factory import DBFactory
 from services.validator_factory import ValFactory
 from config import Configuration
@@ -18,6 +20,7 @@ auth_dbf.set_db_source(host=cfg.get_configuration()["user_database"]["host"],
 val_factory = ValFactory()
 
 app = Flask("Schedule-app")
+CORS(app)
 app.config["schedule_db_source"] = schedule_dbf.get_db_source()
 app.config["auth_db_source"] = auth_dbf.get_db_source()
 app.config['validators_factory'] = val_factory
