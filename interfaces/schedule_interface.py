@@ -39,6 +39,7 @@ def get_schedule_for_day(db_source, current_user_id, week_day):
             else:
                 # Если есть, то добавляем вместо этого урока замену
                 lesson_rows_dct.append(lesson[i.get_start_time()])
+
     # Сортируем то расписание, которое у нас получилось по началу урока
     lesson_rows_dct.sort(key=lambda x: x.get_start_time())
     # Возвращаем красивую табличку, где первый столбец - начало урока,
@@ -48,29 +49,21 @@ def get_schedule_for_day(db_source, current_user_id, week_day):
                                db_source).get_subject_name(),
              Location.get_by_id(i.get_room_id(), db_source).get_num_of_class())
             for i in lesson_rows_dct]
-    nov_tb = [["", "Урока нет", ""] for i in range(9)]
+    # nov_tb = [["", "Урока нет", ""] for i in range(9)]
+    nov_tb = [['Время', datetime.date.today().strftime("%d.%m.%Y"), 'Кабинет']]
 
-    p = -1
-    for i in nov_tb:
-        p += 1
-        if p == 0:
-            i[0] = "Время"
-            i[1] = datetime.date.today()
-            i[2] = "КАБ."
-        else:
-            if p + 1 > 9:
-                break
-            if p > len(data):
-                break
-            i[0] = str(data[p - 1][0])[:-2] + ":" + str(data[p - 1][0])[2:] + "-" + str(data[p - 1][1] // 100) + ":" + str(data[p - 1][1] % 100)
-            i[1] = data[p - 1][2]
-            i[2] = data[p - 1][3]
+    print(data)
+
+    for el in data:
+        nov_tb.append([
+                f'{str(el[0])[:-2]}:{str(el[0])[2:]}-{str(el[1] // 100)}:{str(el[1] % 100)}',
+                el[2],
+                el[3]
+            ])
+
+    nov_tb += [["", "Урока нет", ""]] * (9 - len(data))
+
     return nov_tb
-
-
-# def tmp(day):
-#     interface = StudentInterface(db_source=app.config.get('schedule_db_source'), student_id=80)
-#     return interface.get_schedule_for_day(day)
 
 
 def schedule_for_week(db_source, current_user_id):
