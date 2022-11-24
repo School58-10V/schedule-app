@@ -61,9 +61,13 @@ def get_raw_week_schedule(student_id):
     lesson_rows.sort(key= lambda x: x.get_start_time())
     data = {}
     for row in lesson_rows:
-        subj_name = Subject.get_by_id(row.get_subject_id(), db_source=app.config.get('schedule_db_source')).get_subject_name()
+        subject = Subject.get_by_id(row.get_subject_id(), db_source=app.config.get('schedule_db_source'))
+        lesson_data = {}
+        lesson_data["object_id"] = row.get_main_id()
+        lesson_data["subject"] = subject.get_subject_name()
+        lesson_data["start"] = row.get_start_time()
         if (row.get_day_of_the_week() in data.keys()):
-            data[row.get_day_of_the_week()].append(subj_name)
+            data[row.get_day_of_the_week()].append(lesson_data)
         else:
-            data[row.get_day_of_the_week()] = [subj_name]
+            data[row.get_day_of_the_week()] = [lesson_data]
     return data, 200
