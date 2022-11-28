@@ -38,7 +38,13 @@ def lesson_row_to_string(lesson_row: LessonRow) -> str:
 @app.route("/api/v1/get-weekly-timetable-for-student", methods=["GET"])
 def get_weekly_timetable():
     try:
-
+        try:
+            request_token = request.headers.get('Authorization')
+            data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+        except KeyError:
+            return 'Не передан токен', 401
+        print(data)
+        print(data)
         student_name = request.args.get("name")
         student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
         student_id = student[0].get_main_id()
