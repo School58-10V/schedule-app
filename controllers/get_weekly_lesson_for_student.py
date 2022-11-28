@@ -43,9 +43,9 @@ def get_weekly_timetable():
             data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
         except KeyError:
             return 'Не передан токен', 401
-        print(data)
-        print(data)
-        student_name = request.args.get("name")
+        user = User.get_by_login(login=data['login'], db_source=app.config.get('auth_db_source'))
+
+        student_name = user.get_name()
         student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
         student_id = student[0].get_main_id()
         student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,
