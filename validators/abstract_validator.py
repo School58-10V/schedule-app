@@ -21,12 +21,12 @@ class AbstractValidator(ABC):
         for key in request.keys():
             if key not in self.allowed_keys:
                 raise ValueError
-            if type(self.keys_types[key]) == str:  # обработка случая list[int] и т.п
+            if type(self.keys_types[key]) == str:  # обработка случая list[int] и т.п; оберни тип list в стрингу
                 value = self.keys_types[key].split('[')[1][:-1]
                 if type(request[key]) != list or not self.check_list_items(request[key], eval(value)):
                     raise ValueError
 
-            if type(request[key]) != self.keys_types[key]:
+            elif type(request[key]) != self.keys_types[key]:
                 raise ValueError
 
     @staticmethod
