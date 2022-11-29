@@ -83,8 +83,8 @@ def create_student() -> Tuple[str, int] | Response:
             student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
             for i in groups:
                 student.append_group_by_id(i)
-        except ValueError:
-            return '', 404
+        except ValueError as e:
+            return "unknown", 404
         dct = student.__dict__()
         dct['groups'] = groups
         return jsonify(dct)
