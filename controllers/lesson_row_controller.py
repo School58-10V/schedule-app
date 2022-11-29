@@ -125,11 +125,9 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
     :return: Response
     """
     dct = request.get_json()
-    try:
-        validator.validate(dct, "POST")
-    except Exception as err:
-        logging.error(err, exc_info=True)
-        return "", 400
+    validation_data = validator.validate(dct, "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
     try:
         teacher_id = []
         if 'teachers' in dct:
@@ -161,10 +159,9 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
 
     dct = request.get_json()
 
-    try:
-        validator.validate(dct, method="PUT")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(dct, method="PUT")
+    if not validation_data[0]:
+        return validation_data[1], 400
 
     try:
         LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
