@@ -1,20 +1,20 @@
 from __future__ import annotations
+
+import logging
+import psycopg2
 from typing import TYPE_CHECKING
 
-import logging, psycopg2
 from flask import request, jsonify
 
-from data_model.teacher import Teacher
 from data_model.lesson_row import LessonRow
+from data_model.teacher import Teacher
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
-from validators.lesson_row_validator import LessonRowValidator
-
 from schedule_app import app
+from validators.lesson_row_validator import LessonRowValidator
 
 if TYPE_CHECKING:
     from flask import Response
     from typing import Union, Tuple
-
 
 validator = LessonRowValidator()
 
@@ -29,8 +29,10 @@ def get_all_lesson_rows() -> Response | tuple[str, int]:
     try:
         for i in LessonRow.get_all(app.config.get("schedule_db_source")):
             local_dct = i.__dict__()
-            local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-                get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
+            local_dct['teachers'] = [
+                i.get_main_id() for i in TeachersForLessonRows.
+                get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))
+            ]
             global_dct.append(local_dct.copy())
 
         return jsonify(global_dct)
@@ -50,9 +52,9 @@ def get_all_lesson_row_detailed() -> Response:
         for i in LessonRow.get_all(app.config.get("schedule_db_source")):
             local_dct = i.__dict__()
             local_dct['teachers'] = [i.__dict__() for i in
-                                    TeachersForLessonRows.get_teachers_by_lesson_row_id(
-                                        i.get_main_id(),
-                                        db_source=app.config.get("schedule_db_source"))]
+                                     TeachersForLessonRows.get_teachers_by_lesson_row_id(
+                                         i.get_main_id(),
+                                         db_source=app.config.get("schedule_db_source"))]
             global_dct.append(local_dct.copy())
         return jsonify(global_dct)
     except Exception as err:
@@ -70,7 +72,7 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
+        get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
         return jsonify(dct)
     except ValueError:
         return '', 404
@@ -86,7 +88,7 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, 
     try:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
-            get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
+        get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
 
         return jsonify(dct)
     except ValueError:
