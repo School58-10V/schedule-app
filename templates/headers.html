@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link href="./ofont.ru_LeoHand.ttf" rel="stylesheet" type='text/css'>
+	<style type="text/css">
+		.header{
+			background-color: #a2a2d0;
+			width: 100%;
+			height: 20%;
+			position: fixed;
+			z-index: 10;
+			left: 0%;
+			right: 0%;
+			top: -1%;
+		}
+		@font-face {
+	font-family: 'LeoHand-Light'; 
+	src: local('./ofont.ru_LeoHand.ttf'),
+		url(./ofont.ru_LeoHand.ttf);
+}
+		.button_timetable{
+			background-color: #474389;
+			width: 20%;
+			height: 60%;
+			z-index: 11;
+			top: 20%;
+			position: absolute;
+			border-color: mediumblue;
+			font-family: 'LeoHand-Light';
+			font-size: 200%;
+			border-radius: 10px;
+		}
+		.content_block{
+    position: absolute;
+    /*width: 80%;*/
+    height: 150%;
+    z-index: 2;
+    left: 10%;
+    right: 10%;
+    bottom: 10%;
+    top: 160px;
+    background-color: white;
+
+}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<div style="left: 2%; position: absolute; top: -35%;"><h1 style="color: antiquewhite; font-family: 'LeoHand-Light'; font-size: 500%;">SheduleApp</h1></div>
+		<button class="button_timetable" style="left: 78%; font-size:150%; color: antiquewhite;">Расписание на неделю</button>
+		<button class="button_timetable" style="left: 56%; font-size:150%; color: antiquewhite;">Расписание каникул</button>
+	
+</div><div style="position: fixed; left: 0%; z-index: 1; width: 100%; height: 100%; background-color: #e6e6fa;">	
+	</div>
+	<div class="content_block">
+<!--		<img style="z-index: 2; display: block;-webkit-user-select: none;margin: auto;cursor: zoom-in;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;" src="https://downloader.disk.yandex.ru/preview/59da7156ed3b94f37a01e870bab33dc2f34067fbb9443294a3fdae2e21ad56c2/62960291/ffAAOntH_4c7o1d-lq9AS1Gv-eZobjM_UOzuuD0aniTmTE0cnoHrsKs4QJUMXHDY5D-TgrTADFuYKuSWJb0x2A%3D%3D?uid=0&amp;filename=%D0%B8%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D0%BA%D0%B0-%D0%BF%D1%83%D1%81%D1%82%D0%B0%D1%8F.jpg&amp;disposition=inline&amp;hash=&amp;limit=0&amp;content_type=image%2Fjpeg&amp;owner_uid=0&amp;tknv=v2&amp;size=2048x2048" width="100%" height="70%">-->
+
+		<center><pre style="z-index: 5; font-size: 250%;">{{ holiday }}</pre></center>
+	</div>
+
+</body>
+</html>

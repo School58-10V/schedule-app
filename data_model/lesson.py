@@ -20,10 +20,10 @@ class Lesson(AbstractModel):
             :param end_time: конец урока
             :param date: дата
             :param teacher_id: замена
-            :param object_id: группа учеников
+            :param object_id: id
             :param subject_id: предмет
             :param notes: примечания
-            :param group_id: урок
+            :param group_id: группа учеников
             :param state: состояние
         """
         super().__init__(db_source)

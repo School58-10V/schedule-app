@@ -11,6 +11,16 @@
             <th>ID учеников</th>
             <th>ID классного руководителя</th>
         </tr>
+    {% for i in groups %}
+    <tr>
+        <th>{{ i['object_id']}}</th>
+        <th>{{ i['grade']}}</th>
+        <th>{{ i['class_letter']}}</th>
+        <th>{{ i['profile_name']}}</th>
+        <th>{{ i['students']}}</th>
+        <th>{{ i['teacher_id']}}</th>
+    </tr>
+    {% endfor %}
     </thead>
 </table>
 {% endblock %}

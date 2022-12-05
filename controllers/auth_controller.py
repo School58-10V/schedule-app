@@ -12,11 +12,9 @@ if TYPE_CHECKING:
     from flask import Response
     from typing import Tuple, Union, Optional
 
-
 # TODO: тоже заимплементить конфиг (убрать точки со слешами)
 PRIVATE_KEY = open('./keys/schedule-key.pem').read()
 PUBLIC_KEY = open('./keys/schedule-public.pem').read()
-
 
 # устаревает через 2 недели
 # TODO: потом заимплементить вынос в конфиг
@@ -74,7 +72,6 @@ def before_request() -> Optional[Tuple[str, int]]:
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
     except (DecodeError, ExpiredSignatureError):
-        return '', 401
+        return '', 400
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
         return '', 401
-

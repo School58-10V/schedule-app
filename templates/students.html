@@ -11,6 +11,15 @@
             <th>Био</th>
             <th>ID классов</th>
         </tr>
+    {% for i in students %}
+        <tr><th>{{ i['object_id'] }}</th>
+    <th>{{ i['full_name'] }}</th>
+    <th>{{ i['date_of_birth'] }}</th>
+    <th>{{ i['contacts'] }}</th>
+    <th>{{ i['bio'] }}</th>
+    <th>{{ i['groups'] }}</th></tr>
+    {% endfor %}
+
     </thead>
 </table>
 {% endblock %}

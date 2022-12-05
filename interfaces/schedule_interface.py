@@ -49,16 +49,32 @@ def get_schedule_for_today(db_source, current_user_id):
            tabulate(data, ["Начало", "Конец", "Урок", "Кабинет"], tablefmt='grid')
 
 
-def get_schedule_for_week(db_source, student_id):
-    # забираем все лессонроучики по данному расписанию для данного студа
-    lesson_rows = LessonRow.get_all_by_student_id(student_id=student_id, db_source=db_source)
-    # Форматируем дату в норм табличку
-    lesson_rows.sort(key= lambda x: x.get_start_time())
-    data = {}
-    for row in lesson_rows:
-        subj_name = Subject.get_by_id(row.get_subject_id(), db_source=db_source).get_subject_name()
-        if (row.get_day_of_the_week() in data.keys()):
-            data[row.get_day_of_the_week()].append(subj_name)
+def get_schedule_for_day(user_id, day, db_source):
+    db_result = LessonRow.get_by_day_and_student(day, user_id, db_source)
+    data = {"subj_names": [], "start_times": [], "locations": []}
+    for lesson_row in db_result:
+        data.get("subj_names").append(
+            Subject.get_by_id(lesson_row.get_subject_id(), db_source=db_source).get_subject_name())
+        data.get("start_times").append(lesson_row.get_start_time())
+        location = Location.get_by_id(lesson_row.get_room_id(), db_source=db_source)
+        if location.get_link() is None:
+            data.get("locations").append(location.get_num_of_class())
         else:
-            data[row.get_day_of_the_week()] = [subj_name]
-    return tabulate(data, ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], tablefmt="grid")
+            data.get("locations").append(location.get_link())
+    return data
+
+
+def get_schedule_for_week(db_source, user_id):
+    week_dict = {0: "Понедельник",
+                 1: "Вторник",
+                 2: "Среда",
+                 3: "Четверг",
+                 4: "Пятница",
+                 5: "Суббота",
+                 6: "Воскресенье"}
+    lst = []
+    for i in range(0, 6):
+        lst.append(f'{week_dict[i]}\n' + tabulate(get_schedule_for_day(day=i, db_source=db_source, user_id=user_id),
+                                                  ["Предмет", "Время начала", "Место проведения"],
+                                                  tablefmt="grid"))
+    return lst
