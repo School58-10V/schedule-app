@@ -82,3 +82,13 @@ def delete_timetable(object_id: int) -> Union[Response, Tuple[str, int], Tuple[A
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
+
+
+@app.route('/api/v1/timetable/upload', methods=['POST'])
+def upload_files():
+    data = request.files['file']
+    print(data)
+    print(type(data))
+    data.save('name.xlsx')
+    return '', 200
+
