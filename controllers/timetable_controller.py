@@ -162,11 +162,10 @@ def upload_files():
     data = request.files['file']
 
     try:
-        print(data)
-        print(type(data))
+        bytesFile = io.BytesIO()
+        data.save(bytesFile)
 
-        # xls = pd.ExcelFile(io.BytesIO(data))
-        xls = pd.ExcelFile(data)
+        xls = pd.ExcelFile(bytesFile)
         sheet_to_df = pd.read_excel(xls, sheet_name=None)
 
         for el in sheet_to_df:
@@ -182,5 +181,6 @@ def upload_files():
 
         return '', 200
     except Exception as e:
-        return e, 500
+        print(e)
+        return '', 500
 
