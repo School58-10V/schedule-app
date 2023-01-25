@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from flask import Response
     from typing import Union, Any, Tuple
 
-
 validator = TimetableValidator()
 
 
@@ -167,7 +166,7 @@ def upload_files():
 
         xls = pd.ExcelFile(bytesFile)
         sheet_to_df = pd.read_excel(xls, sheet_name=None)
-
+        print(sheet_to_df)
         timetable = {}
         for el in sheet_to_df:
             df = sheet_to_df[el]
@@ -188,3 +187,9 @@ def upload_files():
         print(e)
         return '', 500
 
+
+@app.route('/api/v1/timetable/upload1', methods=['POST']) # просто
+def test_func():
+    a = request.get_json()
+    print(a)
+    return '', 200
