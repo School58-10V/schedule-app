@@ -168,6 +168,7 @@ def upload_files():
         xls = pd.ExcelFile(bytesFile)
         sheet_to_df = pd.read_excel(xls, sheet_name=None)
 
+        timetable = {}
         for el in sheet_to_df:
             df = sheet_to_df[el]
 
@@ -177,9 +178,11 @@ def upload_files():
 
             df = parse_day(df)
 
+            timetable[el] = df.drop(['Звонки', 'Время звонков'], axis=1).fillna('Нет урока').to_dict()
+
             print(f'Получили и успешно спарсили расписание на один день с листа {el}')
 
-        return '', 200
+        return jsonify(timetable), 200
     except Exception as e:
         print(e)
         return '', 500
