@@ -178,7 +178,7 @@ def upload_files():
             df = parse_day(df)
 
             timetable[el] = df.drop(['Звонки', 'Время звонков'], axis=1).fillna('Нет урока').to_dict()
-            timetable['classes'] = df.drop(['Звонки', 'Время звонков'], axis=1).columns.values.tolist()
+            timetable[el]['classes'] = df.drop(['Звонки', 'Время звонков'], axis=1).columns.values.tolist()
 
             print(f'Получили и успешно спарсили расписание на один день с листа {el}')
 
