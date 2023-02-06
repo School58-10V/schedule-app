@@ -28,13 +28,27 @@ def parse_file(file):
 
 def get_information(tag, fields, xml_data):
     elements = {}
+    if tag == 'period':
+        for el in xml_data.findAll(tag):
+            info = {}
+            for field in fields:
+                info[field] = el.get(field)
+            elements[el.get('name')] = info
+    elif tag == 'daysdef':
+        for el in xml_data.findAll(tag):
+            info = {}
+            for field in fields:
+                info[field] = el.get(field)
 
-    for el in xml_data.findAll(tag):
-        info = {}
-        for field in fields:
-            info[field] = el.get(field)
+            elements[el.get('days')] = info
+    else:
 
-        elements[el.get('id')] = info
+        for el in xml_data.findAll(tag):
+            info = {}
+            for field in fields:
+                info[field] = el.get(field)
+
+            elements[el.get('id')] = info
 
     return elements
 
@@ -183,43 +197,55 @@ def upload_files():
 
         subjects = get_information('subject', ['name'], xml_data)
         teachers = get_information('teacher', ['name'], xml_data)
-        classrooms = get_information('classroom', ['name', 'short'], xml_data)
+        classrooms = get_information('classroom', ['name'], xml_data)
         classes = get_information('class', ['name', 'teacherid'], xml_data)
         groups = get_information('group', ['name', 'classid'], xml_data)
+        periods = get_information('period', ['starttime', 'endtime'], xml_data)
+        days = get_information('daysdef', ['name', 'short'], xml_data)
 
-        lessons = []
+        lessons = {}
 
         for el in xml_data.findAll('lesson'):
-            lesson = {}
-            lesson['id'] = el.get('id')
+            info = {}
             try:
-                lesson['subject'] = subjects[el.get('subjectid')]
+                info['subject'] = subjects[el.get('subjectid')]
             except KeyError:
-                lesson['subject'] = '---'
-
-            try:
-                lesson['teacher'] = teachers[el.get('teacherids')]
-            except KeyError:
-                lesson['teacher'] = '---'
+                info['subject'] = '---'
 
             try:
-                lesson['classroom'] = classrooms[el.get('classroomids')]
+                info['teacher'] = teachers[el.get('teacherids')]
             except KeyError:
-                lesson['classroom'] = '---'
+                info['teacher'] = '---'
 
             try:
-                lesson['class'] = classes[el.get('classids')]['name']
+                info['classroom'] = classrooms[el.get('classroomids')]
             except KeyError:
-                lesson['class'] = '---'
+                info['classroom'] = '---'
 
             try:
-                lesson['group'] = groups[el.get('groupids')]['name']
+                info['class'] = classes[el.get('classids')]['name']
             except KeyError:
-                lesson['group'] = '---'
+                info['class'] = '---'
 
-            lessons.append(lesson)
+            try:
+                info['group'] = groups[el.get('groupids')]['name']
+            except KeyError:
+                info['group'] = '---'
 
-        return jsonify(lessons), 200
+            lessons[el.get('id')] = info
+
+        timetable = []
+        for el in xml_data.findAll('card'):
+            info = {}
+            info['day'] = days[el.get('days')]['name']
+            info['starttime'] = periods[el.get('period')]['starttime']
+            info['endtime'] = periods[el.get('period')]['endtime']
+            info['lesson'] = lessons[el.get('lessonid')]
+            timetable.append(info)
+
+        print(timetable)
+
+        return jsonify(timetable), 200
         # xls = pd.ExcelFile(bytesFile)
         # sheet_to_df = pd.read_excel(xls, sheet_name=None)
         # # print(sheet_to_df)
