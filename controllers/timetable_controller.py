@@ -13,12 +13,30 @@ import itertools
 from schedule_app import app
 from data_model.timetable import TimeTable
 from validators.timetable_validator import TimetableValidator
+from bs4 import BeautifulSoup
 
 if TYPE_CHECKING:
     from flask import Response
     from typing import Union, Any, Tuple
 
 validator = TimetableValidator()
+
+
+def parse_file(file):
+    return BeautifulSoup(file, 'html.parser', from_encoding='utf-8')
+
+
+def get_information(tag, fields, xml_data):
+    elements = {}
+
+    for el in xml_data.findAll(tag):
+        info = {}
+        for field in fields:
+            info[field] = el.get(field)
+
+        elements[el.get('id')] = info
+
+    return elements
 
 
 @app.route("/api/v1/timetable", methods=["GET"])
@@ -161,28 +179,66 @@ def upload_files():
     data = request.files['file']
 
     try:
-        bytesFile = io.BytesIO()
-        data.save(bytesFile)
+        xml_data = parse_file(data.read())
 
-        xls = pd.ExcelFile(bytesFile)
-        sheet_to_df = pd.read_excel(xls, sheet_name=None)
-        print(sheet_to_df)
-        timetable = {}
-        for el in sheet_to_df:
-            df = sheet_to_df[el]
+        subjects = get_information('subject', ['name'], xml_data)
+        teachers = get_information('teacher', ['name'], xml_data)
+        classrooms = get_information('classroom', ['name', 'short'], xml_data)
+        classes = get_information('class', ['name', 'teacherid'], xml_data)
+        groups = get_information('group', ['name', 'classid'], xml_data)
 
-            df.columns = df.iloc[0].values
-            df.rename(columns={np.nan: 'Время звонков'}, inplace=True)
-            df.drop(0, inplace=True)
+        lessons = []
 
-            df = parse_day(df)
+        for el in xml_data.findAll('lesson'):
+            lesson = {}
+            lesson['id'] = el.get('id')
+            try:
+                lesson['subject'] = subjects[el.get('subjectid')]
+            except KeyError:
+                lesson['subject'] = '---'
 
-            timetable[el] = df.drop(['Звонки', 'Время звонков'], axis=1).fillna('Нет урока').to_dict()
-            timetable[el]['classes'] = df.drop(['Звонки', 'Время звонков'], axis=1).columns.values.tolist()
+            try:
+                lesson['teacher'] = teachers[el.get('teacherids')]
+            except KeyError:
+                lesson['teacher'] = '---'
 
-            print(f'Получили и успешно спарсили расписание на один день с листа {el}')
+            try:
+                lesson['classroom'] = classrooms[el.get('classroomids')]
+            except KeyError:
+                lesson['classroom'] = '---'
 
-        return jsonify(timetable), 200
+            try:
+                lesson['class'] = classes[el.get('classids')]['name']
+            except KeyError:
+                lesson['class'] = '---'
+
+            try:
+                lesson['group'] = groups[el.get('groupids')]['name']
+            except KeyError:
+                lesson['group'] = '---'
+
+            lessons.append(lesson)
+
+        return jsonify(lessons), 200
+        # xls = pd.ExcelFile(bytesFile)
+        # sheet_to_df = pd.read_excel(xls, sheet_name=None)
+        # # print(sheet_to_df)
+        # timetable = {}
+        # for el in sheet_to_df:
+        #     df = sheet_to_df[el]
+        #
+        #     df.columns = df.iloc[0].values
+        #     df.rename(columns={np.nan: 'Время звонков'}, inplace=True)
+        #     df.drop(0, inplace=True)
+        #
+        #     df = parse_day(df)
+        #
+        #     timetable[el] = df.drop(['Звонки', 'Время звонков'], axis=1).fillna('Нет урока').to_dict()
+        #     timetable['classes'] = df.drop(['Звонки', 'Время звонков'], axis=1).columns.values.tolist()
+        #
+        #     print(f'Получили и успешно спарсили расписание на один день с листа {el}')
+        #
+        # return jsonify(timetable), 200
     except Exception as e:
         print(e)
         return '', 500
