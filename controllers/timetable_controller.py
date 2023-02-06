@@ -200,10 +200,10 @@ def upload_files():
         classrooms = get_information('classroom', ['name'], xml_data)
         classes = get_information('class', ['name', 'teacherid'], xml_data)
         groups = get_information('group', ['name', 'classid'], xml_data)
-        periods = get_information('period', ['starttime', 'endtime'], xml_data)
-        days = get_information('daysdef', ['name', 'short'], xml_data)
+        # periods = get_information('period', ['short', 'starttime', 'endtime'], xml_data)
+        # days = get_information('daysdef', ['name', 'short', 'days'], xml_data)
 
-        lessons = {}
+        lessons_dict = {}
 
         for el in xml_data.findAll('lesson'):
             info = {}
@@ -232,18 +232,28 @@ def upload_files():
             except KeyError:
                 info['group'] = '---'
 
-            lessons[el.get('id')] = info
+            lessons_dict[el.get('id')] = info
 
-        timetable = []
+        cards = []
         for el in xml_data.findAll('card'):
-            info = {}
-            info['day'] = days[el.get('days')]['name']
-            info['starttime'] = periods[el.get('period')]['starttime']
-            info['endtime'] = periods[el.get('period')]['endtime']
-            info['lesson'] = lessons[el.get('lessonid')]
-            timetable.append(info)
+            info = lessons_dict[el.get('lessonid')]
+            info['day'] = el.get('days')
+            info['period'] = int(el.get('period'))
+            cards.append(info)
 
-        print(timetable)
+        timetable = {}
+
+        for el in cards:
+            if el['class'] not in timetable:
+                timetable[el['class']] = {}
+            if el['day'] not in timetable[el['class']]:
+                timetable[el['class']][el['day']] = []
+
+            timetable[el['class']][el['day']].append(el)
+
+        for el in timetable:
+            for day in timetable[el]:
+                timetable[el][day] = sorted(timetable[el][day], key=lambda x: x['period'])
 
         return jsonify(timetable), 200
         # xls = pd.ExcelFile(bytesFile)
