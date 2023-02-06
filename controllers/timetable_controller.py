@@ -251,30 +251,13 @@ def upload_files():
 
             timetable[el['class']][el['day']].append(el)
 
-        for el in timetable:
-            for day in timetable[el]:
-                timetable[el][day] = sorted(timetable[el][day], key=lambda x: x['period'])
+        for el in timetable.values():
+            for day in el:
+                el[day] = sorted(el[day], key=lambda x: x['period'])
+
+        timetable['classes'] = [el['name'] for el in classes.values()]
 
         return jsonify(timetable), 200
-        # xls = pd.ExcelFile(bytesFile)
-        # sheet_to_df = pd.read_excel(xls, sheet_name=None)
-        # # print(sheet_to_df)
-        # timetable = {}
-        # for el in sheet_to_df:
-        #     df = sheet_to_df[el]
-        #
-        #     df.columns = df.iloc[0].values
-        #     df.rename(columns={np.nan: 'Время звонков'}, inplace=True)
-        #     df.drop(0, inplace=True)
-        #
-        #     df = parse_day(df)
-        #
-        #     timetable[el] = df.drop(['Звонки', 'Время звонков'], axis=1).fillna('Нет урока').to_dict()
-        #     timetable['classes'] = df.drop(['Звонки', 'Время звонков'], axis=1).columns.values.tolist()
-        #
-        #     print(f'Получили и успешно спарсили расписание на один день с листа {el}')
-        #
-        # return jsonify(timetable), 200
     except Exception as e:
         print(e)
         return '', 500
