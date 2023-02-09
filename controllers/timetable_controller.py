@@ -207,6 +207,7 @@ def upload_files():
                 el[day] = sorted(el[day], key=lambda x: x['period'])
 
         timetable['classes'] = [el['name'] for el in classes.values()]
+        timetable['amount_of_days'] = len(xml_data.findAll('daysdef')) - 2
 
         return jsonify(timetable), 200
     except Exception as e:
