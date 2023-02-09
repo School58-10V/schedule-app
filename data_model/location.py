@@ -97,3 +97,7 @@ class Location(AbstractModel):
     @classmethod
     def get_by_id(cls, element_id: int, db_source: DBSource) -> Location:
         return Location(db_source=db_source, **db_source.get_by_id("Locations", element_id))
+
+    @classmethod
+    def get_by_number(cls, class_number: int, db_source: DBSource) -> Location:
+        return Location(db_source=db_source, **db_source.get_by_query('Locations', {'num_of_class': class_number})[0])

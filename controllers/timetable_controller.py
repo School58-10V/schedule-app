@@ -6,12 +6,15 @@ from typing import TYPE_CHECKING
 import psycopg2, logging
 from flask import request, jsonify
 
-import numpy as np
-import pandas as pd
-import itertools
-
 from schedule_app import app
+
+from data_model.lesson_row import LessonRow
+from data_model.location import Location
+from data_model.teacher import Teacher
 from data_model.timetable import TimeTable
+from data_model.group import Group
+from data_model.subject import Subject
+
 from validators.timetable_validator import TimetableValidator
 from bs4 import BeautifulSoup
 
@@ -20,6 +23,24 @@ if TYPE_CHECKING:
     from typing import Union, Any, Tuple
 
 validator = TimetableValidator()
+
+DAY_CODES = {
+    '10000': 0,
+    '01000': 1,
+    '00100': 2,
+    '00010': 3,
+    '00001': 4
+}
+PERIOD_CODES = {
+    1: (900, 945),
+    2: (955, 1040),
+    3: (1100, 1145),
+    4: (1155, 1240),
+    5: (1300, 1345),
+    6: (1355, 1440),
+    7: (1500, 1545),
+    8: (1555, 1640),
+}
 
 
 def parse_file(file):
@@ -44,11 +65,11 @@ def get_information(tag, fields, xml_data):
     else:
 
         for el in xml_data.findAll(tag):
-            info = {}
+            info = {'id': el.get('id')}
             for field in fields:
                 info[field] = el.get(field)
 
-            elements[el.get('id')] = info
+            elements[info['id']] = info
 
     return elements
 
@@ -120,74 +141,6 @@ def delete_timetable(object_id: int) -> Union[Response, Tuple[str, int], Tuple[A
         return "", 500
 
 
-def parse_class_lesson(information):
-    return tuple(map(str.strip, information))
-
-
-def parse_group_lesson(information):
-    subject_name = [information[0].strip()]
-    teacher_names = [information[1].strip()]
-    classrooms = []
-
-    for el in information[2:-1]:
-        classroom, *teacher = el.strip().split(' ')
-
-        classrooms.append(classroom)
-        teacher_names.append(' '.join(teacher))
-
-    classrooms.append(information[-1].strip())
-
-    subjects = list(itertools.zip_longest(subject_name, teacher_names, classrooms, fillvalue=subject_name[0]))
-
-    return subjects
-
-
-def tuple_to_dict(keys: list, values: tuple):
-    return dict(zip(keys, values))
-
-
-def check_if_group_lesson(data):
-    return type(data) == list
-
-
-def parse_and_set_lesson(i, j, el, df):
-    try:
-        np.isnan(el)  # проверяем, пропуск или нет
-
-        if i != 0 and i % 2 == 1:
-            df.iloc[i, j] = df.iloc[i - 1, j]
-        elif j != 0 and check_if_group_lesson(df.iloc[i, j - 1]):
-            df.iloc[i, j] = df.iloc[i, j - 1]
-
-    except TypeError:
-        information = el.split(',')
-
-        if len(information) == 3:
-            lesson = parse_class_lesson(information)
-        else:
-            lesson = parse_group_lesson(information)
-
-        df.iloc[i, j] = lesson
-
-
-def parse_parallel(columns, shift, df):
-    for j, col in enumerate(columns, 2 + shift):
-        for i, el in enumerate(df[col]):
-            parse_and_set_lesson(i, j, el, df)
-
-    return df
-
-
-def parse_day(df):
-    shift = 0
-    for parallel in range(7, 11 + 1):
-        columns = [col for col in df.columns if str(parallel) in col]
-        df = parse_parallel(columns, shift, df)
-        shift += len(columns)
-
-    return df
-
-
 @app.route('/api/v1/timetable/upload', methods=['POST'])
 def upload_files():
     data = request.files['file']
@@ -200,8 +153,6 @@ def upload_files():
         classrooms = get_information('classroom', ['name'], xml_data)
         classes = get_information('class', ['name', 'teacherid'], xml_data)
         groups = get_information('group', ['name', 'classid'], xml_data)
-        # periods = get_information('period', ['short', 'starttime', 'endtime'], xml_data)
-        # days = get_information('daysdef', ['name', 'short', 'days'], xml_data)
 
         lessons_dict = {}
 
@@ -263,8 +214,109 @@ def upload_files():
         return '', 500
 
 
-@app.route('/api/v1/timetable/upload1', methods=['POST']) # просто
-def test_func():
-    a = request.get_json()
-    print(a)
+@app.route('/api/v1/timetable/save', methods=['POST'])  # просто
+def save_timetable():
+    data = request.get_json()
+
+    for el in data['classes']:
+        try:
+            for day in data[el]:
+                for lesson in data[el][day]:
+                    add_lesson_row(lesson, day, lesson['period'])
+        except KeyError:
+            pass
+
     return '', 200
+
+
+def parse_grade(name: str) -> tuple[int, str]:
+    grade = ''
+    letter = ''
+
+    for el in name:
+        if el.isdigit():
+            grade += el
+        else:
+            letter += el
+
+    return int(grade), letter
+
+
+def add_location(information: dict) -> int:
+    return Location(num_of_class=int(information['classroom']['name']), location_type='classroom',
+                    db_source=app.config.get("schedule_db_source")).save().get_main_id()
+
+
+def add_subject(information: dict) -> int:
+    return Subject(subject_name=information['name'],
+                   db_source=app.config.get("schedule_db_source")).save().get_main_id()
+
+
+def add_teacher(information: dict) -> int:
+    parameters = {
+        'fio': information['teacher']['name']
+    }
+
+    try:
+        office_id = Location.get_by_number(int(information['classroom']['name']),
+                                           app.config.get("schedule_db_source")).get_main_id()
+    except IndexError:
+        office_id = add_location(information)
+
+    information['office_id'] = office_id
+
+    return Teacher(**parameters, db_source=app.config.get('schedule_db_source')).save().get_main_id()
+
+
+def add_group(information: dict) -> int:
+    parameters = {
+        'class_letter': information['group'],
+        'grade': information['class'],
+    }
+
+    try:
+        teacher_id = Teacher.get_by_name(information['teacher']['name'],
+                                         app.config.get("schedule_db_source"))[0].get_main_id()
+    except IndexError:
+        teacher_id = add_teacher(information)
+
+    parameters['teacher_id'] = teacher_id
+
+    return Group(**parameters, db_source=app.config.get('schedule_db_source')).save().get_main_id()
+
+
+def add_lesson_row(lesson: dict, day: str, period: int) -> None:
+    parameters = {
+        'day_of_the_week': DAY_CODES[day],
+        'start_time': PERIOD_CODES[period][0],
+        'end_time': PERIOD_CODES[period][1],
+        'timetable_id': 49
+    }
+
+    grade, letter = parse_grade(lesson['class'])
+    lesson['group'] = f'{letter} {lesson["group"]}'
+    lesson['class'] = grade
+
+    try:
+        group_id = Group.get_by_class_letters(app.config.get("schedule_db_source"), lesson['group'],
+                                              lesson['class'])[0].get_main_id()
+    except IndexError:
+        group_id = add_group(lesson)
+
+    try:
+        subject_id = Subject.get_by_query({'subject_name': lesson['subject']['name']},
+                                          app.config.get("schedule_db_source"))[0].get_main_id()
+    except IndexError:
+        subject_id = add_subject(lesson['subject'])
+
+    try:
+        room_id = Location.get_by_number(int(lesson['classroom']['name']),
+                                         app.config.get("schedule_db_source")).get_main_id()
+    except IndexError:
+        room_id = add_location(lesson)
+
+    parameters['group_id'] = group_id
+    parameters['subject_id'] = subject_id
+    parameters['room_id'] = room_id
+
+    LessonRow(**parameters, db_source=app.config.get('schedule_db_source')).save()

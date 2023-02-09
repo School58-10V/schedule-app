@@ -67,6 +67,19 @@ class AbstractModel(ABC):
         obj = db_source.get_by_id(cls._get_collection_name(), element_id)
         return cls(**obj, db_source=db_source)
 
+    @classmethod
+    def get_by_query(cls, query: dict, db_source: DBSource) -> List[AbstractModel]:
+        """
+        Возвращает запрошенный по query объект класса по данным из сохранений
+
+        :param query: пары ключ-значение для поиска
+        :param db_source: data_source объект
+        :return: Объект этого класса с таким идшником
+        """
+
+        obj = db_source.get_by_query(cls._get_collection_name(), query)
+        return [cls(**el, db_source=db_source) for el in obj]
+
     @abstractmethod
     def __str__(self):
         pass
