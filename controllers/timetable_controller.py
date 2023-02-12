@@ -219,6 +219,8 @@ def upload_files():
 def save_timetable():
     data = request.get_json()
 
+    add_timetable()
+
     for el in data['classes']:
         try:
             for day in data[el]:
@@ -241,6 +243,10 @@ def parse_grade(name: str) -> tuple[int, str]:
             letter += el
 
     return int(grade), letter
+
+
+def add_timetable() -> int:
+    return TimeTable(db_source=app.config.get("schedule_db_source")).save().get_main_id()
 
 
 def add_location(information: dict) -> int:
@@ -291,7 +297,7 @@ def add_lesson_row(lesson: dict, day: str, period: int) -> None:
         'day_of_the_week': DAY_CODES[day],
         'start_time': PERIOD_CODES[period][0],
         'end_time': PERIOD_CODES[period][1],
-        'timetable_id': 49
+        'timetable_id': TimeTable.get_current_timetable(app.config.get("schedule_db_source"))
     }
 
     grade, letter = parse_grade(lesson['class'])
