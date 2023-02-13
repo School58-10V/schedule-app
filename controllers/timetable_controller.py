@@ -215,7 +215,7 @@ def upload_files():
         return '', 500
 
 
-@app.route('/api/v1/timetable/save', methods=['POST'])  # просто
+@app.route('/api/v1/timetable/save', methods=['POST'])
 def save_timetable():
     data = request.get_json()
 

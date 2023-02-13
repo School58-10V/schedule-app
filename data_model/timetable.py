@@ -18,9 +18,10 @@ class TimeTable(AbstractModel):
     """
 
     def __init__(self, db_source: DBSource, time_table_year: Optional[int] = None,
-                 object_id: Optional[int] = None):
+                 version: Optional[int] = None, object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__year = time_table_year
+        self._version = version
         self._object_id = object_id
 
     def get_year(self) -> Optional[int]:
@@ -35,7 +36,11 @@ class TimeTable(AbstractModel):
 
     @classmethod
     def get_current_timetable(cls, source: AbstractSource):
-        return cls(source, **source.get_by_query(cls._get_collection_name(), {'time_table_year': datetime.date.today().year})[0])
+        current_year = datetime.date.today().year
+        if datetime.date.today().month < 9:
+            current_year -= 1
+
+        return cls(source, **source.get_by_query(cls._get_collection_name(), {'time_table_year': current_year})[0])
 
     @classmethod
     def get_by_year(cls, year: int, db_source: AbstractSource) -> TimeTable:
