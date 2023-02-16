@@ -217,3 +217,21 @@ def delete_lesson_row(object_id: int) -> Union[Response, Tuple[str, int]]:
         logging.error(err, exc_info=True)
         return "", 500
     return jsonify(lesson_row)
+
+
+@app.route("/api/v1/timetable/<int:timetable_id>/lesson-rows")
+def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Response]:
+    db_source: DBSource = app.config.get("schedule_db_source")
+    try:
+        result = []
+        for row in LessonRow.get_by_timetable_id(db_source, timetable_id):
+            raw_row = row.__dict__()
+            raw_row['teachers'] = [i.__dict__() for i in
+                                        TeachersForLessonRows.get_teachers_by_lesson_row_id(
+                                            row.get_main_id(),
+                                            db_source=app.config.get("schedule_db_source"))]
+            result.append(raw_row.copy())
+        return jsonify(result)
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        return "", 500

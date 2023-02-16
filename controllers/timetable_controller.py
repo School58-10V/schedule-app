@@ -33,6 +33,15 @@ def get_timetable_by_id(object_id) -> Response:
         return "", 404
 
 
+@app.route("/api/v1/timetable/current", methods=["GET"])
+def get_current_timetable() -> Response:
+    try:
+        return jsonify(TimeTable.get_current_timetable(app.config.get("schedule_db_source")))
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
+
+
 @app.route("/api/v1/timetable", methods=["POST"])
 def create_timetable() -> Union[Response, Tuple[str, int]]:
     validation_data = validator.validate(request.get_json(), "POST")
