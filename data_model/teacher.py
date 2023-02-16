@@ -36,6 +36,7 @@ class Teacher(AbstractModel):
         self.__contacts = contacts
         self.__office_id = office_id
 
+
     def get_fio(self) -> str:
         return self.__fio
 

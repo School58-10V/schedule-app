@@ -13,6 +13,12 @@ class User(AbstractModel):
 
     def __init__(self, db_source: DBSource, name: str, login: str, hash_password: Optional[str] = None,
                  password: Optional[str] = None, object_id: int = None):
+        """
+            :param db_source: ссылка на бд
+            :param login: логин
+            :param password_hash: пароль
+            :param name: имя пользователя
+        """
         super().__init__(db_source)
         self.__login = login
         if hash_password is None and password is not None:
@@ -23,12 +29,6 @@ class User(AbstractModel):
             raise ValueError('Ошибка создания: должен присутствовать password ИЛИ hash_password')
         self.__name = name
         self.__object_id = object_id
-        """
-            :param db_source: ссылка на бд
-            :param login: логин
-            :param password_hash: пароль
-            :param name: имя пользователя
-        """
 
     @classmethod
     def get_by_login(cls, login: str, db_source: DBSource) -> Optional[User]:
