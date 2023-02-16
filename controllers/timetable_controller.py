@@ -91,12 +91,20 @@ def get_timetable_by_id(object_id) -> Response:
         return "", 404
 
 
+@app.route("/api/v1/timetable/current", methods=["GET"])
+def get_current_timetable() -> Response:
+    try:
+        return jsonify(TimeTable.get_current_timetable(app.config.get("schedule_db_source")))
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
+
+
 @app.route("/api/v1/timetable", methods=["POST"])
 def create_timetable() -> Union[Response, Tuple[str, int]]:
-    try:
-        validator.validate(request.get_json(), "POST")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(request.get_json(), "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
     try:
         return jsonify(TimeTable(**request.get_json(),
                                  db_source=app.config.get("schedule_db_source")).save().__dict__())
@@ -109,10 +117,9 @@ def create_timetable() -> Union[Response, Tuple[str, int]]:
 def update_timetable(object_id: int) -> Union[Tuple[str, int], Response]:
     if request.get_json().get('object_id') != object_id:
         return "", 400
-    try:
-        validator.validate(request.get_json(), "PUT")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(request.get_json(), "PUT")
+    if (not validation_data[0]):
+        return validation_data[1], 400
     try:
         TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:

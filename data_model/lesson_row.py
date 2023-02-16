@@ -199,3 +199,7 @@ class LessonRow(AbstractModel):
             for lesson in group_lessons:
                 lessons.append(lesson)
         return sorted(lessons, key=lambda x: x.get_start_time())
+    
+    @classmethod
+    def get_by_timetable_id(cls, source: AbstractSource, timetable_id: int) -> list:
+        return [LessonRow(db_source=source, **elem) for elem in source.get_by_query("LessonRows", {"timetable_id": timetable_id})]

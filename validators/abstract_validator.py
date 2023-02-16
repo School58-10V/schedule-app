@@ -16,18 +16,19 @@ class AbstractValidator(ABC):
 
         for key in self.required_keys:
             if key not in request.keys():
-                raise ValueError
+                return [False, key]
 
         for key in request.keys():
             if key not in self.allowed_keys:
-                raise ValueError
-            if type(self.keys_types[key]) == str:  # обработка случая list[int] и т.п
+                return [False, key]
+            if type(self.keys_types[key]) == str:  # обработка случая list[int] и т.п; оберни тип list в стрингу
                 value = self.keys_types[key].split('[')[1][:-1]
                 if type(request[key]) != list or not self.check_list_items(request[key], eval(value)):
-                    raise ValueError
+                    return [False, key]
 
             elif type(request[key]) != self.keys_types[key]:
-                raise ValueError
+                return [False, key]
+        return [True, None]
 
     @staticmethod
     def check_list_items(arr: list, value: type) -> bool:

@@ -50,10 +50,9 @@ def get_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
 @app.route("/api/v1/group", methods=["POST"])
 def create_group() -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
-    try:
-        validator.validate(dct, "POST")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(dct, "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
 
     try:
         student = []
@@ -76,12 +75,9 @@ def create_group() -> Union[Response, Tuple[str, int]]:
 def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
     dct = request.get_json()
 
-    try:
-        if dct.get('object_id') != object_id:
-            raise ValueError
-        validator.validate(dct, "PUT")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(dct, "PUT")
+    if not validation_data[0]:
+        return validation_data[1], 400
 
     try:
         group = Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 import logging, psycopg2
 from flask import request, jsonify
 
+from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.lesson_row import LessonRow
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
@@ -92,6 +93,30 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, 
     except ValueError:
         return '', 404
 
+@app.route("/api/v1/lesson-row/personal", methods=["GET"])
+def get_lesson_row_by_day_and_student() -> Union[Response, Tuple[str, int]]:
+    """
+    Достаёт LessonRow по дню и айди студака
+    :return: Response
+    """
+    try:
+        # logging.debug("hi")
+        day = request.args.get("day", None)
+        student_id = request.args.get("student_id", None)
+        # logging.debug(day + " ; " + student_id)
+        if (day != None and student_id != None):
+            rows = []
+            data = LessonRow.get_by_day_and_student(int(day), int(student_id), app.config.get("schedule_db_source"))
+            for row in data:
+                local_dct = row.__dict__().copy()
+                local_dct["subject_name"] = Subject.get_by_id(row.get_subject_id(), app.config.get("schedule_db_source")).get_subject_name()
+                rows.append(local_dct)
+            return jsonify(rows)
+        else:
+            return "", 400
+    except Exception as e:
+        print(e)
+        return "", 404
 
 @app.route("/api/v1/lesson-row", methods=["POST"])
 def create_lesson_row() -> Union[Response, Tuple[str, int]]:
@@ -100,11 +125,9 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
     :return: Response
     """
     dct = request.get_json()
-    try:
-        validator.validate(dct, "POST")
-    except Exception as err:
-        logging.error(err, exc_info=True)
-        return "", 400
+    validation_data = validator.validate(dct, "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
     try:
         teacher_id = []
         if 'teachers' in dct:
@@ -136,10 +159,9 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
 
     dct = request.get_json()
 
-    try:
-        validator.validate(dct, method="PUT")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(dct, method="PUT")
+    if not validation_data[0]:
+        return validation_data[1], 400
 
     try:
         LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
@@ -195,3 +217,21 @@ def delete_lesson_row(object_id: int) -> Union[Response, Tuple[str, int]]:
         logging.error(err, exc_info=True)
         return "", 500
     return jsonify(lesson_row)
+
+
+@app.route("/api/v1/timetable/<int:timetable_id>/lesson-rows")
+def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Response]:
+    db_source: DBSource = app.config.get("schedule_db_source")
+    try:
+        result = []
+        for row in LessonRow.get_by_timetable_id(db_source, timetable_id):
+            raw_row = row.__dict__()
+            raw_row['teachers'] = [i.__dict__() for i in
+                                        TeachersForLessonRows.get_teachers_by_lesson_row_id(
+                                            row.get_main_id(),
+                                            db_source=app.config.get("schedule_db_source"))]
+            result.append(raw_row.copy())
+        return jsonify(result)
+    except Exception as e:
+        logging.error(e, exc_info=True)
+        return "", 500
