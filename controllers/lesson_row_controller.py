@@ -11,6 +11,7 @@ from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from validators.lesson_row_validator import LessonRowValidator
 
 from schedule_app import app
+import time
 
 if TYPE_CHECKING:
     from flask import Response
@@ -46,15 +47,25 @@ def get_all_lesson_row_detailed() -> Response:
     Достаем все LessonRow вместе с учителями
     :return: Response
     """
+    t = time.time()
+    print('Запрос пришёл!')
+
+    # SELECT "LessonRows". *, "Teachers".fio, "Teachers".bio, "Teachers".contacts
+    # FROM "LessonRows"
+    # LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id
+    # LEFT JOIN "Teachers" ON "TeachersForLessonRows".teacher_id = "Teachers".object_id
+
     global_dct = []
     try:
-        for i in LessonRow.get_all(app.config.get("schedule_db_source")):
-            local_dct = i.__dict__()
-            local_dct['teachers'] = [i.__dict__() for i in
-                                    TeachersForLessonRows.get_teachers_by_lesson_row_id(
-                                        i.get_main_id(),
-                                        db_source=app.config.get("schedule_db_source"))]
-            global_dct.append(local_dct.copy())
+        # for i in LessonRow.get_all(app.config.get("schedule_db_source")):
+        #     local_dct = i.__dict__()
+        #     local_dct['teachers'] = [i.__dict__() for i in
+        #                             TeachersForLessonRows.get_teachers_by_lesson_row_id(
+        #                                 i.get_main_id(),
+        #                                 db_source=app.config.get("schedule_db_source"))]
+        #     global_dct.append(local_dct.copy())
+
+        print(f'На обработку запроса ушло: {(time.time() - t):.3f} s')
         return jsonify(global_dct)
     except Exception as err:
         logging.error(err, exc_info=True)
