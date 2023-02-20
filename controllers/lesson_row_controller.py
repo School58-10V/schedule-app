@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 import logging, psycopg2
 from flask import request, jsonify
+from data_model.group import Group
+from data_model.location import Location
 
 from data_model.subject import Subject
 from data_model.teacher import Teacher
@@ -18,6 +20,17 @@ if TYPE_CHECKING:
 
 
 validator = LessonRowValidator()
+
+
+DAYS_OF_THE_WEEK = {
+    0: "Понедельник",
+    1: "Вторник",
+    2: "Среда",
+    3: "Четверг",
+    4: "Пятница",
+    5: "Суббота",
+    6: "Воскресенье"
+}
 
 
 @app.route("/api/v1/lesson-row", methods=["GET"])
@@ -230,8 +243,21 @@ def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Res
                                         TeachersForLessonRows.get_teachers_by_lesson_row_id(
                                             row.get_main_id(),
                                             db_source=app.config.get("schedule_db_source"))]
+            raw_row["start_time"] = prettify_time(row.get_start_time())
+            raw_row["end_time"] = prettify_time(row.get_end_time())
+            raw_row["day_of_the_week"] = DAYS_OF_THE_WEEK[row.get_day_of_the_week()]
+            raw_row["room"] = Location.get_by_id(row.get_room_id(), db_source).get_num_of_class()
+            raw_row["group"] = Group.get_by_id(row.get_group_id(), db_source).__dict__()
+            raw_row["subject"] = Subject.get_by_id(row.get_subject_id(), db_source).__dict__()
             result.append(raw_row.copy())
         return jsonify(result)
     except Exception as e:
         logging.error(e, exc_info=True)
         return "", 500
+
+
+def prettify_time(time):
+    """ Превращает тысяча десять в 10:10 """
+    hours = time // 100
+    minutes = time % 100
+    return str(hours).zfill(2) + ':' + str(minutes).zfill(2)

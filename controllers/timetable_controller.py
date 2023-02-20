@@ -94,7 +94,7 @@ def get_timetable_by_id(object_id) -> Response:
 @app.route("/api/v1/timetable/current", methods=["GET"])
 def get_current_timetable() -> Response:
     try:
-        return jsonify(TimeTable.get_current_timetable(app.config.get("schedule_db_source")))
+        return jsonify(TimeTable.get_current_timetable(app.config.get("schedule_db_source")).__dict__())
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
