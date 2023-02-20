@@ -18,7 +18,7 @@ class TimeTable(AbstractModel):
         version - версия расписания
     """
 
-    def __init__(self, db_source: DBSource, time_table_year: Optional[int] = datetime.date.today().year,
+    def __init__(self, db_source: DBSource, time_table_year: Optional[int] = int(datetime.date.today().year),
                  version: Optional[int] = None, object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__year = time_table_year
@@ -32,7 +32,7 @@ class TimeTable(AbstractModel):
         return self._version
 
     def __str__(self):
-        return f"Timetable(object_id={self.get_main_id()}, year={self.get_year}, version={self.get_version()})"
+        return f"Timetable(year={self.get_year()}, version={self.get_version()})"
 
     def __dict__(self) -> dict:
         return {"object_id": self.get_main_id(),

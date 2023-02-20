@@ -155,6 +155,7 @@ def upload_files():
     try:
         xml_data = parse_file(data.read())
 
+        #PERIOD_CODES = get_period_codes(get_information('period', ['starttime', 'endtime'], xml_data))
         subjects = get_information('subject', ['name'], xml_data)
         teachers = get_information('teacher', ['name'], xml_data)
         classrooms = get_information('classroom', ['name'], xml_data)
@@ -304,7 +305,7 @@ def add_lesson_row(lesson: dict, day: str, period: int) -> None:
         'day_of_the_week': DAY_CODES[day],
         'start_time': PERIOD_CODES[period][0],
         'end_time': PERIOD_CODES[period][1],
-        'timetable_id': TimeTable.get_current_timetable(app.config.get("schedule_db_source"))
+        'timetable_id': TimeTable.get_current_timetable(app.config.get("schedule_db_source")).get_main_id()
     }
 
     grade, letter = parse_grade(lesson['class'])
@@ -334,3 +335,11 @@ def add_lesson_row(lesson: dict, day: str, period: int) -> None:
     parameters['room_id'] = room_id
 
     LessonRow(**parameters, db_source=app.config.get('schedule_db_source')).save()
+
+
+def get_period_codes(period):
+    codes = {}
+    for key in period:
+        codes[int(key)] = (int(''.join((period[key]['starttime'].split(':')))),
+                           int(''.join((period[key]['endtime'].split(':')))))
+    return codes
