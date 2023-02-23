@@ -47,10 +47,9 @@ class DBSource(AbstractSource):
         cursor = self.__conn.cursor()
         self.__cursor_execute_wrapper(cursor, query)
         data = cursor.fetchall()
-        desc = cursor.description()
         self.__conn.commit()
 
-        return self.__format_Tuple_to_dict(data, desc)
+        return data
 
     def get_all(self, collection_name: str) -> List[dict]:
         self.connect()
