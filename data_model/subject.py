@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class Subject(AbstractModel):
     """
-        name - Название предмета
+        subject_name - Название предмета
         object_id - Идентификационный номер предмета
     """
 

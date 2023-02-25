@@ -34,7 +34,7 @@ class DBSource(AbstractSource):
         self.connect()
         pairs = query.items()
         request = f'SELECT * FROM "{collection_name}" WHERE '
-        request += ' and '.join([f'{i[0]}=\'{i[1]}\'' for i in pairs])
+        request += ' AND '.join([f'{i[0]}=\'{i[1]}\'' for i in pairs])
         cursor = self.__conn.cursor()
         self.__cursor_execute_wrapper(cursor, request, list(query.values()))
         data = cursor.fetchall()
