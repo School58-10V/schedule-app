@@ -16,23 +16,23 @@ from schedule_app import app
 PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
 
+# @app.route("/api/v1/week", methods=["GET"])
+# def get_week_schedule1():
+#     request_token = request.headers.get('Authorization')
+#     data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+#     user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
+#     student_list = Student.get_by_name(name=user.get_name(), source=app.config.get('schedule_db_source'))
+#
+#     if len(student_list) == 0:
+#         return 'Такого ученика не существует', 404
+#     if len(student_list) > 1:
+#         raise NotImplementedError('Если больше одного ученика с одним именем, мы падаем :(')
+#     res = get_schedule_for_week(user_id=student_list[0].get_main_id(),
+#                                 db_source=app.config.get('schedule_db_source'))
+#     return jsonify(res)
+
+
 @app.route("/api/v1/week", methods=["GET"])
-def get_week_schedule1():
-    request_token = request.headers.get('Authorization')
-    data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
-    user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
-    student_list = Student.get_by_name(name=user.get_name(), source=app.config.get('schedule_db_source'))
-
-    if len(student_list) == 0:
-        return 'Такого ученика не существует', 404
-    if len(student_list) > 1:
-        raise NotImplementedError('Если больше одного ученика с одним именем, мы падаем :(')
-    res = get_schedule_for_week(user_id=student_list[0].get_main_id(),
-                                db_source=app.config.get('schedule_db_source'))
-    return jsonify(res)
-
-
-@app.route("/api/v1/week1", methods=["GET"])
 def get_week_schedule():
     # try:
     #     full_name = request.get_json()['full_name']
@@ -53,6 +53,7 @@ def get_week_schedule():
 
     lessonrow_list = LessonRow.get_all_by_student_id(student_list[0].get_main_id(),
                                                      db_source=app.config.get('schedule_db_source'))
+
     data = []
     weekdays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', "Пятница", "Суббота", "Воскресенье"]
     for lr in lessonrow_list:
@@ -72,7 +73,6 @@ def get_week_schedule():
             }
         data.append(obj)
     data.sort(key=lambda x: weekdays.index(x['День недели']))
-
     pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
 
     return jsonify(pretty_data), 200
