@@ -74,18 +74,17 @@ def get_student_by_id(object_id: int) -> Tuple[str, int] | Response:
 @app.route("/api/v1/students", methods=["POST"])
 def create_student() -> Tuple[str, int] | Response:
     dct = request.get_json()
-    try:
-        validator.validate(dct, "POST")
-    except ValueError:
-        return '', 400
+    validation_data = validator.validate(dct, "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
     try:
         try:
             groups = dct.pop('groups')
             student = Student(**dct, db_source=app.config.get("schedule_db_source")).save()
             for i in groups:
                 student.append_group_by_id(i)
-        except ValueError:
-            return '', 404
+        except ValueError as e:
+            return "unknown", 404
         dct = student.__dict__()
         dct['groups'] = groups
         return jsonify(dct)
@@ -102,11 +101,9 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
     if request.get_json().get('object_id') != object_id:
         return "", 400
 
-    try:
-        validator.validate(dct, "PUT")
-
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(dct, "PUT")
+    if not validation_data[0]:
+        return validation_data[1], 400
 
     try:
         Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))

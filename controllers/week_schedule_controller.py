@@ -73,5 +73,26 @@ def get_week_schedule():
             }
         data.append(obj)
     data.sort(key=lambda x: weekdays.index(x['День недели']))
+    pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
 
-    return jsonify(data), 200
+    return jsonify(pretty_data), 200
+
+@app.route("/api/v1/week-raw/<int:student_id>", methods=["GET"])
+def get_raw_week_schedule(student_id):
+
+    # забираем все лессонроучики по данному расписанию для данного студа
+    lesson_rows = LessonRow.get_all_by_student_id(student_id=student_id, db_source=app.config.get('schedule_db_source'))
+    # Форматируем дату в норм табличку
+    lesson_rows.sort(key= lambda x: x.get_start_time())
+    data = {}
+    for row in lesson_rows:
+        subject = Subject.get_by_id(row.get_subject_id(), db_source=app.config.get('schedule_db_source'))
+        lesson_data = {}
+        lesson_data["object_id"] = row.get_main_id()
+        lesson_data["subject"] = subject.get_subject_name()
+        lesson_data["start"] = row.get_start_time()
+        if (row.get_day_of_the_week() in data.keys()):
+            data[row.get_day_of_the_week()].append(lesson_data)
+        else:
+            data[row.get_day_of_the_week()] = [lesson_data]
+    return data, 200

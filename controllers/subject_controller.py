@@ -68,10 +68,9 @@ def get_subject_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
 def create_subject() -> Union[Tuple[str, int], Response]:
     ids = []
     req: dict = request.get_json()
-    try:
-        validator.validate(req, "POST")
-    except:
-        return "", 400
+    validation_data = validator.validate(req, "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
     try:
         subject = Subject(subject_name=req["subject_name"], db_source=app.config.get("schedule_db_source")).save()
         if "teachers" in req.keys():
@@ -96,10 +95,9 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
     if request.get_json().get('object_id') != object_id:
         return "", 400
 
-    try:
-        validator.validate(req, "PUT")
-    except:
-        return "", 400
+    validation_data = validator.validate(req, "PUT")
+    if not validation_data[0]:
+        return validation_data[1], 400
 
     try:
         subject: Subject = Subject.get_by_id(object_id, app.config.get("schedule_db_source"))

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<head>
+    <style>
+        .schedule_wrapper > img {
+            position: fixed;
+            bottom: 0%;
+            left: 25%;
+            right: 25%;
+            height: 75%;
+            z-index: 10;
+        }
+        .numbutton {
+            position: relative;
+            /* left: 10%; */
+
+            width: 20px;
+            height: 20px;
+
+            margin-right: 3%;
+
+            color: whitesmoke;
+            z-index: 10;
+        }
+        .table {
+            color: whitesmoke;
+            z-index: 10;
+            height: 30%;
+            width: 38%;
+            left: 30%;
+            position: fixed;
+            top: 40%;
+            font-size: 100%;
+        }
+        .table_header {
+            position: fixed;
+            top: 31%;
+            left: 26%;
+            
+            width: 53%;
+            height: 8%;
+            
+            font-style: italic;
+            color: black;
+            
+            font-size: 350%;
+            z-index: 10;
+        }
+        .left_button {
+            position: relative;
+            /* left: 26%;
+            top: 34%; */
+
+            margin-right: 23%;
+
+            height: 50%;
+            z-index: 10;
+        }
+        .right_button {
+            position: relative;
+            /* right: 24%;
+            top: 34%; */
+
+            margin-left: 17%;
+
+            height: 50%;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<div class="schedule_wrapper">
+    <img src="static/img/board.png">
+        <div class="table_header">
+        <!-- <pre>Заголовок</pre> -->
+
+        <img class="left_button", src="/static/img/left-arrow.png" id="left_b"/>
+
+        <input class="numbutton" type="button", title="1" id="day1">
+        <input class="numbutton" type="button", title="2", id="day2">
+        <input class="numbutton" type="button", title="3", id="day3">
+        <input class="numbutton" type="button", title="4", id="day4">
+        <input class="numbutton" type="button", title="5", id="day5">
+        <input class="numbutton" type="button", title="6", id="day6">
+        <input class="numbutton" type="button", title="7", id="day7">
+
+        <img class="right_button", src="/static/img/right-arrow.png", id="right_b"/>
+    </div>
+    <center>
+        <table class="table" id="table" border=1 frame=void>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Предмет</th>
+                    <th>Время начала</th>
+                </tr>
+            </thead>
+        </table>
+    </center>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/personal_table.js"></script>
+{% endblock %}

@@ -91,12 +91,20 @@ def get_timetable_by_id(object_id) -> Response:
         return "", 404
 
 
+@app.route("/api/v1/timetable/current", methods=["GET"])
+def get_current_timetable() -> Response:
+    try:
+        return jsonify(TimeTable.get_current_timetable(app.config.get("schedule_db_source")).__dict__())
+    except Exception as err:
+        logging.error(err, exc_info=True)
+        return "", 500
+
+
 @app.route("/api/v1/timetable", methods=["POST"])
 def create_timetable() -> Union[Response, Tuple[str, int]]:
-    try:
-        validator.validate(request.get_json(), "POST")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(request.get_json(), "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
     try:
         return jsonify(TimeTable(**request.get_json(),
                                  db_source=app.config.get("schedule_db_source")).save().__dict__())
@@ -109,10 +117,9 @@ def create_timetable() -> Union[Response, Tuple[str, int]]:
 def update_timetable(object_id: int) -> Union[Tuple[str, int], Response]:
     if request.get_json().get('object_id') != object_id:
         return "", 400
-    try:
-        validator.validate(request.get_json(), "PUT")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(request.get_json(), "PUT")
+    if (not validation_data[0]):
+        return validation_data[1], 400
     try:
         TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
@@ -148,6 +155,7 @@ def upload_files():
     try:
         xml_data = parse_file(data.read())
 
+        #PERIOD_CODES = get_period_codes(get_information('period', ['starttime', 'endtime'], xml_data))
         subjects = get_information('subject', ['name'], xml_data)
         teachers = get_information('teacher', ['name'], xml_data)
         classrooms = get_information('classroom', ['name'], xml_data)
@@ -219,6 +227,8 @@ def upload_files():
 def save_timetable():
     data = request.get_json()
 
+    add_timetable()
+
     for el in data['classes']:
         try:
             for day in data[el]:
@@ -241,6 +251,10 @@ def parse_grade(name: str) -> tuple[int, str]:
             letter += el
 
     return int(grade), letter
+
+
+def add_timetable() -> int:
+    return TimeTable(db_source=app.config.get("schedule_db_source")).save().get_main_id()
 
 
 def add_location(information: dict) -> int:
@@ -291,7 +305,7 @@ def add_lesson_row(lesson: dict, day: str, period: int) -> None:
         'day_of_the_week': DAY_CODES[day],
         'start_time': PERIOD_CODES[period][0],
         'end_time': PERIOD_CODES[period][1],
-        'timetable_id': 49
+        'timetable_id': TimeTable.get_current_timetable(app.config.get("schedule_db_source")).get_main_id()
     }
 
     grade, letter = parse_grade(lesson['class'])
@@ -321,3 +335,11 @@ def add_lesson_row(lesson: dict, day: str, period: int) -> None:
     parameters['room_id'] = room_id
 
     LessonRow(**parameters, db_source=app.config.get('schedule_db_source')).save()
+
+
+def get_period_codes(period):
+    codes = {}
+    for key in period:
+        codes[int(key)] = (int(''.join((period[key]['starttime'].split(':')))),
+                           int(''.join((period[key]['endtime'].split(':')))))
+    return codes

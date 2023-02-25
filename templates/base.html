@@ -1,82 +1,61 @@
 <!DOCTYPE html>
-<html lang="ru">
 <head>
-    <meta charset="UTF-8">
     <title>Schedule App</title>
-    <link href="../static/css/styles.css" rel="stylesheet">
-    
-    <style type="text/css">
-		@font-face {
-	    font-family: 'LeoHand-Light';
-	    src: local('./ofont.ru_LeoHand.ttf')
-        }
+    <link rel="stylesheet" src="static/css/nadoo.css">
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: url("static/img/fon2.png");
+            background-repeat: no-repeat;
+            background-size: cover;
         }
-        nav, .wrapper{
+        nav{
+            /* width: 50%; */
+            display: flex;
+            align-content: space-around;
+            z-index: 5;
+            margin-top: -10px;
+        }
+        .nav_button{
+            width: 160px;
+            height: 60px;
+            padding: 95px 0px 0px 0px;
+            
+            margin-right: 20px;
+
             text-align: center;
-            margin: auto;
-            width: 1000px;
+            background-image: url('static/img/7.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            
+            color: whitesmoke;
+            text-decoration: none;
+
+            z-index: 10;
         }
     </style>
 </head>
 <body>
-<div class="main_header">
-    <a href="/"><h1 style="left: 2%; position: fixed; z-index: 12; top: -9%; text-align: center; line-height: 90px;
-    color: antiquewhite; font-family: 'LeoHand-Light'; vertical-align: middle; font-size: 6vw;">SheduleApp</h1></a>
-</div>
-    <div class="buttons_block">
-        <a href="/"><button class="buttons" style="left: 0;">Главная</button></a>
+    <nav>
+        <a class="nav_button" href="/students">Список учеников</a>
+        <a class="nav_button" href="/groups">Список классов</a>
+        <a class="nav_button" href="/lessons">Список уроков</a><br>
+        <a class="nav_button" href="/teachers">Список учителей</a><br>
+        <a class="nav_button" href="/subjects">Список предметов</a>
+        <a class="nav_button" href="/personal-timetable">Расписание на неделю</a>
+    </nav>
 
-        <a href="/login"><button class="buttons" style="left: 5%;">Войти</button></a>
 
- <a><button onclick="func()" style="left: 10%;" class="buttons">Меню</button></a>
-  
-    </div><div id="menu" class="menu_content">
-    <a href="/subjects"><button class="menu_buttons" style="left: 68%; top: 0;">Список предметов</button></a><br>
-    <a href="/groups"><button class="menu_buttons" style="left: 68%; top: 13%;">Список классов</button></a><br>
-    <a href="/lessons"><button class="menu_buttons" style="left: 68%; top: 26%;">Список уроков</button></a><br>
-    <a href="/teachers"><button class="menu_buttons" style="left: 68%; top: 39%;">Список учителей</button></a><br>
-    <a href="/students"><button class="menu_buttons" style="left: 68%; top: 52%;">Список студентов</button></a>
-    <a href="/week-timetable"><button class="menu_buttons" style="left: 68%; top: 65%;">Расписание на неделю</button></a>
-    <a href="/timetable"><button class="menu_buttons" style="left: 68%; top: 78%;">Расписание по ученику</button></a>
-    <a href="/add-teacher"><button class="menu_buttons" style="left: 68%; top: 91%;">Добавить учителя</button></a>
-    <a href="/add-location"><button class="menu_buttons" style="left: 68%; top: 104%;">Добавить класс</button></a>
-    <a href="/add-subject"><button class="menu_buttons" style="left: 68%; top: 117%;">Добавить предмет</button></a>
-    <a href="/add-group"><button class="menu_buttons" style="left: 68%; top: 130%;">Добавить группу</button></a>
-    <button class="menu_buttons" style="background-color: transparent; background-repeat: no-repeat;
-    border: none; top: 143%;"> </button>
-    <br><br>
-  </div>
-<div style="position: fixed; left: 0%; z-index: 1; width: 100%; height: 100%; background-color: #e6e6fa;">
-	</div>
+    <div>
+    {% block main %}
+    {% endblock %}
+    </div>
 
-<div class="content_block">
-    <center>{% block main %}
-    {% endblock %}</center>
 
-</div>
-
+    {% block footer %}
+    {% endblock %}
+    
     {% block script %}
     {% endblock %}
-
-    <script type="text/javascript">
-        function func() {
-            // alert('123');
-    document.getElementById('menu').style.display='block';
-window.onclick = function(event) {
-  if (!event.target.matches('.buttons')) {
-
-    let dropdowns = document.getElementsByClassName("menu_content");
-    let i;
-    for (i = 0; i < dropdowns.length; i++) {
-      if (document.getElementById('menu').style.display === 'block') {
-        document.getElementById('menu').style.display='none';
-      }
-    }
-  }
-}}
-    </script>
-
 </body>

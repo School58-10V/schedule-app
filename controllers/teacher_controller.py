@@ -94,18 +94,17 @@ def get_teacher_detailed_by_id(object_id: int) -> Union[Response, Tuple[str, int
 @app.route("/api/v1/teachers", methods=["POST"])
 def create_teacher() -> Union[Tuple[str, int], Response]:
     dct = request.get_json()
-    print(dct)
-    # try:
-    #     validator.validate(dct, "POST")
-    # except:
-    #     return '', 400
+    validation_data = validator.validate(dct, "POST")
+    if not validation_data[0]:
+        return validation_data[1], 400
     try:
         subject_id = []
         if 'subject_id' in dct:
             subject_id = dct.pop('subject_id')
         lesson_row_id = []
         if 'lesson_row_id' in dct:
-            lesson_row_id = dct.pop('lesson_row_id')
+            subject_id = dct.pop('lesson_row_id')
+
         new_teacher = Teacher(**dct, db_source=app.config.get("schedule_db_source")).save()
 
         for i in subject_id:
@@ -121,7 +120,7 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
         new_teacher_dct['lesson_row_id'] = lesson_row_id
 
         return jsonify(new_teacher_dct)
-    except ValueError as e:
+    except ValueError:
         return '', 404
     except Exception as err:
         logging.error(err, exc_info=True)
@@ -132,10 +131,9 @@ def create_teacher() -> Union[Tuple[str, int], Response]:
 def update_teacher(object_id: int) -> Union[Tuple[str, int], Response]:
     if request.get_json().get('object_id') != object_id:
         return "", 400
-    try:
-        validator.validate(request.get_json(), "PUT")
-    except ValueError:
-        return "", 400
+    validation_data = validator.validate(request.get_json(), "PUT")
+    if not validation_data[0]:
+        return validation_data[1], 400
     dct = request.get_json()
     try:
         Teacher.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))

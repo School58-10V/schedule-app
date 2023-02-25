@@ -342,6 +342,9 @@ class StudentInterface:
     def __check_day(self, day):  # то же самое, что с предыдущим чеком
         return True
 
+    def return_schedule_for_today(self):
+        return self.__get_schedule_for_today()
+
     def __get_schedule_for_today(self):
         # Узнаем, какой год нам надо смореть
         timetable_id = TimeTable.get_by_year(self.__db_source).get_main_id()
