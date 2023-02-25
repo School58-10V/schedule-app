@@ -42,6 +42,15 @@ class DBSource(AbstractSource):
 
         return self.__format_Tuple_to_dict(data, desc)
 
+    def run_query(self, query):
+        self.connect()
+        cursor = self.__conn.cursor()
+        self.__cursor_execute_wrapper(cursor, query)
+        data = cursor.fetchall()
+        self.__conn.commit()
+
+        return data
+
     def get_all(self, collection_name: str) -> List[dict]:
         self.connect()
         request = f'SELECT * FROM "{collection_name}"'

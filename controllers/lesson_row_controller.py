@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 import logging, psycopg2
 from flask import request, jsonify
+from data_model.group import Group
+from data_model.location import Location
 
 from data_model.subject import Subject
 from data_model.teacher import Teacher
@@ -11,6 +13,8 @@ from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from validators.lesson_row_validator import LessonRowValidator
 
 from schedule_app import app
+import time
+from adapters.db_source import DBSource
 
 if TYPE_CHECKING:
     from flask import Response
@@ -18,6 +22,17 @@ if TYPE_CHECKING:
 
 
 validator = LessonRowValidator()
+
+
+DAYS_OF_THE_WEEK = {
+    0: "Понедельник",
+    1: "Вторник",
+    2: "Среда",
+    3: "Четверг",
+    4: "Пятница",
+    5: "Суббота",
+    6: "Воскресенье"
+}
 
 
 @app.route("/api/v1/lesson-row", methods=["GET"])
@@ -46,16 +61,51 @@ def get_all_lesson_row_detailed() -> Response:
     Достаем все LessonRow вместе с учителями
     :return: Response
     """
-    global_dct = []
+    t = time.time()
+    print('Запрос пришёл!')
+
+    # SELECT "LessonRows". *, "Teachers".fio, "Teachers".bio, "Teachers".contacts
+    # FROM "LessonRows"
+    # LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id
+    # LEFT JOIN "Teachers" ON "TeachersForLessonRows".teacher_id = "Teachers".object_id
+
+    global_dct = {}
     try:
-        for i in LessonRow.get_all(app.config.get("schedule_db_source")):
-            local_dct = i.__dict__()
-            local_dct['teachers'] = [i.__dict__() for i in
-                                    TeachersForLessonRows.get_teachers_by_lesson_row_id(
-                                        i.get_main_id(),
-                                        db_source=app.config.get("schedule_db_source"))]
-            global_dct.append(local_dct.copy())
-        return jsonify(global_dct)
+        # for i in LessonRow.get_all(app.config.get("schedule_db_source")):
+        #     local_dct = i.__dict__()
+        #     local_dct['teachers'] = [i.__dict__() for i in
+        #                             TeachersForLessonRows.get_teachers_by_lesson_row_id(
+        #                                 i.get_main_id(),
+        #                                 db_source=app.config.get("schedule_db_source"))]
+        #     global_dct.append(local_dct.copy())
+
+        query = 'SELECT "LessonRows". *, "Teachers".fio, "Teachers".bio, "Teachers".contacts FROM "LessonRows" ' \
+                'LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id ' \
+                'LEFT JOIN "Teachers" ON "TeachersForLessonRows".teacher_id = "Teachers".object_id'
+
+        columns = ['object_id', 'start_time', 'end_time', 'group_id', 'subject_id', 'room_id', 'timetable_id',
+                   'day_of_the_week']
+
+        result = app.config.get("schedule_db_source").run_query(query)
+
+        for el in result:
+            lesson_row_info = dict(zip(columns, el[:-3]))
+            # print(lesson_row_info)
+
+            if el[0] not in global_dct:
+                lesson_row_info['teachers'] = []
+            else:
+                lesson_row_info = global_dct[el[0]]
+
+            lesson_row_info['teachers'].append({'fio': el[-3], 'bio': el[-2], 'contacts': el[-1]})
+
+            global_dct[el[0]] = lesson_row_info
+            # print(lesson_row_info)
+
+        print(f'На обработку запроса ушло: {(time.time() - t):.3f} s')
+        # print(global_dct)
+        # print(list(global_dct.values()))
+        return jsonify(list(global_dct.values()))
     except Exception as err:
         logging.error(err, exc_info=True)
         return "", 500
@@ -230,8 +280,21 @@ def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Res
                                         TeachersForLessonRows.get_teachers_by_lesson_row_id(
                                             row.get_main_id(),
                                             db_source=app.config.get("schedule_db_source"))]
+            raw_row["start_time"] = prettify_time(row.get_start_time())
+            raw_row["end_time"] = prettify_time(row.get_end_time())
+            raw_row["day_of_the_week"] = DAYS_OF_THE_WEEK[row.get_day_of_the_week()]
+            raw_row["room"] = Location.get_by_id(row.get_room_id(), db_source).get_num_of_class()
+            raw_row["group"] = Group.get_by_id(row.get_group_id(), db_source).__dict__()
+            raw_row["subject"] = Subject.get_by_id(row.get_subject_id(), db_source).__dict__()
             result.append(raw_row.copy())
         return jsonify(result)
     except Exception as e:
         logging.error(e, exc_info=True)
         return "", 500
+
+
+def prettify_time(time):
+    """ Превращает тысяча десять в 10:10 """
+    hours = time // 100
+    minutes = time % 100
+    return str(hours).zfill(2) + ':' + str(minutes).zfill(2)
