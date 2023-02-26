@@ -5,7 +5,11 @@ import datetime, jwt
 from flask import request, jsonify
 from jwt import DecodeError, ExpiredSignatureError
 
+from data_model.students_for_groups import StudentsForGroups
+from data_model.teacher import Teacher
+from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.user import User
+from data_model.student import Student
 from schedule_app import app
 
 if TYPE_CHECKING:
@@ -34,9 +38,9 @@ def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
     try:
         user = User.get_by_login(login=login, db_source=app.config.get('auth_db_source'))
     except ValueError:
-        return '', 401
+        return 'Incorrect login', 401
     if not user.compare_hash(password):
-        return jsonify(""), 401
+        return jsonify("Incorrect password"), 401
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
     return jsonify({'token': encoded_data})
 
@@ -53,6 +57,56 @@ def register() -> Response:
     user = User(login=login, password=password, name=fullname, db_source=app.config.get('auth_db_source'))
     user.save()
     return jsonify({'token': encoded_data})
+
+
+@app.route('/api/v1/profile', methods=['GET'])
+def profile() -> Response:
+    token = request.headers.get('Authorization')
+
+    try:
+        data = jwt.decode(token, PUBLIC_KEY, algorithms=['RS256'])
+
+        try:
+            user = User.get_by_login(login=data['login'], db_source=app.config.get('auth_db_source'))
+        except ValueError:
+            return 'Incorrect login in token', 401
+
+        user_information = {'name': user.get_name()}
+
+        if user.get_status() == 1:  # ученик
+            user_information['role'] = 'student'
+            student = Student.get_by_name(user_information['name'], source=app.config.get('schedule_db_source'))
+
+            if len(student) != 1:
+                return 'Name is duplicated', 400
+
+            user_information['id'] = student[0].get_main_id()
+            user_information['groups_id'] = [gr.get_main_id() for gr in StudentsForGroups.get_group_by_student_id(
+                                                                            student[0].get_main_id(),
+                                                                            db_source=app.config.get('schedule_db_source'))]
+
+        elif user.get_status() == 2:  # учитель
+            user_information['role'] = 'teacher'
+            teacher = Teacher.get_by_name(user_information['name'], db_source=app.config.get('schedule_db_source'))
+
+            if len(teacher) != 1:
+                return 'Name is duplicated', 400
+
+            user_information['id'] = teacher[0].get_main_id()
+            user_information['lesson_rows_ids'] = [lr.get_main_id()
+                                                   for lr in TeachersForLessonRows.get_lesson_rows_by_teacher_id(
+                                                            teacher[0].get_main_id(),
+                                                            db_source=app.config.get('schedule_db_source'))]
+
+        elif user.get_status() == 3:  # администратор
+            user_information['role'] = 'admin'
+        else:  # какая-то другая каста
+            user_information['role'] = 'other'
+            pass
+
+        return jsonify(user_information), 200
+    except (DecodeError, ExpiredSignatureError):
+        return '', 400
 
 
 # Вызывается при каждом реквесте (кроме реквеста к /login)
