@@ -1,5 +1,5 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
-from datetime import datetime
+from datetime import *
 
 from adapters.abstract_source import AbstractSource
 from data_model.parsed_data import ParsedData
@@ -24,9 +24,8 @@ class Student(AbstractModel):
     """
 
     def __init__(
-            self, db_source: DBSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
-            contacts: Optional[str] = None, bio: Optional[str] = None
-            ):
+            self, db_source: DBSource, full_name: str, date_of_birth: datetime.date = date(1970, 1, 1),
+            object_id: Optional[int] = None, contacts: Optional[str] = None, bio: Optional[str] = None):
         super().__init__(db_source)
         self.__full_name = full_name
         self.__date_of_birth = date_of_birth
