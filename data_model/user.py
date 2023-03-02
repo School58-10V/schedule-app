@@ -43,7 +43,10 @@ class User(AbstractModel):
         self.__object_id = object_id
         self.__status = status
 
-        self.find_reference(status)
+        try:
+            self.find_reference(status)
+        except ValueError:
+            pass
 
     @classmethod
     def get_by_login(cls, login: str, db_source: DBSource) -> Optional[User]:
@@ -105,8 +108,8 @@ class User(AbstractModel):
             information['groups_id'] = StudentsForGroups.get_groups_ids_for_student(
                                             information['id'], db_source=app.config.get('schedule_db_source'))
         if self.get_status() == User.TEACHER:
-            TeachersForLessonRows.get_lesson_rows_ids_by_teacher_id(
-                information['id'], db_source=app.config.get('schedule_db_source'))
+            information['lesson_rows_ids'] = TeachersForLessonRows.get_lesson_rows_ids_by_teacher_id(
+                                                information['id'], db_source=app.config.get('schedule_db_source'))
 
         return information
 
