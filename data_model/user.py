@@ -75,6 +75,9 @@ class User(AbstractModel):
     def set_ref_id(self, ref_id):
         self.__ref_id = ref_id
 
+    def set_status(self, status):
+        self.__status = status
+
     def __str__(self):
         return f"Пользователь {self.get_name()} с логином {self.get_login()}"
 
@@ -122,8 +125,10 @@ class User(AbstractModel):
 
             if len(connected_students) == 1:
                 self.set_ref_id(connected_students[0].get_main_id())
+                self.set_status(User.STUDENT)
             else:
                 self.set_ref_id(connected_teachers[0].get_main_id())
+                self.set_status(User.TEACHER)
         if table == User.STUDENT:
             connected_students = Student.get_by_name(self.get_name(), db_source=app.config.get('schedule_db_source'))
 
