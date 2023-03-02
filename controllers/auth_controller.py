@@ -82,7 +82,8 @@ def before_request() -> Optional[Tuple[str, int]]:
     if request.url_rule is None or \
             request.path == '/api/v1/login' or \
             request.path == '/api/v1/register' or \
-            request.method.lower() in ['get', 'options', 'post'] and request.path != '/api/v1/profile':
+            (request.method.lower() == 'get' and request.path != '/api/v1/profile') or\
+            request.method.lower() in ['post', 'options']:
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
@@ -91,5 +92,7 @@ def before_request() -> Optional[Tuple[str, int]]:
         g.user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
     except (DecodeError, ExpiredSignatureError):
         return '', 400
+    except AttributeError:
+        return 'No token', 400
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
         return '', 401
