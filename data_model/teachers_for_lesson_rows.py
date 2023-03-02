@@ -104,6 +104,13 @@ class TeachersForLessonRows(AbstractModel):
         ]
 
     @classmethod
+    def get_lesson_rows_ids_by_teacher_id(cls, teacher_id: int, db_source: DBSource) -> List[int]:
+        return [
+            i['lesson_row_id']
+            for i in db_source.get_by_query(cls._get_collection_name(), {'teacher_id': teacher_id})
+        ]
+
+    @classmethod
     def get_by_lesson_row_and_teacher_id(cls, lesson_row_id: int, teacher_id: int, db_source: DBSource) -> list:
         """
         Возвращает список обьектов этого класса в котором у нас совподают идишник который мы передали

@@ -37,31 +37,6 @@ class StudentsForGroups(AbstractModel):
     def get_group_id(self) -> int:
         return self.__group_id
 
-    #    @staticmethod
-    #    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[StudentsForGroups])]:
-    #        f = open(file_location, encoding='utf-8')
-    #        lines = f.read().split('\n')[1:]
-    #        lines = [i.split(';') for i in lines]
-    #        res = []
-    #
-    #        for i in lines:
-    #            try:
-    #                student_id = int(i[0])
-    #                group_id = int(i[1])
-    #                res.append(ParsedData(None, StudentsForGroups(student_id=student_id,
-    #                                                             group_id=group_id, db_source=db_source)))
-    #            except IndexError as e:
-    #                exception_text = f"Строка {lines.index(i) + 1} не добавилась в [res]"
-    #                print(exception_text)
-    #                print(e)
-    #                res.append(ParsedData(exception_text, None))
-    #            except Exception as e:
-    #                exception_text = f"Неизвестная ошибка в Student_in_group.parse():\n{e}"
-    #                print(exception_text)
-    #                res.append(ParsedData(exception_text, None))
-    #
-    #        return res
-
     def __str__(self) -> str:
         return f''
 
@@ -75,6 +50,10 @@ class StudentsForGroups(AbstractModel):
         from data_model.group import Group
         return [Group.get_by_id(i['group_id'], db_source=db_source)
                 for i in db_source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
+
+    @classmethod
+    def get_groups_ids_for_student(cls, student_id: int, db_source: AbstractSource) -> List[int]:
+        return [i['group_id'] for i in db_source.get_by_query(cls._get_collection_name(), {'student_id': student_id})]
 
     @classmethod
     def get_student_by_group_id(cls, group_id: int, db_source: AbstractSource) -> List[Student]:

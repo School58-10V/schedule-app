@@ -44,7 +44,7 @@ class TestGenerator:
         added = []
 
         for creator in self.creators_info:
-            student = Student.get_by_name(creator['full_name'], app.config.get('schedule_db_source'))
+            student = Student.get_by_name(creator['full_name'], db_source=app.config.get('schedule_db_source'))
 
             if len(student) == 0:
                 no_record.append(creator)

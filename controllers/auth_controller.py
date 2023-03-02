@@ -2,14 +2,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import datetime, jwt
-from flask import request, jsonify
+from flask import request, jsonify, g
 from jwt import DecodeError, ExpiredSignatureError
 
-from data_model.students_for_groups import StudentsForGroups
-from data_model.teacher import Teacher
-from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from data_model.user import User
-from data_model.student import Student
+
 from schedule_app import app
 
 if TYPE_CHECKING:
@@ -59,56 +56,6 @@ def register() -> Response:
     return jsonify({'token': encoded_data})
 
 
-@app.route('/api/v1/profile', methods=['GET'])
-def profile() -> Response:
-    token = request.headers.get('Authorization')
-
-    try:
-        data = jwt.decode(token, PUBLIC_KEY, algorithms=['RS256'])
-
-        try:
-            user = User.get_by_login(login=data['login'], db_source=app.config.get('auth_db_source'))
-        except ValueError:
-            return 'Incorrect login in token', 401
-
-        user_information = {'name': user.get_name()}
-
-        if user.get_status() == 1:  # ученик
-            user_information['role'] = 'student'
-            student = Student.get_by_name(user_information['name'], source=app.config.get('schedule_db_source'))
-
-            if len(student) != 1:
-                return 'Name is duplicated', 400
-
-            user_information['id'] = student[0].get_main_id()
-            user_information['groups_id'] = [gr.get_main_id() for gr in StudentsForGroups.get_group_by_student_id(
-                                                                            student[0].get_main_id(),
-                                                                            db_source=app.config.get('schedule_db_source'))]
-
-        elif user.get_status() == 2:  # учитель
-            user_information['role'] = 'teacher'
-            teacher = Teacher.get_by_name(user_information['name'], db_source=app.config.get('schedule_db_source'))
-
-            if len(teacher) != 1:
-                return 'Name is duplicated', 400
-
-            user_information['id'] = teacher[0].get_main_id()
-            user_information['lesson_rows_ids'] = [lr.get_main_id()
-                                                   for lr in TeachersForLessonRows.get_lesson_rows_by_teacher_id(
-                                                            teacher[0].get_main_id(),
-                                                            db_source=app.config.get('schedule_db_source'))]
-
-        elif user.get_status() == 3:  # администратор
-            user_information['role'] = 'admin'
-        else:  # какая-то другая каста
-            user_information['role'] = 'other'
-            pass
-
-        return jsonify(user_information), 200
-    except (DecodeError, ExpiredSignatureError):
-        return '', 400
-
-
 # Вызывается при каждом реквесте (кроме реквеста к /login)
 # проверяет совпадение информации о пользователе с информацией из токена
 # выбрасывает ошибку 400 когда токен некорректен
@@ -116,15 +63,32 @@ def profile() -> Response:
 @app.before_request
 def before_request() -> Optional[Tuple[str, int]]:
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule is None or\
-            request.path == '/api/v1/login' or\
-            request.path == '/api/v1/register' or\
-            request.method.lower() in ['get', 'options', 'post']:
+    # TODO: добавить исключения для get метода(dict с включениями/исключениями методов)
+
+    # # urls, где наличие токена ОБЯЗАТЕЛЬНО, * - все эндпоинты
+    # included_urls = {
+    #     'GET': ['/api/v1/profile'],
+    #     'OPTIONS': [],
+    #     'POST': []
+    # }
+    #
+    # # urls, где наличие токена не требуется(меньше приоритет, чем у included)
+    # excluded_urls = {
+    #     'GET': [],
+    #     'OPTIONS': ['*'],
+    #     'POST': ['/api/v1/login', '/api/v1/register']
+    # }
+
+    if request.url_rule is None or \
+            request.path == '/api/v1/login' or \
+            request.path == '/api/v1/register' or \
+            request.method.lower() in ['get', 'options', 'post'] and request.path != '/api/v1/profile':
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+        g.user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
     except (DecodeError, ExpiredSignatureError):
         return '', 400
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
