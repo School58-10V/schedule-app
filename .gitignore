@@ -137,3 +137,4 @@ db
 keys/
 pyvenv.cfg
 node_modules/
+logs/
