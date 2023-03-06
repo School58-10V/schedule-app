@@ -5,8 +5,10 @@ from adapters.abstract_source import AbstractSource
 from typing import List, Optional, Tuple
 import psycopg2
 from psycopg2 import errorcodes
-from loguru import logger
+import logging
 
+
+LOGGER = logging.getLogger("main.adapter")
 
 class DBSource(AbstractSource):
     """
@@ -17,13 +19,13 @@ class DBSource(AbstractSource):
         self.__connection_data = {"host": host, "user": user, "password": password,
                                   "dbname": dbname, "options": options}
         self.__conn = None
-        logger.info(f"Инициализирован DBSource на адресe '{host}' по пользователю '{user}' с настройками {options}.")
+        LOGGER.info(f"Created db_source on '{host}' with user: '{user}' with options: {options}.")
 
     def connect(self, retry_count: int = 3):
         if self.__conn:
             return
         for i in range(retry_count):
-            logger.info(f"Попытка подключения к базе #{i + 1} по адресу {self.__connection_data['host']}.")
+            LOGGER.info(f"DB connection attempt #{i + 1} on adress {self.__connection_data['host']}.")
             state = False
             try:
                 self.__conn = psycopg2.connect(**self.__connection_data)
@@ -35,12 +37,12 @@ class DBSource(AbstractSource):
             except psycopg2.Error:
                 time.sleep(5)
         if state:
-            logger.info("Успешное подключение к базе!")
+            LOGGER.info("Successfully conected to DB!")
         else:
-            logger.error("Произошла ошибка при подключении к базе, превышено кол-во попыток!")
+            LOGGER.error("An error occured while trying to connect to DB! Attempts limit reached!")
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
-        logger.debug(f"Начинаю поиск по квери в коллекции '{collection_name}'...")
+        LOGGER.debug(f"Starting a query search in '{collection_name}'...")
         curr_time = time.time_ns()
         self.connect()
         pairs = query.items()
@@ -49,22 +51,25 @@ class DBSource(AbstractSource):
         cursor = self.__conn.cursor()
         self.__cursor_execute_wrapper(cursor, request, list(query.values()))
         data = cursor.fetchall()
-        desc = cursor.descriptio
+        desc = cursor.description
 
-        logger.debug(f"Поиск завершён, времени затрачено: {(time.time_ns() - curr_time) / 1000000}!")
+        LOGGER.debug(f"Finished searching, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
         return self.__format_Tuple_to_dict(data, desc)
 
     def run_query(self, query):
         self.connect()
         cursor = self.__conn.cursor()
+        curr_time = time.time_ns()
+        LOGGER.debug(f"Executing custom query: {query}")
         self.__cursor_execute_wrapper(cursor, query)
         data = cursor.fetchall()
         self.__conn.commit()
+        LOGGER.debug(f"Successfully executed custom query! Time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
 
         return data
 
     def get_all(self, collection_name: str) -> List[dict]:
-        logger.debug(f"Собираю все данные из коллекции '{collection_name}'...")
+        LOGGER.debug(f"Collecting all entries from '{collection_name}'...")
         curr_time = time.time_ns()
         self.connect()
         request = f'SELECT * FROM "{collection_name}"'
@@ -74,11 +79,11 @@ class DBSource(AbstractSource):
         desc = cursor.description
         self.__conn.commit()
 
-        logger.debug(f"Сбор данных из коллекции {collection_name} завершён, времени затрачено: {(time.time_ns() - curr_time) / 1000000}!")
+        LOGGER.debug(f"Collection from {collection_name} has finished, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
         return self.__format_Tuple_to_dict(data, desc)
 
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
-        logger.debug(f"Ищу данные по id {object_id} в коллекции '{collection_name}'...")
+        LOGGER.debug(f"Searching by id: {object_id} in collection '{collection_name}'...")
         curr_time = time.time_ns()
         self.connect()
         request = f'SELECT * FROM "{collection_name}" WHERE object_id={object_id}'
@@ -87,26 +92,26 @@ class DBSource(AbstractSource):
         data = cursor.fetchall()
         desc = cursor.description
         if len(data) == 0:
-            logger.error(f'Объекта с id {object_id} из {collection_name} не существует!')
+            LOGGER.error(f'Object with id {object_id} does not exist in {collection_name}!')
             self.__conn.commit()
-            raise ValueError(f'Объект с id {object_id} из {collection_name} не существует')
+            raise ValueError(f'Object with id {object_id} does not exist in {collection_name}!')
         # берем 0 индекс т.к. длина ответа всегда либо 0 (уже обработали), либо 1, т.е. смысла возвращать список нет.
 
-        logger.debug(f"Поиск объекта завершён, времени затрачено: {(time.time_ns() - curr_time) / 1000000}!")
+        LOGGER.debug(f"Finished searching by id, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
         return self.__format_Tuple_to_dict(data, desc)[0]
 
     def insert(self, collection_name: str, document: dict) -> dict:
-        logger.debug(f"Добавляю новый объект в коллекцию '{collection_name}'...")
+        LOGGER.debug(f"Adding a new entry to '{collection_name}'...")
         curr_time = time.time_ns()
         self.connect()
         cursor = self.__conn.cursor()
         try:
             cursor.execute(f'SELECT * FROM "{collection_name}" LIMIT 0')
         except psycopg2.Error as e:
-            logger.error(f"При добавлении объекта в коллекцию {collection_name} произошла ошибка {e}!")
+            LOGGER.error(f"An error ({errorcodes.lookup(e.pgcode)}) occured while adding an entry to {collection_name}!")
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 self.__conn.commit()
-                raise ValueError('Данной таблицы не существует.')
+                raise ValueError('This table does not exist!')
 
         desc = [x[0] for x in cursor.description]
         values = [self.__wrap_string(document[x]) if x != 'object_id' else 'default' for x in desc]
@@ -114,25 +119,33 @@ class DBSource(AbstractSource):
         try:
             cursor.execute(request)
         except psycopg2.Error as e:
-            logger.error(f"При добавлении объекта в коллекцию {collection_name} произошла ошибка {e}!")
+            LOGGER.error(f"An error occured while adding an object to {collection_name}!")
             self.__conn.commit()
+            error_text = ""
             if errorcodes.lookup(e.pgcode) == 'UNIQUE_VIOLATION':
-                raise ValueError('ID добавляемого объекта уже существует.')
+                error_text = 'Object with this id already exists!'
             elif errorcodes.lookup(e.pgcode) == 'FOREIGN_KEY_VIOLATION':
-                raise ValueError('Один из ID связанных объектов недействителен.')
+                error_text = 'One of the connected IDs is invalid!'
             elif errorcodes.lookup(e.pgcode) == 'INVALID_TEXT_REPRESENTATION':
-                raise TypeError('Ошибка в типах данных.')
-            raise ValueError(f"Неизвестная ошибка при добавлении новой записи в {collection_name}. "
-                             f"Код ошибки: {errorcodes.lookup(e.pgcode)}")
+                error_text = 'Object data type error'
+            
+            if error_text != "":
+                LOGGER.error(f"An error occured while adding an object to {collection_name}! \n{error_text}")
+                raise ValueError(error_text)
+            else:
+                LOGGER.error(f"Encountered an unknown error while adding an object to {collection_name}. "
+                             f"Error code: {errorcodes.lookup(e.pgcode)}")
+                raise ValueError(f"Encountered an unknown error while adding an object to {collection_name}. "
+                             f"Error code: {errorcodes.lookup(e.pgcode)}")
         self.__conn.commit()
         new_obj = cursor.fetchone()
         new_doc = {desc[index]: new_obj[index] for index in range(len(desc))}
 
-        logger.debug(f"Добавление объекта завершено, времени затрачено: {(time.time_ns() - curr_time) / 1000000}!")
+        LOGGER.debug(f"Finished adding a new entry, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
         return new_doc
 
     def update(self, collection_name: str, object_id: Optional[int, str], document: dict) -> dict:
-        logger.debug(f"Обновляю объект по id {object_id} в коллекции '{collection_name}'...")
+        LOGGER.debug(f"Updating object with id {object_id} in '{collection_name}'...")
         curr_time = time.time_ns()
         self.connect()
         cursor = self.__conn.cursor()
@@ -148,13 +161,13 @@ class DBSource(AbstractSource):
             request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
             cursor.execute(request)
             self.__conn.commit()
-            logger.debug(f"Успешно обновлён объект по id {object_id}, времени затрачено {(time.time_ns() - curr_time) / 1000000}!")
+            LOGGER.debug(f"Successfully updated object with id {object_id}, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
             return document
         except psycopg2.Error as e:
-            logger.error(f"При обновлении объекта по id {object_id} из коллекции {collection_name} произошла ошибка {e}!")
+            LOGGER.error(f"An error ({e}) occured while updating object with {object_id} in {collection_name}!")
 
     def delete(self, collection_name: str, object_id: Optional[int, str]):
-        logger.debug(f"Удаляю объект по id {object_id} в коллекции '{collection_name}'...")
+        LOGGER.debug(f"Deleting object with id {object_id} from '{collection_name}'...")
         curr_time = time.time_ns()
         self.connect()
         cursor = self.__conn.cursor()
@@ -166,9 +179,9 @@ class DBSource(AbstractSource):
         try:
             cursor.execute(request)
             self.__conn.commit()
-            logger.debug(f"Успешно удалён объект по id {object_id}, времени затрачено {(time.time_ns() - curr_time) / 1000000}!")
+            LOGGER.debug(f"Successfully deleted object with id {object_id}, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
         except psycopg2.Error as e:
-            logger.error(f"Произошла ошибка {e} при удалении объекта по id {object_id} из коллекции {collection_name}!")
+            LOGGER.error(f"Encountered an error {e} while deleting object with id {object_id} from {collection_name}!")
 
     @staticmethod
     def __wrap_string(value: Optional[str]) -> str:
@@ -218,9 +231,8 @@ class DBSource(AbstractSource):
             cursor.execute(request, params)
         except psycopg2.Error as e:
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
-                raise ValueError(f'Ошибка во время выполнения запроса, таблица не существует. Запрос: {request}')
+                LOGGER.error(f"Encountered an error while processing a request {request}! Specified table does not exist!")
+                raise ValueError(f"Encountered an error while processing a request {request}! Specified table does not exist!")
             else:
-                # why print here??
-                print(e)
-                raise ValueError(f'Неизвестная ошибка во время выполнения запроса, '
-                                 f'код ошибки: {errorcodes.lookup(e.pgcode)}. Запрос: {request}')
+                LOGGER.error(f"Encountered an unknown error while processing a request {request}. Errorcode: {errorcodes.lookup(e.pgcode)}")
+                raise ValueError(f"Encountered an unknown error while processing a request {request}. Errorcode: {errorcodes.lookup(e.pgcode)}")
