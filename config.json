@@ -12,5 +12,10 @@
     "password": "VYRL!9XEB3yXQs4aPz_Q",
     "user": "schedule_app",
     "options": "-c search_path=dbo,auth"
-  }
+  },
+  "console_log_isactive": "True",
+  "console_log_level": "INFO",
+  "file_log_isactive": "True",
+  "file_log_level": "DEBUG",
+  "logfile_path": "./logs/main.txt"
 }
