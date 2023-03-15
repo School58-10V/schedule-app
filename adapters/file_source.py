@@ -1,9 +1,10 @@
 import json
 import datetime
+from adapters.abstract_source import AbstractSource
 from typing import List
 
 
-class FileSource:
+class FileSource(AbstractSource):
     # Метод  __init__ принимает путь до файла, с которым будут работать остальные методы и сохраняет его в private
     # переменную(по умолчанию "./db").
     def __init__(self, db_path: str = './db'):

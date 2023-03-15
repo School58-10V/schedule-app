@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Все учителя:</h1>
+<table id="teachersTable" border=1 frame=void>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ФИО</th>
+            <th>Био</th>
+            <th>Контакты</th>
+            <th>ID уроков</th>
+            <th>ID предметов</th>
+            <th>ID кабинета</th>
+        </tr>
+    {% for i in teachers %}
+    <tr>
+        <th>{{ i['object_id'] }}</th>
+        <th>{{ i['fio'] }}</th>
+        <th>{{ i['bio'] }}</th>
+        <th>{{ i['contacts'] }}</th>
+        <th>{{ i['lesson_row_id'] }}</th>
+        <th>{{ i['subject_id'] }}</th>
+        <th>{{ i['office_id'] }}</th>
+    </tr>
+    {% endfor %}
+    </thead>
+</table>
+{% endblock %}
+
+{% block footer %}
+<nav>
+    <a href="/students">Список учеников</a>
+    <a href="/groups">Список классов</a>
+    <a href="/lessons">Список уроков</a>
+    <a href="/teachers">Список учителей</a>
+    <a href="/subjects">Список предметов</a>
+</nav>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/teachers.js"></script>
+{% endblock %}

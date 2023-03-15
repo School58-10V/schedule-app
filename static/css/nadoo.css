@@ -1,0 +1,30 @@
+.nav_button:hover {
+    animation: 1.2s linear table-animation;
+}
+
+@keyframes table-animation {
+    0% {
+        width: 160px;
+        padding: 95px 0px 0px 0px;
+        
+        background-image: url('../img/7.png');
+    }
+    33% {
+        width: 160px;
+        padding: 100px 0px 0px 0px;
+
+        background-image: url('../img/7_2.png');
+    }
+    66% {
+        width: 160px;
+        padding: 80px 0px 0px 0px;
+
+        background-image: url('../img/7_1.png');
+    }
+    100%{
+        width: 160px;
+        padding: 95px 0px 0px 0px;
+        
+        background-image: url('../img/7.png');
+    }
+}

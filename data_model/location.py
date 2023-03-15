@@ -5,7 +5,7 @@ from typing import Optional, List, TYPE_CHECKING
 from data_model.abstract_model import AbstractModel
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class Location(AbstractModel):
@@ -18,16 +18,16 @@ class Location(AbstractModel):
            location_type - Тип локации- класс, поточная аудитория, видеоконференция и т.д.
     """
 
-    def __init__(self, db_source: FileSource, location_type: str, object_id: int = None,
+    def __init__(self, db_source: DBSource, location_type: str, object_id: int = None,
                  location_desc: str = None, profile: str = None, num_of_class: int = None,
-                 equipment: list = None, link: str = 'Offline', comment: str = ''):
+                 equipment: str = None, link: str = 'Offline', comment: str = ''):
         super().__init__(db_source)
         self.__location_type = location_type
         self._object_id = object_id
         self.__location_desc = location_desc
         self.__profile = profile
         self.__num_of_class = num_of_class
-        self.__equipment = equipment
+        self.__equipment = equipment  # строка
         self.__link = link
         self.__comment = comment
 
@@ -40,7 +40,7 @@ class Location(AbstractModel):
     def get_num_of_class(self) -> int:
         return self.__num_of_class
 
-    def get_equipment(self) -> list:
+    def get_equipment(self) -> str:
         return self.__equipment
 
     def get_link(self) -> str:
@@ -53,7 +53,7 @@ class Location(AbstractModel):
         return self.__comment
 
     @staticmethod
-    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[Location])]:
+    def parse(file_location, db_source: DBSource) -> List[(Optional[str], Optional[Location])]:
         f = open(file_location, encoding='utf-8')
         lines = f.read().split('\n')[1:]
         lines = [i.split(';') for i in lines]
@@ -80,11 +80,11 @@ class Location(AbstractModel):
 
         return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Location(location_type={self.get_location_type()}, num_of_class={self.get_location_desc()}, ' \
                f'link={self.get_link()}, comment={self.get_comment()})'
 
-    def __dict__(self):
+    def __dict__(self) -> dict:
         return {'location_type': self.get_location_type(),
                 'object_id': self.get_main_id(),
                 'location_desc': self.get_location_desc(),
@@ -93,3 +93,11 @@ class Location(AbstractModel):
                 'equipment': self.get_equipment(),
                 'link': self.get_link(),
                 'comment': self.get_comment()}
+
+    @classmethod
+    def get_by_id(cls, element_id: int, db_source: DBSource) -> Location:
+        return Location(db_source=db_source, **db_source.get_by_id("Locations", element_id))
+
+    @classmethod
+    def get_by_number(cls, class_number: int, db_source: DBSource) -> Location:
+        return Location(db_source=db_source, **db_source.get_by_query('Locations', {'num_of_class': class_number})[0])

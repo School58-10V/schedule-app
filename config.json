@@ -1,0 +1,16 @@
+{
+  "schedule_database":
+  {
+    "host": "postgresql.aakapustin.ru",
+    "password": "VYRL!9XEB3yXQs4aPz_Q",
+    "user": "schedule_app",
+    "options": "-c search_path=dbo,public"
+  },
+  "user_database":
+  {
+    "host": "postgresql.aakapustin.ru",
+    "password": "VYRL!9XEB3yXQs4aPz_Q",
+    "user": "schedule_app",
+    "options": "-c search_path=dbo,auth"
+  }
+}

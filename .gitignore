@@ -132,3 +132,8 @@ dmypy.json
 # own
 db
 *.idea
+.venv
+.vscode
+keys/
+pyvenv.cfg
+node_modules/

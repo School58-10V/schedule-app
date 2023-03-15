@@ -6,16 +6,16 @@ from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class Subject(AbstractModel):
     """
-        name - Название предмета
+        subject_name - Название предмета
         object_id - Идентификационный номер предмета
     """
 
-    def __init__(self, db_source: FileSource, subject_name: Optional[str] = None,
+    def __init__(self, db_source: DBSource, subject_name: Optional[str] = None,
                  object_id: Optional[int] = None):
         super().__init__(db_source)
         self.__subject_name = subject_name
@@ -50,7 +50,7 @@ class Subject(AbstractModel):
         return self
 
     @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Subject])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Subject])]:
         file = open(file_location, 'r', encoding='utf-8')
         lines = file.read().split('\n')[1:]
         file.close()
@@ -71,9 +71,13 @@ class Subject(AbstractModel):
                 res.append(ParsedData(exception_text, None))
         return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Subject(subject_name: {self.get_subject_name()})'
 
     def __dict__(self) -> dict:
         return {"object_id": self.get_main_id(),
                 "subject_name": self.get_subject_name()}
+
+    @classmethod
+    def get_by_id(cls, element_id: int, db_source: DBSource) -> Subject:
+        return Subject(db_source=db_source, **db_source.get_by_id("Subjects", element_id))

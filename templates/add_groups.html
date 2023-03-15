@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Добавить учителя:</h1>
+<input type="text" placeholder="id" id="id"><br>
+<input type="text" placeholder="grade" id="grade"><br>
+<input type="text" placeholder="class_letter" id="class_letter"><br>
+<input type="text" placeholder="profile_name" id="profile_name"><br>
+<input type="text" placeholder="students" id="students"><br>
+<input type="text" placeholder="teacher" id="teacher"><br>
+<input type="submit" value="Создать" id="sendButton"><br><br>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/add_group.js"></script>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Добавить кабинет:</h1>
+<input type="text" placeholder="location_type" id="location_type"><br>
+<input type="text" placeholder="location_desc" id="location_desc"><br>
+<input type="text" placeholder="profile" id="profile"><br>
+<input type="number" placeholder="num_of_class" id="num_of_class"><br>
+<input type="text" placeholder="equipment" id="equipment"><br>
+<input type="text" placeholder="link" id="link"><br>
+<input type="text" placeholder="comment" id="comment"><br>
+<input type="submit" value="Создать" id="sendButton"><br><br>
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="static/js/add_locations.js"></script>
+{% endblock %}

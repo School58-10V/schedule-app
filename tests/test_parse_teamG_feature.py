@@ -9,6 +9,7 @@ from data_model.student import Student
 from data_model.lesson import Lesson
 from data_model.lesson_row import LessonRow
 from data_model.no_learning_period import NoLearningPeriod
+from db_source import DBSource
 
 
 def test_parse(db_source, subject, file_folder):
@@ -17,7 +18,8 @@ def test_parse(db_source, subject, file_folder):
     return all_object
 
 
-source = FileSource('../db')
+source = DBSource(host='postgresql.aakapustin.ru', user='schedule_app',
+              password='VYRL!9XEB3yXQs4aPz_Q', dbname='schedule_app')
 
 timetables = test_parse(db_source=source, subject=TimeTable, file_folder='../data_examples/timetable_test.csv')
 

@@ -3,22 +3,22 @@ from __future__ import annotations  # нужно чтобы parse мог быт�
 from data_model.abstract_model import AbstractModel
 from typing import Optional, List, TYPE_CHECKING
 
+from data_model.lesson_row import LessonRow
 from data_model.students_for_groups import StudentsForGroups
 from data_model.parsed_data import ParsedData
 from data_model.student import Student
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
 
 
 class Group(AbstractModel):
     """
         Класс группы.
     """
-
     def __init__(
-            self, db_source: FileSource, teacher_id: int, class_letter: str, grade: int,
-            profile_name: str, object_id: Optional[int] = None
+            self, db_source: DBSource, teacher_id: int, class_letter: Optional[str] = None, grade: Optional[int] = None,
+            profile_name: Optional[str] = None, object_id: Optional[int] = None
     ):
         super().__init__(db_source)
         self.__teacher_id = teacher_id
@@ -40,7 +40,7 @@ class Group(AbstractModel):
         return self.__profile_name
 
     @staticmethod
-    def parse(file_location: str, db_source: FileSource) -> List[(Optional[str], Optional[Group])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Group])]:
         # ввод; адрес файла,
         with open(file_location, encoding='utf-8') as file:
             # файл теперь в file
@@ -81,7 +81,7 @@ class Group(AbstractModel):
     def __dict__(self) -> dict:
         return {"teacher_id": self.get_teacher_id(),
                 "class_letter": self.get_letter(),
-                "grade": self.get_letter(),
+                "grade": self.get_grade(),
                 "profile_name": self.get_profile_name(),
                 "object_id": self.get_main_id()}
 
@@ -104,6 +104,9 @@ class Group(AbstractModel):
         StudentsForGroups(self._db_source, student_id=student.get_main_id(), group_id=self.get_main_id()).save()
         return self
 
+    def get_lesson_rows(self) -> List[LessonRow]:
+        return LessonRow.get_lesson_rows_by_group_id(self.get_main_id(), self.get_db_source())
+
     def remove_student(self, student: Student) -> Group:
         """
             Удалять студента для группы. На ввод объект класса Student, который мы хотим
@@ -116,3 +119,10 @@ class Group(AbstractModel):
             # И все удаляем
             i.delete()
         return self
+
+    @classmethod
+    def get_by_class_letters(cls, db_source: DBSource, class_letter: str, grade: int) -> List[Group]:
+
+        list_of_groups = db_source.get_by_query(cls._get_collection_name(),
+                                                {'class_letter': class_letter, 'grade': grade})
+        return [Group(**i, db_source=db_source) for i in list_of_groups]

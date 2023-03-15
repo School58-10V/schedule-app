@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Добавить предмет:</h1>
+<input type="text" placeholder="subject_name" id="subject_name"><br>
+<input type="text" placeholder="teachers" id="teachers"><br>
+<input type="submit" value="Создать" id="sendButton"><br><br>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="static/js/add_subject.js"></script>
+{% endblock %}

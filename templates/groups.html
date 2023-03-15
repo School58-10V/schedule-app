@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Все классы:</h1>
+<table id="groupsTable" border=1 frame=void>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Класс</th>
+            <th>Буква</th>
+            <th>Профиль</th>
+            <th>ID учеников</th>
+            <th>ID классного руководителя</th>
+        </tr>
+    {% for i in groups %}
+    <tr>
+        <th>{{ i['object_id']}}</th>
+        <th>{{ i['grade']}}</th>
+        <th>{{ i['class_letter']}}</th>
+        <th>{{ i['profile_name']}}</th>
+        <th>{{ i['students']}}</th>
+        <th>{{ i['teacher_id']}}</th>
+    </tr>
+    {% endfor %}
+    </thead>
+</table>
+{% endblock %}
+
+{% block footer %}
+<nav>
+    <a href="/students">Список учеников</a>
+    <a href="/groups">Список классов</a>
+    <a href="/lessons">Список уроков</a>
+    <a href="/teachers">Список учителей</a>
+    <a href="/subjects">Список предметов</a>
+</nav>
+{% endblock %}
+
+{% block script %}
+<script src="static/js/groups.js"></script>
+{% endblock %}

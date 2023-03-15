@@ -1,5 +1,7 @@
 from __future__ import annotations  # нужно чтобы parse мог быть типизирован
 from datetime import datetime
+
+from adapters.abstract_source import AbstractSource
 from data_model.parsed_data import ParsedData
 from typing import Optional, List, TYPE_CHECKING
 
@@ -7,7 +9,7 @@ from data_model.abstract_model import AbstractModel
 from data_model.students_for_groups import StudentsForGroups
 
 if TYPE_CHECKING:
-    from adapters.file_source import FileSource
+    from adapters.db_source import DBSource
     from data_model.group import Group
 
 
@@ -22,7 +24,7 @@ class Student(AbstractModel):
     """
 
     def __init__(
-            self, db_source: FileSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
+            self, db_source: DBSource, full_name: str, date_of_birth: datetime.date, object_id: Optional[int] = None,
             contacts: Optional[str] = None, bio: Optional[str] = None
             ):
         super().__init__(db_source)
@@ -45,7 +47,7 @@ class Student(AbstractModel):
         return self.__bio
 
     @staticmethod
-    def parse(file_location, db_source: FileSource) -> List[(Optional[str], Optional[Student])]:
+    def parse(file_location: str, db_source: DBSource) -> List[(Optional[str], Optional[Student])]:
         with open(file_location, encoding='utf-8') as f:
             lines = [i.split(';') for i in f.read().split('\n')[1:]]
             res = []
@@ -53,7 +55,7 @@ class Student(AbstractModel):
             for i in lines:
                 try:
                     full_name = i[0]
-                    date_of_birth = datetime.strptime(i[1], '%d.%m.%Y').date()
+                    date_of_birth = datetime.strptime(i[1], '%Y-%m-%d').date()
                     contacts = str(i[2])
                     bio = i[3]
 
@@ -71,7 +73,7 @@ class Student(AbstractModel):
 
         return res
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Student(full_name = {self.__full_name}, date_of_birth = {self.__date_of_birth}, ' \
                f'contacts = {self.__contacts}, bio =  {self.__bio}) '
 
@@ -102,6 +104,14 @@ class Student(AbstractModel):
         StudentsForGroups(self._db_source, group_id=group.get_main_id(), student_id=self.get_main_id()).save()
         return self
 
+    def append_group_by_id(self, group_id: int) -> Student:
+        for i in StudentsForGroups.get_group_by_student_id(self.get_main_id(), self.get_db_source()):
+            if i.get_main_id() == group_id:
+                return self
+
+        StudentsForGroups(self._db_source, group_id=group_id, student_id=self.get_main_id()).save()
+        return self
+
     def remove_group(self, group: Group) -> Student:
         """
             Удаляем новую группу для этого студента, используя класс
@@ -114,3 +124,8 @@ class Student(AbstractModel):
             # И все удаляем
             i.delete()
         return self
+
+    @classmethod
+    def get_by_name(cls, name: str, source: AbstractSource) -> List[Student]:
+        return [Student(**i, db_source=source) for i in source.get_by_query(cls._get_collection_name(),
+                                                                            {'full_name': name})]

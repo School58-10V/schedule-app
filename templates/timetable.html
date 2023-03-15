@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block main %}
+<h1>Расписание</h1>
+<form  action="" method="post">
+
+
+        {{ form.hidden_tag( csrf_token() ) }}
+        <p style="font-size: 2vw;">{{ form.name.label }}</p><br>
+        {{ form.name(style='border-color: #474389;') }}<br>
+        <p style="font-size: 2vw;">{{form.group.label}}</p>
+        <br>{{form.group(style='border-color: #474389;')}}
+        <br><p style="font-size: 2vw;">{{form.date.label}}</p><br>
+        {{form.date(style='border-color: #474389;')}}<br>
+        {{form.submit(style='border-color: #474389;')}}<br>
+    
+</form><!-- 
+<input type="text" placeholder="ФИО ученика" id="nameField">
+<input type="submit" value="Получить расписание" id="submitButton"><br> -->
+{% if error %}
+<p style="color: darkred; font-size: 2vw;">Введите корректные данные!!!</p>
+{% endif %}
+
+
+<pre style="font-size: 2vw; width: 100%;">{{ schedule }}</pre>
+
+{% endblock %}
+
+{% block footer %}
+<nav>
+    <a href="/students">Список учеников</a>
+    <a href="/groups">Список классов</a>
+    <a href="/lessons">Список уроков</a>
+    <a href="/teachers">Список учителей</a>
+    <a href="/subjects">Список предметов</a>
+    <a href="/timetable">Расписание</a>
+</nav>
+{% endblock %}
+
+{% block script %}
+<script type="module" src="static/js/timetable.js"></script>
+{% endblock %}
