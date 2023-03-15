@@ -16,6 +16,7 @@ from data_model.group import Group
 from data_model.subject import Subject
 
 from validators.timetable_validator import TimetableValidator
+from services.logger.messages_templates import MessagesTemplates
 from bs4 import BeautifulSoup
 
 if TYPE_CHECKING:
@@ -41,6 +42,10 @@ PERIOD_CODES = {
     7: (1500, 1545),
     8: (1555, 1640),
 }
+
+LOGGER = logging.getLogger("main.controller")
+MESSAGES = MessagesTemplates()
+MODEL = "Timetable"
 
 
 def parse_file(file):
@@ -77,26 +82,35 @@ def get_information(tag, fields, xml_data):
 @app.route("/api/v1/timetable", methods=["GET"])
 def get_timetable() -> Response:
     try:
-        return jsonify([i.__dict__() for i in TimeTable.get_all(app.config.get("schedule_db_source"))])
+        data = [i.__dict__() for i in TimeTable.get_all(app.config.get("schedule_db_source"))]
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_message(MODEL))
+        return jsonify(data)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
 @app.route("/api/v1/timetable/<int:object_id>", methods=["GET"])
 def get_timetable_by_id(object_id) -> Response:
     try:
-        return jsonify(TimeTable.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__())
+        data = TimeTable.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_find_by_id_message(MODEL, object_id))
+        return jsonify(data)
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
 
 
 @app.route("/api/v1/timetable/current", methods=["GET"])
 def get_current_timetable() -> Response:
     try:
-        return jsonify(TimeTable.get_current_timetable(app.config.get("schedule_db_source")).__dict__())
+        data = TimeTable.get_current_timetable(app.config.get("schedule_db_source")).__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_find_current_message(MODEL))
+        return jsonify(data)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_find_current_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -104,31 +118,41 @@ def get_current_timetable() -> Response:
 def create_timetable() -> Union[Response, Tuple[str, int]]:
     validation_data = validator.validate(request.get_json(), "POST")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
     try:
-        return jsonify(TimeTable(**request.get_json(),
-                                 db_source=app.config.get("schedule_db_source")).save().__dict__())
+        data = TimeTable(**request.get_json(),
+                                 db_source=app.config.get("schedule_db_source")).save().__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_create_message(MODEL))
+        return jsonify(data)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_create_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
 @app.route("/api/v1/timetable/<int:object_id>", methods=["PUT"])
 def update_timetable(object_id: int) -> Union[Tuple[str, int], Response]:
     if request.get_json().get('object_id') != object_id:
+        LOGGER.error(MESSAGES.General.get_object_id_mismatch_message())
         return "", 400
     validation_data = validator.validate(request.get_json(), "PUT")
     if (not validation_data[0]):
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
     try:
         TimeTable.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
     try:
-        return jsonify(TimeTable(**request.get_json(),
-                                 db_source=app.config.get("schedule_db_source")).save().__dict__())
+        data = TimeTable(**request.get_json(),
+                                 db_source=app.config.get("schedule_db_source")).save().__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_update_message(MODEL))
+        return jsonify(data)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_update_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -137,14 +161,19 @@ def delete_timetable(object_id: int) -> Union[Response, Tuple[str, int], Tuple[A
     try:
         timetable = TimeTable.get_by_id(object_id, app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
     try:
         timetable = timetable.delete().__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_delete_message(MODEL))
         return jsonify(timetable)
     except psycopg2.Error as e:
+        LOGGER.error(MESSAGES.Controller.DBError.get_delete_message(MODEL, psycopg2.errorcodes.lookup(e.pgcode)))
+        LOGGER.exception(e)
         return jsonify(psycopg2.errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_delete_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -217,9 +246,11 @@ def upload_files():
         timetable['classes'] = [el['name'] for el in classes.values()]
         timetable['amount_of_days'] = len(xml_data.findAll('daysdef')) - 2
 
+        LOGGER.info(MESSAGES.Controller.Success.get_upload_files_message())
         return jsonify(timetable), 200
     except Exception as e:
-        print(e)
+        LOGGER.error(MESSAGES.Controller.Error.get_upload_files_message())
+        LOGGER.exception(e)
         return '', 500
 
 
@@ -237,6 +268,7 @@ def save_timetable():
         except KeyError:
             pass
 
+    LOGGER.info(MESSAGES.Controller.Success.get_save_timetable_message())
     return '', 200
 
 

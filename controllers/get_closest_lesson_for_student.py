@@ -16,6 +16,7 @@ import jwt
 from flask import request, jsonify
 
 PUBLIC_KEY = open('./keys/schedule-public.pem').read()
+LOGGER = logging.getLogger("main.controller")
 
 
 def lesson_row_to_string(lesson_row: LessonRow) -> str:
@@ -59,16 +60,18 @@ def get_closest_lesson_for_student():
                     lesson_rows_list.append(j)
 
         filtered_lessons_by_time = [c for c in lesson_rows_list if int(c.get_end_time()) > int(datetime.datetime.now().strftime('%H%M'))]
-        print(filtered_lessons_by_time)
         
         filtered_lessons_by_time.sort(key=lambda x: x.get_start_time())
         if len(filtered_lessons_by_time) == 0:
+            LOGGER.warning("Unable to find lessons with that input!")
             return 'Сегодня уроков нет!'
 
         first_lesson_row = filtered_lessons_by_time[0]
 
         weekday_to_text = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
+        LOGGER.info("Successfully found the closest lesson!")
         return f'Ближайший урок сегодня, в {weekday_to_text[today]}: {lesson_row_to_string(first_lesson_row)}'
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error("An exception occured while trying to find the closest lesson!")
+        LOGGER.exception(err)
         return "", 500

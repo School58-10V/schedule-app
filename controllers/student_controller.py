@@ -8,6 +8,7 @@ from schedule_app import app
 from data_model.student import Student
 from data_model.students_for_groups import StudentsForGroups
 from validators.student_validator import StudentValidator
+from services.logger.messages_templates import MessagesTemplates
 
 if TYPE_CHECKING:
     from flask import Response
@@ -16,6 +17,9 @@ if TYPE_CHECKING:
 
 validator = StudentValidator()
 
+MODEL = "Student"
+LOGGER = logging.getLogger("main.controller")
+MESSAGES = MessagesTemplates()
 
 @app.route("/api/v1/students", methods=["GET"])
 def get_students() -> Response:
@@ -27,9 +31,11 @@ def get_students() -> Response:
                                     StudentsForGroups.get_group_by_student_id(student.get_main_id(),
                                                                                 app.config.get("schedule_db_source"))]
             result.append(student_data)
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_message(MODEL))
         return jsonify(result)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -43,9 +49,11 @@ def get_students_detailed() -> Response:
                                     StudentsForGroups.get_group_by_student_id(student.get_main_id(),
                                                                                 app.config.get("schedule_db_source"))]
             result.append(student_data)
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_detailed_message(MODEL))
         return jsonify(result)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all_detailed_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -56,7 +64,9 @@ def get_student_by_id_detailed(object_id: int) -> Tuple[str, int] | Response:
         result["groups"] = [group.__dict__() for group in
                             StudentsForGroups.get_group_by_student_id(object_id, app.config.get("schedule_db_source"))]
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
+    LOGGER.info(MESSAGES.Controller.Success.get_find_by_id_detailed_message(MODEL, object_id))
     return jsonify(result)
 
 
@@ -67,7 +77,9 @@ def get_student_by_id(object_id: int) -> Tuple[str, int] | Response:
         result["groups"] = [group_obj.get_main_id() for group_obj in
                             StudentsForGroups.get_group_by_student_id(object_id, app.config.get("schedule_db_source"))]
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
+    LOGGER.info(MESSAGES.Controller.Success.get_find_by_id_message(MODEL, object_id))
     return jsonify(result)
 
 
@@ -76,6 +88,7 @@ def create_student() -> Tuple[str, int] | Response:
     dct = request.get_json()
     validation_data = validator.validate(dct, "POST")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
     try:
         try:
@@ -84,12 +97,16 @@ def create_student() -> Tuple[str, int] | Response:
             for i in groups:
                 student.append_group_by_id(i)
         except ValueError as e:
+            LOGGER.error(MESSAGES.General.get_missing_fields_message("'groups'"))
+            LOGGER.exception(e)
             return "unknown", 404
         dct = student.__dict__()
         dct['groups'] = groups
+        LOGGER.info(MESSAGES.Controller.Success.get_create_message(MODEL))
         return jsonify(dct)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_create_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -99,15 +116,18 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
 
     if request.get_json().get('object_id') != object_id:
+        LOGGER.error(MESSAGES.General.get_object_id_mismatch_message())
         return "", 400
 
     validation_data = validator.validate(dct, "PUT")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
 
     try:
         Student.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
     try:
         groups = []
@@ -125,13 +145,19 @@ def update_student(object_id: int) -> Union[Response, Tuple[str, int]]:
 
         dct = result.__dict__()
         dct['groups'] = groups
+        LOGGER.info(MESSAGES.Controller.Success.get_update_message(MODEL))
         return jsonify(dct)
-    except ValueError:
+    except ValueError as e:
+        LOGGER.error(MESSAGES.General.get_malformed_input_message())
+        LOGGER.exception(e)
         return "", 404
-    except TypeError:
+    except TypeError as e:
+        LOGGER.error(MESSAGES.General.get_malformed_input_message())
+        LOGGER.exception(e)
         return "", 400
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_update_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -140,12 +166,17 @@ def delete_student(object_id: int) -> Response | Tuple[str, int] | Tuple[Respons
     try:
         student = Student.get_by_id(object_id, app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
     try:
         student = student.delete().__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_delete_message(MODEL))
         return jsonify(student)
     except psycopg2.Error as e:
+        LOGGER.error(MESSAGES.Controller.DBError.get_delete_message(MODEL, psycopg2.errorcodes.lookup(e.pgcode)))
+        LOGGER.exception(e)
         return jsonify(psycopg2.errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_delete_message(MODEL))
+        LOGGER.exception(err)
         return "", 500

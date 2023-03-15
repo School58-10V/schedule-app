@@ -1,0 +1,65 @@
+{
+    "general": {
+        "id_not_found": "Didn't find a %model% with id %object_id%!",
+        "validation_error": "Data didn't pass validation, error: %err%",
+        "object_id_mismatch": "'object_id' from the request does not match the one in the URL!",
+        "missing_fields": "Declining request because %fields% field(s) are not provided!",
+        "malformed_input": "The input is malformed."
+    },
+    "adapter": {
+        
+    },
+    "authentication": {
+        "login_attempt": "Attempting to log in a user.",
+        "wrong_login": "Failed to log in the user. Can't find a user with login %login%!",
+        "wrong_password": "Failed to log in the user. Wrong password!",
+        "login_success": "Successfully logged in the user!",
+        "register_attempt": "Attempting to register a new user.",
+        "register_success": "Successfully registered the user!",
+        "on_request": "Received a %method% request to address %path%. Host: %host%; Host URL: %host_url%",
+        "malformed_request": "Declined the request because of invalid format or expired signature!",
+        "token_not_found": "Declined the request because token wasn't found!",
+        "session_change": "Declined the request because of session change!"
+    },
+    "controller": {
+        "success": {
+            "collect_all": "Successfully collected all %model%s!",
+            "collect_all_detailed": "Successfully collected and expanded all %model%s!",
+            "collect_all_by_model": "Successfully collected all %model%s by %filter%",
+            "find_by_id": "Found a %model% with id %object_id%!",
+            "find_by_id_detailed": "Found and expanded a %model%, with id %object_id%!",
+            "find_by_day_and_student": "Found a %model% by day and student!",
+            "find_current": "Found the current %model%!",
+            "create": "Successfully created a %model%!",
+            "update": "Successfully updated the %model%!",
+            "delete": "Successfully deleted the %model% with id %object_id%",
+            "upload_files": "Successfully uploaded files!",
+            "save_timetable": "Successfully saved the timetable!",
+            "collect_week_schedule": "Successfully collected the current week schedule!",
+            "collect_raw_week_schedule": "Successfully collected the current raw week schedule!"
+        },
+        "db_error": {
+            "collect_all": "",
+            "collect_all_detailed": "",
+            "find_by_id": "",
+            "create": "",
+            "update": "",
+            "delete": "A DB exception (%err%) occured while deleting a %model%!"
+        },
+        "error": {
+            "collect_all": "An exception occured while collecting all %model%",
+            "collect_all_detailed": "",
+            "collect_all_by_model": "An exception occured while collecting all %model%s by %filter%!",
+            "find_by_id": "Did not find a %model% with id %object_id%!",
+            "find_by_day_and_student": "An exception occured while getting a %model% by day and student!",
+            "find_current": "An exception occured while getting the current %model%!",
+            "create": "An exception occured while creating a %model%!",
+            "update": "An exception occured while updating a %model%!",
+            "delete": "An exception occured while deleting a %model%!",
+            "upload_files": "An exception occured while uploading files!"
+        }
+    },
+    "model": {
+
+    }
+}

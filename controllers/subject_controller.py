@@ -9,6 +9,7 @@ from data_model.subject import Subject
 from data_model.teacher import Teacher
 from data_model.teachers_for_subjects import TeachersForSubjects
 from validators.subject_validator import SubjectValidator
+from services.logger.messages_templates import MessagesTemplates
 
 if TYPE_CHECKING:
     from flask import Response
@@ -16,6 +17,9 @@ if TYPE_CHECKING:
 
 
 validator = SubjectValidator()
+MESSAGES = MessagesTemplates()
+LOGGER = logging.getLogger("main.controller")
+MODEL = "Subject"
 
 
 @app.route("/api/v1/subjects", methods=["GET"])
@@ -29,9 +33,11 @@ def get_subjects() -> Response:
                                     i.get_main_id(), app.config.get("schedule_db_source")
                                     )]
             result.append(subj)
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_message(MODEL))
         return jsonify(result)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -46,9 +52,11 @@ def get_subjects_detailed() -> Response:
                                     i.get_main_id(), app.config.get("schedule_db_source")
                                     )]
             result.append(subj)
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_detailed_message(MODEL))
         return jsonify(result)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all_detailed_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -59,8 +67,10 @@ def get_subject_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
         dct['teachers'] = [i.get_main_id() for i in
                            TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
                                "schedule_db_source"))]
+        LOGGER.info(MESSAGES.Controller.Success.get_find_by_id_message(MODEL, object_id))
         return jsonify(dct)
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return '', 404
 
 
@@ -70,6 +80,7 @@ def create_subject() -> Union[Tuple[str, int], Response]:
     req: dict = request.get_json()
     validation_data = validator.validate(req, "POST")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
     try:
         subject = Subject(subject_name=req["subject_name"], db_source=app.config.get("schedule_db_source")).save()
@@ -79,12 +90,15 @@ def create_subject() -> Union[Tuple[str, int], Response]:
                                           db_source=app.config.get("schedule_db_source")).save()
         result = subject.__dict__()
         result["teachers"] = req["teachers"]
+        LOGGER.info(MESSAGES.Controller.Success.get_create_message(MODEL))
         return jsonify(result)
     except ValueError as e:
-        logging.error(e, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_create_message(MODEL))
+        LOGGER.exception(e)
         return "", 404
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_create_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -97,6 +111,7 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
 
     validation_data = validator.validate(req, "PUT")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
 
     try:
@@ -129,11 +144,14 @@ def update_subject(object_id: int) -> Union[Tuple[str, int], Response]:
         new_subject_dict = new_subject.__dict__()
         new_subject_dict['teachers'] = req_teachers if req_teachers else [i.get_main_id() for i in
                                                                           new_subject.get_teachers()]
+        LOGGER.info(MESSAGES.Controller.Success.get_update_message(MODEL))
         return jsonify(new_subject_dict)
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_update_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -144,8 +162,10 @@ def get_teachers_by_subject_id(object_id: int) -> Union[Response, Tuple[str, int
         dct['teachers'] = [i.__dict__() for i in
                            TeachersForSubjects.get_teachers_by_subject_id(object_id, app.config.get(
                                "schedule_db_source"))]
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_by_model_message("Teachers", MODEL))
         return jsonify(dct)
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message("Teacher", object_id))
         return '', 404
 
 
@@ -154,12 +174,17 @@ def delete_subject(object_id) -> Union[Response, Tuple[str, int], Tuple[Any, int
     try:
         subject = Subject.get_by_id(object_id, app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
     try:
         subject = subject.delete().__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_delete_message(MODEL))
         return jsonify(subject)
     except psycopg2.Error as e:
+        LOGGER.error(MESSAGES.Controller.DBError.get_delete_message(MODEL, psycopg2.errorcodes.lookup(e.pgcode)))
+        LOGGER.exception(e)
         return jsonify(psycopg2.errorcodes.lookup(e.pgcode)), 409
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_delete_message(MODEL))
+        LOGGER.exception(err)
         return "", 500

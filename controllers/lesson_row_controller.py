@@ -11,6 +11,7 @@ from data_model.teacher import Teacher
 from data_model.lesson_row import LessonRow
 from data_model.teachers_for_lesson_rows import TeachersForLessonRows
 from validators.lesson_row_validator import LessonRowValidator
+from services.logger.messages_templates import MessagesTemplates
 
 from schedule_app import app
 import time
@@ -34,6 +35,10 @@ DAYS_OF_THE_WEEK = {
     6: "Воскресенье"
 }
 
+LOGGER = logging.getLogger("main.controller")
+MESSAGES = MessagesTemplates()
+MODEL = "LessonRow"
+
 
 @app.route("/api/v1/lesson-row", methods=["GET"])
 def get_all_lesson_rows() -> Response | tuple[str, int]:
@@ -48,10 +53,11 @@ def get_all_lesson_rows() -> Response | tuple[str, int]:
             local_dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
                 get_teachers_by_lesson_row_id(i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
             global_dct.append(local_dct.copy())
-
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_message(MODEL))
         return jsonify(global_dct)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -81,9 +87,11 @@ def get_all_lesson_row_detailed() -> Response:
 
             global_dct[el[0]] = lesson_row_info
 
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_detailed_message(MODEL))
         return jsonify(list(global_dct.values()))
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all_detailed_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -98,8 +106,11 @@ def get_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.get_main_id() for i in TeachersForLessonRows.
             get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
+        LOGGER.info(MESSAGES.Controller.Success.get_find_by_id_message(MODEL, object_id))
         return jsonify(dct)
-    except ValueError:
+    except ValueError as e:
+        LOGGER.error(MESSAGES.Controller.Error.get_find_by_id_message(MODEL))
+        LOGGER.exception(e)
         return '', 404
 
 
@@ -114,9 +125,11 @@ def get_detailed_lesson_row_by_id(object_id: int) -> Union[Response, Tuple[str, 
         dct = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['teachers'] = [i.__dict__() for i in TeachersForLessonRows.
             get_teachers_by_lesson_row_id(object_id, db_source=app.config.get("schedule_db_source"))]
-
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_detailed_message(MODEL))
         return jsonify(dct)
-    except ValueError:
+    except ValueError as e:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
+        LOGGER.exception(e)
         return '', 404
 
 @app.route("/api/v1/lesson-row/personal", methods=["GET"])
@@ -126,10 +139,8 @@ def get_lesson_row_by_day_and_student() -> Union[Response, Tuple[str, int]]:
     :return: Response
     """
     try:
-        # logging.debug("hi")
         day = request.args.get("day", None)
         student_id = request.args.get("student_id", None)
-        # logging.debug(day + " ; " + student_id)
         if (day != None and student_id != None):
             rows = []
             data = LessonRow.get_by_day_and_student(int(day), int(student_id), app.config.get("schedule_db_source"))
@@ -137,11 +148,13 @@ def get_lesson_row_by_day_and_student() -> Union[Response, Tuple[str, int]]:
                 local_dct = row.__dict__().copy()
                 local_dct["subject_name"] = Subject.get_by_id(row.get_subject_id(), app.config.get("schedule_db_source")).get_subject_name()
                 rows.append(local_dct)
+            LOGGER.info(MESSAGES.Controller.Success.get_find_by_day_and_student_message(MODEL))
             return jsonify(rows)
         else:
+            LOGGER.error(MESSAGES.General.get_missing_fields_message("'day' and 'student_id'"))
             return "", 400
     except Exception as e:
-        print(e)
+        LOGGER.error(MESSAGES.Controller.Error.get_find_by_day_and_student_message(MODEL))
         return "", 404
 
 @app.route("/api/v1/lesson-row", methods=["POST"])
@@ -153,6 +166,7 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
     validation_data = validator.validate(dct, "POST")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
     try:
         teacher_id = []
@@ -165,11 +179,15 @@ def create_lesson_row() -> Union[Response, Tuple[str, int]]:
         dct = lesson_row.__dict__()
         dct["object_id"] = lesson_row.get_main_id()
         dct['teachers'] = teacher_id
+        LOGGER.info(MESSAGES.Controller.Success.get_create_message(MODEL))
         return jsonify(dct)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as err:
+        LOGGER.error(MESSAGES.General.get_malformed_input_message())
+        LOGGER.exception(err)
         return '', 400
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_create_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -187,11 +205,13 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
 
     validation_data = validator.validate(dct, method="PUT")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
 
     try:
         LessonRow.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
 
     new_teachers_id = []
@@ -213,13 +233,17 @@ def update_lesson_rows(object_id: int) -> Union[Response, Tuple[str, int]]:
                 teacher = Teacher.get_by_id(i, db_source=app.config.get('schedule_db_source'))
                 lesson_row_by_id.append_teacher(teacher)
 
-        except ValueError:
+        except ValueError as e:
+            LOGGER.error(MESSAGES.Controller.Error.get_update_message(MODEL))
+            LOGGER.exception(e)
             return '', 400
         dct = lesson_row_by_id.__dict__()
         dct['teachers'] = new_teachers_id
+        LOGGER.info(MESSAGES.Controller.Success.get_update_message(MODEL))
         return jsonify(dct)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_update_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -233,15 +257,19 @@ def delete_lesson_row(object_id: int) -> Union[Response, Tuple[str, int]]:
     try:
         lesson_row = LessonRow.get_by_id(object_id, app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
         return "", 404
     try:
         lesson_row = lesson_row.delete().__dict__()
     except psycopg2.Error as e:
-        print(e)
+        LOGGER.error(MESSAGES.Controller.DBError.get_delete_message(MODEL, psycopg2.errorcodes.lookup(e.pgcode)))
+        LOGGER.exception(e)
         return jsonify(psycopg2.errorcodes.lookup(e.pgcode), 409)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_delete_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
+    LOGGER.info(MESSAGES.Controller.Success.get_delete_message(MODEL))
     return jsonify(lesson_row)
 
 
@@ -263,9 +291,11 @@ def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Res
             raw_row["group"] = Group.get_by_id(row.get_group_id(), db_source).__dict__()
             raw_row["subject"] = Subject.get_by_id(row.get_subject_id(), db_source).__dict__()
             result.append(raw_row.copy())
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_by_model_message(MODEL, "Timetable"))
         return jsonify(result)
     except Exception as e:
-        logging.error(e, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all_by_model_message(MODEL, "Timetable"))
+        LOGGER.exception(e)
         return "", 500
 
 

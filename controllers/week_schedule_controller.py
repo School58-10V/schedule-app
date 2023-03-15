@@ -13,8 +13,13 @@ from data_model.user import User
 from interfaces.schedule_interface import get_schedule_for_day, get_schedule_for_week
 from schedule_app import app
 
+import logging
+from services.logger.messages_templates import MessagesTemplates
+
 PUBLIC_KEY = open('./keys/schedule-public.pem').read()
 
+LOGGER = logging.getLogger("main.controller")
+MESSAGES = MessagesTemplates()
 
 # @app.route("/api/v1/week", methods=["GET"])
 # def get_week_schedule1():
@@ -75,6 +80,7 @@ def get_week_schedule():
     data.sort(key=lambda x: weekdays.index(x['День недели']))
     pretty_data = tabulate.tabulate(data, headers='keys', tablefmt='grid')
 
+    LOGGER.info(MESSAGES.Controller.Success.get_collect_week_schedule())
     return jsonify(pretty_data), 200
 
 @app.route("/api/v1/week-raw/<int:student_id>", methods=["GET"])
@@ -95,4 +101,5 @@ def get_raw_week_schedule(student_id):
             data[row.get_day_of_the_week()].append(lesson_data)
         else:
             data[row.get_day_of_the_week()] = [lesson_data]
+    LOGGER.info(MESSAGES.Controller.Success.get_collect_raw_week_schedule())
     return data, 200

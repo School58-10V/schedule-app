@@ -11,6 +11,7 @@ from data_model.students_for_groups import StudentsForGroups
 from schedule_app import app
 
 from validators.group_validator import GroupValidator
+from services.logger.messages_templates import MessagesTemplates
 
 if TYPE_CHECKING:
     from flask import Response
@@ -18,6 +19,10 @@ if TYPE_CHECKING:
 
 
 validator = GroupValidator()
+
+LOGGER = logging.getLogger("main.controller")
+MESSAGES = MessagesTemplates()
+MODEL = "Group"
 
 
 @app.route("/api/v1/group", methods=["GET"])
@@ -30,9 +35,11 @@ def get_groups():
             for j in i.get_all_students():
                 dct1['students'].append(j.get_main_id())
             dct.append(dct1)
+        LOGGER.info(MESSAGES.Controller.Success.get_collect_all_message(MODEL))
         return jsonify(dct)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_collect_all(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -42,8 +49,11 @@ def get_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]:
         group = Group.get_by_id(object_id, app.config.get("schedule_db_source"))
         dct = group.__dict__()
         dct['students'] = [i.get_main_id() for i in group.get_all_students()]
+        LOGGER.info(MESSAGES.Controller.Success.get_find_by_id_message(MODEL, object_id))
         return jsonify(dct)
-    except ValueError:
+    except ValueError as e:
+        LOGGER.error(MESSAGES.Controller.Error.get_find_by_id_message(MODEL))
+        LOGGER.exception(e)
         return '', 404
 
 
@@ -52,8 +62,8 @@ def create_group() -> Union[Response, Tuple[str, int]]:
     dct = request.get_json()
     validation_data = validator.validate(dct, "POST")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
-
     try:
         student = []
         if 'students' in dct:
@@ -65,9 +75,11 @@ def create_group() -> Union[Response, Tuple[str, int]]:
             group.append_student(student1)
         dct = group.__dict__()
         dct['students'] = student
+        LOGGER.info(MESSAGES.Controller.Success.get_create_message(MODEL))
         return jsonify(dct)
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_create_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -77,11 +89,13 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
 
     validation_data = validator.validate(dct, "PUT")
     if not validation_data[0]:
+        LOGGER.error(MESSAGES.General.get_validation_error_message(validation_data[1]))
         return validation_data[1], 400
-
     try:
         group = Group.get_by_id(object_id, db_source=app.config.get("schedule_db_source"))
-    except ValueError:
+    except ValueError as e:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
+        LOGGER.exception(e)
         return "", 404
 
     student_id = []
@@ -100,10 +114,14 @@ def update_groups(object_id: int) -> Union[Tuple[str, int], Response]:
             group.append_student(student1)
 
     except ValueError:
+        LOGGER.error(MESSAGES.Controller.Error.get_update_message(MODEL))
+        LOGGER.exception(e)
         return '', 400
 
     dct = Group(**dct, db_source=app.config.get('schedule_db_source')).save().__dict__()
     dct['students'] = student_id
+
+    LOGGER.info(MESSAGES.Controller.Success.get_update_message(MODEL))
     return jsonify(dct)
 
 
@@ -112,15 +130,20 @@ def delete_group(object_id: int) -> Response:
     try:
         group = Group.get_by_id(object_id, app.config.get("schedule_db_source"))
     except ValueError:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
+        LOGGER.exception(e)
         return "", 404
     try:
         group = group.delete().__dict__()
+        LOGGER.info(MESSAGES.Controller.Success.get_delete_message(MODEL))
         return jsonify(group)
     except psycopg2.Error as e:
-        logging.error(e, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.DBError.get_update_message(MODEL, psycopg2.errorcodes.lookup(e.pgcode)))
+        LOGGER.exception(e)
         return psycopg2.errorcodes.lookup(e.pgcode), 409
     except Exception as err:
-        logging.error(err, exc_info=True)
+        LOGGER.error(MESSAGES.Controller.Error.get_update_message(MODEL))
+        LOGGER.exception(err)
         return "", 500
 
 
@@ -132,6 +155,7 @@ def get_all_detailed() -> Response:
         local_dct['students'] = [i.__dict__() for i in StudentsForGroups.get_student_by_group_id(
             i.get_main_id(), db_source=app.config.get("schedule_db_source"))]
         global_dct.append(local_dct.copy())
+    LOGGER.info(MESSAGES.Controller.Success.get_collect_all_detailed_message(MODEL))
     return jsonify(global_dct)
 
 
@@ -146,6 +170,9 @@ def get_detailed_group_by_id(object_id: int) -> Union[Response, Tuple[str, int]]
         dct = Group.get_by_id(object_id, app.config.get("schedule_db_source")).__dict__()
         dct['students'] = [i.__dict__() for i in StudentsForGroups.get_student_by_group_id(
             object_id, db_source=app.config.get("schedule_db_source"))]
+        LOGGER.info(f"Found a group by id {object_id} and expanded it")
         return jsonify(dct)
-    except ValueError:
+    except ValueError as e:
+        LOGGER.error(MESSAGES.General.get_id_not_found_message(MODEL, object_id))
+        LOGGER.exception(e)
         return '', 404

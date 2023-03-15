@@ -42,7 +42,7 @@ class DBSource(AbstractSource):
             LOGGER.error("An error occured while trying to connect to DB! Attempts limit reached!")
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
-        LOGGER.debug(f"Starting a query search in '{collection_name}'...")
+        LOGGER.debug(f"Starting a query search in '{collection_name}'. Query: {query}")
         curr_time = time.time_ns()
         self.connect()
         pairs = query.items()
@@ -101,7 +101,7 @@ class DBSource(AbstractSource):
         return self.__format_Tuple_to_dict(data, desc)[0]
 
     def insert(self, collection_name: str, document: dict) -> dict:
-        LOGGER.debug(f"Adding a new entry to '{collection_name}'...")
+        LOGGER.debug(f"Adding a new entry to '{collection_name}'. Document: {document}")
         curr_time = time.time_ns()
         self.connect()
         cursor = self.__conn.cursor()
