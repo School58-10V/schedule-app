@@ -62,35 +62,16 @@ def get_all_lesson_row_detailed() -> Response:
     :return: Response
     """
     t = time.time()
-    print('Запрос пришёл!')
-
-    # SELECT "LessonRows". *, "Teachers".fio, "Teachers".bio, "Teachers".contacts
-    # FROM "LessonRows"
-    # LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id
-    # LEFT JOIN "Teachers" ON "TeachersForLessonRows".teacher_id = "Teachers".object_id
 
     global_dct = {}
     try:
-        # for i in LessonRow.get_all(app.config.get("schedule_db_source")):
-        #     local_dct = i.__dict__()
-        #     local_dct['teachers'] = [i.__dict__() for i in
-        #                             TeachersForLessonRows.get_teachers_by_lesson_row_id(
-        #                                 i.get_main_id(),
-        #                                 db_source=app.config.get("schedule_db_source"))]
-        #     global_dct.append(local_dct.copy())
-
-        query = 'SELECT "LessonRows". *, "Teachers".fio, "Teachers".bio, "Teachers".contacts FROM "LessonRows" ' \
-                'LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id ' \
-                'LEFT JOIN "Teachers" ON "TeachersForLessonRows".teacher_id = "Teachers".object_id'
-
         columns = ['object_id', 'start_time', 'end_time', 'group_id', 'subject_id', 'room_id', 'timetable_id',
                    'day_of_the_week']
 
-        result = app.config.get("schedule_db_source").run_query(query)
+        result = LessonRow.get_detailed_lesson_rows()
 
         for el in result:
             lesson_row_info = dict(zip(columns, el[:-3]))
-            # print(lesson_row_info)
 
             if el[0] not in global_dct:
                 lesson_row_info['teachers'] = []
@@ -100,11 +81,7 @@ def get_all_lesson_row_detailed() -> Response:
             lesson_row_info['teachers'].append({'fio': el[-3], 'bio': el[-2], 'contacts': el[-1]})
 
             global_dct[el[0]] = lesson_row_info
-            # print(lesson_row_info)
 
-        print(f'На обработку запроса ушло: {(time.time() - t):.3f} s')
-        # print(global_dct)
-        # print(list(global_dct.values()))
         return jsonify(list(global_dct.values()))
     except Exception as err:
         logging.error(err, exc_info=True)
