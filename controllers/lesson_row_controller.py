@@ -247,22 +247,41 @@ def delete_lesson_row(object_id: int) -> Union[Response, Tuple[str, int]]:
 
 @app.route("/api/v1/timetable/<int:timetable_id>/lesson-rows")
 def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Response]:
-    db_source: DBSource = app.config.get("schedule_db_source")
     try:
-        result = []
-        for row in LessonRow.get_by_timetable_id(db_source, timetable_id):
-            raw_data = row.__dict__()
-            raw_data['teachers'] = [i.__dict__() for i in
-                                        TeachersForLessonRows.get_teachers_by_lesson_row_id(
-                                            row.get_main_id(),
-                                            db_source=app.config.get("schedule_db_source"))]
-            raw_data["start_time"] = prettify_time(row.get_start_time())
-            raw_data["end_time"] = prettify_time(row.get_end_time())
-            raw_data["day_of_the_week"] = row.get_day_of_the_week()
-            raw_data["room"] = Location.get_by_id(row.get_room_id(), db_source).get_num_of_class()
-            raw_data["group"] = Group.get_by_id(row.get_group_id(), db_source).__dict__()
-            raw_data["subject"] = Subject.get_by_id(row.get_subject_id(), db_source).__dict__()
-            result.append(raw_data.copy())
+        result = {}
+        columns = ['object_id', 'start_time', 'end_time', 'group_id', 'subject_id', 'room_id', 'timetable_id', 'day_of_the_week', 'teacher_id', 'class_letter', 'grade', 'profile_name', 'fio', 'bio', 'contacts', 'office_id', 'subject_name', 'num_of_class']
+
+        group_columns = ['class_letter', 'grade', 'profile_name', 'teacher_id']
+        teacher_columns = ['fio', 'bio', 'contacts', 'office_id']
+
+        for row in LessonRow.get_timetable_by_id(timetable_id):
+            raw_data = dict(zip(columns, row))
+            object_id = raw_data['object_id']
+
+            if object_id not in result:
+                result[object_id] = {}
+                result[object_id]['group'] = {}
+                result[object_id]['teachers'] = []
+
+                for col in columns:
+                    if col in group_columns:
+                        result[object_id]['group'][col] = raw_data[col]
+                    elif col not in teacher_columns:
+                        if col == 'start_time' or col == 'end_time':
+                            result[object_id][col] = prettify_time(raw_data[col])
+                        else:
+                            result[object_id][col] = raw_data[col]
+
+            teacher_inforamtion = {}
+
+            for col in teacher_columns:
+                if raw_data[col] is not None:
+                    teacher_inforamtion[col] = raw_data[col]
+                del raw_data[col]
+
+            if teacher_inforamtion != {}:
+                result[object_id]['teachers'].append(teacher_inforamtion)
+
         return jsonify(result)
     except Exception as e:
         logging.error(e, exc_info=True)

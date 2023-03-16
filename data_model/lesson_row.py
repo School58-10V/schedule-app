@@ -92,6 +92,21 @@ class LessonRow(AbstractModel):
         return app.config.get("schedule_db_source").run_query(query)
 
     @classmethod
+    def get_timetable_by_id(cls, timetable_id):
+        query = 'SELECT "LessonRows".*, '\
+                '"Groups".teacher_id, "Groups".class_letter, "Groups".grade, "Groups".profile_name, '\
+                '"Teachers".fio, "Teachers".bio, "Teachers".contacts, "Teachers".office_id, '\
+                '"Subjects".subject_name, "Locations".num_of_class FROM "LessonRows" '\
+                'LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id '\
+                'LEFT JOIN "Teachers" ON "TeachersForLessonRows".teacher_id = "Teachers".object_id '\
+                'LEFT JOIN "Groups" ON "LessonRows".group_id = "Groups".object_id '\
+                'LEFT JOIN "Subjects" ON "LessonRows".subject_id = "Subjects".object_id '\
+                'LEFT JOIN "Locations" On "LessonRows".room_id = "Locations".object_id '\
+                f'WHERE "LessonRows".timetable_id = {timetable_id}'
+
+        return app.config.get('schedule_db_source').run_query(query)
+
+    @classmethod
     def get_detailed_lesson_rows(cls):
         query = 'SELECT "LessonRows". *, "Teachers".fio, "Teachers".bio, "Teachers".contacts FROM "LessonRows" ' \
                 'LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id ' \

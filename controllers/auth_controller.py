@@ -35,9 +35,9 @@ def do_login() -> Union[Tuple[Response, int], Response]:
     try:
         user = User.get_by_login(login=login, db_source=app.config.get('auth_db_source'))
     except ValueError:
-        return jsonify('Incorrect login'), 401
+        return jsonify('Incorrect login'), 400
     if not user.compare_hash(password):
-        return jsonify("Incorrect password"), 401
+        return jsonify("Incorrect password"), 400
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
     return jsonify({'token': encoded_data})
 
