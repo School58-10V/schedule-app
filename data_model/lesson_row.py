@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Optional, List, TYPE_CHECKING
 
+from schedule_app import app
+
 from data_model.abstract_model import AbstractModel
 from data_model.parsed_data import ParsedData
 from data_model.students_for_groups import StudentsForGroups
@@ -79,6 +81,15 @@ class LessonRow(AbstractModel):
 
     def __str__(self) -> str:
         return f'Урок в день недели номер {self.get_day_of_the_week() + 1} который начинается в {self.get_start_time()}'
+
+
+    @classmethod
+    def get_detailed_lesson_rows(cls):
+        query = 'SELECT "LessonRows". *, "Teachers".fio, "Teachers".bio, "Teachers".contacts FROM "LessonRows" ' \
+                'LEFT JOIN "TeachersForLessonRows" ON "LessonRows".object_id = "TeachersForLessonRows".lesson_row_id ' \
+                'LEFT JOIN "Teachers" ON "TeachersForLessonRows".teacher_id = "Teachers".object_id'
+
+        return app.config.get("schedule_db_source").run_query(query)
 
     @classmethod
     def get_detailed_lesson_rows(cls):

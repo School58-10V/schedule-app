@@ -23,7 +23,7 @@ def get_holidays_by_year(year: int):
         return '', 401
         ##### Нужно ли проверять пароль? Если да, то как его передавать, через headers?
 
-    student = Student.get_by_name(name=name, source=app.config.get('schedule_db_source'))
+    student = Student.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
     teacher = Teacher.get_by_name(name=name, db_source=app.config.get('schedule_db_source'))
     if len(student + teacher) == 0:
         return '', 401

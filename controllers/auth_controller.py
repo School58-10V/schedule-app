@@ -2,10 +2,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import datetime, jwt
-from flask import request, jsonify
+from flask import request, jsonify, g
 from jwt import DecodeError, ExpiredSignatureError
 
 from data_model.user import User
+
 from schedule_app import app
 
 if TYPE_CHECKING:
@@ -23,7 +24,7 @@ TOKEN_EXP_TIME = datetime.timedelta(days=14)
 
 # Генерирует токен по информации о пользователе и возвращает его
 @app.route('/api/v1/login', methods=['POST'])
-def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
+def do_login() -> Union[Tuple[Response, int], Response]:
     login, password = request.json.get('login'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     # TODO: if login/password are missing, abort
@@ -34,9 +35,9 @@ def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
     try:
         user = User.get_by_login(login=login, db_source=app.config.get('auth_db_source'))
     except ValueError:
-        return '', 401
+        return jsonify('Incorrect login'), 401
     if not user.compare_hash(password):
-        return jsonify(""), 401
+        return jsonify("Incorrect password"), 401
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
     return jsonify({'token': encoded_data})
 
@@ -60,18 +61,24 @@ def register() -> Response:
 # выбрасывает ошибку 400 когда токен некорректен
 # выбрасывает ошибку 401 когда данные не соответствуют
 @app.before_request
-def before_request() -> Optional[Tuple[str, int]]:
+def before_request() -> Optional[Tuple[Response, int]]:
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
-    if request.url_rule is None or\
-            request.path == '/api/v1/login' or\
-            request.path == '/api/v1/register' or\
-            request.method.lower() in ['get', 'options', 'post']:
+    # TODO: добавить исключения для get метода(dict с включениями/исключениями методов)
+
+    if request.url_rule is None or \
+            request.path == '/api/v1/login' or \
+            request.path == '/api/v1/register' or \
+            (request.method.lower() == 'get' and request.path != '/api/v1/profile') or\
+            request.method.lower() in ['post', 'options']:
         return
     request_token = request.headers.get('Authorization')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     try:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
+        g.user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
     except (DecodeError, ExpiredSignatureError):
-        return '', 400
+        return jsonify(''), 400
+    except AttributeError:
+        return jsonify('No token'), 400
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
-        return '', 401
+        return jsonify(''), 401

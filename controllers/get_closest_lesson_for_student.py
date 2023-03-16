@@ -42,7 +42,7 @@ def get_closest_lesson_for_student():
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
         login = data['login']
         student_name = User.get_by_login(login=login, db_source=app.config.get('auth_db_source')).get_name()
-        student = Student.get_by_name(name=student_name, source=app.config.get('schedule_db_source'))
+        student = Student.get_by_name(name=student_name, db_source=app.config.get('schedule_db_source'))
 
         student_id = student[0].get_main_id()
         student_groups = StudentsForGroups.get_group_by_student_id(student_id=student_id,

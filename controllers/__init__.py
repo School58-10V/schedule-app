@@ -1,4 +1,5 @@
 import controllers.auth_controller
+import controllers.profile_controller
 import controllers.group_controller
 import controllers.lesson_controller
 import controllers.lesson_row_controller

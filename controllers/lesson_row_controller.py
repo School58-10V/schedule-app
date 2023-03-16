@@ -251,18 +251,18 @@ def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Res
     try:
         result = []
         for row in LessonRow.get_by_timetable_id(db_source, timetable_id):
-            raw_row = row.__dict__()
-            raw_row['teachers'] = [i.__dict__() for i in
+            raw_data = row.__dict__()
+            raw_data['teachers'] = [i.__dict__() for i in
                                         TeachersForLessonRows.get_teachers_by_lesson_row_id(
                                             row.get_main_id(),
                                             db_source=app.config.get("schedule_db_source"))]
-            raw_row["start_time"] = prettify_time(row.get_start_time())
-            raw_row["end_time"] = prettify_time(row.get_end_time())
-            raw_row["day_of_the_week"] = DAYS_OF_THE_WEEK[row.get_day_of_the_week()]
-            raw_row["room"] = Location.get_by_id(row.get_room_id(), db_source).get_num_of_class()
-            raw_row["group"] = Group.get_by_id(row.get_group_id(), db_source).__dict__()
-            raw_row["subject"] = Subject.get_by_id(row.get_subject_id(), db_source).__dict__()
-            result.append(raw_row.copy())
+            raw_data["start_time"] = prettify_time(row.get_start_time())
+            raw_data["end_time"] = prettify_time(row.get_end_time())
+            raw_data["day_of_the_week"] = DAYS_OF_THE_WEEK[row.get_day_of_the_week()]
+            raw_data["room"] = Location.get_by_id(row.get_room_id(), db_source).get_num_of_class()
+            raw_data["group"] = Group.get_by_id(row.get_group_id(), db_source).__dict__()
+            raw_data["subject"] = Subject.get_by_id(row.get_subject_id(), db_source).__dict__()
+            result.append(raw_data.copy())
         return jsonify(result)
     except Exception as e:
         logging.error(e, exc_info=True)
@@ -274,3 +274,8 @@ def prettify_time(time):
     hours = time // 100
     minutes = time % 100
     return str(hours).zfill(2) + ':' + str(minutes).zfill(2)
+
+def get_time_since_noon(time):
+    hours = int(time.split(":")[0])
+    minutes = int(time.split(":")[1])
+    return minutes * 60000 + hours * 60 * 60000
