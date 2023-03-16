@@ -17,9 +17,10 @@ class DBSource(AbstractSource):
                                   "dbname": dbname, "options": options}
         self.__conn = None
 
-    def connect(self, retry_count: int = 3):
+    def make_connection(self, retry_count: int = 3):
         if self.__conn:
             return
+
         for i in range(retry_count):
             try:
                 self.__conn = psycopg2.connect(**self.__connection_data)
@@ -29,6 +30,16 @@ class DBSource(AbstractSource):
                 break
             except psycopg2.Error:
                 time.sleep(5)
+
+    def connect(self):
+        if not self.__conn:
+            self.make_connection()
+            return
+
+        try:
+            self.__conn.cursor()
+        except psycopg2.InterfaceError:
+            self.make_connection()
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
         self.connect()
@@ -186,7 +197,5 @@ class DBSource(AbstractSource):
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 raise ValueError(f'Ошибка во время выполнения запроса, таблица не существует. Запрос: {request}')
             else:
-                # why print here??
-                print(e)
                 raise ValueError(f'Неизвестная ошибка во время выполнения запроса, '
                                  f'код ошибки: {errorcodes.lookup(e.pgcode)}. Запрос: {request}')
