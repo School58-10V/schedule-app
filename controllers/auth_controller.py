@@ -24,7 +24,7 @@ TOKEN_EXP_TIME = datetime.timedelta(days=14)
 
 # Генерирует токен по информации о пользователе и возвращает его
 @app.route('/api/v1/login', methods=['POST'])
-def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
+def do_login() -> Union[Tuple[Response, int], Response]:
     login, password = request.json.get('login'), request.json.get('password')
     user_ip, user_agent = request.remote_addr, request.headers.get('user-agent')
     # TODO: if login/password are missing, abort
@@ -35,7 +35,7 @@ def do_login() -> Union[Tuple[Response, int], Tuple[str, int], Response]:
     try:
         user = User.get_by_login(login=login, db_source=app.config.get('auth_db_source'))
     except ValueError:
-        return 'Incorrect login', 401
+        return jsonify('Incorrect login'), 401
     if not user.compare_hash(password):
         return jsonify("Incorrect password"), 401
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
@@ -61,23 +61,9 @@ def register() -> Response:
 # выбрасывает ошибку 400 когда токен некорректен
 # выбрасывает ошибку 401 когда данные не соответствуют
 @app.before_request
-def before_request() -> Optional[Tuple[str, int]]:
+def before_request() -> Optional[Tuple[Response, int]]:
     # все get реквесты и /login реквесты пропускаем, авторизация не нужна
     # TODO: добавить исключения для get метода(dict с включениями/исключениями методов)
-
-    # # urls, где наличие токена ОБЯЗАТЕЛЬНО, * - все эндпоинты
-    # included_urls = {
-    #     'GET': ['/api/v1/profile'],
-    #     'OPTIONS': [],
-    #     'POST': []
-    # }
-    #
-    # # urls, где наличие токена не требуется(меньше приоритет, чем у included)
-    # excluded_urls = {
-    #     'GET': [],
-    #     'OPTIONS': ['*'],
-    #     'POST': ['/api/v1/login', '/api/v1/register']
-    # }
 
     if request.url_rule is None or \
             request.path == '/api/v1/login' or \
@@ -91,8 +77,8 @@ def before_request() -> Optional[Tuple[str, int]]:
         data = jwt.decode(request_token, PUBLIC_KEY, algorithms=['RS256'])
         g.user = User.get_by_login(data['login'], db_source=app.config.get('auth_db_source'))
     except (DecodeError, ExpiredSignatureError):
-        return '', 400
+        return jsonify(''), 400
     except AttributeError:
-        return 'No token', 400
+        return jsonify('No token'), 400
     if not (data.get('user_ip') == user_ip and data.get('user_agent') == user_agent):
-        return '', 401
+        return jsonify(''), 401
