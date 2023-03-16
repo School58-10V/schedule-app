@@ -274,3 +274,8 @@ def prettify_time(time):
     hours = time // 100
     minutes = time % 100
     return str(hours).zfill(2) + ':' + str(minutes).zfill(2)
+
+def get_time_since_noon(time):
+    hours = int(time.split(":")[0])
+    minutes = int(time.split(":")[1])
+    return minutes * 60000 + hours * 60 * 60000
