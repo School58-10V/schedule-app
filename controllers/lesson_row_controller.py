@@ -61,7 +61,6 @@ def get_all_lesson_row_detailed() -> Response:
     Достаем все LessonRow вместе с учителями
     :return: Response
     """
-    t = time.time()
 
     global_dct = {}
     try:
