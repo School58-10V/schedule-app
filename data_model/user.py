@@ -89,7 +89,9 @@ class User(AbstractModel):
                 "login": self.get_login(),
                 "hash_password": self.get_password_hash(),
                 'status': self.get_status(),
-                'object_id': self.get_main_id()}
+                'object_id': self.get_main_id(),
+                'ref_id': self.get_ref_id()
+                }
 
     def get_profile_information(self):
         information = {

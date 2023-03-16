@@ -51,7 +51,7 @@ def register() -> Response:
         'user_agent': user_agent, "exp": datetime.datetime.now(tz=datetime.timezone.utc) + TOKEN_EXP_TIME
         }
     encoded_data = jwt.encode(data, PRIVATE_KEY, algorithm='RS256')
-    user = User(login=login, password=password, name=fullname, db_source=app.config.get('auth_db_source'))
+    user = User(login=login, password=password, name=fullname, status=User.STUDENT, db_source=app.config.get('auth_db_source'))
     user.save()
     return jsonify({'token': encoded_data})
 
