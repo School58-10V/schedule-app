@@ -258,7 +258,7 @@ def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Res
                                             db_source=app.config.get("schedule_db_source"))]
             raw_data["start_time"] = prettify_time(row.get_start_time())
             raw_data["end_time"] = prettify_time(row.get_end_time())
-            raw_data["day_of_the_week"] = DAYS_OF_THE_WEEK[row.get_day_of_the_week()]
+            raw_data["day_of_the_week"] = row.get_day_of_the_week()
             raw_data["room"] = Location.get_by_id(row.get_room_id(), db_source).get_num_of_class()
             raw_data["group"] = Group.get_by_id(row.get_group_id(), db_source).__dict__()
             raw_data["subject"] = Subject.get_by_id(row.get_subject_id(), db_source).__dict__()
