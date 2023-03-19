@@ -282,7 +282,7 @@ def get_lesson_row_by_timetable(timetable_id: int) -> Union[Tuple[str, int], Res
             if teacher_inforamtion != {}:
                 result[object_id]['teachers'].append(teacher_inforamtion)
 
-        return jsonify(result)
+        return jsonify(list(result.values()))
     except Exception as e:
         logging.error(e, exc_info=True)
         return "", 500
