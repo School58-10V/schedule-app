@@ -6,9 +6,11 @@ from typing import List, Optional, Tuple
 import psycopg2
 from psycopg2 import errorcodes
 import logging
+from services.logger.messages_templates import MessagesTemplates
 
 
 LOGGER = logging.getLogger("main.adapter")
+MESSAGES = MessagesTemplates()
 
 class DBSource(AbstractSource):
     """
@@ -37,12 +39,12 @@ class DBSource(AbstractSource):
             except psycopg2.Error:
                 time.sleep(5)
         if state:
-            LOGGER.info("Successfully conected to DB!")
+            LOGGER.info(MESSAGES.Adapter.Success.get_connection())
         else:
-            LOGGER.error("An error occured while trying to connect to DB! Attempts limit reached!")
+            LOGGER.error(MESSAGES.Adapter.Error.get_connection())
 
     def get_by_query(self, collection_name: str, query: dict) -> List[dict]:
-        LOGGER.debug(f"Starting a query search in '{collection_name}'. Query: {query}")
+        LOGGER.debug(MESSAGES.Adapter.Start.get_query_search(collection_name, query))
         curr_time = time.time_ns()
         self.connect()
         pairs = query.items()
@@ -53,23 +55,23 @@ class DBSource(AbstractSource):
         data = cursor.fetchall()
         desc = cursor.description
 
-        LOGGER.debug(f"Finished searching, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
+        LOGGER.debug(MESSAGES.Adapter.Success.get_query_search((time.time_ns() - curr_time) / 1000000))
         return self.__format_Tuple_to_dict(data, desc)
 
     def run_query(self, query):
         self.connect()
         cursor = self.__conn.cursor()
         curr_time = time.time_ns()
-        LOGGER.debug(f"Executing custom query: {query}")
+        LOGGER.debug(MESSAGES.Adapter.Start.get_custom_query(query))
         self.__cursor_execute_wrapper(cursor, query)
         data = cursor.fetchall()
         self.__conn.commit()
-        LOGGER.debug(f"Successfully executed custom query! Time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
+        LOGGER.debug(MESSAGES.Adapter.Success.get_custom_query((time.time_ns() - curr_time) / 1000000))
 
         return data
 
     def get_all(self, collection_name: str) -> List[dict]:
-        LOGGER.debug(f"Collecting all entries from '{collection_name}'...")
+        LOGGER.debug(MESSAGES.Adapter.Start.get_collect_all(collection_name))
         curr_time = time.time_ns()
         self.connect()
         request = f'SELECT * FROM "{collection_name}"'
@@ -79,11 +81,11 @@ class DBSource(AbstractSource):
         desc = cursor.description
         self.__conn.commit()
 
-        LOGGER.debug(f"Collection from {collection_name} has finished, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
+        LOGGER.debug(MESSAGES.Adapter.Success.get_collect_all(collection_name, (time.time_ns() - curr_time) / 1000000))
         return self.__format_Tuple_to_dict(data, desc)
 
     def get_by_id(self, collection_name: str, object_id: int) -> dict:
-        LOGGER.debug(f"Searching by id: {object_id} in collection '{collection_name}'...")
+        LOGGER.debug(MESSAGES.Adapter.Start.get_find_by_id(object_id, collection_name))
         curr_time = time.time_ns()
         self.connect()
         request = f'SELECT * FROM "{collection_name}" WHERE object_id={object_id}'
@@ -92,23 +94,23 @@ class DBSource(AbstractSource):
         data = cursor.fetchall()
         desc = cursor.description
         if len(data) == 0:
-            LOGGER.error(f'Object with id {object_id} does not exist in {collection_name}!')
+            LOGGER.error(MESSAGES.General.get_id_not_found_message(collection_name, object_id))
             self.__conn.commit()
             raise ValueError(f'Object with id {object_id} does not exist in {collection_name}!')
         # берем 0 индекс т.к. длина ответа всегда либо 0 (уже обработали), либо 1, т.е. смысла возвращать список нет.
 
-        LOGGER.debug(f"Finished searching by id, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
+        LOGGER.debug(MESSAGES.Adapter.Success.get_find_by_id((time.time_ns() - curr_time) / 1000000))
         return self.__format_Tuple_to_dict(data, desc)[0]
 
     def insert(self, collection_name: str, document: dict) -> dict:
-        LOGGER.debug(f"Adding a new entry to '{collection_name}'. Document: {document}")
+        LOGGER.debug(MESSAGES.Adapter.Start.get_insert(collection_name, document))
         curr_time = time.time_ns()
         self.connect()
         cursor = self.__conn.cursor()
         try:
             cursor.execute(f'SELECT * FROM "{collection_name}" LIMIT 0')
         except psycopg2.Error as e:
-            LOGGER.error(f"An error ({errorcodes.lookup(e.pgcode)}) occured while adding an entry to {collection_name}!")
+            LOGGER.error(MESSAGES.Adapter.Error.get_insert(errorcodes.lookup(e.pgcode), collection_name))
             if errorcodes.lookup(e.pgcode) == 'UNDEFINED_TABLE':
                 self.__conn.commit()
                 raise ValueError('This table does not exist!')
@@ -119,7 +121,7 @@ class DBSource(AbstractSource):
         try:
             cursor.execute(request)
         except psycopg2.Error as e:
-            LOGGER.error(f"An error occured while adding an object to {collection_name}!")
+            LOGGER.error(MESSAGES.Adapter.Error.get_insert(errorcodes.lookup(e.pgcode), collection_name))
             self.__conn.commit()
             error_text = ""
             if errorcodes.lookup(e.pgcode) == 'UNIQUE_VIOLATION':
@@ -130,22 +132,21 @@ class DBSource(AbstractSource):
                 error_text = 'Object data type error'
             
             if error_text != "":
-                LOGGER.error(f"An error occured while adding an object to {collection_name}! \n{error_text}")
+                LOGGER.error(MESSAGES.Adapter.Error.get_insert(error_text, collection_name))
                 raise ValueError(error_text)
             else:
-                LOGGER.error(f"Encountered an unknown error while adding an object to {collection_name}. "
-                             f"Error code: {errorcodes.lookup(e.pgcode)}")
+                LOGGER.error(MESSAGES.Adapter.Error.get_insert({errorcodes.lookup(e.pgcode)}, collection_name))
                 raise ValueError(f"Encountered an unknown error while adding an object to {collection_name}. "
                              f"Error code: {errorcodes.lookup(e.pgcode)}")
         self.__conn.commit()
         new_obj = cursor.fetchone()
         new_doc = {desc[index]: new_obj[index] for index in range(len(desc))}
 
-        LOGGER.debug(f"Finished adding a new entry, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
+        LOGGER.debug(MESSAGES.Adapter.Success.get_insert((time.time_ns() - curr_time) / 1000000))
         return new_doc
 
     def update(self, collection_name: str, object_id: Optional[int, str], document: dict) -> dict:
-        LOGGER.debug(f"Updating object with id {object_id} in '{collection_name}'...")
+        LOGGER.debug(MESSAGES.Adapter.Start.get_update(object_id, collection_name))
         curr_time = time.time_ns()
         self.connect()
         cursor = self.__conn.cursor()
@@ -161,13 +162,13 @@ class DBSource(AbstractSource):
             request = f'UPDATE "{collection}" SET {", ".join(req_data)} WHERE object_id = {str(object_id)}'
             cursor.execute(request)
             self.__conn.commit()
-            LOGGER.debug(f"Successfully updated object with id {object_id}, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
+            LOGGER.debug(MESSAGES.Adapter.Success.get_update(object_id, (time.time_ns() - curr_time) / 1000000))
             return document
         except psycopg2.Error as e:
-            LOGGER.error(f"An error ({e}) occured while updating object with {object_id} in {collection_name}!")
+            LOGGER.error(MESSAGES.Adapter.Error.get_update(e, object_id, collection_name))
 
     def delete(self, collection_name: str, object_id: Optional[int, str]):
-        LOGGER.debug(f"Deleting object with id {object_id} from '{collection_name}'...")
+        LOGGER.debug(MESSAGES.Adapter.Start.get_delete(object_id, collection_name))
         curr_time = time.time_ns()
         self.connect()
         cursor = self.__conn.cursor()
@@ -179,9 +180,9 @@ class DBSource(AbstractSource):
         try:
             cursor.execute(request)
             self.__conn.commit()
-            LOGGER.debug(f"Successfully deleted object with id {object_id}, time elapsed: {(time.time_ns() - curr_time) / 1000000}ms!")
+            LOGGER.debug(MESSAGES.Adapter.Success.get_delete(object_id, (time.time_ns() - curr_time) / 1000000))
         except psycopg2.Error as e:
-            LOGGER.error(f"Encountered an error {e} while deleting object with id {object_id} from {collection_name}!")
+            LOGGER.error(MESSAGES.Adapter.Error.get_delete(e, object_id, collection_name))
 
     @staticmethod
     def __wrap_string(value: Optional[str]) -> str:

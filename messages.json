@@ -7,7 +7,31 @@
         "malformed_input": "The input is malformed."
     },
     "adapter": {
-        
+        "success": {
+            "connection": "Successfully connected to DB!",
+            "query_search": "Finished searching, time elapsed: %time% ms!",
+            "custom_query": "Successfully executed custom query! Time elapsed: %time% ms!",
+            "collect_all": "Collection from %collection% has finished, time elapsed: %time% ms!",
+            "find_by_id": "Finished searching by id, time elapsed: %time% ms!",
+            "insert": "Finished adding a new entry, time elapsed: %time% ms!",
+            "update": "Successfully updated object with id %object_id%, time elapsed: %time% ms!",
+            "delete": "Successfully deleted object with id %object_id%, time elapsed: %time% ms!"
+        },
+        "error": {
+            "connection": "An error occured while trying to connect to DB! Attempts limit reached!",
+            "insert": "An error (%error%) occured while adding an entry to %collection%!",
+            "update": "An error (%error%) occured while updating object with %object_id% in %collection%!",
+            "delete": "Encountered an error (%error%) while deleting object with id %object_id% from %collection%!"
+        },
+        "start": {
+            "query_search": "Starting a query search in '%collection%'. Query: %query%",
+            "custom_query": "Executing custom query: %query%",
+            "collect_all": "Collecting all entries from '%collection%'...",
+            "find_by_id": "Searching by id: %object_id% in collection '%collection%'...",
+            "insert": "Adding a new entry to '%collection%'. Document: %document%",
+            "update": "Updating object with id %object_id% in '%collection%'...",
+            "delete": "Deleting object with id %object_id% from '%collection%'..."
+        }
     },
     "authentication": {
         "login_attempt": "Attempting to log in a user.",

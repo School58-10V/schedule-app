@@ -31,7 +31,88 @@ class MessagesTemplates:
             return MessagesTemplates.messages_manager.get_message("general.malformed_input")
     
     class Adapter:
-        pass
+
+        class Start:
+
+            @classmethod
+            def get_query_search(cls, collection, query):
+                return MessagesTemplates.messages_manager.get_message("adapter.start.query_search", {"collection": collection, "query": query})
+            
+            @classmethod
+            def get_custom_query(cls, query):
+                return MessagesTemplates.messages_manager.get_message("adapter.start.custom_query", {"query": query})
+            
+            @classmethod
+            def get_collect_all(cls, collection):
+                return MessagesTemplates.messages_manager.get_message("adapter.start.collect_all", {"collection": collection})
+            
+            @classmethod
+            def get_find_by_id(cls, object_id, collection):
+                return MessagesTemplates.messages_manager.get_message("adapter.start.find_by_id", {"object_id": object_id, "collection": collection})
+            
+            @classmethod
+            def get_insert(cls, collection, document):
+                return MessagesTemplates.messages_manager.get_message("adapter.start.insert", {"collection": collection, "document": document})
+            
+            @classmethod
+            def get_update(cls, object_id, collection):
+                return MessagesTemplates.messages_manager.get_message("adapter.start.update", {"collection": collection, "object_id": object_id})
+            
+            @classmethod
+            def get_delete(cls, object_id, collection):
+                return MessagesTemplates.messages_manager.get_message("adapter.start.delete", {"object_id": object_id, "collection": collection})
+        
+        class Success:
+
+            @classmethod
+            def get_connection(cls):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.connection")
+            
+            @classmethod
+            def get_query_search(cls, time):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.query_search", {"time": time})
+            
+            @classmethod
+            def get_custom_query(cls, time):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.custom_query", {"time": time})
+            
+            @classmethod
+            def get_collect_all(cls, collection, time):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.collect_all", {"collection": collection, "time": time})
+            
+            @classmethod
+            def get_find_by_id(cls, time):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.find_by_id", {"time": time})
+            
+            @classmethod
+            def get_insert(cls, time):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.insert", {"time": time})
+            
+            @classmethod
+            def get_update(cls, object_id, time):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.update", {"object_id": object_id, "time": time})
+            
+            @classmethod
+            def get_delete(cls, object_id, time):
+                return MessagesTemplates.messages_manager.get_message("adapter.success.delete", {"object_id": object_id, "time": time})
+
+        class Error:
+
+            @classmethod
+            def get_connection(cls):
+                return MessagesTemplates.messages_manager.get_message("adapter.error.connection")
+            
+            @classmethod
+            def get_insert(cls, error, collection):
+                return MessagesTemplates.messages_manager.get_message("adapter.error.insert", {"error": error, "collection": collection})
+            
+            @classmethod
+            def get_update(cls, error, object_id, collection):
+                return MessagesTemplates.messages_manager.get_message("adapter.error.update", {"error": error, "object_id": object_id, "collection": collection})
+            
+            @classmethod
+            def get_delete(cls, error, object_id, collection):
+                return MessagesTemplates.messages_manager.get_message("adapter.error.delete", {"error": error, "object_id": object_id, "collection": collection})
     
     class Authentication:
 
